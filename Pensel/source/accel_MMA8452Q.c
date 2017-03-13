@@ -66,11 +66,11 @@ ret_t accel_getdata(uint8_t accel_address, float * data_x_ptr, float * data_y_pt
     retval = I2C_read_bytes(accel_address, MMA8452Q_REG_X_DATA_MSB, 6, bytes);
     if (retval == RET_OK) {
         // Build the data up and normalize!
-        temp_data = (bytes[0] << 8) | (bytes[1]);
-        *data_x_ptr = (float)(temp_data / FULLSCALE_GS);  // Divide should be simplified to multiply by reciprical by compiler
-        temp_data = (bytes[2] << 8) | (bytes[3]);
+        temp_data = (int16_t)(bytes[0] << 8) | (bytes[1]);
+        *data_x_ptr = (float)(temp_data / FULLSCALE_GS);  // Divide should be simplified to bitshift or multiply by reciprical
+        temp_data = (int16_t)(bytes[2] << 8) | (bytes[3]);
         *data_y_ptr = (float)(temp_data / FULLSCALE_GS);
-        temp_data = (bytes[4] << 8) | (bytes[5]);
+        temp_data = (int16_t)(bytes[4] << 8) | (bytes[5]);
         *data_z_ptr = (float)(temp_data / FULLSCALE_GS);
         return RET_OK;
     } else {
