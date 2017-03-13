@@ -8,13 +8,13 @@ Thus, this project was born. It consists of two major parts:
 
 1. The thing the tinkerer holds on to to control the robot
 2. The robotic arms holding:
-..* The soldering iron
-..* The solder
-..* The wire or component
+   * The soldering iron
+   * The solder
+   * The wire or component
 
-## The Name
+### The Name
 
-Harma comes from the word "härma", which means "mimic" in Swedish. I thought it was fitting since the goal of this project is for you to control a robot that mimics your movements in a more precise and filtered way
+Harma comes from the word Härma, which means Mimic in Swedish. A fitting name since the goal of this project is for you to control a robot that mimics your movements in a more precise and filtered way.
 
 ## Sub-Components
 
@@ -29,21 +29,25 @@ There will be one unified design to control the iron, solder, and/or wire/compon
 1. A three position toggle switch for the user to indicate what mode the Pensel is operating in (Soldering iron, solder, or wire/component).
 2. One push button to indicate that we are actively moving and want the robot to respond
 3. Another push button to do the action supported by the mode. For example:
-..* Feed solder
-..* Feed wire
-..* release component
+   * Feed solder
+   * Feed wire
+   * release component
 
 #### The Current design
 
 * Processor
-..* STM32F302K8U6
-..* ARM® Cortex®-M4
-..* 72MHz
-..* CAN, I²C, IrDA, LIN, SPI, UART/USART, USB
-..* DMA, I²S, POR, PWM, WDT
+   * STM32F302K8U6
+   * ARM® Cortex®-M4
+   * 72MHz
+   * CAN, I²C, IrDA, LIN, SPI, UART/USART, USB
+   * DMA, I²S, POR, PWM, WDT
 * Sensors
-..* Two Accelerometers (MMA8452Q) on opposite sides of the PCB (far left and far right)
+   * Two Accelerometers (MMA8452Q) on opposite sides of the PCB (far left and far right)
+   * A button to trigger "active" mode
+   * An auxiliary button to generate an action
+   * A three position switch to indicate the active mode
+   * A thumbwheel potentiometer to control sensitivity
 
 ### Robotic Arms (Working title)
 
-This section has not been thought through yet...
+This section has not been thought through yet  .
