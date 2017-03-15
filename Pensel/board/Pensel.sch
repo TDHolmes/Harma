@@ -1,34 +1,92 @@
 EESchema Schematic File Version 2
-LIBS:power
-LIBS:device
-LIBS:transistors
-LIBS:conn
-LIBS:linear
-LIBS:regul
-LIBS:74xx
-LIBS:cmos4000
-LIBS:adc-dac
-LIBS:memory
-LIBS:xilinx
-LIBS:microcontrollers
-LIBS:dsp
-LIBS:microchip
-LIBS:analog_switches
-LIBS:motorola
-LIBS:texas
-LIBS:intel
-LIBS:audio
-LIBS:interface
-LIBS:digital-audio
-LIBS:philips
-LIBS:display
-LIBS:cypress
-LIBS:siliconi
-LIBS:opto
-LIBS:atmel
-LIBS:contrib
-LIBS:valves
 LIBS:pensel_components
+LIBS:74xgxx
+LIBS:74xx
+LIBS:ac-dc
+LIBS:actel
+LIBS:adc-dac
+LIBS:allegro
+LIBS:Altera
+LIBS:analog_devices
+LIBS:analog_switches
+LIBS:atmel
+LIBS:audio
+LIBS:battery_management
+LIBS:bbd
+LIBS:bosch
+LIBS:brooktre
+LIBS:cmos_ieee
+LIBS:cmos4000
+LIBS:conn
+LIBS:contrib
+LIBS:cypress
+LIBS:dc-dc
+LIBS:device
+LIBS:digital-audio
+LIBS:diode
+LIBS:display
+LIBS:dsp
+LIBS:elec-unifil
+LIBS:ESD_Protection
+LIBS:ftdi
+LIBS:gennum
+LIBS:graphic
+LIBS:hc11
+LIBS:intel
+LIBS:interface
+LIBS:ir
+LIBS:Lattice
+LIBS:linear
+LIBS:logo
+LIBS:maxim
+LIBS:mechanical
+LIBS:memory
+LIBS:microchip_dspic33dsc
+LIBS:microchip_pic10mcu
+LIBS:microchip_pic12mcu
+LIBS:microchip_pic16mcu
+LIBS:microchip_pic18mcu
+LIBS:microchip_pic32mcu
+LIBS:microchip
+LIBS:microcontrollers
+LIBS:motor_drivers
+LIBS:motorola
+LIBS:motors
+LIBS:msp430
+LIBS:nordicsemi
+LIBS:nxp_armmcu
+LIBS:onsemi
+LIBS:opto
+LIBS:Oscillators
+LIBS:philips
+LIBS:Power_Management
+LIBS:power
+LIBS:powerint
+LIBS:pspice
+LIBS:references
+LIBS:regul
+LIBS:relays
+LIBS:rfcom
+LIBS:sensors
+LIBS:silabs
+LIBS:siliconi
+LIBS:stm8
+LIBS:stm32
+LIBS:supertex
+LIBS:switches
+LIBS:texas
+LIBS:transf
+LIBS:transistors
+LIBS:ttl_ieee
+LIBS:valves
+LIBS:video
+LIBS:wiznet
+LIBS:Worldsemi
+LIBS:Xicor
+LIBS:xilinx
+LIBS:zetex
+LIBS:Zilog
+LIBS:Pensel-cache
 EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
@@ -47,8 +105,8 @@ $Comp
 L MMA8452Q U?
 U 1 1 58C8C6BE
 P 6850 1850
-F 0 "U?" H 6850 2587 60  0000 C CNN
-F 1 "MMA8452Q" H 6850 2481 60  0000 C CNB
+F 0 "U?" H 6850 2500 60  0000 C CNN
+F 1 "MMA8452Q" H 6850 1850 60  0000 C CNB
 F 2 "" H 6850 1850 60  0001 C CNN
 F 3 "" H 6850 1850 60  0001 C CNN
 	1    6850 1850
@@ -58,8 +116,8 @@ $Comp
 L MMA8452Q U?
 U 1 1 58C8C6F2
 P 6850 3450
-F 0 "U?" H 6850 4187 60  0000 C CNN
-F 1 "MMA8452Q" H 6850 4081 60  0000 C CNB
+F 0 "U?" H 6850 4100 60  0000 C CNN
+F 1 "MMA8452Q" H 6850 3450 60  0000 C CNB
 F 2 "" H 6850 3450 60  0001 C CNN
 F 3 "" H 6850 3450 60  0001 C CNN
 	1    6850 3450
@@ -69,11 +127,187 @@ $Comp
 L STM32F302x6/8 U?
 U 1 1 58C8C717
 P 2300 1800
-F 0 "U?" H 2300 2837 60  0000 C CNN
-F 1 "STM32F302x6/8" H 2300 2731 60  0000 C CNB
+F 0 "U?" H 2300 2750 60  0000 C CNN
+F 1 "STM32F302x6/8" H 2300 1850 60  0000 C CNB
 F 2 "" H 2250 2150 60  0001 C CNN
 F 3 "" H 2250 2150 60  0001 C CNN
 	1    2300 1800
+	1    0    0    -1  
+$EndComp
+$Comp
+L USB_OTG P?
+U 1 1 58C8D089
+P 2500 4250
+F 0 "P?" H 2650 4700 50  0000 C CNN
+F 1 "USB_OTG" H 2500 4600 50  0000 C CNN
+F 2 "" V 2450 4150 50  0000 C CNN
+F 3 "" V 2450 4150 50  0000 C CNN
+	1    2500 4250
+	1    0    0    -1  
+$EndComp
+$Comp
+L POT RV?
+U 1 1 58C8D122
+P 4150 3200
+F 0 "RV?" V 4150 3250 50  0000 R CNN
+F 1 "THUMBWHEEL" V 4050 3450 50  0000 R CNN
+F 2 "" H 4150 3200 50  0000 C CNN
+F 3 "" H 4150 3200 50  0000 C CNN
+	1    4150 3200
+	0    1    1    0   
+$EndComp
+$Comp
+L SW_Push SW?
+U 1 1 58C8D3DE
+P 4700 4600
+F 0 "SW?" H 4700 4885 50  0000 C CNN
+F 1 "MAIN" H 4700 4794 50  0000 C CNN
+F 2 "" H 4700 4800 50  0001 C CNN
+F 3 "" H 4700 4800 50  0001 C CNN
+	1    4700 4600
+	1    0    0    -1  
+$EndComp
+$Comp
+L SW_Push SW?
+U 1 1 58C8D416
+P 4700 5050
+F 0 "SW?" H 4700 5335 50  0000 C CNN
+F 1 "AUX" H 4700 5244 50  0000 C CNN
+F 2 "" H 4700 5250 50  0001 C CNN
+F 3 "" H 4700 5250 50  0001 C CNN
+	1    4700 5050
+	1    0    0    -1  
+$EndComp
+$Comp
+L SW_SP3T SW?
+U 1 1 58C8D445
+P 5850 4800
+F 0 "SW?" H 5850 5083 50  0000 C CNN
+F 1 "MODE_SEL" H 5850 4992 50  0000 C CNN
+F 2 "" H 5225 4975 50  0001 C CNN
+F 3 "" H 5225 4975 50  0001 C CNN
+	1    5850 4800
+	1    0    0    -1  
+$EndComp
+$Comp
+L CONN_02X05 J?
+U 1 1 58C8D76F
+P 3100 3250
+F 0 "J?" H 3100 3665 50  0000 C CNN
+F 1 "JTAG" H 3100 3574 50  0000 C CNN
+F 2 "" H 3100 2050 50  0001 C CNN
+F 3 "" H 3100 2050 50  0001 C CNN
+	1    3100 3250
+	1    0    0    -1  
+$EndComp
+$Comp
+L LED D?
+U 1 1 58C8D8C6
+P 4800 3400
+F 0 "D?" H 4791 3616 50  0000 C CNN
+F 1 "LED" H 4791 3525 50  0000 C CNN
+F 2 "" H 4800 3400 50  0001 C CNN
+F 3 "" H 4800 3400 50  0001 C CNN
+	1    4800 3400
+	1    0    0    -1  
+$EndComp
+$Comp
+L LED D?
+U 1 1 58C8D90A
+P 4800 3750
+F 0 "D?" H 4791 3966 50  0000 C CNN
+F 1 "LED" H 4791 3875 50  0000 C CNN
+F 2 "" H 4800 3750 50  0001 C CNN
+F 3 "" H 4800 3750 50  0001 C CNN
+	1    4800 3750
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R?
+U 1 1 58C8D940
+P 5200 3400
+F 0 "R?" V 4993 3400 50  0000 C CNN
+F 1 "R" V 5084 3400 50  0000 C CNN
+F 2 "" V 5130 3400 50  0001 C CNN
+F 3 "" H 5200 3400 50  0001 C CNN
+	1    5200 3400
+	0    1    1    0   
+$EndComp
+$Comp
+L R R?
+U 1 1 58C8D998
+P 5200 3750
+F 0 "R?" V 4993 3750 50  0000 C CNN
+F 1 "R" V 5084 3750 50  0000 C CNN
+F 2 "" V 5130 3750 50  0001 C CNN
+F 3 "" H 5200 3750 50  0001 C CNN
+	1    5200 3750
+	0    1    1    0   
+$EndComp
+$Comp
+L SW_Push SW?
+U 1 1 58C8DEEA
+P 3850 4800
+F 0 "SW?" H 3850 5085 50  0000 C CNN
+F 1 "RESET" H 3850 4994 50  0000 C CNN
+F 2 "" H 3850 5000 50  0001 C CNN
+F 3 "" H 3850 5000 50  0001 C CNN
+	1    3850 4800
+	1    0    0    -1  
+$EndComp
+$Comp
+L AP111733 U?
+U 1 1 58C8E187
+P 3450 4050
+F 0 "U?" H 3450 4417 50  0000 C CNN
+F 1 "AP111733" H 3450 4326 50  0000 C CNN
+F 2 "TO_SOT_Packages_SMD:SOT-223" H 3450 3700 50  0001 C CNN
+F 3 "" H 3550 3800 50  0001 C CNN
+	1    3450 4050
+	1    0    0    -1  
+$EndComp
+$Comp
+L +3V3 #PWR?
+U 1 1 58C8E248
+P 3800 4050
+F 0 "#PWR?" H 3800 3900 50  0001 C CNN
+F 1 "+3V3" H 3815 4223 50  0000 C CNN
+F 2 "" H 3800 4050 50  0001 C CNN
+F 3 "" H 3800 4050 50  0001 C CNN
+	1    3800 4050
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 58C8E289
+P 2500 4700
+F 0 "#PWR?" H 2500 4450 50  0001 C CNN
+F 1 "GND" H 2505 4527 50  0000 C CNN
+F 2 "" H 2500 4700 50  0001 C CNN
+F 3 "" H 2500 4700 50  0001 C CNN
+	1    2500 4700
+	1    0    0    -1  
+$EndComp
+$Comp
+L +5V #PWR?
+U 1 1 58C8E2CA
+P 3100 4050
+F 0 "#PWR?" H 3100 3900 50  0001 C CNN
+F 1 "+5V" H 3115 4223 50  0000 C CNN
+F 2 "" H 3100 4050 50  0001 C CNN
+F 3 "" H 3100 4050 50  0001 C CNN
+	1    3100 4050
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 58C8E340
+P 3450 4400
+F 0 "#PWR?" H 3450 4150 50  0001 C CNN
+F 1 "GND" H 3455 4227 50  0000 C CNN
+F 2 "" H 3450 4400 50  0001 C CNN
+F 3 "" H 3450 4400 50  0001 C CNN
+	1    3450 4400
 	1    0    0    -1  
 $EndComp
 $EndSCHEMATC
