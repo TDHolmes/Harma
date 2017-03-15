@@ -1,0 +1,9 @@
+// KiCAD files
+*.bak
+*-cache.*
+
+// C Files
+*.o
+
+// Python Files
+*.pyc
