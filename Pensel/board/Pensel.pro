@@ -1,4 +1,4 @@
-update=Tuesday, March 14, 2017 'PMt' 10:39:47 PM
+update=Saturday, March 18, 2017 'AMt' 10:27:08 AM
 version=1
 last_client=kicad
 [pcbnew]
@@ -27,7 +27,7 @@ NetIExt=net
 version=1
 [eeschema]
 version=1
-LibDir=../board;/Library/Application Support/kicad/kicad-library/library
+LibDir=../board;/Library/Application Support/kicad/kicad-library/library;/Users/tholmes/projects/KiCadCustomFootprints
 [eeschema/libraries]
 LibName1=pensel_components
 LibName2=74xgxx
