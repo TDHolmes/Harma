@@ -66,8 +66,9 @@ ret_t accel_getdata(uint8_t accel_address, float * data_x_ptr, float * data_y_pt
     retval = I2C_read_bytes(accel_address, MMA8452Q_REG_X_DATA_MSB, 6, bytes);
     if (retval == RET_OK) {
         // Build the data up and normalize!
+        // Note: Divide should be simplified to bitshift or multiply by reciprical
         temp_data = (int16_t)(bytes[0] << 8) | (bytes[1]);
-        *data_x_ptr = (float)(temp_data / FULLSCALE_GS);  // Divide should be simplified to bitshift or multiply by reciprical
+        *data_x_ptr = (float)(temp_data / FULLSCALE_GS);
         temp_data = (int16_t)(bytes[2] << 8) | (bytes[3]);
         *data_y_ptr = (float)(temp_data / FULLSCALE_GS);
         temp_data = (int16_t)(bytes[4] << 8) | (bytes[5]);
@@ -108,9 +109,12 @@ REGISTER 0x0B: SYSMOD system mode register (Default value: 00)
 REGISTER 0x0C: INT_SOURCE system interrupt status register
     SRC_ASLP   (bit 7): Logic ‘1’ indicates that an interrupt event that can cause a wake to sleep or
                         sleep to wake system mode transition has occurred
-    SRC_TRANS  (bit 5): This bit is asserted whenever EA bit in the TRANS_SRC is asserted and the interrupt has been enabled.
-    SRC_LNDPRT (bit 4): This bit is asserted whenever NEWLP bit in the PL_STATUS is asserted and the interrupt has been enabled.
-    SRC_PULSE  (bit 3): This bit is asserted whenever EA bit in the PULSE_SRC is asserted and the interrupt has been enabled.
+    SRC_TRANS  (bit 5): This bit is asserted whenever EA bit in the TRANS_SRC is asserted and the
+                            interrupt has been enabled.
+    SRC_LNDPRT (bit 4): This bit is asserted whenever NEWLP bit in the PL_STATUS is asserted and the
+                            interrupt has been enabled.
+    SRC_PULSE  (bit 3): This bit is asserted whenever EA bit in the PULSE_SRC is asserted and the
+                            interrupt has been enabled.
     SRC_FF_MT  (bit 2): Freefall/motion detected
     SRC_DRDY   (bit 0): Data Ready
 
