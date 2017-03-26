@@ -1,6 +1,7 @@
 // KiCAD files
 *.bak
 *-cache.*
+*.kicad_pcb-bak
 
 // C Files
 *.o
