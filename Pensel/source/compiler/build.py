@@ -131,7 +131,7 @@ def build_display_size(build_type, chip_total_flash):
     """
     Expected output from the arm toolchain size function:
     text    data     bss     dec     hex filename
-    6772     112     664    7548    1d7c debug/motor_driver.elf
+    6772     112     664    7548    1d7c debug/pensel.elf
 
     Adds in a percentage measurement.
     """
@@ -141,7 +141,7 @@ def build_display_size(build_type, chip_total_flash):
     print("\n———————————— {} BUILD SIZE ———————————————\n".format(b))
     sys.stdout.write(bcolors.COLOR_NC)
     sys.stdout.flush()
-    file_location = "{}/motor_driver.elf".format(build_type)
+    file_location = "{}/pensel.elf".format(build_type)
     cmd = "arm-none-eabi-size {}".format(file_location)
     stdout, stderr, retval = run_command(cmd, print_output=False)
     fields = stdout.splitlines()[0].split()
@@ -171,7 +171,7 @@ def build_get_section_info(build_type, chip_total_flash):
     sys.stdout.write(bcolors.COLOR_NC)
     sys.stdout.flush()
     cmd = "arm-none-eabi-nm --print-size --size-sort --radix=d " + \
-        "--defined-only {}/motor_driver.elf".format(build_type.lower())
+        "--defined-only {}/pensel.elf".format(build_type.lower())
 
     stdout, stderr, retval = run_command(cmd, print_output=False)
 
@@ -257,14 +257,14 @@ if __name__ == '__main__':
     parser.add_argument("build", type=str,
                         help="Type of build to run. Options are: "
                              "'debug', 'release', 'all', and 'clean'.")
-    parser.add_argument("-f", "--flash-size", type=int, default=32,
+    parser.add_argument("-f", "--flash-size", type=int, default=64,
                         help="total flash size available on the "
-                             "chip in Kibibytes. Defaults to 32k.")
+                             "chip in Kibibytes. Defaults to 64k.")
     parser.add_argument("-s", "--show-usage", action="store_true",
                         help="Outputs size information for individual symbols "
                         "in the builds output elf file.")
     parser.add_argument("-v", "--verbose", action="store_true",
-                       help="Shows the individual calls made by make.")
+                        help="Shows the individual calls made by make.")
     parser.add_argument("-g", "--gcc-dir", type=str, default="",
                         help="Directory for armgcc compiler.")
     parser.add_argument("-c", "--clang", action="store_true",
