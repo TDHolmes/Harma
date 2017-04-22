@@ -1,10 +1,10 @@
 /**
   ******************************************************************************
-  * @file    I2C/I2C_TwoBoards_ComIT/Inc/stm32f3xx_it.h
+  * @file    system_stm32f3xx.h
   * @author  MCD Application Team
-  * @version V1.7.0
+  * @version V2.3.1
   * @date    16-December-2016
-  * @brief   This file contains the headers of the interrupt handlers.
+  * @brief   CMSIS Cortex-M4 Device System Source File for STM32F3xx devices.  
   ******************************************************************************
   * @attention
   *
@@ -33,41 +33,92 @@
   * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   *
   ******************************************************************************
+  */ 
+
+/** @addtogroup CMSIS
+  * @{
   */
 
-/* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __STM32F3xx_IT_H
-#define __STM32F3xx_IT_H
+/** @addtogroup stm32f3xx_system
+  * @{
+  */  
+  
+/**
+  * @brief Define to prevent recursive inclusion
+  */
+#ifndef __SYSTEM_STM32F3XX_H
+#define __SYSTEM_STM32F3XX_H
 
 #ifdef __cplusplus
  extern "C" {
-#endif
+#endif 
 
-/* Includes ------------------------------------------------------------------*/
-/* Exported types ------------------------------------------------------------*/
-/* Exported constants --------------------------------------------------------*/
-/* Exported macro ------------------------------------------------------------*/
-/* Exported functions ------------------------------------------------------- */
+/** @addtogroup STM32F3xx_System_Includes
+  * @{
+  */
 
-void NMI_Handler(void);
-void HardFault_Handler(void);
-void MemManage_Handler(void);
-void BusFault_Handler(void);
-void UsageFault_Handler(void);
-void SVC_Handler(void);
-void DebugMon_Handler(void);
-void PendSV_Handler(void);
-void SysTick_Handler(void);
+/**
+  * @}
+  */
 
-/* Peripheral IRQs */
-void I2Cx_EV_IRQHandler(void);
-void I2Cx_ER_IRQHandler(void);
-void USARTx_IRQHandler(void);
+
+/** @addtogroup STM32F3xx_System_Exported_types
+  * @{
+  */
+  /* This variable is updated in three ways:
+      1) by calling CMSIS function SystemCoreClockUpdate()
+      3) by calling HAL API function HAL_RCC_GetHCLKFreq()
+      3) by calling HAL API function HAL_RCC_ClockConfig()
+         Note: If you use this function to configure the system clock; then there
+               is no need to call the 2 first functions listed above, since SystemCoreClock
+               variable is updated automatically.
+  */
+extern uint32_t SystemCoreClock;          /*!< System Clock Frequency (Core Clock) */
+extern const uint8_t AHBPrescTable[16];   /*!< AHB prescalers table values */
+extern const uint8_t APBPrescTable[8];    /*!< APB prescalers table values */
+
+
+/**
+  * @}
+  */
+
+/** @addtogroup STM32F3xx_System_Exported_Constants
+  * @{
+  */
+
+/**
+  * @}
+  */
+
+/** @addtogroup STM32F3xx_System_Exported_Macros
+  * @{
+  */
+
+/**
+  * @}
+  */
+
+/** @addtogroup STM32F3xx_System_Exported_Functions
+  * @{
+  */
+  
+extern void SystemInit(void);
+extern void SystemCoreClockUpdate(void);
+/**
+  * @}
+  */
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __STM32F3xx_IT_H */
+#endif /*__SYSTEM_STM32F3XX_H */
 
+/**
+  * @}
+  */
+  
+/**
+  * @}
+  */  
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

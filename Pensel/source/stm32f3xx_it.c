@@ -38,8 +38,14 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "Drivers/stm32f3xx_hal_i2c.h"
+#include "stm32f3xx.h"
+#include "Drivers/stm32f3xx_hal_def.h"
+#include "Drivers/stm32f3xx_hal.h"
 #include "stm32f3xx_it.h"
+
+// Peripherals used
+#include "Drivers/stm32f3xx_hal_i2c.h"
+#include "Drivers/stm32f3xx_hal_uart.h"
 
 /** @addtogroup STM32F3xx_HAL_Examples
   * @{
@@ -55,6 +61,7 @@
 /* Private variables ---------------------------------------------------------*/
 /* I2C handler declared in "main.c" file */
 extern I2C_HandleTypeDef I2cHandle;
+extern UART_HandleTypeDef UartHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
@@ -181,6 +188,18 @@ void I2Cx_EV_IRQHandler(void)
 void I2Cx_ER_IRQHandler(void)
 {
     HAL_I2C_ER_IRQHandler(&I2cHandle);
+}
+
+/**
+  * @brief  This function handles UART interrupt request.
+  * @param  None
+  * @retval None
+  * @Note   This function is redefined in "main.h" and related to DMA
+  *         used for USART data transmission
+  */
+void USARTx_IRQHandler(void)
+{
+    HAL_UART_IRQHandler(&UartHandle);
 }
 
 /**
