@@ -4,6 +4,7 @@
  */
 
 #include <stdint.h>
+#include <stdbool.h>
 #include "common.h"
 #include "I2C.h"
 #include "LSM303DLHC.h"
@@ -79,7 +80,8 @@ Mag sensor address behavior:
 // CTRL_REG2_A
 //     7-6: HPM[1:0]   High-pass filter mode selection. Default value: 00 (refer to Table 23)
 //     5-4: HPCF[2:1]  High-pass filter cutoff frequency selection
-//     3:   FDS        Filtered data selection. Default value: 0   (0: internal filter bypassed, 1: data from internal filter sent to output register and FIFO)
+//     3:   FDS        Filtered data selection. Default value: 0
+//                          (0: internal filter bypassed, 1: data from internal filter sent to output register and FIFO)
 //     2:   HPCLICK    High-pass filter enabled for click function (0: filter bypassed, 1: filter enabled)
 //     1:   HPIS2      High-pass filter enabled for AOI function on Interrupt 2 (0: filter bypassed, 1: filter enabled)
 //     0:   HPIS1      High-pass filter enabled for AOI function on Interrupt 1 (0: filter bypassed, 1: filter enabled)
@@ -94,7 +96,8 @@ Mag sensor address behavior:
 //     1: I1_OVERRUN FIFO overrun interrupt on INT1. Default value 0 (0: disable, 1: enable)
 
 // CTRL_REG4_A
-//     7:   BDU      Block data update. Default value: 0   (0: continuous update, 1: output registers not updated until MSB and LSB have been read
+//     7:   BDU      Block data update. Default value: 0   (0: continuous update,
+//                          1: output registers not updated until MSB and LSB have been read
 //     6:   BLE      Big/little endian data selection. Default value 0.   (0: data LSB @ lower address, 1: data MSB @ lower address)
 //     5-4: FS[1:0]  Full-scale selection. Default value: 00 (00: ±2 g, 01: ±4 g, 10: ±8 g, 11: ±16 g)
 //     3:   HR       High-resolution output mode: Default value: 0   (0: high-resolution disable, 1: high-resolution enable)
@@ -141,22 +144,89 @@ Mag sensor address behavior:
 // OUT_Z_L_A (2Ch), OUT_Z_H_A (2Dh)
 //     Z-axis acceleration data. The value is expressed in two’s complement.
 
+// FIFO_CTRL_REG_A
+//     7-6: FM[1:0]   FIFO mode selection. Default value: 00 (see Table 38)
+//     5:   TR        Trigger selection. Default value: 0   0: trigger event linked to trigger signal on INT1
+//                          1: trigger event linked to trigger signal on INT2
+//     4-0: FTH[4:0]  Default value: 00000
+
+// FIFO_SRC_REG_A
+//     7: WTM - Watermark
+//     6: OVRN_FIFO - Overrun
+//     5: EMPTY - FIFO Empty
+//     4: FSS4 - No Clue
+//     3: FSS3 - No Clue
+//     2: FSS2 - No Clue
+//     1: FSS1 - No Clue
+//     0: FSS0 - No Clue
+
+
+// CRA_REG_M
+//     7:   TEMP _EN   Temperature sensor enable. 0: temperature sensor disabled (default), 1: temperature sensor enabled
+//     4-2: DO[2:0]    Data output rate bits. These bits set the rate at which data is written to
+//                          all three data output registers (refer to Table 72). Default value: 100
+
+
+// CRB_REG_M
+//     7-5: GN[2:0] Gain configuration bits. The gain configuration is common for all channels
+//     4-0: Must be zero!
+
+// MR_REG_M
+//     7-2: Must be zero!
+//     1-0: MD[1:0] Mode select bits. These bits select the operation mode of this device
+//             0 0 Continuous-conversion mode
+//             0 1 Single-conversion mode
+//             1 0 Sleep mode. Device is placed in sleep mode
+//             1 1 Sleep mode. Device is placed in sleep mode
+
+// OUT_X_H_M (03), OUT_X_L_M (04h)
+//     X-axis magnetic field data. The value is expressed as two’s complement.
+// OUT_Z_H_M (05), OUT_Z_L_M (06h)
+//     Z-axis magnetic field data. The value is expressed as two’s complement.
+// OUT_Y_H_M (07), OUT_Y_L_M (08h)
+//     Y-axis magnetic field data. The value is expressed as two’s complement.
+
+// SR_REG_M
+//     1: LOCK Data output register lock. Once a new set of measurements is available,
+//              this bit is set when the first magnetic file data register has been read.
+//     0: DRDY Data-ready bit. This bit is when a new set of measurements is available.
+
+// Temp: 8 LSB/deg - 12-bit resolution (in C)
+// TEMP_OUT_H_M
+//     7-0: First byte of temp data. Most significant
+// TEMP_OUT_L_M
+//     7-4: four LSBs of temp value
+
+
+typedef struct {
+    uint32_t accel_overwrite_count;
+    uint32_t mag_overwrite_count;
+} LSM303DLHC_admin_t;
+
+
+LSM303DLHC_admin_t LSM303DLHC_admin = {
+    .accel_overwrite_count = 0,
+    .mag_overwrite_count = 0
+};
+
 
 // TODO: Actually figure out how best to init this guy..
-ret_t LSM303DLHC_init(accel_ODR_t datarate)
+ret_t LSM303DLHC_init(accel_ODR_t accel_datarate, accel_sensitivity_t accel_sensitivity,
+                      mag_ODR_t mag_datarate, mag_sensitivity_t mag_sensitivity)
 {
     ret_t retval;
     // Set datarate, enable X,Y, and Z access and turn off Low Power Mode
-    retval = I2C_write_byte(ACCEL_ADDRESS, ACCEL_CTRL_REG1_A, (datarate << 4) | (0b0111));
+    retval = I2C_write_byte(ACCEL_ADDRESS, ACCEL_CTRL_REG1_A, (accel_datarate << 4) | (0b0111));
     if (retval != RET_OK) { return retval; }
 
-    retval = I2C_write_byte(ACCEL_ADDRESS, ACCEL_CTRL_REG2_A, 0x01);
+    // Set accel sensitivity & turn on high res mode
+    retval = I2C_write_byte(ACCEL_ADDRESS, ACCEL_CTRL_REG4_A, (accel_sensitivity << 4) | 0b00001000);
     if (retval != RET_OK) { return retval; }
 
-    retval = I2C_write_byte(MAG_ADDRESS, MAG_CRA_REG_M, 0x01);
+    retval = I2C_write_byte(MAG_ADDRESS, MAG_CRA_REG_M, (mag_datarate << 2) & 0b10011100);
     if (retval != RET_OK) { return retval; }
 
-    retval = I2C_write_byte(MAG_ADDRESS, MAG_CRB_REG_M, 0x01);
+    retval = I2C_write_byte(MAG_ADDRESS, MAG_CRB_REG_M, (mag_sensitivity << 5) & 0b11100000);
     if (retval != RET_OK) { return retval; }
 
     // we've initialized properly!
@@ -164,7 +234,7 @@ ret_t LSM303DLHC_init(accel_ODR_t datarate)
 }
 
 
-ret_t LSM303DLHC_accel_getdata(float * data_x_ptr, float * data_y_ptr, float * data_z_ptr)
+ret_t LSM303DLHC_accel_getData(float * data_x_ptr, float * data_y_ptr, float * data_z_ptr)
 {
     int16_t temp_data;
     uint8_t bytes[6];
@@ -199,7 +269,7 @@ ret_t LSM303DLHC_accel_getdata(float * data_x_ptr, float * data_y_ptr, float * d
 
 
 
-ret_t LSM303DLHC_mag_getdata(float * data_x_ptr, float * data_y_ptr, float * data_z_ptr)
+ret_t LSM303DLHC_mag_getData(float * data_x_ptr, float * data_y_ptr, float * data_z_ptr)
 {
     int16_t temp_data;
     uint8_t bytes[6];
@@ -230,4 +300,52 @@ ret_t LSM303DLHC_mag_getdata(float * data_x_ptr, float * data_y_ptr, float * dat
         // Raise some sort of error...
         return RET_COM_ERR;
     }
+}
+
+
+ret_t LSM303DLHC_temp_getData(int16_t * temp_val_ptr)
+{
+    ret_t retval;
+    uint8_t bytes[] = {0, 0};
+
+    // read out the data
+    retval = I2C_read_bytes(MAG_ADDRESS, MAG_TEMP_OUT_H_M, 2, bytes);
+    if (retval != RET_OK) { return retval; }
+
+    // build up value!
+    *temp_val_ptr = (bytes[0] << 8 | (bytes[1] & 0xF0));
+
+    return RET_OK;
+}
+
+
+ret_t LSM303DLHC_checkStatus(void)
+{
+    uint8_t data;
+    ret_t retval;
+
+    retval = I2C_read_bytes(ACCEL_ADDRESS, ACCEL_STATUS_REG_A, 1, &data);
+    if (retval != RET_OK) { return retval; }
+
+    if (data & 0x80) {
+        LSM303DLHC_admin.accel_overwrite_count += 1;
+    }
+
+    if (data & 0x08) {
+        
+    }
+
+    return RET_OK;
+}
+
+
+bool LSM303DLHC_accel_dataAvailable(void)
+{
+    return false;
+}
+
+
+bool LSM303DLHC_mag_dataAvailable(void)
+{
+    return false;
 }

@@ -3,10 +3,15 @@
  *
  */
 
+#include <stdint.h>
+#include <stdbool.h>
 #include <string.h>
 #include "common.h"
+#include "UART.h"
 
 // STM driver includes
+#include "stm32f3xx.h"
+#include "Drivers/stm32f3xx_hal_def.h"
 #include "Drivers/stm32f3xx_hal.h"
 #include "Drivers/stm32f3xx_hal_uart.h"
 
@@ -24,13 +29,14 @@ typedef struct {
     // define buffers to be used by the STM drivers
     uint8_t rx_buffer[RX_BUFFER_SIZE];
     uint8_t tx_buffer[TX_BUFFER_SIZE];
-
-    uint8_t rx_packet_queue[RX_BUFFER_SIZE * RX_QUEUE_SIZE]
+    uint8_t rx_packet_queue[RX_BUFFER_SIZE * RX_QUEUE_SIZE];
     uint8_t rx_packet_count;
     uint8_t rx_droppedpackets_count;
 
     uint8_t sending_data;
-} UART_admin;
+} UART_admin_t;
+
+UART_admin_t UART_admin;
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -64,7 +70,7 @@ ret_t UART_init(uint32_t baudrate)
     }
 
     // Start receiving data!
-    HAL_UART_Receive_IT(&UartHandle, UART_admin.rx_buffer, RX_BUFFER_SIZE)
+    HAL_UART_Receive_IT(&UartHandle, UART_admin.rx_buffer, RX_BUFFER_SIZE);
 
     // yay we're done!
     return RET_OK;
@@ -169,5 +175,5 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
   */
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *UartHandle)
 {
-    fatal_error_handler(void);
+    fatal_error_handler();
 }

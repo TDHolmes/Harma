@@ -6,6 +6,7 @@
  #define _LSM303DLHC_H_
 
 #include <stdint.h>
+#include <stdbool.h>
 #include "common.h"
 
 
@@ -44,17 +45,28 @@ typedef enum {
 } mag_sensitivity_t;
 
 typedef enum {
-    kODR_PowerDown,
-    kODR_1Hz,
-    kODR_10_Hz,
-    kODR_25_Hz,
-    kODR_50_Hz,
-    kODR_100_Hz,
-    kODR_200_Hz,
-    kODR_400_Hz,
-    kODR_1620_Hz,
-    kODR_N_1344_LPM_5376_Hz
+    kAccelODR_PowerDown,
+    kAccelODR_1Hz,
+    kAccelODR_10_Hz,
+    kAccelODR_25_Hz,
+    kAccelODR_50_Hz,
+    kAccelODR_100_Hz,
+    kAccelODR_200_Hz,
+    kAccelODR_400_Hz,
+    kAccelODR_1620_Hz,
+    kAccelODR_N_1344_LPM_5376_Hz
 } accel_ODR_t;
+
+typedef enum {
+    kMagODR_0_75_Hz,
+    kMagODR_1_5_Hz,
+    kMagODR_3_Hz,
+    kMagODR_7_5_Hz,
+    kMagODR_15_Hz,
+    kMagODR_30_Hz,
+    kMagODR_75_Hz,
+    kMagODR_220_Hz
+} mag_ODR_t;
 
 
 typedef enum {
@@ -65,9 +77,12 @@ typedef enum {
 } FIFO_mode_t;
 
 
-ret_t LSM303DLHC_init(void);
-ret_t LSM303DLHC_accel_getdata(float * data_x_ptr, float * data_y_ptr, float * data_z_ptr);
-ret_t LSM303DLHC_mag_getdata(float * data_x_ptr, float * data_y_ptr, float * data_z_ptr);
+ret_t LSM303DLHC_init(accel_ODR_t accel_datarate, accel_sensitivity_t accel_sensitivity,
+                      mag_ODR_t mag_datarate, mag_sensitivity_t mag_sensitivity);
+ret_t LSM303DLHC_accel_getData(float * data_x_ptr, float * data_y_ptr, float * data_z_ptr);
+ret_t LSM303DLHC_mag_getData(float * data_x_ptr, float * data_y_ptr, float * data_z_ptr);
+bool LSM303DLHC_accel_dataAvailable(void);
+bool LSM303DLHC_mag_dataAvailable(void);
 
 
 #endif /* _LSM303DLHC_H_ */

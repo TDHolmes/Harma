@@ -3,31 +3,18 @@
  */
 
 #include <stdint.h>
+#include <stdbool.h>
+#include <string.h>
+#include "common.h"
+#include "I2C.h"
 
 // STM HAL libraries
+#include "stm32f3xx.h"
+#include "Drivers/stm32f3xx_hal_def.h"
 #include "Drivers/stm32f3xx_hal.h"
+#include "Drivers/stm32f3xx_hal_i2c.h"
 
 
-#define I2Cx                            I2C1
-#define RCC_PERIPHCLK_I2Cx              RCC_PERIPHCLK_I2C1
-#define RCC_I2CxCLKSOURCE_SYSCLK        RCC_I2C1CLKSOURCE_SYSCLK
-#define I2Cx_CLK_ENABLE()               __HAL_RCC_I2C1_CLK_ENABLE()
-#define I2Cx_SDA_GPIO_CLK_ENABLE()      __HAL_RCC_GPIOB_CLK_ENABLE()
-#define I2Cx_SCL_GPIO_CLK_ENABLE()      __HAL_RCC_GPIOB_CLK_ENABLE()
-
-
-/* Definition for I2Cx Pins */
-#define I2Cx_SCL_PIN                    GPIO_PIN_6
-#define I2Cx_SCL_GPIO_PORT              GPIOB
-#define I2Cx_SDA_PIN                    GPIO_PIN_7
-#define I2Cx_SDA_GPIO_PORT              GPIOB
-#define I2Cx_SCL_SDA_AF                 GPIO_AF4_I2C1
-
-/* Definition for I2Cx's NVIC */
-#define I2Cx_EV_IRQn                    I2C1_EV_IRQn
-#define I2Cx_ER_IRQn                    I2C1_ER_IRQn
-#define I2Cx_EV_IRQHandler              I2C1_EV_IRQHandler
-#define I2Cx_ER_IRQHandler              I2C1_ER_IRQHandler
 
 /* Size of Transmission buffers */
 #define TX_BUFFER_SIZE                      (10)
@@ -87,7 +74,7 @@ ret_t I2C_writeData(uint8_t dev_address, uint8_t mem_address,
     }
     // copy the data into the TX buffer and send it!
     memcpy(TX_buffer, data_ptr, data_len);
-    if (HAL_I2C_Mem_Write_IT(&I2cHandle, (uint16_t)address, (uint16_t)mem_address,
+    if (HAL_I2C_Mem_Write_IT(&I2cHandle, (uint16_t)dev_address, (uint16_t)mem_address,
                          I2C_MEMADD_SIZE_8BIT, (uint8_t *)TX_buffer, data_len) != HAL_OK) {
         return RET_COM_ERR;
     }
@@ -141,8 +128,7 @@ bool I2C_isBusy(void)
   */
 void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *I2cHandle)
 {
-    /* Toggle LED3: Transfer in transmission process is correct */
-    BSP_LED_Toggle(LED3);
+    // TODO: do something here...
 }
 
 /**
@@ -154,8 +140,7 @@ void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *I2cHandle)
   */
 void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef *I2cHandle)
 {
-    /* Txoggle LED3: Transfer in reception process is correct */
-    BSP_LED_Toggle(LED3);
+    // TODO: do something here...
 }
 
 /**
