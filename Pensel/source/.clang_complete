@@ -1,0 +1,5 @@
+-I/usr/local/resources/
+-I/usr/local/resources/tools/Unity/
+-ICMSIS/Include/
+-ICMSIS/Device/ST/STM32F3xx/Include/
+-DSTM32F302x8
