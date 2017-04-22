@@ -77,6 +77,16 @@ ret_t UART_init(uint32_t baudrate)
 }
 
 
+bool UART_isReady(void)
+{
+    if (UART_admin.sending_data == 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
 ret_t UART_sendData(uint8_t * data_ptr, uint8_t num_bytes)
 {
     // first, make sure we have enough room!
