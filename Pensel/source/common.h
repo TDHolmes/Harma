@@ -7,7 +7,8 @@ typedef enum {
     RET_NODATA_ERR,
     RET_LEN_ERR,
     RET_COM_ERR,
-    RET_BUSY_ERR
+    RET_BUSY_ERR,
+    RET_GEN_ERR
 } ret_t;
 
 
