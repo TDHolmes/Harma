@@ -28,6 +28,8 @@ uint8_t data_buff[] = {"Hello, World!\n"};
 int main(void)
 {
     ret_t retval;
+    uint32_t prev_tick = 0;
+
     // system configuration...
     HAL_Init();
     SystemClock_Config();
@@ -50,7 +52,13 @@ int main(void)
 
 
     while (true) {
-        LED_toggle(LED_0);
+        // toggle LED_0 every second
+        if (HAL_GetTick() - prev_tick > 1000) {
+            LED_toggle(LED_0);
+            prev_tick = HAL_GetTick();
+        }
+
+        // toggle LED_1 on UART TX
         if (UART_isReady()) {
             LED_toggle(LED_1);
             UART_sendData(data_buff, 14);
