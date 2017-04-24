@@ -42,6 +42,9 @@
 #include "Drivers/stm32f3xx_hal_uart.h"
 #include "Drivers/stm32f3xx_hal_i2c.h"
 #include "Drivers/stm32f3xx_hal_rcc.h"
+#include "Drivers/stm32f3xx_hal_rcc_ex.h"
+#include "Drivers/stm32f3xx_hal_adc.h"
+#include "Drivers/stm32f3xx_hal_adc_ex.h"
 
 // I2C definitions!!!
 #define I2Cx                            I2C1
@@ -58,6 +61,9 @@
 #define I2Cx_SDA_PIN                    GPIO_PIN_7
 #define I2Cx_SDA_GPIO_PORT              GPIOB
 #define I2Cx_SCL_SDA_AF                 GPIO_AF4_I2C1
+
+#define I2Cx_FORCE_RESET()              __HAL_RCC_I2C1_FORCE_RESET()
+#define I2Cx_RELEASE_RESET()            __HAL_RCC_I2C1_RELEASE_RESET()
 
 /* Definition for I2Cx's NVIC */
 #define I2Cx_EV_IRQn                    I2C1_EV_IRQn
@@ -85,6 +91,18 @@
 /* Definition for USARTx's NVIC */
 #define USARTx_IRQn                      USART1_IRQn
 #define USARTx_IRQHandler                USART1_IRQHandler
+
+
+// ADC crap! :D
+/* Definition for ADCx clock resources */
+#define ADCx_CLK_ENABLE()               __HAL_RCC_ADC1_CLK_ENABLE()
+#define ADCx_CHANNEL_GPIO_CLK_ENABLE()  __HAL_RCC_GPIOA_CLK_ENABLE()
+
+#define DMAx_CHANNELx_CLK_ENABLE()      __HAL_RCC_DMA1_CLK_ENABLE()
+
+#define ADCx_FORCE_RESET()              __HAL_RCC_ADC1_FORCE_RESET()
+#define ADCx_RELEASE_RESET()            __HAL_RCC_ADC1_RELEASE_RESET()
+
 
 /** @addtogroup STM32F3xx_HAL_Examples
   * @{
@@ -253,6 +271,67 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
   /*##-3- Disable the NVIC for UART ##########################################*/
   HAL_NVIC_DisableIRQ(USARTx_IRQn);
 }
+
+
+/** @defgroup HAL_MSP_Private_Functions
+  * @{
+  */
+
+/**
+* @brief  ADC MSP Init
+* @param  hadc : ADC handle
+* @retval None
+*/
+void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc)
+{
+    static DMA_HandleTypeDef DmaHandle;
+
+    /* ADC1 Periph clock enable */
+    ADCx_CLK_ENABLE();
+    /* Enable DMA1 clock */
+    __HAL_RCC_DMA1_CLK_ENABLE();
+
+    // Configure the DMA
+    /*********************** Configure DMA parameters ***************************/
+    DmaHandle.Instance                 = DMA1_Channel2;
+    DmaHandle.Init.Direction           = DMA_PERIPH_TO_MEMORY;
+    DmaHandle.Init.PeriphInc           = DMA_PINC_DISABLE;
+    DmaHandle.Init.MemInc              = DMA_MINC_ENABLE;
+    DmaHandle.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
+    DmaHandle.Init.MemDataAlignment    = DMA_MDATAALIGN_HALFWORD;
+    DmaHandle.Init.Mode                = DMA_CIRCULAR;
+    DmaHandle.Init.Priority            = DMA_PRIORITY_MEDIUM;
+    /* Deinitialize  & Initialize the DMA for new transfer */
+    HAL_DMA_DeInit(&DmaHandle);
+    HAL_DMA_Init(&DmaHandle);
+
+    /* Associate the DMA handle */
+    __HAL_LINKDMA(hadc, DMA_Handle, DmaHandle);
+
+    /* NVIC configuration for DMA Input data interrupt */
+    HAL_NVIC_SetPriority(DMA1_Channel2_IRQn, 1, 0);
+    HAL_NVIC_EnableIRQ(DMA1_Channel2_IRQn);
+}
+
+/**
+  * @brief ADC MSP De-Initialization
+  *        This function frees the hardware resources used in this example:
+  *          - Disable the Peripheral's clock
+  *          - Revert GPIO to their default state
+  * @param hadc: ADC handle pointer
+  * @retval None
+  */
+void HAL_ADC_MspDeInit(ADC_HandleTypeDef *hadc)
+{
+    /*##-1- Reset peripherals ##################################################*/
+    ADCx_FORCE_RESET();
+    ADCx_RELEASE_RESET();
+    /* ADC Periph clock disable
+    (automatically reset all ADC instances of the ADC common group) */
+    __HAL_RCC_ADC1_CLK_DISABLE();
+}
+
+
 
 /**
   * @}

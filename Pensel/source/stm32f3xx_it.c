@@ -202,6 +202,39 @@ void USARTx_IRQHandler(void)
     HAL_UART_IRQHandler(&UartHandle);
 }
 
+void EXTI1_IRQHandler(void)
+{
+    // Have the HAL lib cleanup and call our callback
+    HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_1);
+}
+
+void EXTI2_TSC_IRQHandler(void)
+{
+    // Have the HAL lib cleanup and call our callback
+    HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_2);
+}
+
+void EXTI3_IRQHandler(void)
+{
+    // Have the HAL lib cleanup and call our callback
+    HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_3);
+}
+
+void EXTI4_IRQHandler(void)
+{
+    // Have the HAL lib cleanup and call our callback
+    HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_4);
+}
+
+
+void EXTI9_5_IRQHandler(void)
+{
+    // (pin 5 is the only one configured for interrupt)
+    // Have the HAL lib cleanup and call our callback
+    HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_5);
+}
+
+
 /**
   * @brief  This function handles PPP interrupt request.
   * @param  None

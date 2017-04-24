@@ -10,8 +10,9 @@
 // Sensors
 #include "LSM303DLHC.h"
 // TODO: add button and thumbwheel support
+#include "ADC.h"  // for thumbwheel
 
-// Communications
+// Communications and other
 #include "I2C.h"
 #include "UART.h"
 
@@ -21,13 +22,16 @@
 #include "stm32f3xx_hal_conf.h"
 
 
+uint8_t data_buff[] = {"Hello, World!\n"};
+
+
 int main(void)
 {
     ret_t retval;
     // system configuration...
     HAL_Init();
     SystemClock_Config();
-    // configure_pins();
+    configure_pins();
 
     // peripheral configuration
     retval = I2C_init();
@@ -39,8 +43,19 @@ int main(void)
         fatal_error_handler();
     }
 
-    // should never get here!
-    return 0;
+    retval = ADC_init();
+    if (retval != RET_OK) {
+        fatal_error_handler();
+    }
+
+
+    while (true) {
+        LED_toggle(LED_0);
+        if (UART_isReady()) {
+            LED_toggle(LED_1);
+            UART_sendData(data_buff, 14);
+        }
+    }
 }
 
 

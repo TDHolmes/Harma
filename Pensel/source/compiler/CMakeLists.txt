@@ -28,7 +28,8 @@ SET(TOOLCHAIN_DIR "" CACHE STRING "Directory to use for ARM GCC")
 SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -flto")
 SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -mcpu=cortex-m4")
 SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -Wall -Wdouble-promotion -Wextra")
-SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -mfloat-abi=soft") # TODO: switch to hard float opperations!
+SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -mfloat-abi=hard")
+SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -mfpu=fpv4-sp-d16")
 SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -mthumb")
 SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -fno-common")
 SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -ffunction-sections")
@@ -107,6 +108,8 @@ add_executable(pensel.elf
 	"${ProjDirPath}/UART.h"
 	"${ProjDirPath}/I2C.c"
 	"${ProjDirPath}/I2C.h"
+	"${ProjDirPath}/ADC.c"
+	"${ProjDirPath}/ADC.h"
 	"${ProjDirPath}/hardware.c"
 	"${ProjDirPath}/hardware.h"
 	"${ProjDirPath}/startup_stm32f302x8.s"
@@ -166,12 +169,12 @@ add_executable(pensel.elf
 	"${ProjDirPath}/Drivers/stm32f3xx_hal_rcc_ex.h"
 	# "${ProjDirPath}/Drivers/stm32f3xx_hal_flash.c"
 	"${ProjDirPath}/Drivers/stm32f3xx_hal_flash.h"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_adc.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_adc.h"
+	"${ProjDirPath}/Drivers/stm32f3xx_hal_adc.c"
+	"${ProjDirPath}/Drivers/stm32f3xx_hal_adc.h"
+	"${ProjDirPath}/Drivers/stm32f3xx_hal_adc_ex.c"
+	"${ProjDirPath}/Drivers/stm32f3xx_hal_adc_ex.h"
 	# "${ProjDirPath}/Drivers/stm32f3xx_hal_wwdg.c"
 	# "${ProjDirPath}/Drivers/stm32f3xx_hal_wwdg.h"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_adc_ex.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_adc_ex.h"
 	# "${ProjDirPath}/Drivers/stm32f3xx_hal_uart_ex.c"
 	# "${ProjDirPath}/Drivers/stm32f3xx_hal_uart_ex.h"
 	# "${ProjDirPath}/Drivers/stm32f3xx_hal_usart.c"
