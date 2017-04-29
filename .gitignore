@@ -5,6 +5,7 @@
 
 // C Files
 *.o
+*.elf
 
 // Python Files
 *.pyc
