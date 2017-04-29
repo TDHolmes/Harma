@@ -17,11 +17,11 @@
 
 // Button & switch stuff
 #define SWITCH_BUTTON_PORT (GPIOA)
-#define BUTTON_MAIN        (GPIO_PIN_5)
-#define BUTTON_AUX         (GPIO_PIN_4)
 #define SWITCH_0           (GPIO_PIN_1)
 #define SWITCH_1           (GPIO_PIN_2)
 #define SWITCH_2           (GPIO_PIN_3)
+#define BUTTON_AUX         (GPIO_PIN_4)
+#define BUTTON_MAIN        (GPIO_PIN_5)
 
 // Thumbwheel
 #define THUMBWHEEL_PORT (GPIOA)
@@ -38,9 +38,23 @@
 #define UART_TX     (GPIO_PIN_9)
 
 
+// public structures
+typedef enum {
+    kSwitch_0,
+    kSwitch_1,
+    kSwitch_2
+} switch_state_t;
+
+
 // Public function definitions
 void SystemClock_Config(void);
 void configure_pins(void);
+
+void button_periodic_handler(uint32_t current_tick);
+void switch_periodic_handler(uint32_t current_tick);
+switch_state_t switch_getval(void);
+uint8_t mainbutton_getval(void);
+uint8_t auxbutton_getval(void);
 
 void LED_toggle(uint16_t LED);
 void LED_set(uint16_t LED, uint8_t value);
