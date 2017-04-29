@@ -57,6 +57,7 @@ typedef enum {
     kAccelODR_N_1344_LPM_5376_Hz
 } accel_ODR_t;
 
+
 typedef enum {
     kMagODR_0_75_Hz,
     kMagODR_1_5_Hz,
@@ -79,10 +80,16 @@ typedef enum {
 
 ret_t LSM303DLHC_init(accel_ODR_t accel_datarate, accel_sensitivity_t accel_sensitivity,
                       mag_ODR_t mag_datarate, mag_sensitivity_t mag_sensitivity);
-ret_t LSM303DLHC_accel_getData(float * data_x_ptr, float * data_y_ptr, float * data_z_ptr);
-ret_t LSM303DLHC_mag_getData(float * data_x_ptr, float * data_y_ptr, float * data_z_ptr);
+
+// functions to get packets and check for data!
 bool LSM303DLHC_accel_dataAvailable(void);
 bool LSM303DLHC_mag_dataAvailable(void);
+ret_t LSM303DLHC_accel_getPacket(int32_t * data_x_ptr, int32_t * data_y_ptr, int32_t * data_z_ptr);
+ret_t LSM303DLHC_mag_getPacket(float * data_x_ptr, float * data_y_ptr, float * data_z_ptr);
+
+// functions to be called by the hardware pin interrupt handler
+void LSM303DLHC_drdy_handler(void);
+// void LSM303DLHC_int_handler(void);
 
 
 #endif /* _LSM303DLHC_H_ */
