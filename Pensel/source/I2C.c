@@ -88,6 +88,12 @@ ret_t I2C_writeData(uint8_t dev_address, uint8_t mem_address,
 }
 
 
+ret_t I2C_writeByte(uint8_t dev_address, uint8_t mem_address, uint8_t data, bool blocking)
+{
+    return I2C_writeData(dev_address, mem_address, &data, 1, blocking);
+}
+
+
 ret_t I2C_readData(uint8_t address, uint8_t mem_address, uint8_t * data_ptr, uint8_t data_len)
 {
     // check if we're available to send data
@@ -106,7 +112,7 @@ ret_t I2C_readData(uint8_t address, uint8_t mem_address, uint8_t * data_ptr, uin
         return RET_COM_ERR;
     }
 
-    // if we're supposed to block, wait here
+    // Wait here until the data is read in completely
     while ( I2C_isBusy() );
 
     return RET_OK;
@@ -115,7 +121,7 @@ ret_t I2C_readData(uint8_t address, uint8_t mem_address, uint8_t * data_ptr, uin
 
 bool I2C_isBusy(void)
 {
-    return (HAL_I2C_GetState(&I2cHandle) == HAL_I2C_STATE_READY);
+    return (HAL_I2C_GetState(&I2cHandle) != HAL_I2C_STATE_READY);
 }
 
 
@@ -128,7 +134,8 @@ bool I2C_isBusy(void)
   */
 void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *I2cHandle)
 {
-    // TODO: do something here...
+    // Can put LED blinkies here for debug. Otherwise, don't need as we have the
+    //     I2C_isBusy() function
 }
 
 /**
@@ -140,7 +147,8 @@ void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *I2cHandle)
   */
 void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef *I2cHandle)
 {
-    // TODO: do something here...
+    // Can put LED blinkies here for debug. Otherwise, don't need as we have the
+    //     I2C_isBusy() function
 }
 
 /**

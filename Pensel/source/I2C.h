@@ -7,10 +7,8 @@
 
 ret_t I2C_init(void);
 bool I2C_isBusy(void);
-ret_t I2C_read_byte(uint8_t I2C_address, uint8_t register_address, uint8_t * value_read_ptr);
-ret_t I2C_read_bytes(uint8_t I2C_address, uint8_t register_address, uint8_t num_bytes, uint8_t * values_read_ptr);
-
-ret_t I2C_write_byte(uint8_t I2C_address, uint8_t register_address, uint8_t value_to_write);
-ret_t I2C_write_bytes(uint8_t I2C_address, uint8_t register_address, uint8_t num_vals, uint8_t * values_to_write_ptr);
+ret_t I2C_readData(uint8_t address, uint8_t mem_address, uint8_t * data_ptr, uint8_t data_len);
+ret_t I2C_writeData(uint8_t dev_address, uint8_t mem_address, uint8_t * data_ptr, uint8_t data_len, bool blocking);
+ret_t I2C_writeByte(uint8_t dev_address, uint8_t mem_address, uint8_t data, bool blocking);
 
 #endif /* _I2C_H_ */
