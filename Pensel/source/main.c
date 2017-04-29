@@ -4,6 +4,7 @@
  */
 
 #include <stdint.h>
+#include <string.h>
 #include "common.h"
 #include "hardware.h"
 
@@ -22,7 +23,11 @@
 #include "stm32f3xx_hal_conf.h"
 
 
-uint8_t data_buff[] = {"Hello, World!\n"};
+const uint8_t hello_world_str[] = {"Hello!!!\n"};
+uint8_t data_to_send[10];
+
+
+extern __IO uint32_t uwTick;
 
 
 int main(void)
@@ -50,7 +55,6 @@ int main(void)
         fatal_error_handler();
     }
 
-
     while (true) {
         // toggle LED_0 every second
         if (HAL_GetTick() - prev_tick > 1000) {
@@ -60,9 +64,37 @@ int main(void)
 
         // toggle LED_1 on UART TX
         if (UART_isReady()) {
+
+            // check if we should reflect what we've recieved
+            if ( UART_dataAvailable() ) {
+                UART_getData(data_to_send);
+            } else {
+                memcpy(data_to_send, hello_world_str, sizeof(hello_world_str));
+            }
             LED_toggle(LED_1);
-            UART_sendData(data_buff, 14);
+            UART_sendData(data_to_send, 10);
         }
+    }
+}
+
+/*! millisecond ISR that increments the global time as well as calls some functions
+ *  that need to be periodically serviced.
+ */
+void HAL_IncTick(void)
+{
+    // sub counter to take care of some tasks every N ms
+    static uint8_t sub_count = 0;
+
+    // increment the ms timer
+    uwTick++;
+
+    // take care of some things that need to be called periodically
+    if (sub_count == 9) {
+        sub_count = 0;
+        button_periodic_handler(uwTick);
+        switch_periodic_handler(uwTick);
+    } else {
+        sub_count++;
     }
 }
 
