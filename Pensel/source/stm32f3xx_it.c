@@ -235,6 +235,13 @@ void EXTI9_5_IRQHandler(void)
 }
 
 
+void EXTI15_10_IRQHandler(void)
+{
+    // Only pin 11 is congfigured for interrupt
+    HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_11);
+}
+
+
 /**
   * @brief  This function handles PPP interrupt request.
   * @param  None

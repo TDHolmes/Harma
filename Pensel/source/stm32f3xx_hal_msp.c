@@ -167,9 +167,9 @@ void HAL_I2C_MspInit(I2C_HandleTypeDef *hi2c)
 
     /*##-4- Configure the NVIC for I2C ########################################*/
     /* NVIC for I2Cx */
-    HAL_NVIC_SetPriority(I2Cx_ER_IRQn, 0, 1);
+    HAL_NVIC_SetPriority(I2Cx_ER_IRQn, 0, 0);  // Highest Preempt Priority, highest Sub Priority
     HAL_NVIC_EnableIRQ(I2Cx_ER_IRQn);
-    HAL_NVIC_SetPriority(I2Cx_EV_IRQn, 0, 2);
+    HAL_NVIC_SetPriority(I2Cx_EV_IRQn, 0, 1);  // Highest Preempt Priority, 2nd highest Sub Priority
     HAL_NVIC_EnableIRQ(I2Cx_EV_IRQn);
 }
 
@@ -244,7 +244,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart)
 
   /*##-3- Configure the NVIC for UART ########################################*/
   /* NVIC for USART */
-  HAL_NVIC_SetPriority(USARTx_IRQn, 0, 1);
+  HAL_NVIC_SetPriority(USARTx_IRQn, 1, 0);  // 2nd Highest Preempt Priority, 3rd highest Sub Priority
   HAL_NVIC_EnableIRQ(USARTx_IRQn);
 }
 
@@ -309,7 +309,7 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc)
     __HAL_LINKDMA(hadc, DMA_Handle, DmaHandle);
 
     /* NVIC configuration for DMA Input data interrupt */
-    HAL_NVIC_SetPriority(DMA1_Channel2_IRQn, 1, 0);
+    HAL_NVIC_SetPriority(DMA1_Channel2_IRQn, 2, 0);
     HAL_NVIC_EnableIRQ(DMA1_Channel2_IRQn);
 }
 
