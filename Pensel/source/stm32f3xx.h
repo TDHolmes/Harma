@@ -83,7 +83,7 @@
 
   /* #define STM32F301x8 */   /*!< STM32F301K6, STM32F301K8, STM32F301C6, STM32F301C8,
                                    STM32F301R6 and STM32F301R8 Devices */
-  #define STM32F302x8   /*!< STM32F302K6, STM32F302K8, STM32F302C6, STM32F302C8,
+  /* #define STM32F302x8 */   /*!< STM32F302K6, STM32F302K8, STM32F302C6, STM32F302C8,
                                    STM32F302R6 and STM32F302R8 Devices */
   /* #define STM32F302xC */   /*!< STM32F302CB, STM32F302CC, STM32F302RB, STM32F302RC,
                                    STM32F302VB and STM32F302VC Devices */
@@ -224,7 +224,7 @@ typedef enum
 
 
 #if defined (USE_HAL_DRIVER)
- #include "stm32f3xx_hal.h"
+ #include "Drivers/stm32f3xx_hal.h"
 #endif /* USE_HAL_DRIVER */
 
 
