@@ -5,7 +5,9 @@
 
 // C Files
 *.o
-*.elf
 
 // Python Files
 *.pyc
+
+// Project Folders
+Pensel/source/compiler/build/*
