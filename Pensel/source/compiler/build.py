@@ -324,6 +324,17 @@ if __name__ == '__main__':
 
     build_clean(remove_elf_files=True)
 
+    # make sure all our folder paths exist
+    current_path = os.path.abspath("./")
+    if not os.path.exists(os.path.join(current_path, "build")):
+        os.mkdir(os.path.join(current_path, "build"))
+
+    if not os.path.exists(os.path.join(current_path, "build/Release")):
+        os.mkdir(os.path.join(current_path, "build/Release"))
+
+    if not os.path.exists(os.path.join(current_path, "build/Debug")):
+        os.mkdir(os.path.join(current_path, "build/Debug"))
+
     if build == "debug" or build == "all":
         retval = build_debug(args.clang, args.gcc_dir, args.verbose)
         build_clean(remove_elf_files=False)
