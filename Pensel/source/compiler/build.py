@@ -8,6 +8,25 @@ from Queue import Queue, Empty
 import time
 
 
+section_name_explainations = {
+    'a': "The symbol's value is absolute, and will not be changed by further linking",
+    'b': "The symbol is in the uninitialized data section (known as BSS)",
+    'c': "The symbol is common. Common symbols are uninitialized data. When linking, multiple common symbols may appear with the same name. If the symbol is defined anywhere, the common symbols are treated as undefined references. For more details on common symbols, see the discussion of –warn-common in Linker options",
+    'd': "The symbol is in the initialized data section",
+    'g': "The symbol is in an initialized data section for small objects. Some object file formats permit more efficient access to small data objects, such as a global int variable as opposed to a large global array",
+    'i': "The symbol is an indirect reference to another symbol",
+    'n': "The symbol is a debugging symbol",
+    'p': "The symbols is in a stack unwind section",
+    'r': "The symbol is in a read only data section",
+    's': "The symbol is in an uninitialized data section for small objects",
+    't': "The symbol is in the text (code) section",
+    'u': "The symbol is undefined or a unique global symbol. This is a GNU extension to the standard set of ELF symbol bindings. For such a symbol the dynamic linker will make sure that in the entire process there is just one symbol with this name and type in use",
+    'v': "The symbol is a weak object. When a weak defined symbol is linked with a normal defined symbol, the normal defined symbol is used with no error. When a weak undefined symbol is linked and the symbol is not defined, the value of the weak symbol becomes zero with no error. On some systems, uppercase indicates that a default value has been specified",
+    'w': "The symbol is a weak symbol that has not been specifically tagged as a weak object symbol. When a weak defined symbol is linked with a normal defined symbol, the normal defined symbol is used with no error. When a weak undefined symbol is linked and the symbol is not defined, the value of the symbol is determined in a system-specific manner without error. On some systems, uppercase indicates that a default value has been specified",
+    '-': "The symbol is a stabs symbol in an a.out object file. In this case, the next values printed are the stabs other field, the stabs desc field, and the stab type. Stabs symbols are used to hold debugging information",
+    '?': "The symbol type is unknown, or object file format specific"}
+
+
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -127,7 +146,7 @@ def build_clean(remove_elf_files=True):
     run_command(cmd)
 
 
-def build_display_size(build_type, chip_total_flash):
+def build_display_size(build_type, chip_total_flash, chip_total_ram):
     """
     Expected output from the arm toolchain size function:
     text    data     bss     dec     hex filename
@@ -136,60 +155,87 @@ def build_display_size(build_type, chip_total_flash):
     Adds in a percentage measurement.
     """
     chip_total_flash = chip_total_flash * 1024
+    chip_total_ram = chip_total_ram * 1024
     sys.stdout.write(bcolors.COLOR_YELLOW)
     b = build_type.upper()
     print("\n———————————— {} BUILD SIZE ———————————————\n".format(b))
     sys.stdout.write(bcolors.COLOR_NC)
     sys.stdout.flush()
-    file_location = "{}/pensel.elf".format(build_type)
-    cmd = "arm-none-eabi-size {}".format(file_location)
+    file_location = "build/{}/pensel.elf".format(build_type)
+    cmd = "arm-none-eabi-size {} --radix=10".format(file_location)
     stdout, stderr, retval = run_command(cmd, print_output=False)
     fields = stdout.splitlines()[0].split()
     values = stdout.splitlines()[1].split()
 
     dict_of_vals = {}
     for ind, f in enumerate(fields):
-        dict_of_vals[f.strip()] = values[ind].strip()
+        try:
+            dict_of_vals[f.strip()] = int(values[ind].strip(), 10)
+        except Exception:
+            pass
 
     # print text size, data size, then percentage full
     print "\tText:  {: >5} bytes".format(dict_of_vals["text"])
     print "\tData:  {: >5} bytes".format(dict_of_vals["data"])
     print "\t bss:  {: >5} bytes".format(dict_of_vals["bss"])
-    percentage = (float(dict_of_vals["dec"]) * 100.0) / float(chip_total_flash)
+    percentage = (float(dict_of_vals["text"]) * 100.0) / float(chip_total_flash)
     sys.stdout.write(bcolors.COLOR_WHITE)
-    print "\tTotal: {: >5} / {} ({:0.2f} %)\n".format(dict_of_vals["dec"],
-                                                      chip_total_flash,
+    print "\tFlash: {: >5} / {} ({:0.2f} %)".format(dict_of_vals["text"],
+                                                    chip_total_flash,
+                                                    percentage)
+
+    ram_stuff = dict_of_vals["data"] + dict_of_vals["bss"]
+    percentage = (float(ram_stuff) * 100.0) / float(chip_total_ram)
+    print "\t  Ram: {: >5} / {} ({:0.2f} %)\n".format(ram_stuff,
+                                                      chip_total_ram,
                                                       percentage)
     sys.stdout.write(bcolors.COLOR_NC)
 
 
-def build_get_section_info(build_type, chip_total_flash):
+def build_get_section_info(build_type, chip_total_flash, chip_total_ram):
     chip_total_flash = chip_total_flash * 1024
+    chip_total_ram = chip_total_ram * 1024
     sys.stdout.write(bcolors.COLOR_YELLOW)
     b = build_type.upper()
     print("\n———————————— {} FUNCTION SIZES ———————————————\n".format(b))
     sys.stdout.write(bcolors.COLOR_NC)
     sys.stdout.flush()
-    cmd = "arm-none-eabi-nm --print-size --size-sort --radix=d " + \
+    cmd = "arm-none-eabi-nm --print-size --size-sort --radix=d --demangle " + \
         "--defined-only {}/pensel.elf".format(build_type.lower())
 
     stdout, stderr, retval = run_command(cmd, print_output=False)
 
     data = []
+    data_by_sections = {}
     for line in stdout.splitlines():
         sym_ref, size, sym_type, name = line.split()
+        try:
+            sym_type = sym_type.lower()
+        except Exception:
+            pass
         data.append((name, sym_type, int(size)))
+        if sym_type not in data_by_sections.keys():
+            data_by_sections[sym_type] = []
+        data_by_sections[sym_type].append((name, int(size)))
 
-    # sort the data by size in reverse order
-    data_sorted = sorted(data, key=lambda d: d[2], reverse=True)
-    for val in data_sorted:
-        name, sym_type, size = val
-        sys.stdout.write(bcolors.COLOR_WHITE)
-        sys.stdout.write(name)
-        sys.stdout.write(bcolors.COLOR_NC)
-        sys.stdout.flush()
-        percentage = (float(size) * 100.0) / float(chip_total_flash)
-        print(" - {} bytes ({:0.2}%)".format(size, percentage))
+    for key in data_by_sections:
+        data = data_by_sections[key]
+        data_sorted = sorted(data, key=lambda d: d[1], reverse=True)
+
+        print("\nSection {}:".format(key))
+        print("\t{}".format(section_name_explainations[key]))
+        for d in data_sorted:
+            name, size = d
+            sys.stdout.write(bcolors.COLOR_WHITE)
+            sys.stdout.write(name)
+            sys.stdout.write(bcolors.COLOR_NC)
+            sys.stdout.flush()
+            if key == "r" or key == "b" or key == "d" or key == "g" or key == "c":
+                percentage = (float(size) * 100.0) / float(chip_total_ram)
+                print(" - {} bytes ({:0.2f}% of RAM)".format(size, percentage))
+            else:
+                percentage = (float(size) * 100.0) / float(chip_total_flash)
+                print(" - {} bytes ({:0.2f}% of Flash)".format(size, percentage))
 
 
 def run_command(cmd, print_output=True):
@@ -260,6 +306,9 @@ if __name__ == '__main__':
     parser.add_argument("-f", "--flash-size", type=int, default=64,
                         help="total flash size available on the "
                              "chip in Kibibytes. Defaults to 64k.")
+    parser.add_argument("-r", "--ram-size", type=int, default=16,
+                        help="total ram size available on the "
+                             "chip in Kibibytes. Defaults to 16k.")
     parser.add_argument("-s", "--show-usage", action="store_true",
                         help="Outputs size information for individual symbols "
                         "in the builds output elf file.")
@@ -279,16 +328,18 @@ if __name__ == '__main__':
         retval = build_debug(args.clang, args.gcc_dir, args.verbose)
         build_clean(remove_elf_files=False)
         if retval == 0:
-            build_display_size(build_type="debug",
-                               chip_total_flash=args.flash_size)
+            build_display_size(build_type="Debug",
+                               chip_total_flash=args.flash_size,
+                               chip_total_ram=args.ram_size)
             if args.show_usage:
-                build_get_section_info("debug", args.flash_size)
+                build_get_section_info("Debug", args.flash_size, args.ram_size)
 
     if build == "release" or build == "all":
         retval = build_release(args.clang, args.gcc_dir, args.verbose)
         build_clean(remove_elf_files=False)
         if retval == 0:
-            build_display_size(build_type="release",
-                               chip_total_flash=args.flash_size)
+            build_display_size(build_type="Release",
+                               chip_total_flash=args.flash_size,
+                               chip_total_ram=args.ram_size)
             if args.show_usage:
-                build_get_section_info("release", args.flash_size)
+                build_get_section_info("Release", args.flash_size, args.ram_size)

@@ -34,8 +34,8 @@ ENTRY(Reset_Handler)
 _estack = 0x20003FFF;    /* end of RAM */
 
 /* Generate a link error if heap and stack don't fit into RAM */
-_Min_Heap_Size = 0x200;      /* required amount of heap  */
-_Min_Stack_Size = 0x400; /* required amount of stack */
+HEAP_SIZE  = DEFINED(__heap_size__)  ? __heap_size__  : 0x0200;
+STACK_SIZE = DEFINED(__stack_size__) ? __stack_size__ : 0x0400;
 
 /* Specify the memory areas */
 MEMORY
@@ -147,8 +147,8 @@ SECTIONS
     . = ALIGN(4);
     PROVIDE ( end = . );
     PROVIDE ( _end = . );
-    . = . + _Min_Heap_Size;
-    . = . + _Min_Stack_Size;
+    . = . + HEAP_SIZE;
+    . = . + STACK_SIZE;
     . = ALIGN(4);
   } >RAM
 
