@@ -309,7 +309,7 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc)
     __HAL_LINKDMA(hadc, DMA_Handle, DmaHandle);
 
     /* NVIC configuration for DMA Input data interrupt */
-    HAL_NVIC_SetPriority(DMA1_Channel2_IRQn, 2, 0);
+    HAL_NVIC_SetPriority(DMA1_Channel2_IRQn, 5, 0);
     HAL_NVIC_EnableIRQ(DMA1_Channel2_IRQn);
 }
 

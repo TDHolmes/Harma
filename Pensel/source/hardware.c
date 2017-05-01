@@ -287,12 +287,14 @@ void configure_pins(void)
 
 
     // configure interrupt priority
+    HAL_NVIC_SetPriority((IRQn_Type)(EXTI15_10_IRQn), 2, 0); // Sensor DRDY pin
+
     HAL_NVIC_SetPriority((IRQn_Type)(EXTI1_IRQn), 3, 0);     // Switch pin 0
-    HAL_NVIC_SetPriority((IRQn_Type)(EXTI2_TSC_IRQn), 3, 0); // Switch pin 1
-    HAL_NVIC_SetPriority((IRQn_Type)(EXTI3_IRQn), 3, 0);     // Switch pin 2
-    HAL_NVIC_SetPriority((IRQn_Type)(EXTI4_IRQn), 3, 0);     // Aux button
-    HAL_NVIC_SetPriority((IRQn_Type)(EXTI9_5_IRQn), 3, 0);   // Main button
-    HAL_NVIC_SetPriority((IRQn_Type)(EXTI15_10_IRQn), 3, 0); // Sensor DRDY pin
+    HAL_NVIC_SetPriority((IRQn_Type)(EXTI2_TSC_IRQn), 3, 1); // Switch pin 1
+    HAL_NVIC_SetPriority((IRQn_Type)(EXTI3_IRQn), 3, 2);     // Switch pin 2
+
+    HAL_NVIC_SetPriority((IRQn_Type)(EXTI9_5_IRQn), 4, 0);   // Main button
+    HAL_NVIC_SetPriority((IRQn_Type)(EXTI4_IRQn), 4, 1);     // Aux button
 
     // enable interrupts
     HAL_NVIC_EnableIRQ((IRQn_Type)(EXTI1_IRQn));
