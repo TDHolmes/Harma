@@ -8,7 +8,8 @@
 
 ret_t UART_init(uint32_t baudrate);
 ret_t UART_sendData(uint8_t * data_ptr, uint8_t num_bytes);
-ret_t UART_getData(uint8_t * pkt_buffer);
+ret_t UART_sendChar(uint8_t * data_ptr);
+ret_t UART_getChar(uint8_t * data_ptr);
 bool UART_dataAvailable(void);
 bool UART_isReady(void);
 uint8_t UART_droppedPackets(void);

@@ -8,6 +8,7 @@
 #include <string.h>
 #include "common.h"
 #include "UART.h"
+#include "queue.h"
 
 // STM driver includes
 #include "stm32f3xx.h"
@@ -16,10 +17,8 @@
 #include "Drivers/stm32f3xx_hal_uart.h"
 
 
-#define RX_BUFFER_SIZE (10)
+#define RX_BUFFER_SIZE (40)
 #define TX_BUFFER_SIZE (10)
-
-#define RX_QUEUE_SIZE (3)
 
 
 // HAL UART handler declaration
@@ -27,11 +26,9 @@ UART_HandleTypeDef UartHandle;
 
 typedef struct {
     // define buffers to be used by the STM drivers
-    uint8_t rx_buffer[RX_BUFFER_SIZE];
     uint8_t tx_buffer[TX_BUFFER_SIZE];
-    uint8_t rx_packet_queue[RX_BUFFER_SIZE * RX_QUEUE_SIZE];
-    uint8_t rx_packet_count;
-    uint8_t rx_droppedpackets_count;
+    uint8_t rx_buffer[RX_BUFFER_SIZE];
+    queue_t rx_buffer_admin;
 
     uint8_t sending_data;
 } UART_admin_t;
@@ -109,16 +106,19 @@ ret_t UART_sendData(uint8_t * data_ptr, uint8_t num_bytes)
 }
 
 
-ret_t UART_getData(uint8_t * pkt_buffer)
+ret_t UART_sendChar(uint8_t * data_ptr)
 {
-    uint8_t * src_ptr;
+    return UART_sendData(data_ptr, 1);
+}
 
+
+ret_t UART_getChar(uint8_t * data_ptr)
+{
     // check if we have any data to give
     if (UART_dataAvailable()) {
         // copy the data into the given pointer!
-        src_ptr = UART_admin.rx_packet_queue + (UART_admin.rx_packet_count - 1) * RX_BUFFER_SIZE;
-        memcpy(pkt_buffer, src_ptr, RX_BUFFER_SIZE);
-        UART_admin.rx_packet_count -= 1;
+        *data_ptr = UART_admin.rx_buffer[UART_admin.rx_buffer_admin.tail_ind];
+        queue_increment_tail(&UART_admin.rx_buffer_admin, RX_BUFFER_SIZE);
         return RET_OK;
     } else {
         return RET_NODATA_ERR;
@@ -128,7 +128,7 @@ ret_t UART_getData(uint8_t * pkt_buffer)
 
 bool UART_dataAvailable(void)
 {
-    if (UART_admin.rx_packet_count != 0) {
+    if (UART_admin.rx_buffer_admin.unread_items != 0) {
         return true;
     } else {
         return false;
@@ -138,7 +138,7 @@ bool UART_dataAvailable(void)
 
 uint8_t UART_droppedPackets(void)
 {
-    return UART_admin.rx_droppedpackets_count;
+    return UART_admin.rx_buffer_admin.overwrite_count;
 }
 
 /**
@@ -163,17 +163,13 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *UartHandle)
   */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
 {
-    uint8_t * dest_ptr;
 
-    // copy the received packet into the packet queue!
-    if (UART_admin.rx_packet_count < RX_QUEUE_SIZE) {
-        dest_ptr = UART_admin.rx_packet_queue + (UART_admin.rx_packet_count * RX_BUFFER_SIZE);
-        memcpy(dest_ptr, UART_admin.rx_buffer, RX_BUFFER_SIZE);
-        UART_admin.rx_packet_count += 1;
-    } else {
-        // Oh no! we don't have any space. packet gets dropped :'(
-        UART_admin.rx_droppedpackets_count += 1;
-    }
+    // Take care of the circular buffer
+    // move the head of the buffer forward
+    queue_increment_head(&UART_admin.rx_buffer_admin, RX_BUFFER_SIZE);
+
+    // start recieving data again
+    HAL_UART_Receive_IT(UartHandle, &UART_admin.rx_buffer[UART_admin.rx_buffer_admin.head_ind], RX_BUFFER_SIZE);
 }
 
 /**

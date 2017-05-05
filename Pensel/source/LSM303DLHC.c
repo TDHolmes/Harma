@@ -6,8 +6,10 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "common.h"
+#include "queue.c"
 #include "I2C.h"
 #include "LSM303DLHC.h"
+#include "Drivers/stm32f3xx_hal.h"
 
 
 #define ACCEL_ADDRESS (0b0011001)
@@ -213,22 +215,10 @@ ret_t LSM303DLHC_mag_putPacket(float * data_x_ptr, float * data_y_ptr, float * d
 
 
 typedef struct {
-    uint8_t head_ind;
-    uint8_t tail_ind;
-    uint8_t unread_items;
-    uint8_t overwrite_count;
-} queue_t;
-
-
-typedef struct {
     uint32_t accel_hw_overwrite_count; //!< Accel overwrites on the chip itself
     uint32_t mag_hw_overwrite_count;   //!< Mag overwrites on the chip itself
-    int32_t accel_x_queue[ACCEL_QUEUE_SIZE];  //!< Accel queue to store X packets
-    int32_t accel_y_queue[ACCEL_QUEUE_SIZE];  //!< Accel queue to store Y packets
-    int32_t accel_z_queue[ACCEL_QUEUE_SIZE];  //!< Accel queue to store Z packets
-    float mag_x_queue[MAG_QUEUE_SIZE];        //!< Mag queue to store X packets
-    float mag_y_queue[MAG_QUEUE_SIZE];        //!< Mag queue to store Y packets
-    float mag_z_queue[MAG_QUEUE_SIZE];        //!< Mag queue to store Z packets
+    accel_packet_t accel_queue[ACCEL_QUEUE_SIZE];  //!< Accel queue to store X packets
+    mag_packet_t mag_queue[MAG_QUEUE_SIZE];        //!< Mag queue to store packets
     queue_t accel_queue_admin;         //!< Accel admin struct of the accel_queues
     queue_t mag_queue_admin;           //!< Mag admin struct of the mag_queues
     uint8_t accel_hw_data_available;   //!< Flag we set when we see there's data acording to the status register
@@ -456,31 +446,18 @@ void LSM303DLHC_drdy_handler(void)
 ret_t LSM303DLHC_accel_putPacket(int32_t * data_x_ptr, int32_t * data_y_ptr, int32_t * data_z_ptr)
 {
     // Get the data from the queue...
-    LSM303DLHC_admin.accel_x_queue[LSM303DLHC_admin.accel_queue_admin.head_ind] = *data_x_ptr;
-    LSM303DLHC_admin.accel_y_queue[LSM303DLHC_admin.accel_queue_admin.head_ind] = *data_y_ptr;
-    LSM303DLHC_admin.accel_z_queue[LSM303DLHC_admin.accel_queue_admin.head_ind] = *data_z_ptr;
+    accel_packet_t pkt;
+    pkt.timestamp = HAL_GetTick();
+    pkt.x = *data_x_ptr;
+    pkt.y = *data_y_ptr;
+    pkt.z = *data_z_ptr;
+    LSM303DLHC_admin.accel_queue[LSM303DLHC_admin.accel_queue_admin.head_ind] = pkt;
 
     // the queue didn't change while we were getting it!
 
     // now check if we're about to overwrite data
-    if (LSM303DLHC_admin.accel_queue_admin.unread_items == ACCEL_QUEUE_SIZE) {
-        // if we're overwriting data, we need to move the tail too
-        if (LSM303DLHC_admin.accel_queue_admin.tail_ind < ACCEL_QUEUE_SIZE - 1) {
-            LSM303DLHC_admin.accel_queue_admin.tail_ind += 1;
-        } else {
-            LSM303DLHC_admin.accel_queue_admin.tail_ind = 0;
-        }
-        // the number of unread items stays the same, but increment overwrite counter
-        LSM303DLHC_admin.accel_queue_admin.overwrite_count += 1;
-    } else {
-        LSM303DLHC_admin.accel_queue_admin.unread_items += 1;
-    }
-    // move the head forward either way
-    if (LSM303DLHC_admin.accel_queue_admin.head_ind < ACCEL_QUEUE_SIZE - 1) {
-        LSM303DLHC_admin.accel_queue_admin.head_ind += 1;
-    } else {
-        LSM303DLHC_admin.accel_queue_admin.head_ind = 0;
-    }
+    queue_increment_head(&LSM303DLHC_admin.accel_queue_admin, ACCEL_QUEUE_SIZE);
+
     return RET_OK;
 }
 
@@ -491,31 +468,16 @@ ret_t LSM303DLHC_accel_putPacket(int32_t * data_x_ptr, int32_t * data_y_ptr, int
  */
 ret_t LSM303DLHC_mag_putPacket(float * data_x_ptr, float * data_y_ptr, float * data_z_ptr)
 {
-
+    mag_packet_t pkt;
+    pkt.timestamp = HAL_GetTick();
+    pkt.x = *data_x_ptr;
+    pkt.y = *data_y_ptr;
+    pkt.z = *data_z_ptr;
     // Put the data on the queue...
-    LSM303DLHC_admin.mag_x_queue[LSM303DLHC_admin.mag_queue_admin.head_ind] = *data_x_ptr;
-    LSM303DLHC_admin.mag_y_queue[LSM303DLHC_admin.mag_queue_admin.head_ind] = *data_y_ptr;
-    LSM303DLHC_admin.mag_z_queue[LSM303DLHC_admin.mag_queue_admin.head_ind] = *data_z_ptr;
+    LSM303DLHC_admin.mag_queue[LSM303DLHC_admin.mag_queue_admin.head_ind] = pkt;
 
-    // now check if we've overwritten data
-    if (LSM303DLHC_admin.mag_queue_admin.unread_items == MAG_QUEUE_SIZE) {
-        // if we're overwriting data, we need to move the tail too
-        if (LSM303DLHC_admin.mag_queue_admin.tail_ind < MAG_QUEUE_SIZE - 1) {
-            LSM303DLHC_admin.mag_queue_admin.tail_ind += 1;
-        } else {
-            LSM303DLHC_admin.mag_queue_admin.tail_ind = 0;
-        }
-        // the number of unread items stays the same, but increment overwrite counter
-        LSM303DLHC_admin.mag_queue_admin.overwrite_count += 1;
-    } else {
-        LSM303DLHC_admin.mag_queue_admin.unread_items += 1;
-    }
-    // move the head forward either way
-    if (LSM303DLHC_admin.mag_queue_admin.head_ind < MAG_QUEUE_SIZE - 1) {
-        LSM303DLHC_admin.mag_queue_admin.head_ind += 1;
-    } else {
-        LSM303DLHC_admin.mag_queue_admin.head_ind = 0;
-    }
+    // now move the head forward
+    queue_increment_head(&LSM303DLHC_admin.mag_queue_admin, MAG_QUEUE_SIZE);
 
     return RET_OK;
 }
@@ -526,33 +488,27 @@ ret_t LSM303DLHC_mag_putPacket(float * data_x_ptr, float * data_y_ptr, float * d
  *   LSM303DLHC_accel_putPacket also can modify it, so we must check for that case in
  *   this function as LSM303DLHC_accel_getPacket gets called asynchronously.
  */
-ret_t LSM303DLHC_accel_getPacket(int32_t * data_x_ptr, int32_t * data_y_ptr, int32_t * data_z_ptr)
+ret_t LSM303DLHC_accel_getPacket(accel_packet_t * pkt_ptr, bool peak)
 {
     uint8_t queue_ind = LSM303DLHC_admin.accel_queue_admin.tail_ind;
     if ( LSM303DLHC_accel_dataAvailable() ) {
 
         // Get the data from the queue...
-        *data_x_ptr = LSM303DLHC_admin.accel_x_queue[queue_ind];
-        *data_y_ptr = LSM303DLHC_admin.accel_y_queue[queue_ind];
-        *data_z_ptr = LSM303DLHC_admin.accel_z_queue[queue_ind];
+        *pkt_ptr = LSM303DLHC_admin.accel_queue[queue_ind];
 
         // Check if this data is valid (could've been overwritten mid way through)
         if (queue_ind != LSM303DLHC_admin.accel_queue_admin.tail_ind) {
             return RET_COM_ERR;
-        } else {
-            // the queue didn't change while we were getting it!
-            LSM303DLHC_admin.accel_queue_admin.unread_items -= 1;
-            if (LSM303DLHC_admin.accel_queue_admin.tail_ind < ACCEL_QUEUE_SIZE - 1) {
-                LSM303DLHC_admin.accel_queue_admin.tail_ind += 1;
-            } else {
-                LSM303DLHC_admin.accel_queue_admin.tail_ind = 0;
-            }
+        } else if (peak == false) {
+            // the queue didn't change while we were getting it and we aren't just peaking
+            queue_increment_tail(&LSM303DLHC_admin.accel_queue_admin, ACCEL_QUEUE_SIZE);
             return RET_OK;
         }
     } else {
 
         return RET_NODATA_ERR;
     }
+    return RET_OK;
 }
 
 /*! Gets data from the mag queue.
@@ -561,33 +517,27 @@ ret_t LSM303DLHC_accel_getPacket(int32_t * data_x_ptr, int32_t * data_y_ptr, int
  *   LSM303DLHC_mag_putPacket also can modify it, so we must check for that case in
  *   this function as LSM303DLHC_mag_getPacket gets called asynchronously.
  */
-ret_t LSM303DLHC_mag_getPacket(float * data_x_ptr, float * data_y_ptr, float * data_z_ptr)
+ret_t LSM303DLHC_mag_getPacket(mag_packet_t * pkt_ptr, bool peak)
 {
     uint8_t queue_ind = LSM303DLHC_admin.mag_queue_admin.tail_ind;
     if ( LSM303DLHC_mag_dataAvailable() ) {
 
         // Get the data from the queue...
-        *data_x_ptr = LSM303DLHC_admin.mag_x_queue[queue_ind];
-        *data_y_ptr = LSM303DLHC_admin.mag_y_queue[queue_ind];
-        *data_z_ptr = LSM303DLHC_admin.mag_z_queue[queue_ind];
+        *pkt_ptr = LSM303DLHC_admin.mag_queue[queue_ind];
 
         // Check if this data is valid (could've been overwritten mid way through)
         if (queue_ind != LSM303DLHC_admin.mag_queue_admin.tail_ind) {
             return RET_COM_ERR;
-        } else {
-            // the queue didn't change while we were getting it!
-            LSM303DLHC_admin.mag_queue_admin.unread_items -= 1;
-            if (LSM303DLHC_admin.mag_queue_admin.tail_ind < MAG_QUEUE_SIZE - 1) {
-                LSM303DLHC_admin.mag_queue_admin.tail_ind += 1;
-            } else {
-                LSM303DLHC_admin.mag_queue_admin.tail_ind = 0;
-            }
+        } else if (peak == false) {
+            // the queue didn't change while we were getting it and we aren't just peaking
+            queue_increment_tail(&LSM303DLHC_admin.mag_queue_admin, MAG_QUEUE_SIZE);
             return RET_OK;
         }
     } else {
 
         return RET_NODATA_ERR;
     }
+    return RET_OK;
 }
 
 /*! Checks if there is data available on our accel queue.

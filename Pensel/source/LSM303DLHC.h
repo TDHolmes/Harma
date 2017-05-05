@@ -78,14 +78,33 @@ typedef enum {
 } FIFO_mode_t;
 
 
+typedef struct {
+    uint32_t timestamp;  //!< Timestamp when the packet was received
+    int32_t x;           //!< Accel X value
+    int32_t y;           //!< Accel Y value
+    int32_t z;           //!< Accel Z value
+} accel_packet_t;
+
+
+typedef struct {
+    uint32_t timestamp;  //!< Timestamp when the packet was received
+    float x;           //!< Mag X value
+    float y;           //!< Mag Y value
+    float z;           //!< Mag Z value
+} mag_packet_t;
+
+
 ret_t LSM303DLHC_init(accel_ODR_t accel_datarate, accel_sensitivity_t accel_sensitivity,
                       mag_ODR_t mag_datarate, mag_sensitivity_t mag_sensitivity);
 
 // functions to get packets and check for data!
 bool LSM303DLHC_accel_dataAvailable(void);
 bool LSM303DLHC_mag_dataAvailable(void);
-ret_t LSM303DLHC_accel_getPacket(int32_t * data_x_ptr, int32_t * data_y_ptr, int32_t * data_z_ptr);
-ret_t LSM303DLHC_mag_getPacket(float * data_x_ptr, float * data_y_ptr, float * data_z_ptr);
+ret_t LSM303DLHC_accel_getPacket(accel_packet_t * pkt_ptr, bool peak);
+ret_t LSM303DLHC_mag_getPacket(mag_packet_t * pkt_ptr, bool peak);
+
+// direct call to get the temperature
+ret_t LSM303DLHC_temp_getData(int16_t * temp_val_ptr);
 
 // functions to be called by the hardware pin interrupt handler
 void LSM303DLHC_drdy_handler(void);
