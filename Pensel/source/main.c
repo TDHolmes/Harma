@@ -67,12 +67,13 @@ int main(void)
 
             // check if we should reflect what we've recieved
             if ( UART_dataAvailable() ) {
-                UART_getData(data_to_send);
+                UART_getChar(data_to_send);
+                UART_sendChar(data_to_send);
             } else {
                 memcpy(data_to_send, hello_world_str, sizeof(hello_world_str));
+                UART_sendData(data_to_send, 10);
             }
             LED_toggle(LED_1);
-            UART_sendData(data_to_send, 10);
         }
     }
 }
