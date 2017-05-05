@@ -16,6 +16,7 @@
 // Communications and other
 #include "I2C.h"
 #include "UART.h"
+#include "cli.h"
 
 // STM Drivers
 #include "Drivers/stm32f3xx_hal_def.h"
@@ -55,6 +56,11 @@ int main(void)
         fatal_error_handler();
     }
 
+    retval = cli_init(UART_sendChar, UART_getChar);
+    if (retval != RET_OK) {
+        fatal_error_handler();
+    }
+
     while (true) {
         // toggle LED_0 every second
         if (HAL_GetTick() - prev_tick > 1000) {
@@ -67,8 +73,9 @@ int main(void)
 
             // check if we should reflect what we've recieved
             if ( UART_dataAvailable() ) {
-                UART_getChar(data_to_send);
-                UART_sendChar(data_to_send);
+                UART_peakChar(data_to_send);
+                cli_run();
+                UART_sendChar(*data_to_send);
             } else {
                 memcpy(data_to_send, hello_world_str, sizeof(hello_world_str));
                 UART_sendData(data_to_send, 10);

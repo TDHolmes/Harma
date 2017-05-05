@@ -106,9 +106,9 @@ ret_t UART_sendData(uint8_t * data_ptr, uint8_t num_bytes)
 }
 
 
-ret_t UART_sendChar(uint8_t * data_ptr)
+ret_t UART_sendChar(uint8_t data)
 {
-    return UART_sendData(data_ptr, 1);
+    return UART_sendData(&data, 1);
 }
 
 
@@ -119,6 +119,20 @@ ret_t UART_getChar(uint8_t * data_ptr)
         // copy the data into the given pointer!
         *data_ptr = UART_admin.rx_buffer[UART_admin.rx_buffer_admin.tail_ind];
         queue_increment_tail(&UART_admin.rx_buffer_admin, RX_BUFFER_SIZE);
+        return RET_OK;
+    } else {
+        return RET_NODATA_ERR;
+    }
+}
+
+
+ret_t UART_peakChar(uint8_t * data_ptr)
+{
+    // check if we have any data to give
+    if (UART_dataAvailable()) {
+        // copy the data into the given pointer!
+        *data_ptr = UART_admin.rx_buffer[UART_admin.rx_buffer_admin.tail_ind];
+        // don't mess with the tail index
         return RET_OK;
     } else {
         return RET_NODATA_ERR;
