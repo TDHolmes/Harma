@@ -1,6 +1,8 @@
 #ifndef _COMMON_H_
 #define _COMMON_H_
 
+#include <stdint.h>
+
 typedef enum {
     RET_OK,
     RET_VAL_ERR,
@@ -8,7 +10,9 @@ typedef enum {
     RET_LEN_ERR,
     RET_COM_ERR,
     RET_BUSY_ERR,
-    RET_GEN_ERR
+    RET_GEN_ERR,
+    RET_NORPT_ERR,
+    RET_INVALID_ARGS_ERR
 } ret_t;
 
 
