@@ -11,19 +11,31 @@ import time
 section_name_explainations = {
     'a': "The symbol's value is absolute, and will not be changed by further linking",
     'b': "The symbol is in the uninitialized data section (known as BSS)",
-    'c': "The symbol is common. Common symbols are uninitialized data. When linking, multiple common symbols may appear with the same name. If the symbol is defined anywhere, the common symbols are treated as undefined references. For more details on common symbols, see the discussion of –warn-common in Linker options",
+    'c': "The symbol is common. Common symbols are uninitialized data. When linking, multiple common symbols may "
+    "appear with the same name. If the symbol is defined anywhere, the common symbols are treated as undefined "
+    "references. For more details on common symbols, see the discussion of –warn-common in Linker options",
     'd': "The symbol is in the initialized data section",
-    'g': "The symbol is in an initialized data section for small objects. Some object file formats permit more efficient access to small data objects, such as a global int variable as opposed to a large global array",
+    'g': "The symbol is in an initialized data section for small objects. Some object file formats permit more "
+    "efficient access to small data objects, such as a global int variable as opposed to a large global array",
     'i': "The symbol is an indirect reference to another symbol",
     'n': "The symbol is a debugging symbol",
     'p': "The symbols is in a stack unwind section",
     'r': "The symbol is in a read only data section",
     's': "The symbol is in an uninitialized data section for small objects",
     't': "The symbol is in the text (code) section",
-    'u': "The symbol is undefined or a unique global symbol. This is a GNU extension to the standard set of ELF symbol bindings. For such a symbol the dynamic linker will make sure that in the entire process there is just one symbol with this name and type in use",
-    'v': "The symbol is a weak object. When a weak defined symbol is linked with a normal defined symbol, the normal defined symbol is used with no error. When a weak undefined symbol is linked and the symbol is not defined, the value of the weak symbol becomes zero with no error. On some systems, uppercase indicates that a default value has been specified",
-    'w': "The symbol is a weak symbol that has not been specifically tagged as a weak object symbol. When a weak defined symbol is linked with a normal defined symbol, the normal defined symbol is used with no error. When a weak undefined symbol is linked and the symbol is not defined, the value of the symbol is determined in a system-specific manner without error. On some systems, uppercase indicates that a default value has been specified",
-    '-': "The symbol is a stabs symbol in an a.out object file. In this case, the next values printed are the stabs other field, the stabs desc field, and the stab type. Stabs symbols are used to hold debugging information",
+    'u': "The symbol is undefined or a unique global symbol. This is a GNU extension to the standard set of ELF "
+    "symbol bindings. For such a symbol the dynamic linker will make sure that in the entire process there is just "
+    "one symbol with this name and type in use",
+    'v': "The symbol is a weak object. When a weak defined symbol is linked with a normal defined symbol, the normal "
+    "defined symbol is used with no error. When a weak undefined symbol is linked and the symbol is not defined, the"
+    " value of the weak symbol becomes zero with no error. On some systems, uppercase indicates that a default value"
+    " has been specified",
+    'w': "The symbol is a weak symbol that has not been specifically tagged as a weak object symbol. When a weak"
+    " defined symbol is linked with a normal defined symbol, the normal defined symbol is used with no error. When a"
+    " weak undefined symbol is linked and the symbol is not defined, the value of the symbol is determined in a "
+    "system-specific manner without error. On some systems uppercase indicates that a default value has been specified",
+    '-': "The symbol is a stabs symbol in an a.out object file. In this case, the next values printed are the stabs "
+    "other field, the stabs desc field, and the stab type. Stabs symbols are used to hold debugging information",
     '?': "The symbol type is unknown, or object file format specific"}
 
 
