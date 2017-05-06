@@ -46,6 +46,7 @@
 // Peripherals used
 #include "Drivers/stm32f3xx_hal_i2c.h"
 #include "Drivers/stm32f3xx_hal_uart.h"
+#include "hardware.h"
 
 /** @addtogroup STM32F3xx_HAL_Examples
   * @{
@@ -197,8 +198,9 @@ void I2Cx_ER_IRQHandler(void)
   * @Note   This function is redefined in "main.h" and related to DMA
   *         used for USART data transmission
   */
-void USARTx_IRQHandler(void)
+void USART1_IRQHandler(void)
 {
+    // LED_toggle(LED_1);
     HAL_UART_IRQHandler(&UartHandle);
 }
 

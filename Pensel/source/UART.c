@@ -61,13 +61,14 @@ ret_t UART_init(uint32_t baudrate)
     UartHandle.Init.HwFlowCtl  = UART_HWCONTROL_NONE;
     UartHandle.Init.Mode       = UART_MODE_TX_RX;
     UartHandle.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+    UART_admin.sending_data = 0;
 
     if(HAL_UART_Init(&UartHandle) != HAL_OK) {
         return RET_COM_ERR;
     }
 
     // Start receiving data!
-    HAL_UART_Receive_IT(&UartHandle, UART_admin.rx_buffer, RX_BUFFER_SIZE);
+    HAL_UART_Receive_IT(&UartHandle, UART_admin.rx_buffer, 1);
 
     // yay we're done!
     return RET_OK;
@@ -109,6 +110,21 @@ ret_t UART_sendData(uint8_t * data_ptr, uint8_t num_bytes)
 ret_t UART_sendChar(uint8_t data)
 {
     return UART_sendData(&data, 1);
+}
+
+
+ret_t UART_sendString(char string_ptr[])
+{
+    ret_t retval;
+    while (*string_ptr != 0) {
+        // send the character
+        retval = UART_sendChar(*string_ptr);
+        if (retval != RET_OK) { return retval; }
+        // wait for UART to be ready
+        while( UART_isReady() == false );
+        string_ptr += 1;
+    }
+    return RET_OK;
 }
 
 
@@ -178,12 +194,12 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *UartHandle)
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
 {
 
-    // Take care of the circular buffer
+    // New data is on the buffer!
     // move the head of the buffer forward
     queue_increment_head(&UART_admin.rx_buffer_admin, RX_BUFFER_SIZE);
 
     // start recieving data again
-    HAL_UART_Receive_IT(UartHandle, &UART_admin.rx_buffer[UART_admin.rx_buffer_admin.head_ind], RX_BUFFER_SIZE);
+    HAL_UART_Receive_IT(UartHandle, &UART_admin.rx_buffer[UART_admin.rx_buffer_admin.head_ind], 1);
 }
 
 /**

@@ -90,7 +90,7 @@
 
 /* Definition for USARTx's NVIC */
 #define USARTx_IRQn                      USART1_IRQn
-#define USARTx_IRQHandler                USART1_IRQHandler
+// #define USARTx_IRQHandler                USART1_IRQHandler
 
 
 // ADC crap! :D
