@@ -324,6 +324,7 @@ if __name__ == '__main__':
 
     build_clean(remove_elf_files=True)
 
+    os.chdir("../source/compiler")
     # make sure all our folder paths exist
     current_path = os.path.abspath("./")
     if not os.path.exists(os.path.join(current_path, "build")):
