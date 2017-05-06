@@ -4,19 +4,19 @@
   * @author    MCD Application Team
   * @version   V2.3.1
   * @date      16-December-2016
-  * @brief     STM32F302x6/STM32F302x8 devices vector table for 
+  * @brief     STM32F302x6/STM32F302x8 devices vector table for
   *            Atollic TrueSTUDIO toolchain.
   *            This module performs:
   *                - Set the initial SP
   *                - Set the initial PC == Reset_Handler,
   *                - Set the vector table entries with the exceptions ISR address,
-  *                - Configure the clock system  
+  *                - Configure the clock system
   *                - Branches to main in the C library (which eventually
   *                  calls main()).
   *            After Reset the Cortex-M4 processor is in Thread mode,
   *            priority is Privileged, and the Stack is set to Main.
   ******************************************************************************
-  * 
+  *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
   *   1. Redistributions of source code must retain the above copyright notice,
@@ -115,7 +115,7 @@ LoopFillZerobss:
 
 LoopForever:
     b LoopForever
-    
+
 .size	Reset_Handler, .-Reset_Handler
 
 /**
@@ -242,6 +242,7 @@ g_pfnVectors:
 	.word	0
 	.word	0
 	.word	FPU_IRQHandler
+
 
 /*******************************************************************************
 *
@@ -403,28 +404,28 @@ g_pfnVectors:
 
 	.weak	TIM6_DAC_IRQHandler
 	.thumb_set TIM6_DAC_IRQHandler,Default_Handler
-	
+
 	.weak	COMP2_IRQHandler
 	.thumb_set COMP2_IRQHandler,Default_Handler
-	
+
 	.weak	COMP4_6_IRQHandler
 	.thumb_set COMP4_6_IRQHandler,Default_Handler
-  
+
 	.weak	I2C3_EV_IRQHandler
-	.thumb_set I2C3_EV_IRQHandler,Default_Handler  
-	
+	.thumb_set I2C3_EV_IRQHandler,Default_Handler
+
 	.weak	I2C3_ER_IRQHandler
-	.thumb_set I2C3_ER_IRQHandler,Default_Handler	
-	
+	.thumb_set I2C3_ER_IRQHandler,Default_Handler
+
 	.weak	USB_HP_IRQHandler
 	.thumb_set USB_HP_IRQHandler,Default_Handler
-	
+
 	.weak	USB_LP_IRQHandler
 	.thumb_set USB_LP_IRQHandler,Default_Handler
-	
+
 	.weak	USBWakeUp_RMP_IRQHandler
 	.thumb_set USBWakeUp_RMP_IRQHandler,Default_Handler
-	
+
 	.weak	FPU_IRQHandler
 	.thumb_set FPU_IRQHandler,Default_Handler
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
