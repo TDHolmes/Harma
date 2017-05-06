@@ -24,7 +24,7 @@
 #include "stm32f3xx_hal_conf.h"
 
 
-const uint8_t hello_world_str[] = {"Hello!!!\n"};
+const uint8_t hello_world_str[] = {"Hello!!!\r\n"};
 uint8_t data_to_send[10];
 
 
@@ -35,10 +35,13 @@ int main(void)
 {
     ret_t retval;
     uint32_t prev_tick = 0;
+    switch_state_t switch_state = kSwitch_0;
+    uint8_t main_btn_state = 0;
+    uint8_t aux_btn_state = 0;
 
     // system configuration...
     HAL_Init();
-    SystemClock_Config();
+    // SystemClock_Config();
     configure_pins();
 
     // peripheral configuration
@@ -73,14 +76,24 @@ int main(void)
 
             // check if we should reflect what we've recieved
             if ( UART_dataAvailable() ) {
-                UART_peakChar(data_to_send);
+                LED_toggle(LED_1);
+                UART_getChar(data_to_send);
                 cli_run();
                 UART_sendChar(*data_to_send);
             } else {
-                memcpy(data_to_send, hello_world_str, sizeof(hello_world_str));
-                UART_sendData(data_to_send, 10);
+                if ( switch_state != switch_getval() ) {
+                    switch_state = switch_getval();
+                    UART_sendString("New Switch Value!\r\n");
+                }
+                if ( main_btn_state != mainbutton_getval() ) {
+                    main_btn_state = mainbutton_getval();
+                    UART_sendString("New Main Btn Value!\r\n");
+                }
+                if ( aux_btn_state != auxbutton_getval() ) {
+                    aux_btn_state = auxbutton_getval();
+                    UART_sendString("New Aux Btn Value!\r\n");
+                }
             }
-            LED_toggle(LED_1);
         }
     }
 }
