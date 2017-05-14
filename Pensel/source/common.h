@@ -12,11 +12,12 @@ typedef enum {
     RET_BUSY_ERR,
     RET_GEN_ERR,
     RET_NORPT_ERR,
-    RET_INVALID_ARGS_ERR
+    RET_INVALID_ARGS_ERR,
+    RET_MAX_LEN_ERR
 } ret_t;
 
 
-void fatal_error_handler(void);
+void fatal_error_handler(char file[], uint32_t line, int8_t err_code);
 
 
 #endif /* _COMMON_H_ */
