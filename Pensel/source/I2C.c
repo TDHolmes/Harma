@@ -23,11 +23,25 @@
 // Our I2C address
 #define I2C_ADDRESS        (0x3F)
 
-/* I2C TIMING Register define when I2C clock source is SYSCLK */
-/* I2C TIMING is calculated in case of the I2C Clock source is the SYSCLK = 64 MHz */
-/* This example use TIMING to 0x00400B27 to reach 1 MHz speed (Rise time = 26ns, Fall time = 2ns) */
+/* I2C TIMING Register define when I2C clock source is SYSCLK
+   I2C TIMING is calculated in case of the I2C Clock source is the SYSCLK = 64 MHz
+   This example use TIMING to 0x00400B27 to reach 1 MHz speed (Rise time = 26ns, Fall time = 2ns) */
+/*
+PRESC     0xB
+SCLL      0x13
+tSCLL     20 x 250 ns = 5.0 μs
+SCLH      0xF
+tSCLH     16 x 250 ns = 4.0 μs
+tSCL(1)   ~10 us
+SDADEL    0x2
+tSDADEL   2 x 250 ns = 500 ns
+SCLDEL    0x4
+tSCLDEL   5 x 250 ns = 1250 ns
+*/
+// PRESC[3:0] Res[3:0] SCLDEL[3:0] SDADEL[3:0] SCLH[7:0] SCLL[7:0]
 // TODO: LOWER I2C speed to 400 kHz
-#define I2C_TIMING      0x00400B27
+// #define I2C_TIMING      0x00400B27
+#define I2C_TIMING      0xB0420f13
 
 /* I2C handler declaration */
 I2C_HandleTypeDef I2cHandle;
@@ -40,8 +54,8 @@ uint8_t RX_buffer[RX_BUFFER_SIZE];
 
 ret_t I2C_init(void)
 {
-    /*##-1- Configure the I2C peripheral ######################################*/
-    I2cHandle.Instance             = I2C1;
+    // Configure the I2C HAL
+    I2cHandle.Instance             = I2C2;
     I2cHandle.Init.Timing          = I2C_TIMING;
     I2cHandle.Init.OwnAddress1     = I2C_ADDRESS;
     I2cHandle.Init.AddressingMode  = I2C_ADDRESSINGMODE_7BIT;
@@ -52,9 +66,10 @@ ret_t I2C_init(void)
 
     if(HAL_I2C_Init(&I2cHandle) != HAL_OK)
     {
-        /* Initialization Error */
-        fatal_error_handler();
+        // Initialization error!
+        fatal_error_handler(__FILE__, __LINE__, 0);
     }
+    HAL_I2CEx_ConfigAnalogFilter(&I2cHandle, I2C_ANALOGFILTER_ENABLE);
 
     return RET_OK;
 }
@@ -160,5 +175,5 @@ void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef *I2cHandle)
   */
 void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *I2cHandle)
 {
-    fatal_error_handler();
+    fatal_error_handler(__FILE__, __LINE__, 0);
 }

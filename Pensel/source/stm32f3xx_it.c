@@ -62,7 +62,7 @@
 /* Private variables ---------------------------------------------------------*/
 /* I2C handler declared in "main.c" file */
 extern I2C_HandleTypeDef I2cHandle;
-extern UART_HandleTypeDef UartHandle;
+extern UART_HandleTypeDef HAL_UART_handle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
@@ -175,7 +175,7 @@ void SysTick_Handler(void)
   * @retval None
   * @Note   This function is redefined in "main.h" and related to I2C data transmission
   */
-void I2Cx_EV_IRQHandler(void)
+void I2C2_EV_IRQHandler(void)
 {
     HAL_I2C_EV_IRQHandler(&I2cHandle);
 }
@@ -186,7 +186,7 @@ void I2Cx_EV_IRQHandler(void)
   * @retval None
   * @Note   This function is redefined in "main.h" and related to I2C error
   */
-void I2Cx_ER_IRQHandler(void)
+void I2C2_ER_IRQHandler(void)
 {
     HAL_I2C_ER_IRQHandler(&I2cHandle);
 }
@@ -201,7 +201,7 @@ void I2Cx_ER_IRQHandler(void)
 void USART1_IRQHandler(void)
 {
     // LED_toggle(LED_1);
-    HAL_UART_IRQHandler(&UartHandle);
+    HAL_UART_IRQHandler(&HAL_UART_handle);
 }
 
 void EXTI1_IRQHandler(void)
