@@ -88,9 +88,9 @@ typedef struct {
 
 typedef struct {
     uint32_t timestamp;  //!< Timestamp when the packet was received
-    float x;           //!< Mag X value
-    float y;           //!< Mag Y value
-    float z;           //!< Mag Z value
+    int32_t x;           //!< Mag X value
+    int32_t y;           //!< Mag Y value
+    int32_t z;           //!< Mag Z value
 } mag_packet_t;
 
 
@@ -102,6 +102,11 @@ bool LSM303DLHC_accel_dataAvailable(void);
 bool LSM303DLHC_mag_dataAvailable(void);
 ret_t LSM303DLHC_accel_getPacket(accel_packet_t * pkt_ptr, bool peak);
 ret_t LSM303DLHC_mag_getPacket(mag_packet_t * pkt_ptr, bool peak);
+// error counting methods...
+uint8_t LSM303DLHC_accel_packetOverwriteCount(void);
+uint8_t LSM303DLHC_mag_packetOverwriteCount(void);
+uint32_t LSM303DLHC_accel_HardwareOverwriteCount(void);
+uint32_t LSM303DLHC_mag_HardwareOverwriteCount(void);
 
 // direct call to get the temperature
 ret_t LSM303DLHC_temp_getData(int16_t * temp_val_ptr);
