@@ -5,14 +5,14 @@
 
 
 typedef struct {
-    uint8_t head_ind;
-    uint8_t tail_ind;
-    uint8_t unread_items;
-    uint8_t overwrite_count;
+    volatile uint8_t head_ind;
+    volatile uint8_t tail_ind;
+    volatile uint8_t unread_items;
+    volatile uint8_t overwrite_count;
 } queue_t;
 
 
-void queue_increment_tail(queue_t * queue_admin_ptr, uint8_t queue_size);
-void queue_increment_head(queue_t * queue_admin_ptr, uint8_t queue_size);
+void queue_increment_tail(volatile queue_t * queue_admin_ptr, const uint8_t queue_size);
+void queue_increment_head(volatile queue_t * queue_admin_ptr, const uint8_t queue_size);
 
 #endif /* _QUEUE_H_ */

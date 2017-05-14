@@ -5,7 +5,7 @@
 #include "queue.h"
 
 
-void queue_increment_tail(queue_t * queue_admin_ptr, uint8_t queue_size)
+void queue_increment_tail(volatile queue_t * queue_admin_ptr, const uint8_t queue_size)
 {
     queue_admin_ptr->unread_items -= 1;
 
@@ -17,7 +17,7 @@ void queue_increment_tail(queue_t * queue_admin_ptr, uint8_t queue_size)
 }
 
 
-void queue_increment_head(queue_t * queue_admin_ptr, uint8_t queue_size)
+void queue_increment_head(volatile queue_t * queue_admin_ptr, const uint8_t queue_size)
 {
     if (queue_admin_ptr->head_ind < queue_size - 1) {
         queue_admin_ptr->head_ind += 1;
