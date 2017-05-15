@@ -92,6 +92,7 @@ SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} -Xlinker -Map=
 # ------------------------------ INCLUDE DIRECTORIES ------------------------------ #
 
 include_directories(${ProjDirPath})
+include_directories(${ProjDirPath}/include/)
 include_directories(${ProjDirPath}/CMSIS/Include/)
 include_directories(${ProjDirPath}/CMSIS/Device/ST/STM32F3xx/Include/)
 
@@ -99,34 +100,36 @@ include_directories(${ProjDirPath}/CMSIS/Device/ST/STM32F3xx/Include/)
 
 add_executable(pensel.elf
 	# user code
-	"${ProjDirPath}/LSM303DLHC.c"
-	"${ProjDirPath}/LSM303DLHC.h"
-	"${ProjDirPath}/common.h"
-	"${ProjDirPath}/main.c"
-	"${ProjDirPath}/cli.c"
-	"${ProjDirPath}/cli.h"
-	"${ProjDirPath}/reports.c"
-	"${ProjDirPath}/reports.h"
-	"${ProjDirPath}/queue.c"
-	"${ProjDirPath}/queue.h"
-	"${ProjDirPath}/UART.c"
-	"${ProjDirPath}/UART.h"
-	"${ProjDirPath}/I2C.c"
-	"${ProjDirPath}/I2C.h"
-	"${ProjDirPath}/ADC.c"
-	"${ProjDirPath}/ADC.h"
-	"${ProjDirPath}/hardware.c"
-	"${ProjDirPath}/hardware.h"
-	"${ProjDirPath}/startup_stm32f302x8.s"
+	"${ProjDirPath}/source/LSM303DLHC.c"
+	"${ProjDirPath}/source/main.c"
+	"${ProjDirPath}/source/cli.c"
+	"${ProjDirPath}/source/reports.c"
+	"${ProjDirPath}/source/queue.c"
+	"${ProjDirPath}/source/UART.c"
+	"${ProjDirPath}/source/I2C.c"
+	"${ProjDirPath}/source/ADC.c"
+	"${ProjDirPath}/source/hardware.c"
+	"${ProjDirPath}/source/startup_stm32f302x8.s"
 
-	# Driver configuration files
-	"${ProjDirPath}/stm32f3xx_hal_conf.h"
-	"${ProjDirPath}/stm32f3xx_it.h"
-	"${ProjDirPath}/stm32f302x8.h"
-	"${ProjDirPath}/stm32f3xx_hal_msp.c"
-	"${ProjDirPath}/system_stm32f3xx.c"
-	"${ProjDirPath}/stm32f3xx_it.c"
-	"${ProjDirPath}/system_stm32f3xx.h"
+	"${ProjDirPath}/include/LSM303DLHC.h"
+	"${ProjDirPath}/include/common.h"
+	"${ProjDirPath}/include/cli.h"
+	"${ProjDirPath}/include/reports.h"
+	"${ProjDirPath}/include/queue.h"
+	"${ProjDirPath}/include/UART.h"
+	"${ProjDirPath}/include/I2C.h"
+	"${ProjDirPath}/include/ADC.h"
+	"${ProjDirPath}/include/hardware.h"
+
+	# --- Driver configuration files ----
+	"${ProjDirPath}/source/stm32f3xx_hal_msp.c"
+	"${ProjDirPath}/source/system_stm32f3xx.c"
+	"${ProjDirPath}/source/stm32f3xx_it.c"
+
+	"${ProjDirPath}/include/stm32f3xx_hal_conf.h"
+	"${ProjDirPath}/include/stm32f3xx_it.h"
+	"${ProjDirPath}/include/stm32f302x8.h"
+	"${ProjDirPath}/include/system_stm32f3xx.h"
 
 	# --- CMSIS Stuff ----
 	"${ProjDirPath}/CMSIS/Include/core_cm4.h"

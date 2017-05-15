@@ -1,0 +1,1542 @@
+Archive member included to satisfy reference by file (symbol)
+
+/usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-exit.o)
+                              /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/crt0.o (exit)
+/usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-impure.o)
+                              /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-exit.o) (_global_impure_ptr)
+/usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-init.o)
+                              /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/crt0.o (__libc_init_array)
+/usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-memcpy-stub.o)
+                              CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/UART.c.obj (symbol from plugin) (memcpy)
+/usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-memset.o)
+                              /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/crt0.o (memset)
+/usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libnosys.a(_exit.o)
+                              /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-exit.o) (_exit)
+
+Discarded input sections
+
+ .text          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crti.o
+ .data          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crti.o
+ .bss           0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crti.o
+ .data          0x0000000000000000        0x4 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
+ .text          0x0000000000000000       0x74 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/crt0.o
+ .data          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/crt0.o
+ .bss           0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/crt0.o
+ .ARM.extab     0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/crt0.o
+ .ARM.exidx     0x0000000000000000        0x8 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/crt0.o
+ .ARM.attributes
+                0x0000000000000000       0x20 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/crt0.o
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/LSM303DLHC.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+ .data          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+ .bss           0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+ .data.MagGainOffsets
+                0x0000000000000000       0x1c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+ .rodata.hello_world_str
+                0x0000000000000000        0xb /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+ .bss.data_to_send
+                0x0000000000000000        0xa /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+ .bss.cli       0x0000000000000000      0x108 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+ .bss.payload_readin_ind.4242.lto_priv.51
+                0x0000000000000000        0x1 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+ .bss.output_buffer
+                0x0000000000000000       0xff /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+ .data.report_function_lookup.3876.lto_priv.50
+                0x0000000000000000      0x3fc /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+ .bss.RX_buffer
+                0x0000000000000000        0xa /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+ .bss.ADC_converted_data.lto_priv.49
+                0x0000000000000000        0x8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+ .text.HAL_ADC_AnalogWDGConfig
+                0x0000000000000000      0x4d4 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+ .text.ADC_DMAConvCplt.lto_priv.3
+                0x0000000000000000       0x78 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+ .text.ADC_DMAHalfConvCplt.lto_priv.4
+                0x0000000000000000       0x1c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+ .text.ADC_DMAError.lto_priv.5
+                0x0000000000000000       0x34 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+ .text.ADC_Enable.lto_priv.2
+                0x0000000000000000       0xbc /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+ .text          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans1.ltrans.o
+ .data          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans1.ltrans.o
+ .bss           0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans1.ltrans.o
+ .rodata        0x0000000000000000       0x4d /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans1.ltrans.o
+ .text.HAL_ADCEx_InjectedConfigChannel
+                0x0000000000000000      0x97c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans1.ltrans.o
+ .debug_info    0x0000000000000000      0x74d /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans1.ltrans.o
+ .debug_abbrev  0x0000000000000000      0x125 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans1.ltrans.o
+ .debug_aranges
+                0x0000000000000000       0x20 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans1.ltrans.o
+ .debug_ranges  0x0000000000000000       0x10 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans1.ltrans.o
+ .debug_line    0x0000000000000000      0x22c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans1.ltrans.o
+ .debug_str     0x0000000000000000      0x810 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans1.ltrans.o
+ .comment       0x0000000000000000       0x6f /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans1.ltrans.o
+ .debug_frame   0x0000000000000000       0x38 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans1.ltrans.o
+ .ARM.attributes
+                0x0000000000000000       0x37 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans1.ltrans.o
+ .text          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans2.ltrans.o
+ .data          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans2.ltrans.o
+ .bss           0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans2.ltrans.o
+ .text.HAL_ADCEx_Calibration_GetValue
+                0x0000000000000000       0x60 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans2.ltrans.o
+ .text.HAL_ADCEx_Calibration_SetValue
+                0x0000000000000000      0x100 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans2.ltrans.o
+ .text.HAL_ADCEx_InjectedStart
+                0x0000000000000000       0xd8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans2.ltrans.o
+ .text.HAL_ADCEx_InjectedStop
+                0x0000000000000000       0xd4 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans2.ltrans.o
+ .text.HAL_ADCEx_InjectedPollForConversion
+                0x0000000000000000      0x108 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans2.ltrans.o
+ .text.HAL_ADCEx_InjectedStart_IT
+                0x0000000000000000      0x130 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans2.ltrans.o
+ .text.HAL_ADCEx_InjectedStop_IT
+                0x0000000000000000       0xe4 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans2.ltrans.o
+ .text.HAL_ADCEx_InjectedGetValue
+                0x0000000000000000       0x90 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans2.ltrans.o
+ .text.HAL_ADCEx_RegularStop
+                0x0000000000000000       0xa8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans2.ltrans.o
+ .text.HAL_ADCEx_RegularStop_IT
+                0x0000000000000000       0xb8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans2.ltrans.o
+ .text.HAL_ADCEx_RegularStop_DMA
+                0x0000000000000000       0xf8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans2.ltrans.o
+ .text.HAL_ADCEx_InjectedConvCpltCallback
+                0x0000000000000000       0x14 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans2.ltrans.o
+ .text.HAL_ADCEx_InjectedQueueOverflowCallback
+                0x0000000000000000       0x14 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans2.ltrans.o
+ .text.HAL_ADCEx_LevelOutOfWindow2Callback
+                0x0000000000000000       0x14 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans2.ltrans.o
+ .text.HAL_ADCEx_LevelOutOfWindow3Callback
+                0x0000000000000000       0x14 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans2.ltrans.o
+ .text          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans3.ltrans.o
+ .data          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans3.ltrans.o
+ .bss           0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans3.ltrans.o
+ .text.HAL_ADC_Start
+                0x0000000000000000       0xf0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans3.ltrans.o
+ .text.HAL_ADC_Stop
+                0x0000000000000000       0x84 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans3.ltrans.o
+ .text.HAL_ADC_PollForConversion
+                0x0000000000000000      0x188 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans3.ltrans.o
+ .text.HAL_ADC_PollForEvent
+                0x0000000000000000      0x160 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans3.ltrans.o
+ .text.HAL_ADC_Start_IT
+                0x0000000000000000      0x144 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans3.ltrans.o
+ .text.HAL_ADC_Stop_IT
+                0x0000000000000000       0x94 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans3.ltrans.o
+ .text.HAL_ADC_Start_DMA
+                0x0000000000000000      0x14c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans3.ltrans.o
+ .text.HAL_ADC_Stop_DMA
+                0x0000000000000000       0xd0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans3.ltrans.o
+ .text.HAL_ADC_GetValue
+                0x0000000000000000       0x30 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans3.ltrans.o
+ .text.HAL_ADC_IRQHandler
+                0x0000000000000000      0x3e4 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans3.ltrans.o
+ .text          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans4.ltrans.o
+ .data          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans4.ltrans.o
+ .bss           0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans4.ltrans.o
+ .text.HAL_RCC_GetOscConfig
+                0x0000000000000000      0x120 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans4.ltrans.o
+ .text.HAL_RCC_GetClockConfig
+                0x0000000000000000       0x80 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans4.ltrans.o
+ .text.HAL_RCC_NMI_IRQHandler
+                0x0000000000000000       0x24 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans4.ltrans.o
+ .text.HAL_RCC_CSSCallback
+                0x0000000000000000        0xc /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans4.ltrans.o
+ .text.HAL_RCCEx_GetPeriphCLKConfig
+                0x0000000000000000      0x104 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans4.ltrans.o
+ .text.HAL_RCCEx_GetPeriphCLKFreq
+                0x0000000000000000      0x3f4 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans4.ltrans.o
+ .text.RCC_GetPLLCLKFreq
+                0x0000000000000000       0x7c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans4.ltrans.o
+ .text.HAL_ADC_ConvHalfCpltCallback
+                0x0000000000000000       0x14 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans4.ltrans.o
+ .text.HAL_ADC_LevelOutOfWindowCallback
+                0x0000000000000000       0x14 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans4.ltrans.o
+ .text.HAL_ADC_ErrorCallback
+                0x0000000000000000       0x14 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans4.ltrans.o
+ .text.HAL_ADC_GetState
+                0x0000000000000000       0x2c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans4.ltrans.o
+ .text.HAL_ADC_GetError
+                0x0000000000000000       0x18 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans4.ltrans.o
+ .text          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans5.ltrans.o
+ .data          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans5.ltrans.o
+ .bss           0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans5.ltrans.o
+ .text.HAL_RCC_MCOConfig
+                0x0000000000000000      0x11c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans5.ltrans.o
+ .text.HAL_RCC_EnableCSS
+                0x0000000000000000       0x34 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans5.ltrans.o
+ .text.HAL_RCC_DisableCSS
+                0x0000000000000000       0x34 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans5.ltrans.o
+ .text          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans6.ltrans.o
+ .data          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans6.ltrans.o
+ .bss           0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans6.ltrans.o
+ .text.HAL_DMA_Start_IT
+                0x0000000000000000       0xdc /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans6.ltrans.o
+ .text.HAL_DMA_Abort
+                0x0000000000000000       0x58 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans6.ltrans.o
+ .text.HAL_DMA_PollForTransfer
+                0x0000000000000000      0x138 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans6.ltrans.o
+ .text.HAL_DMA_IRQHandler
+                0x0000000000000000      0x14c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans6.ltrans.o
+ .text.HAL_DMA_RegisterCallback
+                0x0000000000000000       0x90 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans6.ltrans.o
+ .text.HAL_DMA_UnRegisterCallback
+                0x0000000000000000       0xac /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans6.ltrans.o
+ .text.HAL_DMA_GetState
+                0x0000000000000000       0x1c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans6.ltrans.o
+ .text.HAL_DMA_GetError
+                0x0000000000000000       0x18 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans6.ltrans.o
+ .text.DMA_SetConfig.lto_priv.6
+                0x0000000000000000       0x5c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans6.ltrans.o
+ .text.HAL_RCC_DeInit
+                0x0000000000000000       0x70 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans6.ltrans.o
+ .text          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+ .data          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+ .bss           0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+ .text.UART_EndTxTransfer.lto_priv.19
+                0x0000000000000000       0x2c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+ .text.UART_DMATransmitCplt.lto_priv.16
+                0x0000000000000000       0x54 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+ .text.UART_DMATxHalfCplt.lto_priv.17
+                0x0000000000000000       0x1c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+ .text.UART_DMAReceiveCplt.lto_priv.13
+                0x0000000000000000       0x68 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+ .text.UART_DMARxHalfCplt.lto_priv.14
+                0x0000000000000000       0x1c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+ .text.UART_DMAError.lto_priv.15
+                0x0000000000000000       0x78 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+ .text.UART_DMATxAbortCallback.lto_priv.11
+                0x0000000000000000       0x64 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+ .text.UART_DMARxAbortCallback.lto_priv.12
+                0x0000000000000000       0x64 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+ .text.UART_DMATxOnlyAbortCallback.lto_priv.10
+                0x0000000000000000       0x2c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+ .text.UART_DMARxOnlyAbortCallback.lto_priv.9
+                0x0000000000000000       0x34 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+ .text.UART_Wakeup_AddressConfig
+                0x0000000000000000       0x58 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+ .text.HAL_RS485Ex_Init
+                0x0000000000000000      0x140 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+ .text.HAL_UARTEx_StopModeWakeUpSourceConfig
+                0x0000000000000000       0xf8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+ .text.HAL_UARTEx_EnableStopMode
+                0x0000000000000000       0x6c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+ .text.HAL_UARTEx_DisableStopMode
+                0x0000000000000000       0x6c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+ .text.HAL_MultiProcessorEx_AddressLength_Set
+                0x0000000000000000       0x7c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+ .text.HAL_DMA_Start
+                0x0000000000000000       0xa0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+ .text          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .data          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .bss           0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .text.HAL_UART_Receive
+                0x0000000000000000      0x188 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .text.HAL_UART_Transmit_DMA
+                0x0000000000000000       0xd8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .text.HAL_UART_Receive_DMA
+                0x0000000000000000       0xe8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .text.HAL_UART_DMAPause
+                0x0000000000000000       0xa8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .text.HAL_UART_DMAResume
+                0x0000000000000000       0x94 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .text.HAL_UART_DMAStop
+                0x0000000000000000       0x98 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .text.HAL_UART_Abort
+                0x0000000000000000       0xd0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .text.HAL_UART_AbortTransmit
+                0x0000000000000000       0x6c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .text.HAL_UART_AbortReceive
+                0x0000000000000000       0x84 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .text.HAL_UART_Abort_IT
+                0x0000000000000000      0x154 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .text.HAL_UART_AbortTransmit_IT
+                0x0000000000000000       0xa8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .text.HAL_UART_AbortReceive_IT
+                0x0000000000000000       0xc8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .text.HAL_UART_TxHalfCpltCallback
+                0x0000000000000000       0x14 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .text.HAL_UART_RxHalfCpltCallback
+                0x0000000000000000       0x14 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .text.HAL_UART_AbortCpltCallback
+                0x0000000000000000       0x14 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .text.HAL_UART_AbortTransmitCpltCallback
+                0x0000000000000000       0x14 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .text.HAL_UART_AbortReceiveCpltCallback
+                0x0000000000000000       0x14 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .text.HAL_MultiProcessor_EnableMuteMode
+                0x0000000000000000       0x50 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .text.HAL_MultiProcessor_DisableMuteMode
+                0x0000000000000000       0x50 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .text.HAL_MultiProcessor_EnterMuteMode
+                0x0000000000000000       0x24 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .text.HAL_HalfDuplex_EnableTransmitter
+                0x0000000000000000       0x64 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .text.HAL_HalfDuplex_EnableReceiver
+                0x0000000000000000       0x64 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .text.HAL_LIN_SendBreak
+                0x0000000000000000       0x6c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .text.HAL_UART_GetError
+                0x0000000000000000       0x18 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .text          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+ .data          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+ .bss           0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+ .text.I2C_DMASlaveReceiveCplt.lto_priv.43
+                0x0000000000000000       0x14 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+ .text.I2C_DMAError.lto_priv.32
+                0x0000000000000000       0x2c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+ .text.I2C_WaitOnSTOPFlagUntilTimeout.lto_priv.42
+                0x0000000000000000       0x78 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+ .text.I2C_WaitOnRXNEFlagUntilTimeout.lto_priv.46
+                0x0000000000000000       0xbc /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+ .text.HAL_I2CEx_ConfigDigitalFilter
+                0x0000000000000000       0xdc /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+ .text.HAL_I2CEx_EnableWakeUp
+                0x0000000000000000       0xb8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+ .text.HAL_I2CEx_DisableWakeUp
+                0x0000000000000000       0xb8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+ .text.HAL_I2CEx_EnableFastModePlus
+                0x0000000000000000       0xa0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+ .text.HAL_I2CEx_DisableFastModePlus
+                0x0000000000000000       0xa0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+ .text.HAL_HalfDuplex_Init
+                0x0000000000000000       0xec /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+ .text.HAL_LIN_Init
+                0x0000000000000000      0x114 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+ .text.HAL_MultiProcessor_Init
+                0x0000000000000000       0xf8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+ .text.HAL_UART_DeInit
+                0x0000000000000000       0xa8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+ .text.HAL_UART_Transmit
+                0x0000000000000000      0x11c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+ .text          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans10.ltrans.o
+ .data          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans10.ltrans.o
+ .bss           0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans10.ltrans.o
+ .text.I2C_DMAMasterTransmitCplt.lto_priv.33
+                0x0000000000000000       0x84 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans10.ltrans.o
+ .text.I2C_DMASlaveTransmitCplt.lto_priv.44
+                0x0000000000000000       0x14 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans10.ltrans.o
+ .text.I2C_DMAMasterReceiveCplt.lto_priv.31
+                0x0000000000000000       0x84 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans10.ltrans.o
+ .text          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+ .data          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+ .bss           0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+ .text.HAL_I2C_Mem_Read
+                0x0000000000000000      0x268 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+ .text.HAL_I2C_Mem_Write_DMA
+                0x0000000000000000      0x1b4 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+ .text.HAL_I2C_Mem_Read_DMA
+                0x0000000000000000      0x1b8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+ .text.HAL_I2C_IsDeviceReady
+                0x0000000000000000      0x1bc /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+ .text.HAL_I2C_Master_Sequential_Transmit_IT
+                0x0000000000000000      0x10c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+ .text.HAL_I2C_Master_Sequential_Receive_IT
+                0x0000000000000000      0x10c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+ .text.HAL_I2C_Slave_Sequential_Transmit_IT
+                0x0000000000000000      0x118 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+ .text.HAL_I2C_Slave_Sequential_Receive_IT
+                0x0000000000000000      0x118 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+ .text.HAL_I2C_EnableListen_IT
+                0x0000000000000000       0x3c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+ .text.HAL_I2C_DisableListen_IT
+                0x0000000000000000       0x60 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+ .text.HAL_I2C_Master_Abort_IT
+                0x0000000000000000       0x78 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+ .text.HAL_I2C_GetMode
+                0x0000000000000000       0x1c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+ .text.HAL_I2C_GetError
+                0x0000000000000000       0x18 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+ .text          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans12.ltrans.o
+ .data          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans12.ltrans.o
+ .bss           0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans12.ltrans.o
+ .rodata        0x0000000000000000       0x4a /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans12.ltrans.o
+ .text.HAL_I2C_DeInit
+                0x0000000000000000       0x98 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans12.ltrans.o
+ .text.HAL_I2C_Master_Transmit
+                0x0000000000000000      0x200 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans12.ltrans.o
+ .text.HAL_I2C_Master_Receive
+                0x0000000000000000      0x204 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans12.ltrans.o
+ .text.HAL_I2C_Slave_Transmit
+                0x0000000000000000      0x218 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans12.ltrans.o
+ .text.HAL_I2C_Slave_Receive
+                0x0000000000000000      0x20c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans12.ltrans.o
+ .text.HAL_I2C_Master_Transmit_IT
+                0x0000000000000000       0xe0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans12.ltrans.o
+ .text.HAL_I2C_Master_Receive_IT
+                0x0000000000000000       0xe0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans12.ltrans.o
+ .text.HAL_I2C_Slave_Transmit_IT
+                0x0000000000000000       0xa0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans12.ltrans.o
+ .text.HAL_I2C_Slave_Receive_IT
+                0x0000000000000000       0xa0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans12.ltrans.o
+ .text.HAL_I2C_Master_Transmit_DMA
+                0x0000000000000000      0x17c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans12.ltrans.o
+ .text.HAL_I2C_Master_Receive_DMA
+                0x0000000000000000      0x17c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans12.ltrans.o
+ .text.HAL_I2C_Slave_Transmit_DMA
+                0x0000000000000000       0xfc /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans12.ltrans.o
+ .text.HAL_I2C_Slave_Receive_DMA
+                0x0000000000000000       0xfc /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans12.ltrans.o
+ .text.HAL_I2C_Mem_Write
+                0x0000000000000000      0x268 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans12.ltrans.o
+ .debug_info    0x0000000000000000      0xa5f /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans12.ltrans.o
+ .debug_abbrev  0x0000000000000000      0x127 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans12.ltrans.o
+ .debug_aranges
+                0x0000000000000000       0x88 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans12.ltrans.o
+ .debug_ranges  0x0000000000000000       0x78 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans12.ltrans.o
+ .debug_line    0x0000000000000000      0x3fe /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans12.ltrans.o
+ .debug_str     0x0000000000000000      0x825 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans12.ltrans.o
+ .comment       0x0000000000000000       0x6f /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans12.ltrans.o
+ .debug_frame   0x0000000000000000      0x22c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans12.ltrans.o
+ .ARM.attributes
+                0x0000000000000000       0x37 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans12.ltrans.o
+ .text          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .data          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .bss           0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.HAL_SuspendTick
+                0x0000000000000000       0x1c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.HAL_ResumeTick
+                0x0000000000000000       0x1c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.HAL_GetHalVersion
+                0x0000000000000000       0x14 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.HAL_GetREVID
+                0x0000000000000000       0x18 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.HAL_GetDEVID
+                0x0000000000000000       0x1c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.HAL_DBGMCU_EnableDBGSleepMode
+                0x0000000000000000       0x1c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.HAL_DBGMCU_DisableDBGSleepMode
+                0x0000000000000000       0x1c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.HAL_DBGMCU_EnableDBGStopMode
+                0x0000000000000000       0x1c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.HAL_DBGMCU_DisableDBGStopMode
+                0x0000000000000000       0x1c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.HAL_DBGMCU_EnableDBGStandbyMode
+                0x0000000000000000       0x1c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.HAL_DBGMCU_DisableDBGStandbyMode
+                0x0000000000000000       0x1c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.NVIC_DisableIRQ
+                0x0000000000000000       0x34 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.NVIC_GetPendingIRQ
+                0x0000000000000000       0x38 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.NVIC_SetPendingIRQ
+                0x0000000000000000       0x34 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.NVIC_ClearPendingIRQ
+                0x0000000000000000       0x34 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.NVIC_GetActive
+                0x0000000000000000       0x38 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.NVIC_GetPriority
+                0x0000000000000000       0x50 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.NVIC_DecodePriority
+                0x0000000000000000       0x68 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.NVIC_SystemReset
+                0x0000000000000000       0x28 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.HAL_NVIC_DisableIRQ
+                0x0000000000000000       0x30 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.HAL_NVIC_SystemReset
+                0x0000000000000000        0xc /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.HAL_NVIC_GetPriorityGrouping
+                0x0000000000000000       0x10 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.HAL_NVIC_GetPriority
+                0x0000000000000000       0x58 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.HAL_NVIC_SetPendingIRQ
+                0x0000000000000000       0x1c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.HAL_NVIC_GetPendingIRQ
+                0x0000000000000000       0x20 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.HAL_NVIC_ClearPendingIRQ
+                0x0000000000000000       0x1c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.HAL_NVIC_GetActive
+                0x0000000000000000       0x20 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.HAL_SYSTICK_CLKSourceConfig
+                0x0000000000000000       0x4c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.HAL_SYSTICK_IRQHandler
+                0x0000000000000000        0xc /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.HAL_SYSTICK_Callback
+                0x0000000000000000        0xc /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.HAL_GPIO_DeInit
+                0x0000000000000000      0x200 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.HAL_GPIO_LockPin
+                0x0000000000000000       0xac /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .data          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .bss           0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.LSM303DLHC_temp_getData
+                0x0000000000000000       0x50 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.LSM303DLHC_accel_packetOverwriteCount
+                0x0000000000000000       0x1c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.LSM303DLHC_mag_packetOverwriteCount
+                0x0000000000000000       0x1c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.LSM303DLHC_accel_HardwareOverwriteCount
+                0x0000000000000000       0x18 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.LSM303DLHC_mag_HardwareOverwriteCount
+                0x0000000000000000       0x18 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.cli_init
+                0x0000000000000000       0x30 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.cli_run  0x0000000000000000      0x14c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.rpt_err  0x0000000000000000       0x28 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.rpt_LSM303DLHC_getTemp
+                0x0000000000000000       0x40 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.rpt_LSM303DLHC_getAccel
+                0x0000000000000000       0x74 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.rpt_LSM303DLHC_getMag
+                0x0000000000000000       0x74 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.rpt_lookup
+                0x0000000000000000       0x40 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.UART_getChar
+                0x0000000000000000       0x44 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.UART_peakChar
+                0x0000000000000000       0x38 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.UART_dataAvailable
+                0x0000000000000000       0x24 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.UART_droppedPackets
+                0x0000000000000000       0x1c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.ADC_start_sampling
+                0x0000000000000000       0x30 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.ADC_get_value
+                0x0000000000000000       0x50 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.HAL_ADC_ConvCpltCallback
+                0x0000000000000000       0x3c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.switch_getval
+                0x0000000000000000       0x18 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.mainbutton_getval
+                0x0000000000000000       0x18 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.auxbutton_getval
+                0x0000000000000000       0x18 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.HAL_I2C_MspDeInit
+                0x0000000000000000       0x4c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.HAL_UART_MspDeInit
+                0x0000000000000000       0x48 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.SystemCoreClockUpdate
+                0x0000000000000000       0xd0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.HAL_DeInit
+                0x0000000000000000       0x3c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.HAL_MspDeInit
+                0x0000000000000000        0xc /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/main.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/cli.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/reports.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/queue.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/UART.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/I2C.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/ADC.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/hardware.c.obj (symbol from plugin)
+ .text          0x0000000000000000       0x14 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/startup_stm32f302x8.s.obj
+ .data          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/startup_stm32f302x8.s.obj
+ .bss           0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/startup_stm32f302x8.s.obj
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/stm32f3xx_hal_msp.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/system_stm32f3xx.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/stm32f3xx_it.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_cortex.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_gpio.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_hrtim.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_i2c.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_i2c_ex.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_uart.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_uart_ex.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_dma.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_rcc.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_rcc_ex.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_adc.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_adc_ex.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-exit.o)
+ .data          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-exit.o)
+ .bss           0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-exit.o)
+ .text.exit     0x0000000000000000       0x28 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-exit.o)
+ .debug_frame   0x0000000000000000       0x28 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-exit.o)
+ .ARM.attributes
+                0x0000000000000000       0x34 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-exit.o)
+ .text          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-impure.o)
+ .data          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-impure.o)
+ .bss           0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-impure.o)
+ .data.impure_data
+                0x0000000000000000       0x60 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-impure.o)
+ .data._impure_ptr
+                0x0000000000000000        0x4 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-impure.o)
+ .rodata._global_impure_ptr
+                0x0000000000000000        0x4 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-impure.o)
+ .ARM.attributes
+                0x0000000000000000       0x34 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-impure.o)
+ .text          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-init.o)
+ .data          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-init.o)
+ .bss           0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-init.o)
+ .text          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-memcpy-stub.o)
+ .data          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-memcpy-stub.o)
+ .bss           0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-memcpy-stub.o)
+ .text          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-memset.o)
+ .data          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-memset.o)
+ .bss           0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-memset.o)
+ .text.memset   0x0000000000000000       0x10 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-memset.o)
+ .debug_frame   0x0000000000000000       0x20 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-memset.o)
+ .ARM.attributes
+                0x0000000000000000       0x34 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-memset.o)
+ .text          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libnosys.a(_exit.o)
+ .data          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libnosys.a(_exit.o)
+ .bss           0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libnosys.a(_exit.o)
+ .text._exit    0x0000000000000000        0x4 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libnosys.a(_exit.o)
+ .debug_frame   0x0000000000000000       0x20 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libnosys.a(_exit.o)
+ .ARM.attributes
+                0x0000000000000000       0x34 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libnosys.a(_exit.o)
+ .text          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtend.o
+ .data          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtend.o
+ .bss           0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtend.o
+ .eh_frame      0x0000000000000000        0x4 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtend.o
+ .jcr           0x0000000000000000        0x4 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtend.o
+ .ARM.attributes
+                0x0000000000000000       0x34 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtend.o
+ .text          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtn.o
+ .data          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtn.o
+ .bss           0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtn.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+FLASH            0x0000000008000000 0x0000000000010000 xr
+RAM              0x0000000020000000 0x0000000000004000 xrw
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+LOAD /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crti.o
+LOAD /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
+LOAD /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/crt0.o
+                0x0000000000000cc0                __stack_size__ = 0xcc0
+                0x0000000000000000                __heap_size__ = 0x0
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/LSM303DLHC.c.obj
+LOAD /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+LOAD /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans1.ltrans.o
+LOAD /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans2.ltrans.o
+LOAD /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans3.ltrans.o
+LOAD /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans4.ltrans.o
+LOAD /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans5.ltrans.o
+LOAD /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans6.ltrans.o
+LOAD /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+LOAD /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+LOAD /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+LOAD /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans10.ltrans.o
+LOAD /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+LOAD /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans12.ltrans.o
+LOAD /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+LOAD /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/main.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/cli.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/reports.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/queue.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/UART.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/I2C.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/ADC.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/hardware.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/startup_stm32f302x8.s.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/stm32f3xx_hal_msp.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/system_stm32f3xx.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/stm32f3xx_it.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_cortex.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_gpio.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_hrtim.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_i2c.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_i2c_ex.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_uart.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_uart_ex.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_dma.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_rcc.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_rcc_ex.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_adc.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_adc_ex.c.obj
+START GROUP
+LOAD /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libm.a
+LOAD /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a
+LOAD /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/libgcc.a
+LOAD /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libnosys.a
+END GROUP
+START GROUP
+LOAD /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/libgcc.a
+LOAD /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libg_nano.a
+LOAD /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a
+END GROUP
+START GROUP
+LOAD /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/libgcc.a
+LOAD /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a
+END GROUP
+LOAD /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtend.o
+LOAD /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtn.o
+                0x0000000020003fff                _estack = 0x20003fff
+                0x0000000000000200                HEAP_SIZE = DEFINED (__heap_size__)?__heap_size__:0x200
+                0x0000000000000400                STACK_SIZE = DEFINED (__stack_size__)?__stack_size__:0x400
+
+.isr_vector     0x0000000008000000      0x188
+                0x0000000008000000                . = ALIGN (0x4)
+ *(.isr_vector)
+ .isr_vector    0x0000000008000000      0x188 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/startup_stm32f302x8.s.obj
+                0x0000000008000000                g_pfnVectors
+                0x0000000008000188                . = ALIGN (0x4)
+
+.text           0x0000000008000188     0x8130
+                0x0000000008000188                . = ALIGN (0x4)
+ *(.text)
+ .text          0x0000000008000188       0x5c /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
+ *(.text*)
+ .text.ADC_Disable.lto_priv.0
+                0x00000000080001e4       0xc0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+                0x00000000080001e4                ADC_Disable.lto_priv.0
+ .text.ADC_ConversionStop.lto_priv.1
+                0x00000000080002a4      0x18c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+                0x00000000080002a4                ADC_ConversionStop.lto_priv.1
+ .text.HAL_ADC_ConfigChannel
+                0x0000000008000430      0x84c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans2.ltrans.o
+                0x0000000008000430                HAL_ADC_ConfigChannel
+ .text.HAL_ADC_DeInit
+                0x0000000008000c7c      0x2a4 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans3.ltrans.o
+                0x0000000008000c7c                HAL_ADC_DeInit
+ .text.HAL_ADCEx_Calibration_Start
+                0x0000000008000f20      0x104 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans3.ltrans.o
+                0x0000000008000f20                HAL_ADCEx_Calibration_Start
+ .text.HAL_RCC_GetPCLK1Freq
+                0x0000000008001024       0x44 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans4.ltrans.o
+                0x0000000008001024                HAL_RCC_GetPCLK1Freq
+ .text.HAL_RCC_GetPCLK2Freq
+                0x0000000008001068       0x44 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans4.ltrans.o
+                0x0000000008001068                HAL_RCC_GetPCLK2Freq
+ .text.HAL_RCCEx_PeriphCLKConfig
+                0x00000000080010ac      0x55c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans4.ltrans.o
+                0x00000000080010ac                HAL_RCCEx_PeriphCLKConfig
+ .text.HAL_ADC_Init
+                0x0000000008001608      0x528 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans4.ltrans.o
+                0x0000000008001608                HAL_ADC_Init
+ .text.HAL_RCC_ClockConfig
+                0x0000000008001b30      0x554 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans5.ltrans.o
+                0x0000000008001b30                HAL_RCC_ClockConfig
+ .text.HAL_RCC_GetSysClockFreq
+                0x0000000008002084       0xd0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans5.ltrans.o
+                0x0000000008002084                HAL_RCC_GetSysClockFreq
+ .text.HAL_RCC_GetHCLKFreq
+                0x0000000008002154       0x18 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans5.ltrans.o
+                0x0000000008002154                HAL_RCC_GetHCLKFreq
+ .text.HAL_DMA_Abort_IT
+                0x000000000800216c       0x7c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans6.ltrans.o
+                0x000000000800216c                HAL_DMA_Abort_IT
+ .text.DMA_CalcBaseAndBitshift.lto_priv.7
+                0x00000000080021e8       0x3c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans6.ltrans.o
+                0x00000000080021e8                DMA_CalcBaseAndBitshift.lto_priv.7
+ .text.HAL_RCC_OscConfig
+                0x0000000008002224     0x13b8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans6.ltrans.o
+                0x0000000008002224                HAL_RCC_OscConfig
+ .text.UART_AdvFeatureConfig
+                0x00000000080035dc      0x27c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+                0x00000000080035dc                UART_AdvFeatureConfig
+ .text.UART_CheckIdleState
+                0x0000000008003858       0x94 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+                0x0000000008003858                UART_CheckIdleState
+ .text.UART_WaitOnFlagUntilTimeout
+                0x00000000080038ec       0x94 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+                0x00000000080038ec                UART_WaitOnFlagUntilTimeout
+ .text.UART_EndRxTransfer.lto_priv.18
+                0x0000000008003980       0x3c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+                0x0000000008003980                UART_EndRxTransfer.lto_priv.18
+ .text.UART_DMAAbortOnError.lto_priv.8
+                0x00000000080039bc       0x2c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+                0x00000000080039bc                UART_DMAAbortOnError.lto_priv.8
+ .text.UART_Transmit_IT
+                0x00000000080039e8       0xb0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+                0x00000000080039e8                UART_Transmit_IT
+ .text.UART_EndTransmit_IT
+                0x0000000008003a98       0x30 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+                0x0000000008003a98                UART_EndTransmit_IT
+ .text.UART_Receive_IT
+                0x0000000008003ac8       0xd4 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+                0x0000000008003ac8                UART_Receive_IT
+ .text.HAL_UARTEx_WakeupCallback
+                0x0000000008003b9c       0x14 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+                0x0000000008003b9c                HAL_UARTEx_WakeupCallback
+ .text.HAL_DMA_Init
+                0x0000000008003bb0      0x1f4 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+                0x0000000008003bb0                HAL_DMA_Init
+ .text.HAL_DMA_DeInit
+                0x0000000008003da4       0xe8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+                0x0000000008003da4                HAL_DMA_DeInit
+ .text.HAL_UART_Transmit_IT
+                0x0000000008003e8c       0x90 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+                0x0000000008003e8c                HAL_UART_Transmit_IT
+ .text.HAL_UART_Receive_IT
+                0x0000000008003f1c      0x110 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+                0x0000000008003f1c                HAL_UART_Receive_IT
+ .text.HAL_UART_IRQHandler
+                0x000000000800402c      0x244 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+                0x000000000800402c                HAL_UART_IRQHandler
+ .text.HAL_UART_GetState
+                0x0000000008004270       0x3c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+                0x0000000008004270                HAL_UART_GetState
+ .text.UART_SetConfig
+                0x00000000080042ac      0x3e0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+                0x00000000080042ac                UART_SetConfig
+ .text.I2C_DMAAbort.lto_priv.25
+                0x000000000800468c       0x58 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+                0x000000000800468c                I2C_DMAAbort.lto_priv.25
+ .text.I2C_WaitOnFlagUntilTimeout.lto_priv.28
+                0x00000000080046e4       0x74 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+                0x00000000080046e4                I2C_WaitOnFlagUntilTimeout.lto_priv.28
+ .text.I2C_WaitOnTXISFlagUntilTimeout.lto_priv.29
+                0x0000000008004758       0x80 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+                0x0000000008004758                I2C_WaitOnTXISFlagUntilTimeout.lto_priv.29
+ .text.I2C_IsAcknowledgeFailed
+                0x00000000080047d8       0xbc /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+ .text.I2C_TransferConfig.lto_priv.30
+                0x0000000008004894       0xd8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+                0x0000000008004894                I2C_TransferConfig.lto_priv.30
+ .text.I2C_Enable_IRQ.lto_priv.26
+                0x000000000800496c       0xe0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+                0x000000000800496c                I2C_Enable_IRQ.lto_priv.26
+ .text.I2C_Disable_IRQ.lto_priv.27
+                0x0000000008004a4c       0xcc /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+                0x0000000008004a4c                I2C_Disable_IRQ.lto_priv.27
+ .text.HAL_I2CEx_ConfigAnalogFilter
+                0x0000000008004b18       0xe0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+                0x0000000008004b18                HAL_I2CEx_ConfigAnalogFilter
+ .text.HAL_UART_Init
+                0x0000000008004bf8      0x10c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+                0x0000000008004bf8                HAL_UART_Init
+ .text.I2C_Master_ISR_DMA.lto_priv.20
+                0x0000000008004d04      0x158 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans10.ltrans.o
+                0x0000000008004d04                I2C_Master_ISR_DMA.lto_priv.20
+ .text.I2C_Slave_ISR_DMA.lto_priv.21
+                0x0000000008004e5c       0xd8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans10.ltrans.o
+                0x0000000008004e5c                I2C_Slave_ISR_DMA.lto_priv.21
+ .text.I2C_RequestMemoryWrite.lto_priv.41
+                0x0000000008004f34       0xc0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans10.ltrans.o
+                0x0000000008004f34                I2C_RequestMemoryWrite.lto_priv.41
+ .text.I2C_RequestMemoryRead.lto_priv.40
+                0x0000000008004ff4       0xbc /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans10.ltrans.o
+                0x0000000008004ff4                I2C_RequestMemoryRead.lto_priv.40
+ .text.I2C_ITAddrCplt.lto_priv.36
+                0x00000000080050b0      0x114 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans10.ltrans.o
+                0x00000000080050b0                I2C_ITAddrCplt.lto_priv.36
+ .text.I2C_ITMasterSequentialCplt.lto_priv.39
+                0x00000000080051c4       0x78 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans10.ltrans.o
+                0x00000000080051c4                I2C_ITMasterSequentialCplt.lto_priv.39
+ .text.I2C_ITSlaveSequentialCplt.lto_priv.35
+                0x000000000800523c       0x78 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans10.ltrans.o
+                0x000000000800523c                I2C_ITSlaveSequentialCplt.lto_priv.35
+ .text.I2C_ITMasterCplt.lto_priv.38
+                0x00000000080052b4      0x130 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans10.ltrans.o
+                0x00000000080052b4                I2C_ITMasterCplt.lto_priv.38
+ .text.I2C_ITSlaveCplt.lto_priv.34
+                0x00000000080053e4      0x1a0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans10.ltrans.o
+                0x00000000080053e4                I2C_ITSlaveCplt.lto_priv.34
+ .text.I2C_ITListenCplt.lto_priv.37
+                0x0000000008005584       0xa0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans10.ltrans.o
+                0x0000000008005584                I2C_ITListenCplt.lto_priv.37
+ .text.I2C_ITError.lto_priv.23
+                0x0000000008005624      0x17c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans10.ltrans.o
+                0x0000000008005624                I2C_ITError.lto_priv.23
+ .text.I2C_Flush_TXDR.lto_priv.22
+                0x00000000080057a0       0x48 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans10.ltrans.o
+                0x00000000080057a0                I2C_Flush_TXDR.lto_priv.22
+ .text.HAL_I2C_Mem_Write_IT
+                0x00000000080057e8      0x154 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+                0x00000000080057e8                HAL_I2C_Mem_Write_IT
+ .text.HAL_I2C_Mem_Read_IT
+                0x000000000800593c      0x154 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+                0x000000000800593c                HAL_I2C_Mem_Read_IT
+ .text.HAL_I2C_EV_IRQHandler
+                0x0000000008005a90       0x34 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+                0x0000000008005a90                HAL_I2C_EV_IRQHandler
+ .text.HAL_I2C_ER_IRQHandler
+                0x0000000008005ac4       0xb4 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+                0x0000000008005ac4                HAL_I2C_ER_IRQHandler
+ .text.HAL_I2C_SlaveTxCpltCallback
+                0x0000000008005b78       0x14 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+                0x0000000008005b78                HAL_I2C_SlaveTxCpltCallback
+ .text.HAL_I2C_SlaveRxCpltCallback
+                0x0000000008005b8c       0x14 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+                0x0000000008005b8c                HAL_I2C_SlaveRxCpltCallback
+ .text.HAL_I2C_AddrCallback
+                0x0000000008005ba0       0x1c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+                0x0000000008005ba0                HAL_I2C_AddrCallback
+ .text.HAL_I2C_ListenCpltCallback
+                0x0000000008005bbc       0x14 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+                0x0000000008005bbc                HAL_I2C_ListenCpltCallback
+ .text.HAL_I2C_MemTxCpltCallback
+                0x0000000008005bd0       0x14 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+                0x0000000008005bd0                HAL_I2C_MemTxCpltCallback
+ .text.HAL_I2C_MemRxCpltCallback
+                0x0000000008005be4       0x14 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+                0x0000000008005be4                HAL_I2C_MemRxCpltCallback
+ .text.HAL_I2C_AbortCpltCallback
+                0x0000000008005bf8       0x14 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+                0x0000000008005bf8                HAL_I2C_AbortCpltCallback
+ .text.HAL_I2C_GetState
+                0x0000000008005c0c       0x1c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+                0x0000000008005c0c                HAL_I2C_GetState
+ .text.I2C_Master_ISR_IT.lto_priv.45
+                0x0000000008005c28      0x22c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+                0x0000000008005c28                I2C_Master_ISR_IT.lto_priv.45
+ .text.I2C_Slave_ISR_IT.lto_priv.24
+                0x0000000008005e54      0x1d4 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+                0x0000000008005e54                I2C_Slave_ISR_IT.lto_priv.24
+ .text.HAL_GetTick
+                0x0000000008006028       0x18 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+                0x0000000008006028                HAL_GetTick
+ .text.HAL_Delay
+                0x0000000008006040       0x24 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+                0x0000000008006040                HAL_Delay
+ .text.NVIC_SetPriorityGrouping
+                0x0000000008006064       0x48 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.NVIC_GetPriorityGrouping
+                0x00000000080060ac       0x1c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.NVIC_EnableIRQ
+                0x00000000080060c8       0x30 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.NVIC_SetPriority
+                0x00000000080060f8       0x54 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.NVIC_EncodePriority
+                0x000000000800614c       0x64 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.SysTick_Config
+                0x00000000080061b0       0x44 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .text.HAL_NVIC_SetPriorityGrouping
+                0x00000000080061f4       0x40 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+                0x00000000080061f4                HAL_NVIC_SetPriorityGrouping
+ .text.HAL_NVIC_SetPriority
+                0x0000000008006234       0x58 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+                0x0000000008006234                HAL_NVIC_SetPriority
+ .text.HAL_NVIC_EnableIRQ
+                0x000000000800628c       0x30 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+                0x000000000800628c                HAL_NVIC_EnableIRQ
+ .text.HAL_SYSTICK_Config
+                0x00000000080062bc       0x18 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+                0x00000000080062bc                HAL_SYSTICK_Config
+ .text.HAL_GPIO_Init
+                0x00000000080062d4      0x46c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+                0x00000000080062d4                HAL_GPIO_Init
+ .text.HAL_GPIO_ReadPin
+                0x0000000008006740       0x4c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+                0x0000000008006740                HAL_GPIO_ReadPin
+ .text.HAL_GPIO_WritePin
+                0x000000000800678c       0x60 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+                0x000000000800678c                HAL_GPIO_WritePin
+ .text.HAL_GPIO_TogglePin
+                0x00000000080067ec       0x3c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+                0x00000000080067ec                HAL_GPIO_TogglePin
+ .text.HAL_GPIO_EXTI_IRQHandler
+                0x0000000008006828       0x30 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+                0x0000000008006828                HAL_GPIO_EXTI_IRQHandler
+ .text.HAL_I2C_Init
+                0x0000000008006858      0x234 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+                0x0000000008006858                HAL_I2C_Init
+ .text.queue_increment_tail
+                0x0000000008006a8c       0x4c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.queue_increment_head
+                0x0000000008006ad8       0x8c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.LSM303DLHC_init
+                0x0000000008006b64      0x100 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.LSM303DLHC_accel_getData
+                0x0000000008006c64       0xb4 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.LSM303DLHC_mag_getData
+                0x0000000008006d18       0xa8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.LSM303DLHC_checkStatus
+                0x0000000008006dc0       0x80 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.LSM303DLHC_drdy_handler
+                0x0000000008006e40       0x9c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.LSM303DLHC_accel_putPacket
+                0x0000000008006edc       0x5c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.LSM303DLHC_mag_putPacket
+                0x0000000008006f38       0x5c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.LSM303DLHC_accel_getPacket
+                0x0000000008006f94       0x74 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.LSM303DLHC_mag_getPacket
+                0x0000000008007008       0x74 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.LSM303DLHC_accel_dataAvailable
+                0x000000000800707c       0x24 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.LSM303DLHC_mag_dataAvailable
+                0x00000000080070a0       0x24 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.main     0x00000000080070c4      0x188 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x00000000080070c4                main
+ .text.HAL_IncTick
+                0x000000000800724c       0x70 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.fatal_error_handler
+                0x00000000080072bc       0x74 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.assert_failed
+                0x0000000008007330       0x1c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x0000000008007330                assert_failed
+ .text.UART_init
+                0x000000000800734c       0x68 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.UART_TXisReady
+                0x00000000080073b4       0x30 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.UART_sendData
+                0x00000000080073e4       0x5c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.UART_sendChar
+                0x0000000008007440       0x30 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.UART_sendString
+                0x0000000008007470       0x50 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.UART_sendint
+                0x00000000080074c0      0x128 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.HAL_UART_TxCpltCallback
+                0x00000000080075e8       0x14 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x00000000080075e8                HAL_UART_TxCpltCallback
+ .text.HAL_UART_RxCpltCallback
+                0x00000000080075fc       0x38 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x00000000080075fc                HAL_UART_RxCpltCallback
+ .text.HAL_UART_ErrorCallback
+                0x0000000008007634       0x20 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x0000000008007634                HAL_UART_ErrorCallback
+ .text.I2C_init
+                0x0000000008007654       0x68 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.I2C_writeData
+                0x00000000080076bc       0x80 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.I2C_writeByte
+                0x000000000800773c       0x38 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.I2C_readData
+                0x0000000008007774       0x6c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.I2C_isBusy
+                0x00000000080077e0       0x20 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.HAL_I2C_MasterTxCpltCallback
+                0x0000000008007800       0x14 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x0000000008007800                HAL_I2C_MasterTxCpltCallback
+ .text.HAL_I2C_MasterRxCpltCallback
+                0x0000000008007814       0x14 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x0000000008007814                HAL_I2C_MasterRxCpltCallback
+ .text.HAL_I2C_ErrorCallback
+                0x0000000008007828       0x1c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x0000000008007828                HAL_I2C_ErrorCallback
+ .text.ADC_init
+                0x0000000008007844       0xec /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.LL_AHB1_GRP1_EnableClock
+                0x0000000008007930       0x30 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.button_periodic_handler
+                0x0000000008007960       0x64 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.switch_periodic_handler
+                0x00000000080079c4       0x3c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.button_interrupt_handler
+                0x0000000008007a00       0x80 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.switch_intterupt_handler
+                0x0000000008007a80       0x60 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.SystemClock_Config
+                0x0000000008007ae0       0x58 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.configure_pins
+                0x0000000008007b38      0x1b8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.HAL_GPIO_EXTI_Callback
+                0x0000000008007cf0       0x4c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x0000000008007cf0                HAL_GPIO_EXTI_Callback
+ .text.LED_toggle
+                0x0000000008007d3c       0x34 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.LED_set  0x0000000008007d70       0x4c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.HAL_I2C_MspInit
+                0x0000000008007dbc       0xc4 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x0000000008007dbc                HAL_I2C_MspInit
+ .text.HAL_UART_MspInit
+                0x0000000008007e80       0xa8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x0000000008007e80                HAL_UART_MspInit
+ .text.HAL_ADC_MspInit
+                0x0000000008007f28       0xa8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x0000000008007f28                HAL_ADC_MspInit
+ .text.HAL_ADC_MspDeInit
+                0x0000000008007fd0       0x3c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x0000000008007fd0                HAL_ADC_MspDeInit
+ .text.SystemInit
+                0x000000000800800c       0x94 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x000000000800800c                SystemInit
+ .text.NMI_Handler
+                0x00000000080080a0        0xc /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x00000000080080a0                NMI_Handler
+ .text.HardFault_Handler
+                0x00000000080080ac        0x8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x00000000080080ac                HardFault_Handler
+ .text.MemManage_Handler
+                0x00000000080080b4        0x8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x00000000080080b4                MemManage_Handler
+ .text.BusFault_Handler
+                0x00000000080080bc        0x8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x00000000080080bc                BusFault_Handler
+ .text.UsageFault_Handler
+                0x00000000080080c4        0x8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x00000000080080c4                UsageFault_Handler
+ .text.SVC_Handler
+                0x00000000080080cc        0xc /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x00000000080080cc                SVC_Handler
+ .text.DebugMon_Handler
+                0x00000000080080d8        0xc /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x00000000080080d8                DebugMon_Handler
+ .text.PendSV_Handler
+                0x00000000080080e4        0xc /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x00000000080080e4                PendSV_Handler
+ .text.SysTick_Handler
+                0x00000000080080f0        0xc /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x00000000080080f0                SysTick_Handler
+ .text.I2C2_EV_IRQHandler
+                0x00000000080080fc       0x10 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x00000000080080fc                I2C2_EV_IRQHandler
+ .text.I2C2_ER_IRQHandler
+                0x000000000800810c       0x10 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x000000000800810c                I2C2_ER_IRQHandler
+ .text.USART1_IRQHandler
+                0x000000000800811c       0x10 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x000000000800811c                USART1_IRQHandler
+ .text.EXTI1_IRQHandler
+                0x000000000800812c        0xc /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x000000000800812c                EXTI1_IRQHandler
+ .text.EXTI2_TSC_IRQHandler
+                0x0000000008008138        0xc /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x0000000008008138                EXTI2_TSC_IRQHandler
+ .text.EXTI3_IRQHandler
+                0x0000000008008144        0xc /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x0000000008008144                EXTI3_IRQHandler
+ .text.EXTI4_IRQHandler
+                0x0000000008008150        0xc /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x0000000008008150                EXTI4_IRQHandler
+ .text.EXTI9_5_IRQHandler
+                0x000000000800815c        0xc /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x000000000800815c                EXTI9_5_IRQHandler
+ .text.EXTI15_10_IRQHandler
+                0x0000000008008168       0x10 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x0000000008008168                EXTI15_10_IRQHandler
+ .text.HAL_Init
+                0x0000000008008178       0x2c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.HAL_MspInit
+                0x00000000080081a4        0xc /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .text.HAL_InitTick
+                0x00000000080081b0       0x38 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                0x00000000080081b0                HAL_InitTick
+ .text.Reset_Handler
+                0x00000000080081e8       0x50 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/startup_stm32f302x8.s.obj
+                0x00000000080081e8                Reset_Handler
+ .text.Default_Handler
+                0x0000000008008238        0x2 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/startup_stm32f302x8.s.obj
+                0x0000000008008238                TIM1_BRK_TIM15_IRQHandler
+                0x0000000008008238                TIM1_CC_IRQHandler
+                0x0000000008008238                USB_HP_IRQHandler
+                0x0000000008008238                PVD_IRQHandler
+                0x0000000008008238                TAMP_STAMP_IRQHandler
+                0x0000000008008238                I2C3_ER_IRQHandler
+                0x0000000008008238                USB_HP_CAN_TX_IRQHandler
+                0x0000000008008238                EXTI0_IRQHandler
+                0x0000000008008238                FPU_IRQHandler
+                0x0000000008008238                TIM1_UP_TIM16_IRQHandler
+                0x0000000008008238                CAN_SCE_IRQHandler
+                0x0000000008008238                TIM6_DAC_IRQHandler
+                0x0000000008008238                DMA1_Channel4_IRQHandler
+                0x0000000008008238                ADC1_IRQHandler
+                0x0000000008008238                USART3_IRQHandler
+                0x0000000008008238                DMA1_Channel7_IRQHandler
+                0x0000000008008238                CAN_RX1_IRQHandler
+                0x0000000008008238                I2C1_EV_IRQHandler
+                0x0000000008008238                DMA1_Channel6_IRQHandler
+                0x0000000008008238                RCC_IRQHandler
+                0x0000000008008238                DMA1_Channel1_IRQHandler
+                0x0000000008008238                Default_Handler
+                0x0000000008008238                USBWakeUp_RMP_IRQHandler
+                0x0000000008008238                COMP2_IRQHandler
+                0x0000000008008238                I2C3_EV_IRQHandler
+                0x0000000008008238                RTC_WKUP_IRQHandler
+                0x0000000008008238                SPI2_IRQHandler
+                0x0000000008008238                USB_LP_CAN_RX0_IRQHandler
+                0x0000000008008238                DMA1_Channel5_IRQHandler
+                0x0000000008008238                USB_LP_IRQHandler
+                0x0000000008008238                TIM1_TRG_COM_TIM17_IRQHandler
+                0x0000000008008238                DMA1_Channel3_IRQHandler
+                0x0000000008008238                WWDG_IRQHandler
+                0x0000000008008238                TIM2_IRQHandler
+                0x0000000008008238                COMP4_6_IRQHandler
+                0x0000000008008238                USART2_IRQHandler
+                0x0000000008008238                DMA1_Channel2_IRQHandler
+                0x0000000008008238                FLASH_IRQHandler
+                0x0000000008008238                SPI3_IRQHandler
+                0x0000000008008238                I2C1_ER_IRQHandler
+                0x0000000008008238                USBWakeUp_IRQHandler
+                0x0000000008008238                RTC_Alarm_IRQHandler
+ *fill*         0x000000000800823a        0x2 
+ .text.__libc_init_array
+                0x000000000800823c       0x4c /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-init.o)
+                0x000000000800823c                __libc_init_array
+ .text.memcpy   0x0000000008008288       0x16 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-memcpy-stub.o)
+                0x0000000008008288                memcpy
+ *(.glue_7)
+ .glue_7        0x000000000800829e        0x0 linker stubs
+ *(.glue_7t)
+ .glue_7t       0x000000000800829e        0x0 linker stubs
+ *(.eh_frame)
+ *fill*         0x000000000800829e        0x2 
+ .eh_frame      0x00000000080082a0        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
+ *(.init)
+ .init          0x00000000080082a0        0x4 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crti.o
+                0x00000000080082a0                _init
+ .init          0x00000000080082a4        0x8 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtn.o
+ *(.fini)
+ .fini          0x00000000080082ac        0x4 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crti.o
+                0x00000000080082ac                _fini
+ .fini          0x00000000080082b0        0x8 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtn.o
+                0x00000000080082b8                . = ALIGN (0x4)
+                0x00000000080082b8                _etext = .
+
+.vfp11_veneer   0x00000000080082b8        0x0
+ .vfp11_veneer  0x00000000080082b8        0x0 linker stubs
+
+.v4_bx          0x00000000080082b8        0x0
+ .v4_bx         0x00000000080082b8        0x0 linker stubs
+
+.iplt           0x00000000080082b8        0x0
+ .iplt          0x00000000080082b8        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
+
+.rodata         0x00000000080082b8      0x7c8
+                0x00000000080082b8                . = ALIGN (0x4)
+ *(.rodata)
+ .rodata        0x00000000080082b8       0x4d /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+ *fill*         0x0000000008008305        0x3 
+ .rodata        0x0000000008008308       0x4d /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans2.ltrans.o
+ *fill*         0x0000000008008355        0x3 
+ .rodata        0x0000000008008358       0x4d /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans3.ltrans.o
+ *fill*         0x00000000080083a5        0x3 
+ .rodata        0x00000000080083a8      0x14d /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans4.ltrans.o
+ *fill*         0x00000000080084f5        0x3 
+ .rodata        0x00000000080084f8       0x4a /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans5.ltrans.o
+ *fill*         0x0000000008008542        0x2 
+ .rodata        0x0000000008008544       0x96 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans6.ltrans.o
+ *fill*         0x00000000080085da        0x2 
+ .rodata        0x00000000080085dc       0xe6 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+ *fill*         0x00000000080086c2        0x2 
+ .rodata        0x00000000080086c4       0x4b /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ *fill*         0x000000000800870f        0x1 
+ .rodata        0x0000000008008710       0xe7 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+ *fill*         0x00000000080087f7        0x1 
+ .rodata        0x00000000080087f8       0x4a /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+ *fill*         0x0000000008008842        0x2 
+ .rodata        0x0000000008008844       0xe6 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ *fill*         0x000000000800892a        0x2 
+ .rodata        0x000000000800892c      0x11b /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ *(.rodata*)
+ *fill*         0x0000000008008a47        0x1 
+ .rodata.AHBPrescTable
+                0x0000000008008a48       0x10 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+                0x0000000008008a48                AHBPrescTable
+ .rodata.APBPrescTable
+                0x0000000008008a58        0x8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+                0x0000000008008a58                APBPrescTable
+ .rodata.aPLLMULFactorTable
+                0x0000000008008a60       0x10 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+                0x0000000008008a60                aPLLMULFactorTable
+ .rodata.aPredivFactorTable
+                0x0000000008008a70       0x10 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+                0x0000000008008a70                aPredivFactorTable
+                0x0000000008008a80                . = ALIGN (0x4)
+
+.rel.dyn        0x0000000008008a80        0x0
+ .rel.iplt      0x0000000008008a80        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
+
+.ARM.extab
+ *(.ARM.extab* .gnu.linkonce.armextab.*)
+
+.ARM            0x0000000008008a80        0x0
+                0x0000000008008a80                __exidx_start = .
+ *(.ARM.exidx*)
+                0x0000000008008a80                __exidx_end = .
+
+.preinit_array  0x0000000008008a80        0x0
+                0x0000000008008a80                PROVIDE (__preinit_array_start, .)
+ *(.preinit_array*)
+                0x0000000008008a80                PROVIDE (__preinit_array_end, .)
+
+.init_array     0x0000000008008a80        0x4
+                0x0000000008008a80                PROVIDE (__init_array_start, .)
+ *(SORT(.init_array.*))
+ *(.init_array*)
+ .init_array    0x0000000008008a80        0x4 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
+                0x0000000008008a84                PROVIDE (__init_array_end, .)
+
+.fini_array     0x0000000008008a84        0x4
+                [!provide]                        PROVIDE (__fini_array_start, .)
+ *(SORT(.fini_array.*))
+ *(.fini_array*)
+ .fini_array    0x0000000008008a84        0x4 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
+                [!provide]                        PROVIDE (__fini_array_end, .)
+                0x0000000008008a88                _sidata = LOADADDR (.data)
+
+.data           0x0000000020000000        0x4 load address 0x0000000008008a88
+                0x0000000020000000                . = ALIGN (0x4)
+                0x0000000020000000                _sdata = .
+ *(.data)
+ *(.data*)
+ .data.SystemCoreClock
+                0x0000000020000000        0x4 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+                0x0000000020000000                SystemCoreClock
+                0x0000000020000004                . = ALIGN (0x4)
+                0x0000000020000004                _edata = .
+
+.jcr            0x0000000020000004        0x0 load address 0x0000000008008a8c
+ .jcr           0x0000000020000004        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
+
+.igot.plt       0x0000000020000004        0x0 load address 0x0000000008008a8c
+ .igot.plt      0x0000000020000004        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
+                0x0000000020000004                . = ALIGN (0x4)
+
+.bss            0x0000000020000004      0x2dc load address 0x0000000008008a8c
+                0x0000000020000004                _sbss = .
+                0x0000000020000004                __bss_start__ = _sbss
+ *(.bss)
+ .bss           0x0000000020000004       0x1c /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
+ *(.bss*)
+ .bss.LSM303DLHC
+                0x0000000020000020       0xd8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+                0x0000000020000020                LSM303DLHC
+ .bss.sub_count.7282.lto_priv.52
+                0x00000000200000f8        0x1 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+                0x00000000200000f8                sub_count.7282.lto_priv.52
+ *fill*         0x00000000200000f9        0x1 
+ .bss.second_count.7283.lto_priv.53
+                0x00000000200000fa        0x2 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+                0x00000000200000fa                second_count.7283.lto_priv.53
+ .bss.HAL_UART_handle
+                0x00000000200000fc       0x70 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+                0x00000000200000fc                HAL_UART_handle
+ .bss.UART_admin
+                0x000000002000016c       0x36 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+                0x000000002000016c                UART_admin
+ *fill*         0x00000000200001a2        0x2 
+ .bss.I2cHandle
+                0x00000000200001a4       0x4c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+                0x00000000200001a4                I2cHandle
+ .bss.TX_buffer
+                0x00000000200001f0        0xa /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+                0x00000000200001f0                TX_buffer
+ *fill*         0x00000000200001fa        0x2 
+ .bss.AdcHandle
+                0x00000000200001fc       0x54 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+                0x00000000200001fc                AdcHandle
+ .bss.sConfig   0x0000000020000250       0x18 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+                0x0000000020000250                sConfig
+ .bss.gNum_samples
+                0x0000000020000268        0x1 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+                0x0000000020000268                gNum_samples
+ .bss.gADC_sampling
+                0x0000000020000269        0x1 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+                0x0000000020000269                gADC_sampling
+ *fill*         0x000000002000026a        0x2 
+ .bss.GPIO_InitStruct.lto_priv.48
+                0x000000002000026c       0x14 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+                0x000000002000026c                GPIO_InitStruct.lto_priv.48
+ .bss.mainbutton_admin
+                0x0000000020000280        0x8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+                0x0000000020000280                mainbutton_admin
+ .bss.auxbutton_admin
+                0x0000000020000288        0x8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+                0x0000000020000288                auxbutton_admin
+ .bss.switch_admin
+                0x0000000020000290        0x8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+                0x0000000020000290                switch_admin
+ .bss.DmaHandle.6922.lto_priv.47
+                0x0000000020000298       0x44 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+                0x0000000020000298                DmaHandle.6922.lto_priv.47
+ .bss.uwTick    0x00000000200002dc        0x4 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+                0x00000000200002dc                uwTick
+ *(COMMON)
+                0x00000000200002e0                . = ALIGN (0x4)
+                0x00000000200002e0                _ebss = .
+                0x00000000200002e0                __bss_end__ = _ebss
+
+._user_heap_stack
+                0x00000000200002e0      0xcc0 load address 0x0000000008008a8c
+                0x00000000200002e0                . = ALIGN (0x4)
+                [!provide]                        PROVIDE (end, .)
+                [!provide]                        PROVIDE (_end, .)
+                0x00000000200002e0                . = (. + HEAP_SIZE)
+                0x0000000020000fa0                . = (. + STACK_SIZE)
+ *fill*         0x00000000200002e0      0xcc0 
+                0x0000000020000fa0                . = ALIGN (0x4)
+
+/DISCARD/
+ libc.a(*)
+ libm.a(*)
+ libgcc.a(*)
+
+.ARM.attributes
+                0x0000000000000000       0x30
+ *(.ARM.attributes)
+ .ARM.attributes
+                0x0000000000000000       0x22 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crti.o
+ .ARM.attributes
+                0x0000000000000022       0x34 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
+ .ARM.attributes
+                0x0000000000000056       0x37 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+ .ARM.attributes
+                0x000000000000008d       0x37 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans2.ltrans.o
+ .ARM.attributes
+                0x00000000000000c4       0x37 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans3.ltrans.o
+ .ARM.attributes
+                0x00000000000000fb       0x37 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans4.ltrans.o
+ .ARM.attributes
+                0x0000000000000132       0x37 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans5.ltrans.o
+ .ARM.attributes
+                0x0000000000000169       0x37 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans6.ltrans.o
+ .ARM.attributes
+                0x00000000000001a0       0x37 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+ .ARM.attributes
+                0x00000000000001d7       0x37 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .ARM.attributes
+                0x000000000000020e       0x37 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+ .ARM.attributes
+                0x0000000000000245       0x37 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans10.ltrans.o
+ .ARM.attributes
+                0x000000000000027c       0x37 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+ .ARM.attributes
+                0x00000000000002b3       0x37 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .ARM.attributes
+                0x00000000000002ea       0x37 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .ARM.attributes
+                0x0000000000000321       0x21 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/startup_stm32f302x8.s.obj
+ .ARM.attributes
+                0x0000000000000342       0x34 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-init.o)
+ .ARM.attributes
+                0x0000000000000376       0x34 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-memcpy-stub.o)
+ .ARM.attributes
+                0x00000000000003aa       0x22 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtn.o
+OUTPUT(build/Debug/pensel.elf elf32-littlearm)
+
+.debug_info     0x0000000000000000     0xc62c
+ .debug_info    0x0000000000000000     0x156d /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+ .debug_info    0x000000000000156d      0xa57 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans2.ltrans.o
+ .debug_info    0x0000000000001fc4      0x986 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans3.ltrans.o
+ .debug_info    0x000000000000294a      0xdc6 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans4.ltrans.o
+ .debug_info    0x0000000000003710      0x697 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans5.ltrans.o
+ .debug_info    0x0000000000003da7     0x160c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans6.ltrans.o
+ .debug_info    0x00000000000053b3      0xc4f /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+ .debug_info    0x0000000000006002      0xbeb /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .debug_info    0x0000000000006bed      0xe57 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+ .debug_info    0x0000000000007a44      0x94f /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans10.ltrans.o
+ .debug_info    0x0000000000008393      0xdaf /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+ .debug_info    0x0000000000009142     0x10b2 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .debug_info    0x000000000000a1f4     0x2392 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .debug_info    0x000000000000c586       0xa6 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/startup_stm32f302x8.s.obj
+
+.debug_abbrev   0x0000000000000000     0x1a30
+ .debug_abbrev  0x0000000000000000      0x1c2 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+ .debug_abbrev  0x00000000000001c2      0x15b /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans2.ltrans.o
+ .debug_abbrev  0x000000000000031d      0x173 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans3.ltrans.o
+ .debug_abbrev  0x0000000000000490      0x268 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans4.ltrans.o
+ .debug_abbrev  0x00000000000006f8      0x180 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans5.ltrans.o
+ .debug_abbrev  0x0000000000000878      0x1ee /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans6.ltrans.o
+ .debug_abbrev  0x0000000000000a66      0x253 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+ .debug_abbrev  0x0000000000000cb9      0x1af /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .debug_abbrev  0x0000000000000e68      0x22c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+ .debug_abbrev  0x0000000000001094      0x165 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans10.ltrans.o
+ .debug_abbrev  0x00000000000011f9      0x1de /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+ .debug_abbrev  0x00000000000013d7      0x2a4 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .debug_abbrev  0x000000000000167b      0x3a3 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .debug_abbrev  0x0000000000001a1e       0x12 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/startup_stm32f302x8.s.obj
+
+.debug_aranges  0x0000000000000000      0xc00
+ .debug_aranges
+                0x0000000000000000       0x50 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+ .debug_aranges
+                0x0000000000000050       0x98 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans2.ltrans.o
+ .debug_aranges
+                0x00000000000000e8       0x78 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans3.ltrans.o
+ .debug_aranges
+                0x0000000000000160       0x98 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans4.ltrans.o
+ .debug_aranges
+                0x00000000000001f8       0x48 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans5.ltrans.o
+ .debug_aranges
+                0x0000000000000240       0x80 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans6.ltrans.o
+ .debug_aranges
+                0x00000000000002c0       0xf8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+ .debug_aranges
+                0x00000000000003b8      0x100 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .debug_aranges
+                0x00000000000004b8       0xd0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+ .debug_aranges
+                0x0000000000000588       0x90 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans10.ltrans.o
+ .debug_aranges
+                0x0000000000000618       0xf0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+ .debug_aranges
+                0x0000000000000708      0x1a8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .debug_aranges
+                0x00000000000008b0      0x328 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .debug_aranges
+                0x0000000000000bd8       0x28 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/startup_stm32f302x8.s.obj
+
+.debug_ranges   0x0000000000000000      0xb28
+ .debug_ranges  0x0000000000000000       0x40 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+ .debug_ranges  0x0000000000000040       0x88 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans2.ltrans.o
+ .debug_ranges  0x00000000000000c8       0x68 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans3.ltrans.o
+ .debug_ranges  0x0000000000000130       0x88 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans4.ltrans.o
+ .debug_ranges  0x00000000000001b8       0x38 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans5.ltrans.o
+ .debug_ranges  0x00000000000001f0       0x70 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans6.ltrans.o
+ .debug_ranges  0x0000000000000260       0xe8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+ .debug_ranges  0x0000000000000348       0xf0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .debug_ranges  0x0000000000000438       0xc0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+ .debug_ranges  0x00000000000004f8       0x80 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans10.ltrans.o
+ .debug_ranges  0x0000000000000578       0xe0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+ .debug_ranges  0x0000000000000658      0x198 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .debug_ranges  0x00000000000007f0      0x318 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .debug_ranges  0x0000000000000b08       0x20 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/startup_stm32f302x8.s.obj
+
+.debug_line     0x0000000000000000     0x471d
+ .debug_line    0x0000000000000000      0x44c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+ .debug_line    0x000000000000044c      0x3f8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans2.ltrans.o
+ .debug_line    0x0000000000000844      0x3c0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans3.ltrans.o
+ .debug_line    0x0000000000000c04      0x5c9 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans4.ltrans.o
+ .debug_line    0x00000000000011cd      0x30b /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans5.ltrans.o
+ .debug_line    0x00000000000014d8      0x750 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans6.ltrans.o
+ .debug_line    0x0000000000001c28      0x49c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+ .debug_line    0x00000000000020c4      0x4cd /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .debug_line    0x0000000000002591      0x490 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+ .debug_line    0x0000000000002a21      0x372 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans10.ltrans.o
+ .debug_line    0x0000000000002d93      0x4fa /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+ .debug_line    0x000000000000328d      0x6b3 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .debug_line    0x0000000000003940      0xd34 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .debug_line    0x0000000000004674       0xa9 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/startup_stm32f302x8.s.obj
+
+.debug_str      0x0000000000000000     0x42b5
+ .debug_str     0x0000000000000000     0x13d3 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+                                       0x149b (size before relaxing)
+ .debug_str     0x00000000000013d3      0x27c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans2.ltrans.o
+                                        0x92c (size before relaxing)
+ .debug_str     0x000000000000164f      0x108 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans3.ltrans.o
+                                        0x7d3 (size before relaxing)
+ .debug_str     0x0000000000001757      0x432 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans4.ltrans.o
+                                        0xaf2 (size before relaxing)
+ .debug_str     0x0000000000001b89       0xab /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans5.ltrans.o
+                                        0x397 (size before relaxing)
+ .debug_str     0x0000000000001c34      0x217 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans6.ltrans.o
+                                        0x70a (size before relaxing)
+ .debug_str     0x0000000000001e4b      0x460 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+                                        0xb53 (size before relaxing)
+ .debug_str     0x00000000000022ab      0x3aa /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+                                        0xa49 (size before relaxing)
+ .debug_str     0x0000000000002655      0x3b0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+                                        0xd35 (size before relaxing)
+ .debug_str     0x0000000000002a05      0x386 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans10.ltrans.o
+                                        0xa35 (size before relaxing)
+ .debug_str     0x0000000000002d8b      0x313 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+                                        0xa0b (size before relaxing)
+ .debug_str     0x000000000000309e      0x7af /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+                                        0xf9f (size before relaxing)
+ .debug_str     0x000000000000384d      0xa68 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+                                       0x1c3b (size before relaxing)
+
+.comment        0x0000000000000000       0x6e
+ .comment       0x0000000000000000       0x6e /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+                                         0x6f (size before relaxing)
+ .comment       0x000000000000006e       0x6f /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans2.ltrans.o
+ .comment       0x000000000000006e       0x6f /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans3.ltrans.o
+ .comment       0x000000000000006e       0x6f /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans4.ltrans.o
+ .comment       0x000000000000006e       0x6f /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans5.ltrans.o
+ .comment       0x000000000000006e       0x6f /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans6.ltrans.o
+ .comment       0x000000000000006e       0x6f /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+ .comment       0x000000000000006e       0x6f /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .comment       0x000000000000006e       0x6f /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+ .comment       0x000000000000006e       0x6f /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans10.ltrans.o
+ .comment       0x000000000000006e       0x6f /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+ .comment       0x000000000000006e       0x6f /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .comment       0x000000000000006e       0x6f /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+
+.debug_frame    0x0000000000000000     0x3160
+ .debug_frame   0x0000000000000000      0x110 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans0.ltrans.o
+ .debug_frame   0x0000000000000110      0x264 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans2.ltrans.o
+ .debug_frame   0x0000000000000374      0x1c8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans3.ltrans.o
+ .debug_frame   0x000000000000053c      0x26c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans4.ltrans.o
+ .debug_frame   0x00000000000007a8       0xf4 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans5.ltrans.o
+ .debug_frame   0x000000000000089c      0x200 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans6.ltrans.o
+ .debug_frame   0x0000000000000a9c      0x41c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans7.ltrans.o
+ .debug_frame   0x0000000000000eb8      0x468 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans8.ltrans.o
+ .debug_frame   0x0000000000001320      0x35c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans9.ltrans.o
+ .debug_frame   0x000000000000167c      0x240 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans10.ltrans.o
+ .debug_frame   0x00000000000018bc      0x428 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans11.ltrans.o
+ .debug_frame   0x0000000000001ce4      0x6f0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans13.ltrans.o
+ .debug_frame   0x00000000000023d4      0xd38 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccnzGkJT.ltrans14.ltrans.o
+ .debug_frame   0x000000000000310c       0x2c /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-init.o)
+ .debug_frame   0x0000000000003138       0x28 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-memcpy-stub.o)

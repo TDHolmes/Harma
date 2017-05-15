@@ -1,0 +1,662 @@
+Archive member included to satisfy reference by file (symbol)
+
+/usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-exit.o)
+                              /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/crt0.o (exit)
+/usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-impure.o)
+                              /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-exit.o) (_global_impure_ptr)
+/usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-init.o)
+                              /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/crt0.o (__libc_init_array)
+/usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-memcpy-stub.o)
+                              CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/UART.c.obj (symbol from plugin) (memcpy)
+/usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-memset.o)
+                              /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/crt0.o (memset)
+/usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libnosys.a(_exit.o)
+                              /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-exit.o) (_exit)
+/usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/libgcc.a(_ashrdi3.o)
+                              /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans5.ltrans.o (__aeabi_lasr)
+
+Discarded input sections
+
+ .text          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crti.o
+ .data          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crti.o
+ .bss           0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crti.o
+ .data          0x0000000000000000        0x4 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
+ .text          0x0000000000000000       0x74 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/crt0.o
+ .data          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/crt0.o
+ .bss           0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/crt0.o
+ .ARM.extab     0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/crt0.o
+ .ARM.exidx     0x0000000000000000        0x8 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/crt0.o
+ .ARM.attributes
+                0x0000000000000000       0x20 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/crt0.o
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/LSM303DLHC.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans0.ltrans.o
+ .data          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans0.ltrans.o
+ .bss           0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans0.ltrans.o
+ .text          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans1.ltrans.o
+ .data          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans1.ltrans.o
+ .bss           0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans1.ltrans.o
+ .text          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans2.ltrans.o
+ .data          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans2.ltrans.o
+ .bss           0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans2.ltrans.o
+ .text          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans3.ltrans.o
+ .data          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans3.ltrans.o
+ .bss           0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans3.ltrans.o
+ .text          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans4.ltrans.o
+ .data          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans4.ltrans.o
+ .bss           0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans4.ltrans.o
+ .text          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans5.ltrans.o
+ .data          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans5.ltrans.o
+ .bss           0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans5.ltrans.o
+ .text          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans6.ltrans.o
+ .data          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans6.ltrans.o
+ .bss           0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans6.ltrans.o
+ .text          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans7.ltrans.o
+ .data          0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans7.ltrans.o
+ .bss           0x0000000000000000        0x0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans7.ltrans.o
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/main.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/cli.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/reports.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/queue.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/UART.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/I2C.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/ADC.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/hardware.c.obj (symbol from plugin)
+ .text          0x0000000000000000       0x14 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/startup_stm32f302x8.s.obj
+ .data          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/startup_stm32f302x8.s.obj
+ .bss           0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/startup_stm32f302x8.s.obj
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/stm32f3xx_hal_msp.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/system_stm32f3xx.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/stm32f3xx_it.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_cortex.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_gpio.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_hrtim.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_i2c.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_i2c_ex.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_uart.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_uart_ex.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_dma.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_rcc.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_rcc_ex.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_adc.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_adc_ex.c.obj (symbol from plugin)
+ .text          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-exit.o)
+ .data          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-exit.o)
+ .bss           0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-exit.o)
+ .text.exit     0x0000000000000000       0x28 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-exit.o)
+ .debug_frame   0x0000000000000000       0x28 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-exit.o)
+ .ARM.attributes
+                0x0000000000000000       0x34 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-exit.o)
+ .text          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-impure.o)
+ .data          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-impure.o)
+ .bss           0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-impure.o)
+ .data.impure_data
+                0x0000000000000000       0x60 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-impure.o)
+ .data._impure_ptr
+                0x0000000000000000        0x4 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-impure.o)
+ .rodata._global_impure_ptr
+                0x0000000000000000        0x4 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-impure.o)
+ .ARM.attributes
+                0x0000000000000000       0x34 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-impure.o)
+ .text          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-init.o)
+ .data          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-init.o)
+ .bss           0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-init.o)
+ .text          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-memcpy-stub.o)
+ .data          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-memcpy-stub.o)
+ .bss           0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-memcpy-stub.o)
+ .text          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-memset.o)
+ .data          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-memset.o)
+ .bss           0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-memset.o)
+ .text.memset   0x0000000000000000       0x10 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-memset.o)
+ .debug_frame   0x0000000000000000       0x20 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-memset.o)
+ .ARM.attributes
+                0x0000000000000000       0x34 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-memset.o)
+ .text          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libnosys.a(_exit.o)
+ .data          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libnosys.a(_exit.o)
+ .bss           0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libnosys.a(_exit.o)
+ .text._exit    0x0000000000000000        0x4 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libnosys.a(_exit.o)
+ .debug_frame   0x0000000000000000       0x20 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libnosys.a(_exit.o)
+ .ARM.attributes
+                0x0000000000000000       0x34 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libnosys.a(_exit.o)
+ .text          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtend.o
+ .data          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtend.o
+ .bss           0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtend.o
+ .eh_frame      0x0000000000000000        0x4 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtend.o
+ .jcr           0x0000000000000000        0x4 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtend.o
+ .ARM.attributes
+                0x0000000000000000       0x34 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtend.o
+ .text          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtn.o
+ .data          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtn.o
+ .bss           0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtn.o
+ .data          0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/libgcc.a(_ashrdi3.o)
+ .bss           0x0000000000000000        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/libgcc.a(_ashrdi3.o)
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+FLASH            0x0000000008000000 0x0000000000010000 xr
+RAM              0x0000000020000000 0x0000000000004000 xrw
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+LOAD /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crti.o
+LOAD /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
+LOAD /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/crt0.o
+                0x0000000000000cc0                __stack_size__ = 0xcc0
+                0x0000000000000000                __heap_size__ = 0x0
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/LSM303DLHC.c.obj
+LOAD /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans0.ltrans.o
+LOAD /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans1.ltrans.o
+LOAD /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans2.ltrans.o
+LOAD /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans3.ltrans.o
+LOAD /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans4.ltrans.o
+LOAD /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans5.ltrans.o
+LOAD /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans6.ltrans.o
+LOAD /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans7.ltrans.o
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/main.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/cli.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/reports.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/queue.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/UART.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/I2C.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/ADC.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/hardware.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/startup_stm32f302x8.s.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/stm32f3xx_hal_msp.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/system_stm32f3xx.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/stm32f3xx_it.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_cortex.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_gpio.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_hrtim.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_i2c.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_i2c_ex.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_uart.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_uart_ex.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_dma.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_rcc.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_rcc_ex.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_adc.c.obj
+LOAD CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/Drivers/stm32f3xx_hal_adc_ex.c.obj
+START GROUP
+LOAD /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libm.a
+LOAD /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a
+LOAD /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/libgcc.a
+LOAD /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libnosys.a
+END GROUP
+START GROUP
+LOAD /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/libgcc.a
+LOAD /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a
+END GROUP
+START GROUP
+LOAD /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/libgcc.a
+LOAD /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a
+END GROUP
+LOAD /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtend.o
+LOAD /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtn.o
+                0x0000000020003fff                _estack = 0x20003fff
+                0x0000000000000200                HEAP_SIZE = DEFINED (__heap_size__)?__heap_size__:0x200
+                0x0000000000000400                STACK_SIZE = DEFINED (__stack_size__)?__stack_size__:0x400
+
+.isr_vector     0x0000000008000000      0x188
+                0x0000000008000000                . = ALIGN (0x4)
+ *(.isr_vector)
+ .isr_vector    0x0000000008000000      0x188 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/startup_stm32f302x8.s.obj
+                0x0000000008000000                g_pfnVectors
+                0x0000000008000188                . = ALIGN (0x4)
+
+.text           0x0000000008000188     0x2bbc
+                0x0000000008000188                . = ALIGN (0x4)
+ *(.text)
+ .text          0x0000000008000188       0x5c /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
+ .text          0x00000000080001e4       0x1c /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/libgcc.a(_ashrdi3.o)
+                0x00000000080001e4                __ashrdi3
+                0x00000000080001e4                __aeabi_lasr
+ *(.text*)
+ .text.startup.main
+                0x0000000008000200      0xb98 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans0.ltrans.o
+                0x0000000008000200                main
+ .text.unlikely.ADC_init
+                0x0000000008000d98      0x660 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans1.ltrans.o
+                0x0000000008000d98                ADC_init
+ .text.I2C_ITListenCplt
+                0x00000000080013f8       0x5c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans2.ltrans.o
+ .text.I2C_ITSlaveSequentialCplt
+                0x0000000008001454       0x3e /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans2.ltrans.o
+ .text.I2C_ITMasterSequentialCplt
+                0x0000000008001492       0x36 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans2.ltrans.o
+ .text.I2C_Flush_TXDR.lto_priv.75
+                0x00000000080014c8       0x1c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans2.ltrans.o
+                0x00000000080014c8                I2C_Flush_TXDR.lto_priv.75
+ .text.I2C_ITError.lto_priv.80
+                0x00000000080014e4       0xe0 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans2.ltrans.o
+                0x00000000080014e4                I2C_ITError.lto_priv.80
+ .text.I2C_ITSlaveCplt
+                0x00000000080015c4       0xe8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans2.ltrans.o
+ .text.I2C_Slave_ISR_DMA.lto_priv.74
+                0x00000000080016ac       0x6c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans2.ltrans.o
+                0x00000000080016ac                I2C_Slave_ISR_DMA.lto_priv.74
+ .text.I2C_Slave_ISR_IT
+                0x0000000008001718      0x16c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans2.ltrans.o
+ .text.I2C_ITMasterCplt
+                0x0000000008001884       0x98 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans2.ltrans.o
+ .text.I2C_Master_ISR_DMA.lto_priv.73
+                0x000000000800191c       0xe4 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans2.ltrans.o
+                0x000000000800191c                I2C_Master_ISR_DMA.lto_priv.73
+ .text.I2C_Master_ISR_IT.lto_priv.72
+                0x0000000008001a00      0x11c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans2.ltrans.o
+                0x0000000008001a00                I2C_Master_ISR_IT.lto_priv.72
+ .text.HAL_GPIO_EXTI_IRQHandler
+                0x0000000008001b1c      0x1f8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans2.ltrans.o
+                0x0000000008001b1c                HAL_GPIO_EXTI_IRQHandler
+ .text.UART_DMAAbortOnError.lto_priv.79
+                0x0000000008001d14       0x10 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans3.ltrans.o
+                0x0000000008001d14                UART_DMAAbortOnError.lto_priv.79
+ .text.I2C_DMAAbort.lto_priv.76
+                0x0000000008001d24       0x34 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans3.ltrans.o
+                0x0000000008001d24                I2C_DMAAbort.lto_priv.76
+ .text.I2C_WaitOnTXISFlagUntilTimeout.constprop.67
+                0x0000000008001d58       0x90 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans3.ltrans.o
+                0x0000000008001d58                I2C_WaitOnTXISFlagUntilTimeout.constprop.67
+ .text.unlikely.ADC_Disable.constprop.42
+                0x0000000008001de8       0x74 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans3.ltrans.o
+                0x0000000008001de8                ADC_Disable.constprop.42
+ .text.HAL_UART_Receive_IT.part.1.constprop.26
+                0x0000000008001e5c       0x68 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans3.ltrans.o
+                0x0000000008001e5c                HAL_UART_Receive_IT.part.1.constprop.26
+ .text.HAL_GPIO_ReadPin.constprop.16
+                0x0000000008001ec4       0x24 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans3.ltrans.o
+                0x0000000008001ec4                HAL_GPIO_ReadPin.constprop.16
+ .text.HAL_InitTick.constprop.15
+                0x0000000008001ee8       0x48 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans3.ltrans.o
+                0x0000000008001ee8                HAL_InitTick.constprop.15
+ .text.UART_Receive_IT.constprop.1
+                0x0000000008001f30       0xa8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans3.ltrans.o
+                0x0000000008001f30                UART_Receive_IT.constprop.1
+ .text.HAL_RCC_GetPCLK2Freq
+                0x0000000008001fd8       0x30 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans3.ltrans.o
+                0x0000000008001fd8                HAL_RCC_GetPCLK2Freq
+ .text.HAL_RCC_GetPCLK1Freq
+                0x0000000008002008       0x30 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans3.ltrans.o
+                0x0000000008002008                HAL_RCC_GetPCLK1Freq
+ .text.HAL_RCC_GetSysClockFreq
+                0x0000000008002038       0x64 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans3.ltrans.o
+                0x0000000008002038                HAL_RCC_GetSysClockFreq
+ .text.HAL_DMA_Abort_IT
+                0x000000000800209c       0x48 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans3.ltrans.o
+                0x000000000800209c                HAL_DMA_Abort_IT
+ .text.I2C_Disable_IRQ.lto_priv.77
+                0x00000000080020e4       0x5c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans3.ltrans.o
+                0x00000000080020e4                I2C_Disable_IRQ.lto_priv.77
+ .text.I2C_TransferConfig.lto_priv.78
+                0x0000000008002140       0x74 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans3.ltrans.o
+                0x0000000008002140                I2C_TransferConfig.lto_priv.78
+ .text.unlikely.I2C_writeData.constprop.53
+                0x00000000080021b4      0x138 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans3.ltrans.o
+                0x00000000080021b4                I2C_writeData.constprop.53
+ .text.HAL_GPIO_Init
+                0x00000000080022ec      0x280 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans4.ltrans.o
+                0x00000000080022ec                HAL_GPIO_Init
+ .text.HAL_NVIC_SetPriority
+                0x000000000800256c       0x80 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans4.ltrans.o
+                0x000000000800256c                HAL_NVIC_SetPriority
+ .text.EXTI15_10_IRQHandler
+                0x00000000080025ec        0x8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans4.ltrans.o
+                0x00000000080025ec                EXTI15_10_IRQHandler
+ .text.EXTI9_5_IRQHandler
+                0x00000000080025f4        0x6 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans4.ltrans.o
+                0x00000000080025f4                EXTI9_5_IRQHandler
+ .text.EXTI4_IRQHandler
+                0x00000000080025fa        0x6 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans4.ltrans.o
+                0x00000000080025fa                EXTI4_IRQHandler
+ .text.EXTI3_IRQHandler
+                0x0000000008002600        0x6 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans4.ltrans.o
+                0x0000000008002600                EXTI3_IRQHandler
+ .text.EXTI2_TSC_IRQHandler
+                0x0000000008002606        0x6 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans4.ltrans.o
+                0x0000000008002606                EXTI2_TSC_IRQHandler
+ .text.EXTI1_IRQHandler
+                0x000000000800260c        0x6 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans4.ltrans.o
+                0x000000000800260c                EXTI1_IRQHandler
+ *fill*         0x0000000008002612        0x2 
+ .text.USART1_IRQHandler
+                0x0000000008002614      0x194 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans4.ltrans.o
+                0x0000000008002614                USART1_IRQHandler
+ .text.I2C2_ER_IRQHandler
+                0x00000000080027a8       0x6c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans4.ltrans.o
+                0x00000000080027a8                I2C2_ER_IRQHandler
+ .text.I2C2_EV_IRQHandler
+                0x0000000008002814       0x14 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans4.ltrans.o
+                0x0000000008002814                I2C2_EV_IRQHandler
+ .text.SysTick_Handler
+                0x0000000008002828       0x9c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans4.ltrans.o
+                0x0000000008002828                SysTick_Handler
+ .text.PendSV_Handler
+                0x00000000080028c4        0x2 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans4.ltrans.o
+                0x00000000080028c4                PendSV_Handler
+ .text.NMI_Handler
+                0x00000000080028c6        0x2 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans4.ltrans.o
+                0x00000000080028c6                NMI_Handler
+ .text.DebugMon_Handler
+                0x00000000080028c8        0x2 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans4.ltrans.o
+                0x00000000080028c8                DebugMon_Handler
+ .text.SVC_Handler
+                0x00000000080028ca        0x2 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans4.ltrans.o
+                0x00000000080028ca                SVC_Handler
+ .text.UsageFault_Handler
+                0x00000000080028cc        0x2 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans4.ltrans.o
+                0x00000000080028cc                UsageFault_Handler
+ .text.BusFault_Handler
+                0x00000000080028ce        0x2 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans4.ltrans.o
+                0x00000000080028ce                BusFault_Handler
+ .text.MemManage_Handler
+                0x00000000080028d0        0x2 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans4.ltrans.o
+                0x00000000080028d0                MemManage_Handler
+ .text.HardFault_Handler
+                0x00000000080028d2        0x2 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans4.ltrans.o
+                0x00000000080028d2                HardFault_Handler
+ .text.UART_TXisReady
+                0x00000000080028d4       0x1c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans5.ltrans.o
+ .text.UART_sendChar
+                0x00000000080028f0       0x6c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans5.ltrans.o
+ .text.UART_sendString
+                0x000000000800295c       0x20 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans5.ltrans.o
+                0x000000000800295c                UART_sendString
+ .text.UART_sendint
+                0x000000000800297c       0x88 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans5.ltrans.o
+                0x000000000800297c                UART_sendint
+ .text.fatal_error_handler
+                0x0000000008002a04       0x74 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans5.ltrans.o
+                0x0000000008002a04                fatal_error_handler
+ .text.HAL_UART_ErrorCallback
+                0x0000000008002a78       0x14 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans5.ltrans.o
+                0x0000000008002a78                HAL_UART_ErrorCallback
+ .text.assert_failed
+                0x0000000008002a8c        0x8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans5.ltrans.o
+                0x0000000008002a8c                assert_failed
+ .text.I2C_readData
+                0x0000000008002a94      0x13c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans5.ltrans.o
+                0x0000000008002a94                I2C_readData
+ .text.SystemInit
+                0x0000000008002bd0       0x68 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans6.ltrans.o
+                0x0000000008002bd0                SystemInit
+ .text.queue_increment_head
+                0x0000000008002c38       0x3c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans7.ltrans.o
+                0x0000000008002c38                queue_increment_head
+ .text.Reset_Handler
+                0x0000000008002c74       0x50 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/startup_stm32f302x8.s.obj
+                0x0000000008002c74                Reset_Handler
+ .text.Default_Handler
+                0x0000000008002cc4        0x2 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/startup_stm32f302x8.s.obj
+                0x0000000008002cc4                TIM1_BRK_TIM15_IRQHandler
+                0x0000000008002cc4                TIM1_CC_IRQHandler
+                0x0000000008002cc4                USB_HP_IRQHandler
+                0x0000000008002cc4                PVD_IRQHandler
+                0x0000000008002cc4                TAMP_STAMP_IRQHandler
+                0x0000000008002cc4                I2C3_ER_IRQHandler
+                0x0000000008002cc4                USB_HP_CAN_TX_IRQHandler
+                0x0000000008002cc4                EXTI0_IRQHandler
+                0x0000000008002cc4                FPU_IRQHandler
+                0x0000000008002cc4                TIM1_UP_TIM16_IRQHandler
+                0x0000000008002cc4                CAN_SCE_IRQHandler
+                0x0000000008002cc4                TIM6_DAC_IRQHandler
+                0x0000000008002cc4                DMA1_Channel4_IRQHandler
+                0x0000000008002cc4                ADC1_IRQHandler
+                0x0000000008002cc4                USART3_IRQHandler
+                0x0000000008002cc4                DMA1_Channel7_IRQHandler
+                0x0000000008002cc4                CAN_RX1_IRQHandler
+                0x0000000008002cc4                I2C1_EV_IRQHandler
+                0x0000000008002cc4                DMA1_Channel6_IRQHandler
+                0x0000000008002cc4                RCC_IRQHandler
+                0x0000000008002cc4                DMA1_Channel1_IRQHandler
+                0x0000000008002cc4                Default_Handler
+                0x0000000008002cc4                USBWakeUp_RMP_IRQHandler
+                0x0000000008002cc4                COMP2_IRQHandler
+                0x0000000008002cc4                I2C3_EV_IRQHandler
+                0x0000000008002cc4                RTC_WKUP_IRQHandler
+                0x0000000008002cc4                SPI2_IRQHandler
+                0x0000000008002cc4                USB_LP_CAN_RX0_IRQHandler
+                0x0000000008002cc4                DMA1_Channel5_IRQHandler
+                0x0000000008002cc4                USB_LP_IRQHandler
+                0x0000000008002cc4                TIM1_TRG_COM_TIM17_IRQHandler
+                0x0000000008002cc4                DMA1_Channel3_IRQHandler
+                0x0000000008002cc4                WWDG_IRQHandler
+                0x0000000008002cc4                TIM2_IRQHandler
+                0x0000000008002cc4                COMP4_6_IRQHandler
+                0x0000000008002cc4                USART2_IRQHandler
+                0x0000000008002cc4                DMA1_Channel2_IRQHandler
+                0x0000000008002cc4                FLASH_IRQHandler
+                0x0000000008002cc4                SPI3_IRQHandler
+                0x0000000008002cc4                I2C1_ER_IRQHandler
+                0x0000000008002cc4                USBWakeUp_IRQHandler
+                0x0000000008002cc4                RTC_Alarm_IRQHandler
+ *fill*         0x0000000008002cc6        0x2 
+ .text.__libc_init_array
+                0x0000000008002cc8       0x4c /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-init.o)
+                0x0000000008002cc8                __libc_init_array
+ .text.memcpy   0x0000000008002d14       0x16 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-memcpy-stub.o)
+                0x0000000008002d14                memcpy
+ *(.glue_7)
+ .glue_7        0x0000000008002d2a        0x0 linker stubs
+ *(.glue_7t)
+ .glue_7t       0x0000000008002d2a        0x0 linker stubs
+ *(.eh_frame)
+ *fill*         0x0000000008002d2a        0x2 
+ .eh_frame      0x0000000008002d2c        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
+ *(.init)
+ .init          0x0000000008002d2c        0x4 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crti.o
+                0x0000000008002d2c                _init
+ .init          0x0000000008002d30        0x8 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtn.o
+ *(.fini)
+ .fini          0x0000000008002d38        0x4 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crti.o
+                0x0000000008002d38                _fini
+ .fini          0x0000000008002d3c        0x8 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtn.o
+                0x0000000008002d44                . = ALIGN (0x4)
+                0x0000000008002d44                _etext = .
+
+.vfp11_veneer   0x0000000008002d44        0x0
+ .vfp11_veneer  0x0000000008002d44        0x0 linker stubs
+
+.v4_bx          0x0000000008002d44        0x0
+ .v4_bx         0x0000000008002d44        0x0 linker stubs
+
+.iplt           0x0000000008002d44        0x0
+ .iplt          0x0000000008002d44        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
+
+.rodata         0x0000000008002d44      0x30c
+                0x0000000008002d44                . = ALIGN (0x4)
+ *(.rodata)
+ *(.rodata*)
+ .rodata.CSWTCH.45
+                0x0000000008002d44        0x4 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans0.ltrans.o
+ .rodata.str1.1
+                0x0000000008002d48      0x166 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans0.ltrans.o
+                                        0x16b (size before relaxing)
+ .rodata.AHBPrescTable
+                0x0000000008002eae       0x10 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans0.ltrans.o
+ .rodata.str1.1
+                0x0000000008002ebe       0x4d /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans1.ltrans.o
+ .rodata.str1.1
+                0x0000000008002f0b       0x3b /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans2.ltrans.o
+ .rodata.str1.1
+                0x0000000008002f46       0x4b /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans3.ltrans.o
+                                         0xd0 (size before relaxing)
+ .rodata.APBPrescTable
+                0x0000000008002f91        0x8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans3.ltrans.o
+ .rodata.aPredivFactorTable
+                0x0000000008002f99       0x10 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans3.ltrans.o
+ .rodata.aPLLMULFactorTable
+                0x0000000008002fa9       0x10 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans3.ltrans.o
+ .rodata.str1.1
+                0x0000000008002fb9       0x4d /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans4.ltrans.o
+                                         0x98 (size before relaxing)
+ .rodata.str1.1
+                0x0000000008003006       0x49 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans5.ltrans.o
+                                         0x4c (size before relaxing)
+                0x0000000008003050                . = ALIGN (0x4)
+ *fill*         0x000000000800304f        0x1 
+
+.rel.dyn        0x0000000008003050        0x0
+ .rel.iplt      0x0000000008003050        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
+
+.ARM.extab
+ *(.ARM.extab* .gnu.linkonce.armextab.*)
+
+.ARM            0x0000000008003050        0x0
+                0x0000000008003050                __exidx_start = .
+ *(.ARM.exidx*)
+                0x0000000008003050                __exidx_end = .
+
+.preinit_array  0x0000000008003050        0x0
+                0x0000000008003050                PROVIDE (__preinit_array_start, .)
+ *(.preinit_array*)
+                0x0000000008003050                PROVIDE (__preinit_array_end, .)
+
+.init_array     0x0000000008003050        0x4
+                0x0000000008003050                PROVIDE (__init_array_start, .)
+ *(SORT(.init_array.*))
+ *(.init_array*)
+ .init_array    0x0000000008003050        0x4 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
+                0x0000000008003054                PROVIDE (__init_array_end, .)
+
+.fini_array     0x0000000008003054        0x4
+                [!provide]                        PROVIDE (__fini_array_start, .)
+ *(SORT(.fini_array.*))
+ *(.fini_array*)
+ .fini_array    0x0000000008003054        0x4 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
+                [!provide]                        PROVIDE (__fini_array_end, .)
+                0x0000000008003058                _sidata = LOADADDR (.data)
+
+.data           0x0000000020000000        0x4 load address 0x0000000008003058
+                0x0000000020000000                . = ALIGN (0x4)
+                0x0000000020000000                _sdata = .
+ *(.data)
+ *(.data*)
+ .data.SystemCoreClock
+                0x0000000020000000        0x4 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans3.ltrans.o
+                0x0000000020000000                SystemCoreClock
+                0x0000000020000004                . = ALIGN (0x4)
+                0x0000000020000004                _edata = .
+
+.jcr            0x0000000020000004        0x0 load address 0x000000000800305c
+ .jcr           0x0000000020000004        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
+
+.igot.plt       0x0000000020000004        0x0 load address 0x000000000800305c
+ .igot.plt      0x0000000020000004        0x0 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
+                0x0000000020000004                . = ALIGN (0x4)
+
+.bss            0x0000000020000004      0x2d8 load address 0x000000000800305c
+                0x0000000020000004                _sbss = .
+                0x0000000020000004                __bss_start__ = _sbss
+ *(.bss)
+ .bss           0x0000000020000004       0x1c /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
+ *(.bss*)
+ .bss.GPIO_InitStruct
+                0x0000000020000020       0x14 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans0.ltrans.o
+ .bss.DmaHandle.6922
+                0x0000000020000034       0x44 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans1.ltrans.o
+ .bss.sConfig   0x0000000020000078       0x18 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans1.ltrans.o
+ .bss.LSM303DLHC
+                0x0000000020000090       0xd8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans2.ltrans.o
+                0x0000000020000090                LSM303DLHC
+ .bss.switch_admin
+                0x0000000020000168        0x8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans2.ltrans.o
+                0x0000000020000168                switch_admin
+ .bss.mainbutton_admin
+                0x0000000020000170        0x8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans2.ltrans.o
+                0x0000000020000170                mainbutton_admin
+ .bss.auxbutton_admin
+                0x0000000020000178        0x8 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans2.ltrans.o
+                0x0000000020000178                auxbutton_admin
+ .bss.HAL_UART_handle
+                0x0000000020000180       0x70 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans3.ltrans.o
+                0x0000000020000180                HAL_UART_handle
+ .bss.AdcHandle
+                0x00000000200001f0       0x54 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans3.ltrans.o
+                0x00000000200001f0                AdcHandle
+ .bss.TX_buffer
+                0x0000000020000244        0xa /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans3.ltrans.o
+ *fill*         0x000000002000024e        0x2 
+ .bss.uwTick    0x0000000020000250        0x4 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans3.ltrans.o
+                0x0000000020000250                uwTick
+ .bss.I2cHandle
+                0x0000000020000254       0x4c /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans3.ltrans.o
+                0x0000000020000254                I2cHandle
+ .bss.UART_admin
+                0x00000000200002a0       0x36 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans3.ltrans.o
+                0x00000000200002a0                UART_admin
+ .bss.second_count.7283
+                0x00000000200002d6        0x2 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans4.ltrans.o
+ .bss.sub_count.7282
+                0x00000000200002d8        0x1 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans4.ltrans.o
+ *(COMMON)
+                0x00000000200002dc                . = ALIGN (0x4)
+ *fill*         0x00000000200002d9        0x3 
+                0x00000000200002dc                _ebss = .
+                0x00000000200002dc                __bss_end__ = _ebss
+
+._user_heap_stack
+                0x00000000200002dc      0xcc0 load address 0x000000000800305c
+                0x00000000200002dc                . = ALIGN (0x4)
+                [!provide]                        PROVIDE (end, .)
+                [!provide]                        PROVIDE (_end, .)
+                0x00000000200002dc                . = (. + HEAP_SIZE)
+                0x0000000020000f9c                . = (. + STACK_SIZE)
+ *fill*         0x00000000200002dc      0xcc0 
+                0x0000000020000f9c                . = ALIGN (0x4)
+
+/DISCARD/
+ libc.a(*)
+ libm.a(*)
+ libgcc.a(*)
+
+.ARM.attributes
+                0x0000000000000000       0x30
+ *(.ARM.attributes)
+ .ARM.attributes
+                0x0000000000000000       0x22 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crti.o
+ .ARM.attributes
+                0x0000000000000022       0x34 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
+ .ARM.attributes
+                0x0000000000000056       0x37 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans0.ltrans.o
+ .ARM.attributes
+                0x000000000000008d       0x37 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans1.ltrans.o
+ .ARM.attributes
+                0x00000000000000c4       0x37 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans2.ltrans.o
+ .ARM.attributes
+                0x00000000000000fb       0x37 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans3.ltrans.o
+ .ARM.attributes
+                0x0000000000000132       0x37 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans4.ltrans.o
+ .ARM.attributes
+                0x0000000000000169       0x37 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans5.ltrans.o
+ .ARM.attributes
+                0x00000000000001a0       0x37 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans6.ltrans.o
+ .ARM.attributes
+                0x00000000000001d7       0x37 /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans7.ltrans.o
+ .ARM.attributes
+                0x000000000000020e       0x21 CMakeFiles/pensel.elf.dir/Users/tholmes/projects/Harma/Pensel/firmware/source/startup_stm32f302x8.s.obj
+ .ARM.attributes
+                0x000000000000022f       0x34 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-init.o)
+ .ARM.attributes
+                0x0000000000000263       0x34 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-memcpy-stub.o)
+ .ARM.attributes
+                0x0000000000000297       0x22 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtn.o
+ .ARM.attributes
+                0x00000000000002b9       0x22 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/libgcc.a(_ashrdi3.o)
+OUTPUT(build/Release/pensel.elf elf32-littlearm)
+
+.comment        0x0000000000000000       0x6e
+ .comment       0x0000000000000000       0x6e /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans0.ltrans.o
+                                         0x6f (size before relaxing)
+ .comment       0x000000000000006e       0x6f /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans1.ltrans.o
+ .comment       0x000000000000006e       0x6f /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans2.ltrans.o
+ .comment       0x000000000000006e       0x6f /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans3.ltrans.o
+ .comment       0x000000000000006e       0x6f /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans4.ltrans.o
+ .comment       0x000000000000006e       0x6f /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans5.ltrans.o
+ .comment       0x000000000000006e       0x6f /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans6.ltrans.o
+ .comment       0x000000000000006e       0x6f /var/folders/g_/ncpyrg8j5hl_79bd6ypn6x600000gn/T//ccsJa1Fg.ltrans7.ltrans.o
+
+.debug_frame    0x0000000000000000       0x54
+ .debug_frame   0x0000000000000000       0x2c /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-init.o)
+ .debug_frame   0x000000000000002c       0x28 /usr/local/resources/compilers/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/libc_nano.a(lib_a-memcpy-stub.o)
