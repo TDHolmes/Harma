@@ -10,5 +10,5 @@
 *.pyc
 
 // Project Folders
-Pensel/source/compiler/build/*
+Pensel/firmware/compiler/build/*
 Pensel/scripts/recordings/*
