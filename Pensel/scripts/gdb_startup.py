@@ -1,3 +1,12 @@
+"""
+Script that should be called at the beginning of a GDB session. This can be configured
+in your GDB init file:
+
+    $ cat ~/.gdbinit
+    source gdb_startup.py
+
+then, call "arm-none-eabi-gdb-py" when in this folder.
+"""
 import gdb
 import os
 
