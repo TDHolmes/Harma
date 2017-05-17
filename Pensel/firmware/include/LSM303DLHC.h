@@ -1,5 +1,4 @@
-/*
- *
+/*! Public data types and function definitions for the LSM303DLHC sensor.
  *
  */
  #ifndef _LSM303DLHC_H_
@@ -10,23 +9,7 @@
 #include "common.h"
 
 
-typedef enum {
-    kTwoG,
-    kFourG,
-    kEightG,
-    kSixteenG,
-} accel_fullscale_t;
-
-typedef enum {
-    kOne_Three_gauss = 1,
-    kOne_Nine_gauss,
-    kTwo_Five_gauss,
-    kFour_Zero_gauss,
-    kFour_Seven_gauss,
-    kFive_Six_gauss,
-    kEight_One_gauss,
-} mag_fullscale_t;
-
+//! Enum for the possible sensitivities of the accel module in the LSM303DLHC.
 typedef enum {
     kOne_mg_per_LSB,
     kTwo_mg_per_LSB,
@@ -34,6 +17,7 @@ typedef enum {
     kTwelve_mg_per_LSB
 } accel_sensitivity_t;
 
+//! Enum for the possible sensitivities of the mag module in the LSM303DLHC.
 typedef enum {
     kXY_1100_Z_980_LSB_per_g = 1,
     kXY_855_Z_760_LSB_per_g,
@@ -44,6 +28,7 @@ typedef enum {
     kXY_230_Z_205_LSB_per_g
 } mag_sensitivity_t;
 
+//! Enum for the possible output data rates of the accel module in the LSM303DLHC.
 typedef enum {
     kAccelODR_PowerDown,
     kAccelODR_1Hz,
@@ -57,7 +42,7 @@ typedef enum {
     kAccelODR_N_1344_LPM_5376_Hz
 } accel_ODR_t;
 
-
+//! Enum for the possible output data rates of the mag module in the LSM303DLHC.
 typedef enum {
     kMagODR_0_75_Hz,
     kMagODR_1_5_Hz,
@@ -69,7 +54,7 @@ typedef enum {
     kMagODR_220_Hz
 } mag_ODR_t;
 
-
+//! Enum for the possible modes we can configure the FIFO in the LSM303DLHC.
 typedef enum {
     kFIFO_MODE_Bypass,
     kFIFO_MODE_FIFO,
@@ -77,20 +62,20 @@ typedef enum {
     kFIFO_MODE_Trigger
 } FIFO_mode_t;
 
-
+//! Accel packet definition
 typedef struct {
     uint32_t timestamp;  //!< Timestamp when the packet was received
-    int32_t x;           //!< Accel X value
-    int32_t y;           //!< Accel Y value
-    int32_t z;           //!< Accel Z value
+    float x;             //!< Accel X value
+    float y;             //!< Accel Y value
+    float z;             //!< Accel Z value
 } accel_packet_t;
 
-
+//! Mag packet definition
 typedef struct {
     uint32_t timestamp;  //!< Timestamp when the packet was received
-    int32_t x;           //!< Mag X value
-    int32_t y;           //!< Mag Y value
-    int32_t z;           //!< Mag Z value
+    float x;             //!< Mag X value
+    float y;             //!< Mag Y value
+    float z;             //!< Mag Z value
 } mag_packet_t;
 
 

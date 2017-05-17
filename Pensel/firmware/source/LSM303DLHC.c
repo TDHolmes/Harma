@@ -76,143 +76,14 @@ Mag sensor address behavior:
 #define MAG_TEMP_OUT_H_M  (0x31)
 #define MAG_TEMP_OUT_L_M  (0x32)
 
-/* Register definitions:
-    CTRL_REG1_A
-        7-4: ODR[3:0]   Data rate selection. Default value: 0000 (0000: power-down, others: refer to Table 20)
-        3: LPen         Low-power mode enable. Default value: 0 (0: normal mode, 1: low-power mode)
-        2: Zen          Z-axis enable. Default value: 1   (0: Z-axis disabled, 1: Z-axis enabled)
-        1: Yen          Y-axis enable. Default value: 1   (0: Y-axis disabled, 1: Y-axis enabled)
-        0: Xen          X-axis enable. Default value: 1   (0: X-axis disabled, 1: X-axis enabled)
-
-    CTRL_REG2_A
-        7-6: HPM[1:0]   High-pass filter mode selection. Default value: 00 (refer to Table 23)
-        5-4: HPCF[2:1]  High-pass filter cutoff frequency selection
-        3:   FDS        Filtered data selection. Default value: 0
-                             (0: internal filter bypassed, 1: data from internal filter sent to output register and FIFO)
-        2:   HPCLICK    High-pass filter enabled for click function (0: filter bypassed, 1: filter enabled)
-        1:   HPIS2      High-pass filter enabled for AOI function on Interrupt 2 (0: filter bypassed, 1: filter enabled)
-        0:   HPIS1      High-pass filter enabled for AOI function on Interrupt 1 (0: filter bypassed, 1: filter enabled)
-
-    CTRL_REG3_A
-        7: I1_CLICK   CLICK interrupt on INT1. Default value 0 (0: disable, 1: enable)
-        6: I1_AOI1    AOI1 interrupt on INT1. Default value 0 (0: disable, 1: enable)
-        5: I1_AOI2    AOI2 interrupt on INT1. Default value 0 (0: disable, 1: enable)
-        4: I1_DRDY1   DRDY1 interrupt on INT1. Default value 0 (0: disable, 1: enable)
-        3: I1_DRDY2   DRDY2 interrupt on INT1. Default value 0 (0: disable, 1: enable)
-        2: I1_WTM     FIFO watermark interrupt on INT1. Default value 0 (0: disable, 1: enable)
-        1: I1_OVERRUN FIFO overrun interrupt on INT1. Default value 0 (0: disable, 1: enable)
-
-    CTRL_REG4_A
-        7:   BDU      Block data update. Default value: 0   (0: continuous update,
-                             1: output registers not updated until MSB and LSB have been read
-        6:   BLE      Big/little endian data selection. Default value 0.   (0: data LSB @ lower address, 1: data MSB @ lower address)
-        5-4: FS[1:0]  Full-scale selection. Default value: 00 (00: ±2 g, 01: ±4 g, 10: ±8 g, 11: ±16 g)
-        3:   HR       High-resolution output mode: Default value: 0   (0: high-resolution disable, 1: high-resolution enable)
-        1-2: ZERO     (MUST ALWAYS BE SET TO ZERO)
-        0:   SIM      SPI serial interface mode selection. Default value: 0 (0: 4-wire interface, 1: 3-wire interface).
-
-    CTRL_REG5_A
-        7:   BOOT       Reboot memory content. Default value: 0 (0: normal mode, 1: reboot memory content)
-        6:   FIFO_EN    FIFO enable. Default value: 0   (0: FIFO disable, 1: FIFO enable)
-        5-4: DONTCARE
-        3:   LIR_INT1   Latch interrupt request on INT1_SRC register, with INT1_SRC register cleared by reading INT1_SRC itself.
-                             Default value: 0.   (0: interrupt request not latched, 1: interrupt request latched)
-        2:   D4D_INT1   4D enable: 4D detection is enabled on INT1 when 6D bit on INT1_CFG is set to 1.
-        1:   LIR_INT2   Latch interrupt request on INT2_SRC register, with INT2_SRC register cleared by reading INT2_SRC itself.
-                             Default value: 0.   (0: interrupt request not latched, 1: interrupt request latched)
-        0:   D4D_INT2   4D enable: 4D detection is enabled on INT2 when 6D bit on INT2_CFG is set to 1.
-
-    CTRL_REG6_A
-        7:    I2_CLICKen   CLICK interrupt on PAD2. Default value 0. (0: disable, 1: enable)
-        6:    I2_INT1      Interrupt 1 on PAD2. Default value 0. (0: disable, 1: enable)
-        5:    I2_INT2      Interrupt 2 on PAD2. Default value 0. (0: disable, 1: enable)
-        4:    BOOT_I1      Reboot memory content on PAD2. Default value: 0 (0: disable, 1: enable)
-        3:    P2_ACT       Active function status on PAD2. Default value 0 (0: disable, 1: enable)
-        2, 0: DONTCARE
-        1:    H_LACTIVE    Interrupt active high, low. Default value 0. (0: active high, 1: active low)
-
-    REFERENCE_A
-        7-0: Ref[7:0]  Reference value for interrupt generation. Default value: 0000 0000
-
-    STATUS_A
-        7: ZYXOR   X-, Y-, and Z-axis data overrun.
-        6: ZOR     Z-axis data overrun.
-        5: YOR     Y-axis data overrun.
-        4: XOR     X-axis data overrun.
-        3: ZYXDA   X-, Y-, and Z-axis new data available.
-        2: ZDA     Z-axis new data available.
-        1: YDA     Y-axis new data available.
-        0: XDA     X-axis new data available.
-
-    OUT_X_L_A (28h), OUT_X_H_A (29h)
-        X-axis acceleration data. The value is expressed in two’s complement.
-    OUT_Y_L_A (2Ah), OUT_Y_H_A (2Bh)
-        Y-axis acceleration data. The value is expressed in two’s complement.
-    OUT_Z_L_A (2Ch), OUT_Z_H_A (2Dh)
-        Z-axis acceleration data. The value is expressed in two’s complement.
-
-    FIFO_CTRL_REG_A
-        7-6: FM[1:0]   FIFO mode selection. Default value: 00 (see Table 38)
-        5:   TR        Trigger selection. Default value: 0   0: trigger event linked to trigger signal on INT1
-                             1: trigger event linked to trigger signal on INT2
-        4-0: FTH[4:0]  Default value: 00000
-
-    FIFO_SRC_REG_A
-        7: WTM - Watermark
-        6: OVRN_FIFO - Overrun
-        5: EMPTY - FIFO Empty
-        4: FSS4 - No Clue
-        3: FSS3 - No Clue
-        2: FSS2 - No Clue
-        1: FSS1 - No Clue
-        0: FSS0 - No Clue
-
-
-    CRA_REG_M
-        7:   TEMP _EN   Temperature sensor enable. 0: temperature sensor disabled (default), 1: temperature sensor enabled
-        4-2: DO[2:0]    Data output rate bits. These bits set the rate at which data is written to
-                             all three data output registers (refer to Table 72). Default value: 100
-
-
-    CRB_REG_M
-        7-5: GN[2:0] Gain configuration bits. The gain configuration is common for all channels
-        4-0: Must be zero!
-
-    MR_REG_M
-        7-2: Must be zero!
-        1-0: MD[1:0] Mode select bits. These bits select the operation mode of this device
-                0 0 Continuous-conversion mode
-                0 1 Single-conversion mode
-                1 0 Sleep mode. Device is placed in sleep mode
-                1 1 Sleep mode. Device is placed in sleep mode
-
-    OUT_X_H_M (03), OUT_X_L_M (04h)
-        X-axis magnetic field data. The value is expressed as two’s complement.
-    OUT_Z_H_M (05), OUT_Z_L_M (06h)
-        Z-axis magnetic field data. The value is expressed as two’s complement.
-    OUT_Y_H_M (07), OUT_Y_L_M (08h)
-        Y-axis magnetic field data. The value is expressed as two’s complement.
-
-    SR_REG_M
-        1: LOCK Data output register lock. Once a new set of measurements is available,
-                 this bit is set when the first magnetic file data register has been read.
-        0: DRDY Data-ready bit. This bit is when a new set of measurements is available.
-
-    Temp: 8 LSB/deg - 12-bit resolution (in C)
-    TEMP_OUT_H_M
-        7-0: First byte of temp data. Most significant
-    TEMP_OUT_L_M
-        7-4: four LSBs of temp value
-*/
-
 
 // Private functions to get I2C data
-ret_t LSM303DLHC_accel_getData(int32_t * data_x_ptr, int32_t * data_y_ptr, int32_t * data_z_ptr);
-ret_t LSM303DLHC_mag_getData(int32_t * data_x_ptr, int32_t * data_y_ptr, int32_t * data_z_ptr);
+ret_t LSM303DLHC_accel_getData(float * data_x_ptr, float * data_y_ptr, float * data_z_ptr);
+ret_t LSM303DLHC_mag_getData(float * data_x_ptr, float * data_y_ptr, float * data_z_ptr);
 
 // Private functions to put data onto our queues
-ret_t LSM303DLHC_accel_putPacket(int32_t * data_x_ptr, int32_t * data_y_ptr, int32_t * data_z_ptr);
-ret_t LSM303DLHC_mag_putPacket(int32_t * data_x_ptr, int32_t * data_y_ptr, int32_t * data_z_ptr);
+ret_t LSM303DLHC_accel_putPacket(float * data_x_ptr, float * data_y_ptr, float * data_z_ptr);
+ret_t LSM303DLHC_mag_putPacket(float * data_x_ptr, float * data_y_ptr, float * data_z_ptr);
 
 
 typedef struct {
@@ -220,28 +91,38 @@ typedef struct {
     uint32_t mag_hw_overwrite_count;   //!< Mag overwrites on the chip itself
     accel_packet_t accel_pkts[ACCEL_QUEUE_SIZE];  //!< Accel queue to store X packets
     mag_packet_t mag_pkts[MAG_QUEUE_SIZE];        //!< Mag queue to store packets
-    queue_t accel_queue;                    //!< Accel admin struct of the accel_queues
-    queue_t mag_queue;                      //!< Mag admin struct of the mag_queues
-    uint8_t accel_data_available;           //!< Flag we set when we see there's data acording to the status register
-    uint8_t mag_data_available;             //!< Flag we set when we see there's data acording to MAG_SR_REG_M
-    accel_ODR_t accel_datarate;             //!< Rate at which accel data gets updated on chip
-    mag_ODR_t mag_datarate;                 //!< Rate at which mag data gets updated on chip
+    queue_t accel_queue;            //!< Accel admin struct of the accel_queues
+    queue_t mag_queue;              //!< Mag admin struct of the mag_queues
+    uint8_t accel_data_available;   //!< Flag we set when we see there's data acording to the status register
+    uint8_t mag_data_available;     //!< Flag we set when we see there's data acording to MAG_SR_REG_M
+    accel_ODR_t accel_datarate;     //!< Rate at which accel data gets updated on chip
+    mag_ODR_t mag_datarate;         //!< Rate at which mag data gets updated on chip
     accel_sensitivity_t accel_sensitivity;  //!< Accel fullscale setting
     mag_sensitivity_t mag_sensitivity;      //!< Accel fullscale setting
 } LSM303DLHC_admin_t;
 
 
-//! Depending on how what gain we set, normalize the values we get out
-float MagGainOffsets[] = {1.3f, 1.9f, 2.5f, 4.0f, 4.7f, 5.6f, 8.1f};
+//! Mag gain offsets for the X & Y axis to normalize to miligauss
+static float MagGainOffsets_XY[] = {0.9091f, 1.1696f, 1.4925f, 2.2222f, 2.5000f, 3.0303f, 4.3478f};
+//! Mag gain offsets for the Z axis to normalize to miligauss
+static float MagGainOffsets_Z[] = {1.0204f, 1.3158f, 1.6667f, 2.5000f, 2.8169f, 3.3898f, 4.8780f};
+
+//! Accel gain offsets to normalize to mili-g (g = 9.8 m/s^2)
+static float AccelGainOffsets[] = {1.0f, 2.0f, 4.0f, 12.0f};
 
 /*! Master struct for this module. Marked as volatile as we update it in
- *   the I2C & DRDY pin interrupt context
- */
+ *   the I2C & DRDY pin interrupt context */
 volatile LSM303DLHC_admin_t LSM303DLHC;
 
 
-/*!
+/*! Initializer of the LSM303DLHC module and chip. Sets the datarate and sensitivity of the
+ *    magnetometer and accelerometer.
  *
+ * @param accel_datarate (accel_ODR_t): Datarate at which the accelerometer module will produce data.
+ * @param accel_sensitivity (accel_sensitivity_t): Fullscale sensitivity of the accel module.
+ * @param mag_datarate (mag_ODR_t): Datarate at which the magnetometer module will produce data.
+ * @param mag_sensitivity (mag_sensitivity_t): Fullscale sensitivity of the magnetometer module.
+ * @retval (ret_t): Success or failure of initializing the LSM303DLHC module.
  */
 ret_t LSM303DLHC_init(accel_ODR_t accel_datarate, accel_sensitivity_t accel_sensitivity,
                       mag_ODR_t mag_datarate, mag_sensitivity_t mag_sensitivity)
@@ -280,7 +161,14 @@ ret_t LSM303DLHC_init(accel_ODR_t accel_datarate, accel_sensitivity_t accel_sens
 
 /* ----------- Functions to get data from chip (I2C transactions) ----------- */
 
-ret_t LSM303DLHC_accel_getData(int32_t * data_x_ptr, int32_t * data_y_ptr, int32_t * data_z_ptr)
+/*! Gets the new accel data via I2C.
+ *
+ * @param data_x_ptr (float *): Location where the data from the x axis should be stored.
+ * @param data_y_ptr (float *): Location where the data from the y axis should be stored.
+ * @param data_z_ptr (float *): Location where the data from the z axis should be stored.
+ * @retval (ret_t): Success or failure of getting the accel packet from the chip via I2C.
+ */
+ret_t LSM303DLHC_accel_getData(float * data_x_ptr, float * data_y_ptr, float * data_z_ptr)
 {
     int16_t temp_data;
     uint8_t bytes[6];
@@ -299,14 +187,14 @@ ret_t LSM303DLHC_accel_getData(int32_t * data_x_ptr, int32_t * data_y_ptr, int32
     retval = I2C_readData(ACCEL_ADDRESS, ACCEL_OUT_X_L_A | 0x80, bytes, 6);
     if (retval == RET_OK) {
         // Build the data up and normalize!
-        temp_data = (int16_t)((bytes[1] << 8) | (bytes[0])) >> 4;  // >> LSM303DLHC.accel_sensitivity;
-        *data_x_ptr = (int32_t)temp_data;
+        temp_data = (int16_t)((bytes[1] << 8) | (bytes[0])) >> 4;
+        *data_x_ptr = ((float)temp_data) * AccelGainOffsets[LSM303DLHC.accel_sensitivity];
 
-        temp_data = (int16_t)((bytes[3] << 8) | (bytes[2])) >> 4;  // >> LSM303DLHC.accel_sensitivity;
-        *data_y_ptr = (int32_t)temp_data;
+        temp_data = (int16_t)((bytes[3] << 8) | (bytes[2])) >> 4;
+        *data_y_ptr = ((float)temp_data) * AccelGainOffsets[LSM303DLHC.accel_sensitivity];
 
-        temp_data = (int16_t)((bytes[5] << 8) | (bytes[4])) >> 4;  // >> LSM303DLHC.accel_sensitivity;
-        *data_z_ptr = (int32_t)temp_data;
+        temp_data = (int16_t)((bytes[5] << 8) | (bytes[4])) >> 4;
+        *data_z_ptr = ((float)temp_data) * AccelGainOffsets[LSM303DLHC.accel_sensitivity];
 
         return RET_OK;
     } else {
@@ -315,7 +203,14 @@ ret_t LSM303DLHC_accel_getData(int32_t * data_x_ptr, int32_t * data_y_ptr, int32
     }
 }
 
-ret_t LSM303DLHC_mag_getData(int32_t * data_x_ptr, int32_t * data_y_ptr, int32_t * data_z_ptr)
+/*! Gets the new mag data via I2C.
+ *
+ * @param data_x_ptr (float *): Location where the data from the x axis should be stored.
+ * @param data_y_ptr (float *): Location where the data from the y axis should be stored.
+ * @param data_z_ptr (float *): Location where the data from the z axis should be stored.
+ * @retval (ret_t): Success or failure of getting the mag packet from the chip via I2C.
+ */
+ret_t LSM303DLHC_mag_getData(float * data_x_ptr, float * data_y_ptr, float * data_z_ptr)
 {
     int16_t temp_data;
     uint8_t bytes[6];
@@ -334,13 +229,12 @@ ret_t LSM303DLHC_mag_getData(int32_t * data_x_ptr, int32_t * data_y_ptr, int32_t
     retval = I2C_readData(MAG_ADDRESS, MAG_OUT_X_H_M, bytes, 6);
     if (retval == RET_OK) {
         // Build the data up and normalize!
-        // TODO: Figure out a good normalization method
-        temp_data = (int16_t)((bytes[1] << 8) | (bytes[0]));
-        *data_x_ptr = ((int32_t)(temp_data)); // / MagGainOffsets[LSM303DLHC.mag_sensitivity - 1];
-        temp_data = (int16_t)((bytes[3] << 8) | (bytes[2]));
-        *data_y_ptr = ((int32_t)(temp_data)); // / MagGainOffsets[LSM303DLHC.mag_sensitivity - 1];
-        temp_data = (int16_t)((bytes[5] << 8) | (bytes[4]));
-        *data_z_ptr = ((int32_t)(temp_data)); // / MagGainOffsets[LSM303DLHC.mag_sensitivity - 1];
+        temp_data = (int16_t)((bytes[0] << 8) | (bytes[1]));
+        *data_x_ptr = ((float)temp_data) * MagGainOffsets_XY[LSM303DLHC.mag_sensitivity - 1];
+        temp_data = (int16_t)((bytes[2] << 8) | (bytes[3]));
+        *data_y_ptr = ((float)temp_data) * MagGainOffsets_XY[LSM303DLHC.mag_sensitivity - 1];
+        temp_data = (int16_t)((bytes[4] << 8) | (bytes[5]));
+        *data_z_ptr = ((float)temp_data) * MagGainOffsets_Z[LSM303DLHC.mag_sensitivity - 1];
         return RET_OK;
     } else {
         // Raise some sort of error...
@@ -348,6 +242,11 @@ ret_t LSM303DLHC_mag_getData(int32_t * data_x_ptr, int32_t * data_y_ptr, int32_t
     }
 }
 
+/*! Gets temperature data via I2C.
+ *
+ * @param temp_val_ptr (int16_t *): Location where the data from the temp sensor should be stored.
+ * @retval (ret_t): Success or failure of getting the temp from the chip via I2C.
+ */
 ret_t LSM303DLHC_temp_getData(int16_t * temp_val_ptr)
 {
     ret_t retval;
@@ -363,6 +262,11 @@ ret_t LSM303DLHC_temp_getData(int16_t * temp_val_ptr)
     return RET_OK;
 }
 
+/*! Gets status info from the accel and mag module via I2C and updates the
+ *    LSM303DLHC_admin_t struct accordingly.
+ *
+ * @retval (ret_t): Success or failure of getting the data from the chip via I2C.
+ */
 ret_t LSM303DLHC_checkStatus(void)
 {
     uint8_t data;
@@ -404,27 +308,37 @@ ret_t LSM303DLHC_checkStatus(void)
 void LSM303DLHC_drdy_handler(void)
 {
     ret_t retval;
-    int32_t data_x;
-    int32_t data_y;
-    int32_t data_z;
+    float accel_data_x;
+    float accel_data_y;
+    float accel_data_z;
+
+    float mag_data_x;
+    float mag_data_y;
+    float mag_data_z;
 
     retval = LSM303DLHC_checkStatus();
     if (retval == RET_OK) {
         // check if we have accel packets to get
         if (LSM303DLHC.accel_data_available != 0) {
             LSM303DLHC.accel_data_available = 0;
-            retval = LSM303DLHC_accel_getData(&data_x, &data_y, &data_z);
+            // TODO: Check round trip latency of getting accel packet & putting it into the queue
+            TimingPin_set(1);
+            retval = LSM303DLHC_accel_getData(&accel_data_x, &accel_data_y, &accel_data_z);
             if (retval == RET_OK) {
-                retval = LSM303DLHC_accel_putPacket(&data_x, &data_y, &data_z);
+                retval = LSM303DLHC_accel_putPacket(&accel_data_x, &accel_data_y, &accel_data_z);
             }  // else { error!!!; }
+            TimingPin_set(0);
         }
         // check if we have mag packets to get
         if (LSM303DLHC.mag_data_available != 0) {
             LSM303DLHC.mag_data_available = 0;
-            retval = LSM303DLHC_mag_getData(&data_x, &data_y, &data_z);
+            // TODO: Check round trip latency of getting mag packet & putting it into the queue
+            TimingPin_set(1);
+            retval = LSM303DLHC_mag_getData(&mag_data_x, &mag_data_y, &mag_data_z);
             if (retval == RET_OK) {
-                retval = LSM303DLHC_mag_putPacket(&data_x, &data_y, &data_z);
+                retval = LSM303DLHC_mag_putPacket(&mag_data_x, &mag_data_y, &mag_data_z);
             }  // else { error!!!; }
+            TimingPin_set(0);
         }
     }
 
@@ -437,8 +351,13 @@ void LSM303DLHC_drdy_handler(void)
  *
  * Note: This is the ONLY function that modifies the head index of the accel queue.
  *   It also can modify the tail index if we're overwritting unread data.
+ *
+ * @param data_x_ptr (float *): Location where the data from the x axis should be stored.
+ * @param data_y_ptr (float *): Location where the data from the y axis should be stored.
+ * @param data_z_ptr (float *): Location where the data from the z axis should be stored.
+ * @retval (ret_t): Success or failure of putting the new packet onto the accel queue.
  */
-ret_t LSM303DLHC_accel_putPacket(int32_t * data_x_ptr, int32_t * data_y_ptr, int32_t * data_z_ptr)
+ret_t LSM303DLHC_accel_putPacket(float * data_x_ptr, float * data_y_ptr, float * data_z_ptr)
 {
     // Get the data from the queue...
     accel_packet_t pkt;
@@ -448,9 +367,7 @@ ret_t LSM303DLHC_accel_putPacket(int32_t * data_x_ptr, int32_t * data_y_ptr, int
     pkt.z = *data_z_ptr;
     LSM303DLHC.accel_pkts[LSM303DLHC.accel_queue.head_ind] = pkt;
 
-    // the queue didn't change while we were getting it!
-
-    // now check if we're about to overwrite data
+    // move the head forward and handle overwrite cases
     queue_increment_head(&LSM303DLHC.accel_queue, ACCEL_QUEUE_SIZE);
 
     return RET_OK;
@@ -460,8 +377,13 @@ ret_t LSM303DLHC_accel_putPacket(int32_t * data_x_ptr, int32_t * data_y_ptr, int
  *
  * Note: This is the ONLY function that modifies the head index of the mag queue.
  *   It also can modify the tail index if we're overwritting unread data.
+ *
+ * @param data_x_ptr (float *): Location where the data from the x axis should be stored.
+ * @param data_y_ptr (float *): Location where the data from the y axis should be stored.
+ * @param data_z_ptr (float *): Location where the data from the z axis should be stored.
+ * @retval (ret_t): Success or failure of putting the new packet onto the mag queue.
  */
-ret_t LSM303DLHC_mag_putPacket(int32_t * data_x_ptr, int32_t * data_y_ptr, int32_t * data_z_ptr)
+ret_t LSM303DLHC_mag_putPacket(float * data_x_ptr, float * data_y_ptr, float * data_z_ptr)
 {
     mag_packet_t pkt;
     pkt.timestamp = HAL_GetTick();
@@ -471,7 +393,7 @@ ret_t LSM303DLHC_mag_putPacket(int32_t * data_x_ptr, int32_t * data_y_ptr, int32
     // Put the data on the queue...
     LSM303DLHC.mag_pkts[LSM303DLHC.mag_queue.head_ind] = pkt;
 
-    // now move the head forward
+    // now move the head forward and handle overwrite cases
     queue_increment_head(&LSM303DLHC.mag_queue, MAG_QUEUE_SIZE);
 
     return RET_OK;
@@ -482,6 +404,10 @@ ret_t LSM303DLHC_mag_putPacket(int32_t * data_x_ptr, int32_t * data_y_ptr, int32
  * Note: This is function modifies the tail index if we're overwritting unread data.
  *   LSM303DLHC_accel_putPacket also can modify it, so we must check for that case in
  *   this function as LSM303DLHC_accel_getPacket gets called asynchronously.
+ *
+ * @param pkt_ptr (accel_packet_t *): Place to put the retreived accel packet.
+ * @param peak (bool): Whether or not we should pop it off the queue or to just peak at it.
+ * @retval (ret_t): Success or failure of getting the accel packet off the queue.
  */
 ret_t LSM303DLHC_accel_getPacket(accel_packet_t * pkt_ptr, bool peak)
 {
@@ -511,6 +437,10 @@ ret_t LSM303DLHC_accel_getPacket(accel_packet_t * pkt_ptr, bool peak)
  * Note: This is function modifies the tail index if we're overwritting unread data.
  *   LSM303DLHC_mag_putPacket also can modify it, so we must check for that case in
  *   this function as LSM303DLHC_mag_getPacket gets called asynchronously.
+ *
+ * @param pkt_ptr (mag_packet_t *): Place to put the retreived mag packet.
+ * @param peak (bool): Whether or not we should pop it off the queue or to just peak at it.
+ * @retval (ret_t): Success or failure of getting the mag packet off the queue.
  */
 ret_t LSM303DLHC_mag_getPacket(mag_packet_t * pkt_ptr, bool peak)
 {
@@ -537,6 +467,7 @@ ret_t LSM303DLHC_mag_getPacket(mag_packet_t * pkt_ptr, bool peak)
 
 /*! Checks if there is data available on our accel queue.
  *
+ * @retval (bool): True if there are available packets.
  */
 bool LSM303DLHC_accel_dataAvailable(void)
 {
@@ -549,6 +480,7 @@ bool LSM303DLHC_accel_dataAvailable(void)
 
 /*! Checks if there is data available on our mag queue.
  *
+ * @retval (bool): True if there are available packets.
  */
 bool LSM303DLHC_mag_dataAvailable(void)
 {
@@ -561,6 +493,7 @@ bool LSM303DLHC_mag_dataAvailable(void)
 
 /*! Gets the number of packet drops in the accel queue.
  *
+ * @retval (uint8_t): Number of queue overwrites.
  */
 uint8_t LSM303DLHC_accel_packetOverwriteCount(void)
 {
@@ -569,6 +502,7 @@ uint8_t LSM303DLHC_accel_packetOverwriteCount(void)
 
 /*! Gets the number of packet drops in the mag queue.
  *
+ * @retval (uint8_t): Number of queue overwrites.
  */
 uint8_t LSM303DLHC_mag_packetOverwriteCount(void)
 {
@@ -577,6 +511,10 @@ uint8_t LSM303DLHC_mag_packetOverwriteCount(void)
 
 /*! Gets the number of HW related drops from the chip.
  *
+ * Note: Is not 100% accurate as there is only a flag for overwrite on LSM303DLHC
+ *    rather than a counter.
+ *
+ * @retval (uint8_t): Number of hardware overwrites that ocurred on the LSM303DLHC.
  */
 uint32_t LSM303DLHC_accel_HardwareOverwriteCount(void)
 {
@@ -585,6 +523,10 @@ uint32_t LSM303DLHC_accel_HardwareOverwriteCount(void)
 
 /*! Gets the number of HW related drops from the chip.
  *
+ * Note: Is not 100% accurate as there is only a flag for overwrite on LSM303DLHC
+ *    rather than a counter.
+ *
+ * @retval (uint8_t): Number of hardware overwrites that ocurred on the LSM303DLHC.
  */
 uint32_t LSM303DLHC_mag_HardwareOverwriteCount(void)
 {
