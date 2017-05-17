@@ -8,7 +8,7 @@
 #define OUTPUT_BUFF_LEN (255)
 
 
-ret_t rpt_lookup(uint8_t rpt_type, uint8_t *input_buff_ptr, uint8_t input_buff_len,
-                 uint8_t * output_buff_ptr, uint8_t * output_buff_len_ptr);
+ret_t rpt_init(ret_t (*putchr)(uint8_t), ret_t (*getchr)(uint8_t *));
+ret_t rpt_run(void);
 
 #endif /* _REPORTS_H_ */

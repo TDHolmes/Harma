@@ -8,7 +8,116 @@
 #include "LSM303DLHC.h"
 
 
+#define READ_BUFF_SIZE (255)
+
+
+typedef enum {
+    kRead_rpt,
+    kRead_len,
+    kRead_payload,
+    kEvaluate,
+    kPrint
+} rpt_state_t;
+
+
+typedef struct {
+    ret_t (*putchr)(uint8_t);
+    ret_t (*getchr)(uint8_t *);
+    rpt_state_t state;
+    uint8_t read_buff[READ_BUFF_SIZE];
+} rpt_t;
+
+//! Bufer to hold the reply of the report
 uint8_t output_buffer[OUTPUT_BUFF_LEN];
+
+rpt_t rpt;
+
+// private function declarations
+ret_t rpt_lookup(uint8_t rpt_type, uint8_t *input_buff_ptr, uint8_t input_buff_len,
+                 uint8_t * output_buff_ptr, uint8_t * output_buff_len_ptr);
+
+
+/* -------------- Initializer and runner ------------------------ */
+
+
+ret_t rpt_init(ret_t (*putchr)(uint8_t), ret_t (*getchr)(uint8_t *))
+{
+    rpt.putchr = putchr;
+    rpt.getchr = getchr;
+    rpt.state = kRead_rpt;
+
+    return RET_OK;
+}
+
+
+ret_t rpt_run(void)
+{
+    uint8_t chr;
+    ret_t retval = RET_GEN_ERR;
+
+    // report buffers and variables
+    uint8_t rpt_type = 0;
+    uint8_t * rpt_out_buff_ptr = 0;
+    uint8_t rpt_in_buff_len = 0;
+    uint8_t rpt_out_buff_len = 0;
+    static uint8_t payload_readin_ind = 0;
+
+    switch (rpt.state) {
+        case kRead_rpt:
+            retval = rpt.getchr(&chr);
+            if (retval == RET_OK) {
+                rpt_type = chr;
+                rpt.state = kRead_len;
+            }
+            break;
+
+        case kRead_len:
+            retval = rpt.getchr(&chr);
+            if (retval == RET_OK) {
+                rpt_in_buff_len = chr;
+                payload_readin_ind = 0;
+                rpt.state = kRead_payload;
+            }
+            break;
+
+        case kRead_payload:
+            retval = rpt.getchr(&chr);
+            if (retval == RET_OK) {
+                rpt.read_buff[payload_readin_ind] = chr;
+                payload_readin_ind += 1;
+
+                if (payload_readin_ind == rpt_in_buff_len - 1) {
+                    rpt.state = kEvaluate;
+                    payload_readin_ind = 0;
+                }
+            }
+            break;
+
+        case kEvaluate:
+            // need to somehow call a function to handle this data
+            retval = rpt_lookup(rpt_type, rpt.read_buff, rpt_in_buff_len,
+                                rpt_out_buff_ptr, &rpt_out_buff_len);
+            break;
+
+        case kPrint:
+            // print out the results
+            rpt.putchr(retval);
+            // if we succeeded in the report, continue on
+            if (retval == RET_OK) {
+                rpt.putchr(rpt_out_buff_len);
+                while (rpt_out_buff_len > 0) {
+                    rpt_out_buff_len -= 1;
+                    rpt.putchr(rpt_out_buff_ptr[rpt_out_buff_len]);
+                }
+            }
+            rpt.state = kRead_rpt;
+
+            break;
+    }
+
+    return RET_OK;
+}
+
 
 /* ---------------- Define all reports that can be get / set ---------------- */
 
@@ -23,6 +132,34 @@ ret_t rpt_err(uint8_t * in_p, uint8_t in_len, uint8_t * out_p, uint8_t * out_len
 /* ------ LSM303DLHC REPORTS ------ */
 
 // Report 0x20
+ret_t rpt_LSM303DLHC_changeConfig(uint8_t * in_p, uint8_t in_len, uint8_t * out_p, uint8_t * out_len_ptr)
+{
+    ret_t retval;
+    accel_ODR_t accel_ODR;
+    accel_sensitivity_t accel_sensitivity;
+    mag_ODR_t mag_ODR;
+    mag_sensitivity_t mag_sensitivity;
+
+    // do some bounds checking
+    if (in_len != (sizeof(accel_ODR_t) + sizeof(accel_sensitivity_t) +
+                   sizeof(mag_ODR_t) + sizeof(mag_sensitivity_t))) {
+        return RET_INVALID_ARGS_ERR;
+    }
+
+    // unpack the data and check for validity
+    accel_ODR = (accel_ODR_t)in_p[0];
+    accel_sensitivity = (accel_sensitivity_t)in_p[sizeof(accel_ODR_t)];
+    mag_ODR = (mag_ODR_t)in_p[sizeof(accel_ODR_t) + sizeof(accel_sensitivity_t)];
+    mag_sensitivity = (mag_sensitivity_t)in_p[sizeof(accel_ODR_t) +
+                                              sizeof(accel_sensitivity_t) +
+                                              sizeof(mag_ODR_t)];
+
+    // Now, actually reconfigure the module!
+    retval = LSM303DLHC_init(accel_ODR, accel_sensitivity, mag_ODR, mag_sensitivity);
+    return retval;
+}
+
+// Report 0x21
 ret_t rpt_LSM303DLHC_getTemp(uint8_t * in_p, uint8_t in_len, uint8_t * out_p, uint8_t * out_len_ptr)
 {
     ret_t retval;
@@ -35,7 +172,7 @@ ret_t rpt_LSM303DLHC_getTemp(uint8_t * in_p, uint8_t in_len, uint8_t * out_p, ui
     return RET_OK;
 }
 
-// Report 0x21
+// Report 0x22
 ret_t rpt_LSM303DLHC_getAccel(uint8_t * in_p, uint8_t in_len, uint8_t * out_p, uint8_t * out_len_ptr)
 {
     ret_t retval;
@@ -48,9 +185,13 @@ ret_t rpt_LSM303DLHC_getAccel(uint8_t * in_p, uint8_t in_len, uint8_t * out_p, u
     // check if we should peak or pop the packet
     if (in_p[0] == 0) {
         peak = false;
-    } else {
+    } else if (in_p[1] == 1) {
         peak = true;
+    } else {
+        return RET_INVALID_ARGS_ERR;
     }
+
+    // call the actual function
     retval = LSM303DLHC_accel_getPacket(&pkt, peak);
     if (retval != RET_OK) { return retval; }
 
@@ -60,7 +201,7 @@ ret_t rpt_LSM303DLHC_getAccel(uint8_t * in_p, uint8_t in_len, uint8_t * out_p, u
     return RET_OK;
 }
 
-// Report 0x22
+// Report 0x23
 ret_t rpt_LSM303DLHC_getMag(uint8_t * in_p, uint8_t in_len, uint8_t * out_p, uint8_t * out_len_ptr)
 {
     ret_t retval;
@@ -73,9 +214,13 @@ ret_t rpt_LSM303DLHC_getMag(uint8_t * in_p, uint8_t in_len, uint8_t * out_p, uin
     // check if we should peak or pop the packet
     if (in_p[0] == 0) {
         peak = false;
-    } else {
+    } else if (in_p[1] == 1) {
         peak = true;
+    } else {
+        return RET_INVALID_ARGS_ERR;
     }
+
+    // call the actual function
     retval = LSM303DLHC_mag_getPacket(&pkt, peak);
     if (retval != RET_OK) { return retval; }
 
@@ -127,10 +272,10 @@ ret_t rpt_lookup(uint8_t rpt_type, uint8_t *input_buff_ptr, uint8_t input_buff_l
         /* Report 0x1d */ rpt_err,
         /* Report 0x1e */ rpt_err,
         /* Report 0x1f */ rpt_err,
-        /* Report 0x20 */ rpt_LSM303DLHC_getTemp,
-        /* Report 0x21 */ rpt_LSM303DLHC_getAccel,
-        /* Report 0x22 */ rpt_LSM303DLHC_getMag,
-        /* Report 0x23 */ rpt_err,
+        /* Report 0x20 */ rpt_LSM303DLHC_changeConfig,
+        /* Report 0x21 */ rpt_LSM303DLHC_getTemp,
+        /* Report 0x22 */ rpt_LSM303DLHC_getAccel,
+        /* Report 0x23 */ rpt_LSM303DLHC_getMag,
         /* Report 0x24 */ rpt_err,
         /* Report 0x25 */ rpt_err,
         /* Report 0x26 */ rpt_err,
@@ -349,7 +494,8 @@ ret_t rpt_lookup(uint8_t rpt_type, uint8_t *input_buff_ptr, uint8_t input_buff_l
         /* Report 0xfb */ rpt_err,
         /* Report 0xfc */ rpt_err,
         /* Report 0xfd */ rpt_err,
-        /* Report 0xfe */ rpt_err};
+        /* Report 0xfe */ rpt_err,
+        /* Report 0xff */ rpt_err};
 
     // call the function specified
     output_buff_len_ptr = 0;
