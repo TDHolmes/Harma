@@ -102,7 +102,6 @@ add_executable(pensel.elf
 	# user code
 	"${ProjDirPath}/source/LSM303DLHC.c"
 	"${ProjDirPath}/source/main.c"
-	"${ProjDirPath}/source/cli.c"
 	"${ProjDirPath}/source/reports.c"
 	"${ProjDirPath}/source/queue.c"
 	"${ProjDirPath}/source/UART.c"
@@ -113,7 +112,6 @@ add_executable(pensel.elf
 
 	"${ProjDirPath}/include/LSM303DLHC.h"
 	"${ProjDirPath}/include/common.h"
-	"${ProjDirPath}/include/cli.h"
 	"${ProjDirPath}/include/reports.h"
 	"${ProjDirPath}/include/queue.h"
 	"${ProjDirPath}/include/UART.h"
