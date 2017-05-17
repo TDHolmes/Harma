@@ -346,7 +346,7 @@ void LED_toggle(uint16_t LED)
 /*! Sets the given LED to the given value.
  *
  * @param[in] LED (uint16_t): Which LED to sdt.
- * @param[out] value (uint16_t): what to set the LED to.
+ * @param[in] value (uint16_t): what to set the LED to.
  */
 void LED_set(uint16_t LED, uint8_t value)
 {
@@ -357,6 +357,23 @@ void LED_set(uint16_t LED, uint8_t value)
             HAL_GPIO_WritePin(LED_PORT, LED_1, value);
         }
     }
+}
+
+/*! Toggles the extra pin used for timing.
+ *
+ */
+void TimingPin_toggle(void)
+{
+    HAL_GPIO_TogglePin(LED_PORT, EXTRA_GPIO);
+}
+
+/*! Sets the extra pin used for timing to the given value.
+ *
+ * @param[in] value (uint8_t): what to set the LED to.
+ */
+void TimingPin_set(uint8_t value)
+{
+    HAL_GPIO_WritePin(LED_PORT, EXTRA_GPIO, value);
 }
 
 

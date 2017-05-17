@@ -59,5 +59,8 @@ uint8_t auxbutton_getval(void);
 void LED_toggle(uint16_t LED);
 void LED_set(uint16_t LED, uint8_t value);
 
+void TimingPin_toggle(void);
+void TimingPin_set(uint8_t value);
+
 
 #endif /* _HARDWARE_H_ */
