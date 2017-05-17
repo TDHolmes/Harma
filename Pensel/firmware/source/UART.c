@@ -174,6 +174,14 @@ ret_t UART_sendint(int64_t data)
     return RET_OK;
 }
 
+ret_t UART_sendfloat(float data)
+{
+    // TODO: Is 20 bytes too much / little?
+    char char_buff[20];
+    sprintf(char_buff, "%f", data);
+    UART_sendString(char_buff);
+    return RET_OK;
+}
 
 ret_t UART_getChar(uint8_t * data_ptr)
 {
