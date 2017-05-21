@@ -1,7 +1,11 @@
-/*
+/*!
+ * @file    reports.c
+ * @author  Tyler Holmes
+ * @version 0.1.0
+ * @date    20-May-2017
+ * @brief   Interface to define get/set reports as a debug hook.
  *
  */
-
 #include <stdint.h>
 #include "common.h"
 #include "reports.h"
@@ -11,20 +15,22 @@
 #define READ_BUFF_SIZE (255)
 
 
+//! The current state of the rpt workloop
 typedef enum {
-    kRead_rpt,
-    kRead_len,
-    kRead_payload,
-    kEvaluate,
-    kPrint
+    kRead_rpt,     //!< Read the report ID (the first byte of the transaction)
+    kRead_len,     //!< Read the length of the report payload (2nd byte)
+    kRead_payload, //!< Read the report payload (N bytes...)
+    kEvaluate,     //!< Evaluate the report on our end
+    kPrint         //!< Send back the response (x bytes)
 } rpt_state_t;
 
 
+//! Admin struct for the report module
 typedef struct {
-    ret_t (*putchr)(uint8_t);
-    ret_t (*getchr)(uint8_t *);
-    rpt_state_t state;
-    uint8_t read_buff[READ_BUFF_SIZE];
+    ret_t (*putchr)(uint8_t);   //!< function pointer to send chars out
+    ret_t (*getchr)(uint8_t *); //!< function pointer to recieve chars
+    rpt_state_t state;          //!< Current state of the report module
+    uint8_t read_buff[READ_BUFF_SIZE]; //!< Buffer to read the reports in
 } rpt_t;
 
 //! Bufer to hold the reply of the report

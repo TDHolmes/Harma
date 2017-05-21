@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file    I2C/I2C_TwoBoards_ComIT/Src/stm32f3xx_it.c
+  * @file    stm32f3xx_it.c
   * @author  MCD Application Team
   * @version V1.7.0
   * @date    16-December-2016
@@ -37,44 +37,27 @@
   ******************************************************************************
   */
 
-/* Includes ------------------------------------------------------------------*/
+#include "hardware.h"
 #include "stm32f3xx.h"
+#include "stm32f3xx_it.h"
 #include "Drivers/stm32f3xx_hal_def.h"
 #include "Drivers/stm32f3xx_hal.h"
-#include "stm32f3xx_it.h"
 
 // Peripherals used
 #include "Drivers/stm32f3xx_hal_i2c.h"
 #include "Drivers/stm32f3xx_hal_uart.h"
-#include "hardware.h"
 
-/** @addtogroup STM32F3xx_HAL_Examples
-  * @{
-  */
 
-/** @addtogroup I2C_TwoBoards_ComIT
-  * @{
-  */
-
-/* Private typedef -----------------------------------------------------------*/
-/* Private define ------------------------------------------------------------*/
-/* Private macro -------------------------------------------------------------*/
-/* Private variables ---------------------------------------------------------*/
 /* I2C handler declared in "main.c" file */
 extern I2C_HandleTypeDef I2cHandle;
 extern UART_HandleTypeDef HAL_UART_handle;
 
-/* Private function prototypes -----------------------------------------------*/
-/* Private functions ---------------------------------------------------------*/
-
-/******************************************************************************/
-/*            Cortex-M4 Processor Exceptions Handlers                         */
-/******************************************************************************/
+/******************************************************************************
+ *            Cortex-M4 Processor Exceptions Handlers                         *
+ ******************************************************************************/
 
 /**
   * @brief  This function handles NMI exception.
-  * @param  None
-  * @retval None
   */
 void NMI_Handler(void)
 {
@@ -82,8 +65,6 @@ void NMI_Handler(void)
 
 /**
   * @brief  This function handles Hard Fault exception.
-  * @param  None
-  * @retval None
   */
 void HardFault_Handler(void)
 {
@@ -93,8 +74,6 @@ void HardFault_Handler(void)
 
 /**
   * @brief  This function handles Memory Manage exception.
-  * @param  None
-  * @retval None
   */
 void MemManage_Handler(void)
 {
@@ -104,8 +83,6 @@ void MemManage_Handler(void)
 
 /**
   * @brief  This function handles Bus Fault exception.
-  * @param  None
-  * @retval None
   */
 void BusFault_Handler(void)
 {
@@ -115,65 +92,54 @@ void BusFault_Handler(void)
 
 /**
   * @brief  This function handles Usage Fault exception.
-  * @param  None
-  * @retval None
   */
 void UsageFault_Handler(void)
 {
-  /* Go to infinite loop when Usage Fault exception occurs */
-  while (1)
-  {
-  }
+    /* Go to infinite loop when Usage Fault exception occurs */
+    while (1);
 }
 
 /**
   * @brief  This function handles SVCall exception.
-  * @param  None
-  * @retval None
   */
 void SVC_Handler(void)
 {
+    while (1);
 }
 
 /**
   * @brief  This function handles Debug Monitor exception.
-  * @param  None
-  * @retval None
   */
 void DebugMon_Handler(void)
 {
+    while (1);
 }
 
 /**
   * @brief  This function handles PendSVC exception.
-  * @param  None
-  * @retval None
   */
 void PendSV_Handler(void)
 {
+    while (1);
 }
 
 /**
   * @brief  This function handles SysTick Handler.
-  * @param  None
-  * @retval None
   */
 void SysTick_Handler(void)
 {
     HAL_IncTick();
 }
 
-/******************************************************************************/
-/*                 STM32F3xx Peripherals Interrupt Handlers                  */
-/*  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the  */
-/*  available peripheral interrupt handler's name please refer to the startup */
-/*  file (startup_stm32f3xx.s).                                               */
-/******************************************************************************/
+/******************************************************************************
+ *                 STM32F3xx Peripherals Interrupt Handlers                    *
+ *  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the   *
+ *  available peripheral interrupt handler's name please refer to the startup  *
+ *  file (startup_stm32f3xx.s).                                                *
+ ******************************************************************************/
+
 /**
   * @brief  This function handles I2C event interrupt request.
-  * @param  None
-  * @retval None
-  * @Note   This function is redefined in "main.h" and related to I2C data transmission
   */
 void I2C2_EV_IRQHandler(void)
 {
@@ -182,9 +148,6 @@ void I2C2_EV_IRQHandler(void)
 
 /**
   * @brief  This function handles I2C error interrupt request.
-  * @param  None
-  * @retval None
-  * @Note   This function is redefined in "main.h" and related to I2C error
   */
 void I2C2_ER_IRQHandler(void)
 {
@@ -193,10 +156,6 @@ void I2C2_ER_IRQHandler(void)
 
 /**
   * @brief  This function handles UART interrupt request.
-  * @param  None
-  * @retval None
-  * @Note   This function is redefined in "main.h" and related to DMA
-  *         used for USART data transmission
   */
 void USART1_IRQHandler(void)
 {
@@ -204,31 +163,45 @@ void USART1_IRQHandler(void)
     HAL_UART_IRQHandler(&HAL_UART_handle);
 }
 
+/**
+  * @brief  This function handles the pin 1 external interrupt.
+  */
 void EXTI1_IRQHandler(void)
 {
     // Have the HAL lib cleanup and call our callback
     HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_1);
 }
 
+/**
+  * @brief  This function handles the pin 2 external interrupt.
+  */
 void EXTI2_TSC_IRQHandler(void)
 {
     // Have the HAL lib cleanup and call our callback
     HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_2);
 }
 
+/**
+  * @brief  This function handles the pin 3 external interrupt.
+  */
 void EXTI3_IRQHandler(void)
 {
     // Have the HAL lib cleanup and call our callback
     HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_3);
 }
 
+/**
+  * @brief  This function handles the pin 4 external interrupt.
+  */
 void EXTI4_IRQHandler(void)
 {
     // Have the HAL lib cleanup and call our callback
     HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_4);
 }
 
-
+/**
+  * @brief  This function handles the pins 5 thru 9 external interrupt.
+  */
 void EXTI9_5_IRQHandler(void)
 {
     // (pin 5 is the only one configured for interrupt)
@@ -236,29 +209,14 @@ void EXTI9_5_IRQHandler(void)
     HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_5);
 }
 
-
+/**
+  * @brief  This function handles the pins 10 thru 15 external interrupt.
+  */
 void EXTI15_10_IRQHandler(void)
 {
     // Only pin 11 is congfigured for interrupt
     HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_11);
 }
 
-
-/**
-  * @brief  This function handles PPP interrupt request.
-  * @param  None
-  * @retval None
-  */
-/*void PPP_IRQHandler(void)
-{
-}*/
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

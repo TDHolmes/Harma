@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file    I2C/I2C_TwoBoards_ComIT/Src/stm32f3xx_hal_msp.c
+  * @file    stm32f3xx_hal_msp.c
   * @author  MCD Application Team
   * @version V1.7.0
   * @date    16-December-2016
@@ -104,25 +104,7 @@
 #define ADCx_RELEASE_RESET()            __HAL_RCC_ADC1_RELEASE_RESET()
 
 
-/** @addtogroup STM32F3xx_HAL_Examples
-  * @{
-  */
-
-/** @defgroup HAL_MSP
-  * @brief HAL MSP module.
-  * @{
-  */
-
-/* Private typedef -----------------------------------------------------------*/
-/* Private define ------------------------------------------------------------*/
-/* Private macro -------------------------------------------------------------*/
-/* Private variables ---------------------------------------------------------*/
-/* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
-
-/** @defgroup HAL_MSP_Private_Functions
-  * @{
-  */
 
 /**
   * @brief I2C MSP Initialization
@@ -200,10 +182,6 @@ void HAL_I2C_MspDeInit(I2C_HandleTypeDef *hi2c)
 }
 
 
-/** @defgroup HAL_MSP_Private_Functions
-  * @{
-  */
-
 /**
   * @brief UART MSP Initialization
   *        This function configures the hardware resources used in this example:
@@ -273,10 +251,6 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
 }
 
 
-/** @defgroup HAL_MSP_Private_Functions
-  * @{
-  */
-
 /**
 * @brief  ADC MSP Init
 * @param  hadc : ADC handle
@@ -331,18 +305,5 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef *hadc)
     __HAL_RCC_ADC1_CLK_DISABLE();
 }
 
-
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -1,4 +1,9 @@
-/*
+/*!
+ * @file    hardware.c
+ * @author  Tyler Holmes
+ * @version 0.1.0
+ * @date    20-May-2017
+ * @brief   Hardware specific definitions and function calls.
  *
  */
 
@@ -19,7 +24,8 @@
 #include "Drivers/stm32f3xx_ll_bus.h"
 
 
-#define IO_DEBOUNCE_TIMEOUT (10)  // in ms
+//! The amount of time, in ms, that must ellapse before changing button / switch state
+#define IO_DEBOUNCE_TIMEOUT (10)
 
 
 static GPIO_InitTypeDef  GPIO_InitStruct;
@@ -29,25 +35,35 @@ void button_interrupt_handler(uint16_t GPIO_Pin);
 void switch_intterupt_handler(uint16_t GPIO_Pin);
 
 
+//! Tracks a switch's state and manages a switch's hysteresis
 typedef struct {
+    //! Current state of the button
     switch_state_t state;
+    //! If true, the physical state of the pin is different than the current state
     bool changing;
+    //! What value the switch is changing to
     volatile switch_state_t changing_value;
+    //! What time the change started. If is more than `IO_DEBOUNCE_TIMEOUT`, we will change the current state in `switch_periodic_handler`
     volatile uint32_t changing_timestamp;
 } switch_t;
 
 
+//! Tracks a button's state and manages a button's hysteresis
 typedef struct {
+    //! current state of the button (1 or 0)
     uint8_t state;
+    //! If true, the physical state of the pin is different than the current state
     bool changing;
+    //! What value the switch is changing to
     volatile uint8_t changing_value;
+    //! What time the change started. If is more than `IO_DEBOUNCE_TIMEOUT`, we will change the current state in `button_periodic_handler`
     volatile uint32_t changing_timestamp;
 } button_t;
 
 
-button_t mainbutton_admin;
-button_t auxbutton_admin;
-switch_t switch_admin;
+button_t mainbutton_admin; //!< button handler for the main button.
+button_t auxbutton_admin;  //!< button handler for the auxilary button.
+switch_t switch_admin;     //!< button handler for the 3 position switch.
 
 
 switch_state_t switch_getval(void) { return switch_admin.state; }
