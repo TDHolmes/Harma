@@ -1,11 +1,15 @@
-/*
- *
+/*!
+ * @file    UART.c
+ * @author  Tyler Holmes
+ * @version 0.1.0
+ * @date    20-May-2017
+ * @brief   Wrapper functions around the stm32f3xx HAL UART functions.
  *
  */
-
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdio.h>
 #include "common.h"
 #include "UART.h"
 #include "queue.h"
@@ -17,22 +21,22 @@
 #include "Drivers/stm32f3xx_hal_uart.h"
 
 
-#define RX_BUFFER_SIZE (40)
-#define TX_BUFFER_SIZE (10)
+#define RX_BUFFER_SIZE (40)  //!< The max size of the recieve buffer
+#define TX_BUFFER_SIZE (10)  //!< The max size of the transmit buffer
 
 
 // HAL UART handler declaration
 UART_HandleTypeDef HAL_UART_handle;
 
+//! UART structure to track RX / TX buffers
 typedef struct {
     // define buffers to be used by the STM drivers
-    uint8_t tx_buffer[TX_BUFFER_SIZE];
-    uint8_t rx_buffer[RX_BUFFER_SIZE];
-    volatile queue_t rx_buffer_admin;
-
-    // volatile uint8_t sending_data;
+    uint8_t tx_buffer[TX_BUFFER_SIZE];  //!< transmit buffer
+    uint8_t rx_buffer[RX_BUFFER_SIZE];  //!< receive buffer
+    volatile queue_t rx_buffer_admin;   //!< queue_t admin to track RX circular buffer
 } UART_admin_t;
 
+//! UART admin
 UART_admin_t UART_admin;
 
 /*-------------------------- Private functions -------------------------------*/
@@ -174,11 +178,17 @@ ret_t UART_sendint(int64_t data)
     return RET_OK;
 }
 
-ret_t UART_sendfloat(float data)
+ret_t UART_sendfloat(float data, uint8_t percision)
 {
     // TODO: Is 20 bytes too much / little?
     char char_buff[20];
-    sprintf(char_buff, "%f", data);
+    int32_t significand;
+    int32_t fractional;
+
+    significand = (int32_t)data;
+    fractional = (int32_t)((data - (int32_t)data) * (10.0f * (float)percision));
+    sprintf(char_buff, "%ld.%ld", significand, fractional);
+
     UART_sendString(char_buff);
     return RET_OK;
 }
