@@ -25,13 +25,13 @@ class LSM303DLHC_Parser(object):
         linesplit = line.split(" ")
 
         if linesplit[0] == "Mag":
-            pkt = (int(linesplit[1], 16), int(linesplit[2], 16), int(linesplit[3], 16))
+            pkt = (float(linesplit[1]), float(linesplit[2]), float(linesplit[3]))
             if self.verbose == 2:
                 print("New Mag Packet: {}".format(pkt))
             self.mag_packets.append(pkt)
 
         elif linesplit[0] == "Acc":
-            pkt = (int(linesplit[1], 16), int(linesplit[2], 16), int(linesplit[3], 16))
+            pkt = (float(linesplit[1]), float(linesplit[2]), float(linesplit[3]))
             if self.verbose == 2:
                 print("New Accel Packet: {}".format(pkt))
             self.accel_packets.append(pkt)
