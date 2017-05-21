@@ -1,5 +1,14 @@
+/*!
+ * @file    I2C.h
+ * @author  Tyler Holmes
+ * @version 0.1.0
+ * @date    20-May-2017
+ * @brief   Wrapper functions around the stm32f3xx HAL I2C functions.
+ *
+ */
 #ifndef _I2C_H_
 #define _I2C_H_
+
 
 #include <stdint.h>
 #include <stdbool.h>

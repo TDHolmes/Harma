@@ -1,3 +1,11 @@
+/*!
+ * @file    reports.h
+ * @author  Tyler Holmes
+ * @version 0.1.0
+ * @date    20-May-2017
+ * @brief   Interface to define get/set reports as a debug hook.
+ *
+ */
 #ifndef _REPORTS_H_
 #define _REPORTS_H_
 

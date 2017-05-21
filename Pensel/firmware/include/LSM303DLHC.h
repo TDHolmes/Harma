@@ -1,4 +1,9 @@
-/*! Public data types and function definitions for the LSM303DLHC sensor.
+/*!
+ * @file    LSM303DLHC.h
+ * @author  Tyler Holmes
+ * @version 0.1.0
+ * @date    20-May-2017
+ * @brief   Functions and definitions to interface with the accelerometer + magnetometer chip LSM303DLHC.
  *
  */
  #ifndef _LSM303DLHC_H_
@@ -9,7 +14,7 @@
 #include "common.h"
 
 
-//! Enum for the possible sensitivities of the accel module in the LSM303DLHC.
+//! The possible sensitivities of the accel module in the LSM303DLHC.
 typedef enum {
     kOne_mg_per_LSB,
     kTwo_mg_per_LSB,
@@ -17,7 +22,7 @@ typedef enum {
     kTwelve_mg_per_LSB
 } accel_sensitivity_t;
 
-//! Enum for the possible sensitivities of the mag module in the LSM303DLHC.
+//! The possible sensitivities of the mag module in the LSM303DLHC.
 typedef enum {
     kXY_1100_Z_980_LSB_per_g = 1,
     kXY_855_Z_760_LSB_per_g,
@@ -28,7 +33,7 @@ typedef enum {
     kXY_230_Z_205_LSB_per_g
 } mag_sensitivity_t;
 
-//! Enum for the possible output data rates of the accel module in the LSM303DLHC.
+//! The possible output data rates of the accel module in the LSM303DLHC.
 typedef enum {
     kAccelODR_PowerDown,
     kAccelODR_1Hz,
@@ -42,7 +47,7 @@ typedef enum {
     kAccelODR_N_1344_LPM_5376_Hz
 } accel_ODR_t;
 
-//! Enum for the possible output data rates of the mag module in the LSM303DLHC.
+//! The possible output data rates of the mag module in the LSM303DLHC.
 typedef enum {
     kMagODR_0_75_Hz,
     kMagODR_1_5_Hz,
@@ -54,7 +59,7 @@ typedef enum {
     kMagODR_220_Hz
 } mag_ODR_t;
 
-//! Enum for the possible modes we can configure the FIFO in the LSM303DLHC.
+//! The possible modes we can configure the FIFO in the LSM303DLHC.
 typedef enum {
     kFIFO_MODE_Bypass,
     kFIFO_MODE_FIFO,

@@ -1,3 +1,12 @@
+/*!
+ * @file    hardware.h
+ * @author  Tyler Holmes
+ * @version 0.1.0
+ * @date    20-May-2017
+ * @brief   Hardware specific definitions and function calls.
+ *
+ */
+
 #ifndef _HARDWARE_H_
 #define _HARDWARE_H_
 
@@ -38,7 +47,7 @@
 #define UART_TX     (GPIO_PIN_9)
 
 
-// public structures
+//! Keeps track of the state of the 3 position switch.
 typedef enum {
     kSwitch_0,
     kSwitch_1,

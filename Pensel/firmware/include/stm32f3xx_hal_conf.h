@@ -181,7 +181,7 @@
 
 /*
  * In my opinion, we should be including in the individual files that need
- *   it, not here.
+ *   it, not here. But the HAL library doesn't compile well without this stuff...
  */
 
 

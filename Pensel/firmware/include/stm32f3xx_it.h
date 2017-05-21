@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file    I2C/I2C_TwoBoards_ComIT/Inc/stm32f3xx_it.h
+  * @file    stm32f3xx_it.h
   * @author  MCD Application Team
   * @version V1.7.0
   * @date    16-December-2016

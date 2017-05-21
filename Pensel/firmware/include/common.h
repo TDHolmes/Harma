@@ -1,19 +1,30 @@
+/*!
+ * @file    common.h
+ * @author  Tyler Holmes
+ * @version 0.1.0
+ * @date    20-May-2017
+ * @brief   A common set of return codes and functions all files have access to.
+ *
+ */
+
 #ifndef _COMMON_H_
 #define _COMMON_H_
 
 #include <stdint.h>
 
+
+//! Common return type for the entire project
 typedef enum {
-    RET_OK,
-    RET_VAL_ERR,
-    RET_NODATA_ERR,
-    RET_LEN_ERR,
-    RET_COM_ERR,
-    RET_BUSY_ERR,
-    RET_GEN_ERR,
-    RET_NORPT_ERR,
-    RET_INVALID_ARGS_ERR,
-    RET_MAX_LEN_ERR
+    RET_OK,         //!< The return code if all goes well
+    RET_VAL_ERR,    //!< If the values given cause an error
+    RET_NODATA_ERR, //!< If not enough data was given
+    RET_LEN_ERR,    //!< If there was some sort of length related error
+    RET_COM_ERR,    //!< Some sort of communication error
+    RET_BUSY_ERR,   //!< Some sort of busy resource
+    RET_GEN_ERR,    //!< Lame catch all general error
+    RET_NORPT_ERR,  //!< No available report
+    RET_INVALID_ARGS_ERR,  //!< Incorrect arguments to the function called
+    RET_MAX_LEN_ERR        //!< Maximum length was violated
 } ret_t;
 
 
