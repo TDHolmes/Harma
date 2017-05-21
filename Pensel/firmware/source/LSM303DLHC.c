@@ -1,8 +1,11 @@
-/*
- *
+/*!
+ * @file    LSM303DLHC.c
+ * @author  Tyler Holmes
+ * @version 0.1.0
+ * @date    20-May-2017
+ * @brief   Functions to interface with the accelerometer + magnetometer chip LSM303DLHC.
  *
  */
-
 #include <stdint.h>
 #include <stdbool.h>
 #include "common.h"
@@ -86,6 +89,7 @@ ret_t LSM303DLHC_accel_putPacket(float * data_x_ptr, float * data_y_ptr, float *
 ret_t LSM303DLHC_mag_putPacket(float * data_x_ptr, float * data_y_ptr, float * data_z_ptr);
 
 
+//! LSM303DLHC structure to store packets, overwrite stats, and LSM303DLHC settings
 typedef struct {
     uint32_t accel_hw_overwrite_count; //!< Accel overwrites on the chip itself
     uint32_t mag_hw_overwrite_count;   //!< Mag overwrites on the chip itself
@@ -103,12 +107,12 @@ typedef struct {
 
 
 //! Mag gain offsets for the X & Y axis to normalize to miligauss
-static float MagGainOffsets_XY[] = {0.9091f, 1.1696f, 1.4925f, 2.2222f, 2.5000f, 3.0303f, 4.3478f};
+const float MagGainOffsets_XY[] = {0.9091f, 1.1696f, 1.4925f, 2.2222f, 2.5000f, 3.0303f, 4.3478f};
 //! Mag gain offsets for the Z axis to normalize to miligauss
-static float MagGainOffsets_Z[] = {1.0204f, 1.3158f, 1.6667f, 2.5000f, 2.8169f, 3.3898f, 4.8780f};
+const float MagGainOffsets_Z[] = {1.0204f, 1.3158f, 1.6667f, 2.5000f, 2.8169f, 3.3898f, 4.8780f};
 
 //! Accel gain offsets to normalize to mili-g (g = 9.8 m/s^2)
-static float AccelGainOffsets[] = {1.0f, 2.0f, 4.0f, 12.0f};
+const float AccelGainOffsets[] = {1.0f, 2.0f, 4.0f, 12.0f};
 
 /*! Master struct for this module. Marked as volatile as we update it in
  *   the I2C & DRDY pin interrupt context */
