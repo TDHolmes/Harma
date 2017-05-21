@@ -6,17 +6,16 @@
 #include <stdint.h>
 #include <string.h>
 #include "common.h"
-#include "hardware.h"
 
 // Sensors
 #include "LSM303DLHC.h"
-// TODO: add button and thumbwheel support
 #include "ADC.h"  // for thumbwheel
+#include "hardware.h" // HW support and button / switch functions
 
 // Communications and other
 #include "I2C.h"
 #include "UART.h"
-#include "cli.h"
+#include "reports.h"
 
 // STM Drivers
 #include "Drivers/stm32f3xx_hal_def.h"
@@ -27,7 +26,7 @@
 const uint8_t hello_world_str[] = {"Hello!!!\r\n"};
 uint8_t data_to_send[10];
 
-
+//! HAL millisecond tick
 extern __IO uint32_t uwTick;
 
 
@@ -62,12 +61,12 @@ int main(void)
         fatal_error_handler(__FILE__, __LINE__, (int8_t)retval);
     }
 
-    retval = LSM303DLHC_init(kAccelODR_100_Hz, kOne_mg_per_LSB, kMagODR_75_Hz, kXY_230_Z_205_LSB_per_g);
+    retval = LSM303DLHC_init(kAccelODR_100_Hz, kOne_mg_per_LSB, kMagODR_75_Hz, kXY_1100_Z_980_LSB_per_g);
     if (retval != RET_OK) {
         fatal_error_handler(__FILE__, __LINE__, (int8_t)retval);
     }
 
-    // retval = cli_init(UART_sendChar, UART_getChar);
+    // retval = rpt_init(UART_sendChar, UART_getChar);
     // if (retval != RET_OK) {
     //     fatal_error_handler(__FILE__, __LINE__, (int8_t)retval);
     // }
@@ -91,11 +90,11 @@ int main(void)
         if( LSM303DLHC_accel_dataAvailable() ) {
             if ( LSM303DLHC_accel_getPacket(&accel_pkt, false) == RET_OK ) {
                 UART_sendString("Acc ");
-                UART_sendint((int64_t)accel_pkt.x);
-                UART_sendString(" ");
-                UART_sendint((int64_t)accel_pkt.y);
-                UART_sendString(" ");
-                UART_sendint((int64_t)accel_pkt.z);
+                UART_sendfloat(accel_pkt.x, 3);
+                UART_sendString(", ");
+                UART_sendfloat(accel_pkt.y, 3);
+                UART_sendString(", ");
+                UART_sendfloat(accel_pkt.z, 3);
                 UART_sendString("\r\n");
             } else {
                 UART_sendString("Failed to get accel packet...\r\n");
@@ -104,11 +103,11 @@ int main(void)
         if( LSM303DLHC_mag_dataAvailable() ) {
             if ( LSM303DLHC_mag_getPacket(&mag_pkt, false) == RET_OK ) {
                 UART_sendString("Mag ");
-                UART_sendint((int64_t)mag_pkt.x);
+                UART_sendfloat(mag_pkt.x, 3);
                 UART_sendString(" ");
-                UART_sendint((int64_t)mag_pkt.y);
+                UART_sendfloat(mag_pkt.y, 3);
                 UART_sendString(" ");
-                UART_sendint((int64_t)mag_pkt.z);
+                UART_sendfloat(mag_pkt.z, 3);
                 UART_sendString("\r\n");
             } else {
                 UART_sendString("Failed to get mag packet...\r\n");
@@ -120,7 +119,7 @@ int main(void)
         //     // check if we should reflect what we've recieved
         //     if ( UART_dataAvailable() ) {
         //         UART_getChar(data_to_send);
-        //         cli_run();
+        //         rpt_run();
         //         UART_sendChar(*data_to_send);
         //     }
         // }
@@ -139,7 +138,7 @@ void HAL_IncTick(void)
     // increment the ms timer
     uwTick++;
 
-    // take care of some things that need to be called periodically
+    // take care of some things that need to be called periodically every ~10 ms
     if (sub_count >= 9) {
         sub_count = 0;
         button_periodic_handler(uwTick);
@@ -148,6 +147,7 @@ void HAL_IncTick(void)
         sub_count++;
     }
 
+    // Heartbeat LED flash
     if (second_count >= 1000) {
         second_count = 0;
         LED_toggle(LED_0);
@@ -179,5 +179,5 @@ void fatal_error_handler(char file[], uint32_t line, int8_t err_code)
 // HAL uses this function. Call our error function
 void assert_failed(uint8_t* file, uint32_t line)
 {
-    fatal_error_handler((char *)file, line, 0);
+    fatal_error_handler((char *)file, line, -1);
 }
