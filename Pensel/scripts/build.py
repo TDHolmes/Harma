@@ -2,10 +2,8 @@
 # -*- coding: UTF-8 -*-
 import sys
 import os
-import subprocess
-from threading import Thread
-from Queue import Queue, Empty
-import time
+
+import pensel_utils
 
 
 section_name_explainations = {
@@ -39,39 +37,11 @@ section_name_explainations = {
     '?': "The symbol type is unknown, or object file format specific"}
 
 
-class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-    COLOR_NC = '\033[0m'  # No Color
-    COLOR_WHITE = '\033[1;37m'
-    COLOR_BLACK = '\033[0;30m'
-    COLOR_BLUE = '\033[0;34m'
-    COLOR_LIGHT_BLUE = '\033[1;34m'
-    COLOR_GREEN = '\033[0;32m'
-    COLOR_LIGHT_GREEN = '\033[1;32m'
-    COLOR_CYAN = '\033[0;36m'
-    COLOR_LIGHT_CYAN = '\033[1;36m'
-    COLOR_RED = '\033[0;31m'
-    COLOR_LIGHT_RED = '\033[1;31m'
-    COLOR_PURPLE = '\033[0;35m'
-    COLOR_LIGHT_PURPLE = '\033[1;35m'
-    COLOR_BROWN = '\033[0;33m'
-    COLOR_YELLOW = '\033[1;33m'
-    COLOR_GRAY = '\033[0;30m'
-    COLOR_LIGHT_GRAY = '\033[0;37m'
-
-
 def build_debug(use_clang=False, armgcc_dir="", verbose=False):
     """Builds a debug version of the source code."""
-    sys.stdout.write(bcolors.COLOR_YELLOW)
+    sys.stdout.write(pensel_utils.bcolors.COLOR_YELLOW)
     print("\n————————————————————— DEBUG BUILD ————————————————————————\n")
-    sys.stdout.write(bcolors.COLOR_NC)
+    sys.stdout.write(pensel_utils.bcolors.COLOR_NC)
     sys.stdout.flush()
 
     # build the makefile with cmake
@@ -100,18 +70,18 @@ def build_debug(use_clang=False, armgcc_dir="", verbose=False):
 
     retval = os.system(cmd)
     if retval:
-        sys.stdout.write(bcolors.COLOR_LIGHT_RED)
+        sys.stdout.write(pensel_utils.bcolors.COLOR_LIGHT_RED)
         print("\n\Debug build FAILED!\n")
-        sys.stdout.write(bcolors.COLOR_NC)
+        sys.stdout.write(pensel_utils.bcolors.COLOR_NC)
         sys.stdout.flush()
     return retval
 
 
 def build_release(use_clang=False, armgcc_dir="", verbose=False):
     """Builds a release version of the source code."""
-    sys.stdout.write(bcolors.COLOR_YELLOW)
+    sys.stdout.write(pensel_utils.bcolors.COLOR_YELLOW)
     print("\n————————————————————— RELEASE BUILD ————————————————————————\n")
-    sys.stdout.write(bcolors.COLOR_NC)
+    sys.stdout.write(pensel_utils.bcolors.COLOR_NC)
     sys.stdout.flush()
 
     # build the makefile with cmake
@@ -140,9 +110,9 @@ def build_release(use_clang=False, armgcc_dir="", verbose=False):
 
     retval = os.system(cmd)
     if retval:
-        sys.stdout.write(bcolors.COLOR_LIGHT_RED)
+        sys.stdout.write(pensel_utils.bcolors.COLOR_LIGHT_RED)
         print("\n\tRelease build FAILED!\n")
-        sys.stdout.write(bcolors.COLOR_NC)
+        sys.stdout.write(pensel_utils.bcolors.COLOR_NC)
         sys.stdout.flush()
     return retval
 
@@ -151,11 +121,11 @@ def build_clean(remove_elf_files=True):
     """Removes build files and optionally, the output elf files."""
     if remove_elf_files:
         cmd = "rm -rf debug release"
-        run_command(cmd)
+        pensel_utils.run_command(cmd)
     cmd = "rm -rf Makefile cmake_install.cmake CMakeCache.txt"
-    run_command(cmd)
+    pensel_utils.run_command(cmd)
     cmd = "rm -rf CMakeCache.txt CMakeFiles/"
-    run_command(cmd)
+    pensel_utils.run_command(cmd)
 
 
 def build_display_size(build_type, chip_total_flash, chip_total_ram):
@@ -168,14 +138,14 @@ def build_display_size(build_type, chip_total_flash, chip_total_ram):
     """
     chip_total_flash = chip_total_flash * 1024
     chip_total_ram = chip_total_ram * 1024
-    sys.stdout.write(bcolors.COLOR_YELLOW)
+    sys.stdout.write(pensel_utils.bcolors.COLOR_YELLOW)
     b = build_type.upper()
     print("\n———————————— {} BUILD SIZE ———————————————\n".format(b))
-    sys.stdout.write(bcolors.COLOR_NC)
+    sys.stdout.write(pensel_utils.bcolors.COLOR_NC)
     sys.stdout.flush()
     file_location = "build/{}/pensel.elf".format(build_type)
     cmd = "arm-none-eabi-size {} --radix=10".format(file_location)
-    stdout, stderr, retval = run_command(cmd, print_output=False)
+    stdout, stderr, retval = pensel_utils.run_command(cmd, print_output=False)
     fields = stdout.splitlines()[0].split()
     values = stdout.splitlines()[1].split()
 
@@ -191,7 +161,7 @@ def build_display_size(build_type, chip_total_flash, chip_total_ram):
     print "\tData:  {: >5} bytes".format(dict_of_vals["data"])
     print "\t bss:  {: >5} bytes".format(dict_of_vals["bss"])
     percentage = (float(dict_of_vals["text"]) * 100.0) / float(chip_total_flash)
-    sys.stdout.write(bcolors.COLOR_WHITE)
+    sys.stdout.write(pensel_utils.bcolors.COLOR_WHITE)
     print "\tFlash: {: >5} / {} ({:0.2f} %)".format(dict_of_vals["text"],
                                                     chip_total_flash,
                                                     percentage)
@@ -201,7 +171,7 @@ def build_display_size(build_type, chip_total_flash, chip_total_ram):
     print "\t  Ram: {: >5} / {} ({:0.2f} %)\n".format(ram_stuff,
                                                       chip_total_ram,
                                                       percentage)
-    sys.stdout.write(bcolors.COLOR_NC)
+    sys.stdout.write(pensel_utils.bcolors.COLOR_NC)
 
 
 def build_get_section_info(build_type, chip_total_flash, chip_total_ram):
@@ -211,15 +181,15 @@ def build_get_section_info(build_type, chip_total_flash, chip_total_ram):
 
     chip_total_flash = chip_total_flash * 1024
     chip_total_ram = chip_total_ram * 1024
-    sys.stdout.write(bcolors.COLOR_YELLOW)
+    sys.stdout.write(pensel_utils.bcolors.COLOR_YELLOW)
     b = build_type.upper()
     print("\n———————————— {} FUNCTION SIZES ———————————————\n".format(b))
-    sys.stdout.write(bcolors.COLOR_NC)
+    sys.stdout.write(pensel_utils.bcolors.COLOR_NC)
     sys.stdout.flush()
     cmd = "arm-none-eabi-nm --print-size --size-sort --radix=d --demangle " + \
         "--defined-only build/{}/pensel.elf".format(build_type.lower())
 
-    stdout, stderr, retval = run_command(cmd, print_output=False)
+    stdout, stderr, retval = pensel_utils.run_command(cmd, print_output=False)
 
     data = []
     data_by_sections = {}
@@ -242,12 +212,12 @@ def build_get_section_info(build_type, chip_total_flash, chip_total_ram):
         print("{}".format(section_name_explainations[key]))
         for d in data_sorted:
             name, size = d
-            sys.stdout.write(bcolors.COLOR_WHITE)
+            sys.stdout.write(pensel_utils.bcolors.COLOR_WHITE)
             sys.stdout.write("\t")
             sys.stdout.write(name)
             if not section_is_ram(key):
                 sys.stdout.write("()")
-            sys.stdout.write(bcolors.COLOR_NC)
+            sys.stdout.write(pensel_utils.bcolors.COLOR_NC)
             sys.stdout.flush()
             if section_is_ram(key):
                 percentage = (float(size) * 100.0) / float(chip_total_ram)
@@ -255,64 +225,6 @@ def build_get_section_info(build_type, chip_total_flash, chip_total_ram):
             else:
                 percentage = (float(size) * 100.0) / float(chip_total_flash)
                 print(" - {} bytes ({:0.2f}% of Flash)".format(size, percentage))
-
-
-def run_command(cmd, print_output=True):
-    """
-    Kicks off a subprocess to run and accumilate the stdout of the process.
-    """
-    def enqueue_output(out, queue):
-        for line in iter(out.readline, b''):
-            queue.put(line)
-        out.close()
-
-    print(" -> {}".format(cmd))
-    proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
-                            stderr=subprocess.PIPE)
-    q_stdout = Queue()
-    q_stderr = Queue()
-    t_stdout = Thread(target=enqueue_output, args=(proc.stdout, q_stdout))
-    t_stderr = Thread(target=enqueue_output, args=(proc.stderr, q_stderr))
-    t_stderr.daemon = True  # thread dies with the program
-    t_stdout.daemon = True
-    t_stdout.start()
-    t_stderr.start()
-    stdout = ""
-    stderr = ""
-
-    # read stdout and stderr without blocking
-    finished = False
-    while True:
-        done = proc.poll()
-        try:
-            line_stdout = ""
-            while True:
-                line_stdout += q_stdout.get_nowait()  # or q.get(timeout=.1)
-        except Empty:
-            pass
-        # accumilate stdout and print if we should
-        stdout += line_stdout
-        if print_output and line_stdout != "":
-            print(line_stdout.rstrip("\n"))
-
-        try:
-            line_stderr = ""
-            while True:
-                line_stderr += q_stderr.get_nowait()  # or q.get(timeout=.1)
-        except Empty:
-            pass
-        # accumilate stderr and print if we should
-        stderr += line_stderr
-        if print_output and line_stderr != "":
-            print(line_stderr.rstrip("\n"))
-
-        if finished:
-            return stdout, stderr, done
-
-        if done is not None:
-            finished = True
-            # give stdout and stderr time
-            time.sleep(0.25)
 
 
 if __name__ == '__main__':
