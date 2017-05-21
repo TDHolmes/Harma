@@ -205,6 +205,10 @@ def build_display_size(build_type, chip_total_flash, chip_total_ram):
 
 
 def build_get_section_info(build_type, chip_total_flash, chip_total_ram):
+
+    def section_is_ram(key):
+        return (key == "r" or key == "b" or key == "d" or key == "g" or key == "c")
+
     chip_total_flash = chip_total_flash * 1024
     chip_total_ram = chip_total_ram * 1024
     sys.stdout.write(bcolors.COLOR_YELLOW)
@@ -213,7 +217,7 @@ def build_get_section_info(build_type, chip_total_flash, chip_total_ram):
     sys.stdout.write(bcolors.COLOR_NC)
     sys.stdout.flush()
     cmd = "arm-none-eabi-nm --print-size --size-sort --radix=d --demangle " + \
-        "--defined-only {}/pensel.elf".format(build_type.lower())
+        "--defined-only build/{}/pensel.elf".format(build_type.lower())
 
     stdout, stderr, retval = run_command(cmd, print_output=False)
 
@@ -235,14 +239,17 @@ def build_get_section_info(build_type, chip_total_flash, chip_total_ram):
         data_sorted = sorted(data, key=lambda d: d[1], reverse=True)
 
         print("\nSection {}:".format(key))
-        print("\t{}".format(section_name_explainations[key]))
+        print("{}".format(section_name_explainations[key]))
         for d in data_sorted:
             name, size = d
             sys.stdout.write(bcolors.COLOR_WHITE)
+            sys.stdout.write("\t")
             sys.stdout.write(name)
+            if not section_is_ram(key):
+                sys.stdout.write("()")
             sys.stdout.write(bcolors.COLOR_NC)
             sys.stdout.flush()
-            if key == "r" or key == "b" or key == "d" or key == "g" or key == "c":
+            if section_is_ram(key):
                 percentage = (float(size) * 100.0) / float(chip_total_ram)
                 print(" - {} bytes ({:0.2f}% of RAM)".format(size, percentage))
             else:
