@@ -8,29 +8,45 @@ from Queue import Queue, Empty
 import time
 
 
-def run_unit_test(source_code_list, output_name, unity_path, verbose=False):
-    BASE_CMD_START = "gcc  -I {0} {0}unity.c ".format(unity_path)
+def run_utest(source_code_list, output_name, unity_path,
+              include_paths=None, verbose=False):
+    print("\n\n Running Test {}!\n\n".format(output_name))
+    # build up include paths...
+    include_paths_str = ""
+    if type(include_paths) is list:
+        for i in include_paths:
+            include_paths_str += " -I {}".format(i)
+
+    # compile with gcc
+    BASE_CMD_START = "gcc {0} -I {1} {1}unity.c ".format(include_paths_str, unity_path)
     # build up the command with the source and output name
     abs_path_list = [os.path.abspath(src_file) for src_file in source_code_list]
     cmd = BASE_CMD_START + "{} -o {}".format(" ".join(abs_path_list), output_name)
     if verbose:
         cmd += " -D VERBOSE_OUTPUT"
+
+    # run the program!!
     stdout, stderr, retval = run_command(cmd)
 
     # run the output program
     cmd = "./{}".format(output_name)
     stdout, stderr, retval = run_command(cmd)
 
+    # remove the compiled result and return
     run_command("rm {}".format(output_name), print_output=verbose)
-
     return retval
 
 
 def main(verbose, unity_path):
     retval = 0
+    inc_paths = ["../firmware/include/"]
     # run all tests!
-    retval += run_unit_test(["../source/queue.c", "test_queue.c"],
-                            "test_queue", unity_path, verbose)
+    retval += run_utest(["../firmware/source/queue.c", "test_queue.c"],
+                        "test_queue", unity_path, include_paths=inc_paths,
+                        verbose=verbose)
+    retval += run_utest(["../firmware/source/newqueue.c", "test_newqueue.c"],
+                        "test_newqueue", unity_path, include_paths=inc_paths,
+                        verbose=verbose)
     sys.exit(retval)
 
 
