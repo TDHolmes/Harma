@@ -9,7 +9,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
-#include <stdio.h>
 #include "common.h"
 #include "UART.h"
 #include "queue.h"
@@ -39,13 +38,12 @@ typedef struct {
 //! UART admin
 UART_admin_t UART_admin;
 
-/*-------------------------- Private functions -------------------------------*/
 
-/**
-  * @brief  Main program
-  * @param  None
-  * @retval None
-  */
+/*! UART initialization function
+ *
+ * @param  baudrate (uint32_t): Speed of transactions
+ * @retval Return code indicating success / failure of init
+ */
 ret_t UART_init(uint32_t baudrate)
 {
 
@@ -73,7 +71,10 @@ ret_t UART_init(uint32_t baudrate)
     return RET_OK;
 }
 
-
+/*! Checks if the UART TX line is busy sending things
+ *
+ * @retval Boolean indicating if UART TX is ready to send
+ */
 bool UART_TXisReady(void)
 {
     HAL_UART_StateTypeDef state;
@@ -86,7 +87,14 @@ bool UART_TXisReady(void)
     }
 }
 
-
+/*! Sends a buffer of data over UART
+ *
+ * @param data_ptr (uint8_t *): pointer to the data you want to transmit
+ * @param num_bytes (uint8_t): amount of bytes you want to send
+ * @retval Return code indicating success / failure of the start of the transmit
+ *
+ * @Note Can only send a maximum of `TX_BUFFER_SIZE`
+ */
 ret_t UART_sendData(uint8_t * data_ptr, uint8_t num_bytes)
 {
     // first, make sure we have enough room!
@@ -107,15 +115,23 @@ ret_t UART_sendData(uint8_t * data_ptr, uint8_t num_bytes)
     return RET_OK;
 }
 
-
+/*! Sends a single byte of data over UART
+ *
+ * @param data (uint8_t): Byte to send
+ * @retval Return code indicating success / failure of the start of the transmit
+ */
 ret_t UART_sendChar(uint8_t data)
 {
     while( UART_TXisReady() == false );
     return UART_sendData(&data, 1);
 }
 
-/* Send a string via UART with a maximum length possible of 255
+/*! Send a string via UART with a maximum length possible of 255
  *
+ * @param string_ptr (char[]): Pointer to the string to be sent
+ * @retval Return code indicating success / failure of the start of the transmit
+ *
+ * @Note This function expects a null terminated string.
  */
 ret_t UART_sendString(char string_ptr[])
 {
@@ -134,7 +150,11 @@ ret_t UART_sendString(char string_ptr[])
     return RET_OK;
 }
 
-
+/*! Sends an integer via UART encoded in ascii hexadecimal
+ *
+ * @param data (int64_t): Data to be sent. Must be cast to `int64_t`
+ * @retval Return code indicating success / failure of the start of the transmit
+ */
 ret_t UART_sendint(int64_t data)
 {
     ret_t retval;
@@ -178,10 +198,19 @@ ret_t UART_sendint(int64_t data)
     return RET_OK;
 }
 
+/*! Sends an float value via UART encoded in ascii using `sprintf`
+ *
+ * @param data (float): The value to be printed
+ * @param percision (uint8_t): number of fractional places to print
+ * @retval Return code indicating success / failure of the start of the transmit
+ *
+ * @Note This function does not use the %f specifier, but rather does "%ld.%ld"
+ *      and calculates the whole and fractional part
+ */
 ret_t UART_sendfloat(float data, uint8_t percision)
 {
-    // TODO: Is 20 bytes too much / little?
-    char char_buff[20];
+    // TODO: Is 40 bytes too much / little?
+    char char_buff[40];
     int32_t significand;
     int32_t fractional;
 
@@ -193,6 +222,11 @@ ret_t UART_sendfloat(float data, uint8_t percision)
     return RET_OK;
 }
 
+/*! Gets a byte from the recieved data buffer.
+ *
+ * @param data_ptr (uint8_t *): Place to store the retreived byte
+ * @retval Return code indicating success / failure of getting the byte of data
+ */
 ret_t UART_getChar(uint8_t * data_ptr)
 {
     // check if we have any data to give
@@ -206,7 +240,11 @@ ret_t UART_getChar(uint8_t * data_ptr)
     }
 }
 
-
+/*! Gets a byte from the recieved data buffer, but doesn't take it off the buffer.
+ *
+ * @param data_ptr (uint8_t *): Place to store the retreived byte
+ * @retval Return code indicating success / failure of getting the byte of data
+ */
 ret_t UART_peakChar(uint8_t * data_ptr)
 {
     // check if we have any data to give
@@ -220,7 +258,10 @@ ret_t UART_peakChar(uint8_t * data_ptr)
     }
 }
 
-
+/*! Checks if there is data in the RX buffer.
+ *
+ * @retval Boolean as to whether or not there is unread data in the buffer.
+ */
 bool UART_dataAvailable(void)
 {
     if (UART_admin.rx_buffer_admin.unread_items != 0) {
@@ -230,51 +271,36 @@ bool UART_dataAvailable(void)
     }
 }
 
-
+/*! Returns how many bytes have been overwritten in the RX buffer.
+ *
+ * @uint8_t Number of dropped/overwritten bytes
+ */
 uint8_t UART_droppedPackets(void)
 {
     return UART_admin.rx_buffer_admin.overwrite_count;
 }
 
-/**
-  * @brief  Tx Transfer completed callback
-  * @param  HAL_UART_handle: UART handle.
-  * @note   This example shows a simple way to report end of IT Tx transfer, and
-  *         you can add your own implementation.
-  * @retval None
-  */
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *HAL_UART_handle)
-{
-    // indicate we're done transmitting data!
-    // UART_admin.sending_data = 0;
-}
 
-/**
-  * @brief  Rx Transfer completed callback
-  * @param  HAL_UART_handle: UART handle
-  * @note   This example shows a simple way to report end of DMA Rx transfer, and
-  *         you can add your own implementation.
-  * @retval None
-  */
+/*! Rx Transfer completed callback. Push onto the rx buffer!
+ *
+ * @param  HAL_UART_handle: UART handle
+ */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *HAL_UART_handle)
 {
 
-    // New data is on the buffer!
+    // New data was put onto the buffer by the ISR!
     // move the head of the buffer forward
     queue_increment_head(&UART_admin.rx_buffer_admin, RX_BUFFER_SIZE);
 
-    // start recieving data again
+    // start recieving data again @ the head index
     HAL_UART_Receive_IT(HAL_UART_handle, &UART_admin.rx_buffer[UART_admin.rx_buffer_admin.head_ind], 1);
 }
 
-/**
-  * @brief  UART error callbacks
-  * @param  HAL_UART_handle: UART handle
-  * @note   This example shows a simple way to report transfer error, and you can
-  *         add your own implementation.
-  * @retval None
-  */
+/*!
+ * @brief  UART error callback. Call fatal_error_handler and go into infinite loop
+ * @param  HAL_UART_handle: UART handle
+ */
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *HAL_UART_handle)
 {
-    fatal_error_handler(__FILE__, __LINE__, 0);
+    fatal_error_handler(__FILE__, __LINE__, HAL_UART_handle->ErrorCode);
 }
