@@ -296,8 +296,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *HAL_UART_handle)
     HAL_UART_Receive_IT(HAL_UART_handle, &UART_admin.rx_buffer[UART_admin.rx_buffer_admin.head_ind], 1);
 }
 
-/*!
- * @brief  UART error callback. Call fatal_error_handler and go into infinite loop
+/*! UART error callback. Call `fatal_error_handler` and go into infinite loop
+ *
  * @param  HAL_UART_handle: UART handle
  */
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *HAL_UART_handle)
