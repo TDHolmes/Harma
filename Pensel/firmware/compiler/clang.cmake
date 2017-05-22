@@ -1,60 +1,76 @@
-INCLUDE(CMakeForceCompiler)
+set(CMAKE_SYSTEM_NAME Generic)
+set(CMAKE_SYSTEM_PROCESSOR ARM)
 
-# TOOLCHAIN EXTENSION
-IF(WIN32)
-    SET(TOOLCHAIN_EXT ".exe")
-ELSE()
-    SET(TOOLCHAIN_EXT "")
-ENDIF()
+# specify what type of compilation we're doing
+SET(COMPILER_TYPE "clang")
 
-# EXECUTABLE EXTENSION
-SET (CMAKE_EXECUTABLE_SUFFIX ".elf")
+if(MINGW OR CYGWIN OR WIN32)
+    set(UTIL_SEARCH_CMD where)
+elseif(UNIX OR APPLE)
+    set(UTIL_SEARCH_CMD which)
+endif()
 
-# CMAKE_BUILD_TYPE
-IF(NOT CMAKE_BUILD_TYPE MATCHES Debug)
-    SET (CMAKE_BUILD_TYPE Release)
-ENDIF()
+execute_process(
+        COMMAND ${UTIL_SEARCH_CMD} arm-none-eabi-gcc
+        OUTPUT_VARIABLE BINUTILS_PATH
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+)
 
-SET(TOOLCHAIN_DIR /usr/local/resources/compilers)
+get_filename_component(ARM_TOOLCHAIN_DIR ${BINUTILS_PATH} DIRECTORY)
 
-STRING(REGEX REPLACE "\\\\" "/" TOOLCHAIN_DIR "${TOOLCHAIN_DIR}")
-IF(NOT TOOLCHAIN_DIR)
-    MESSAGE(FATAL_ERROR "***Please set ARMGCC_DIR in envionment variables or use -g***")
-ENDIF()
+set(triple arm-none-eabi)
 
-MESSAGE(STATUS "TOOLCHAIN_DIR: " ${TOOLCHAIN_DIR})
+set(CMAKE_ASM_COMPILER arm-none-eabi-gcc)
+set(CMAKE_C_COMPILER clang)
+set(CMAKE_C_COMPILER_TARGET ${triple})
+set(CMAKE_CXX_COMPILER clang++)
+set(CMAKE_CXX_COMPILER_TARGET ${triple})
 
-SET(LLVM_VERSION  clang-llvm-3.9.0)
+set(CMAKE_C_FLAGS_INIT "-B${ARM_TOOLCHAIN_DIR}")
+set(CMAKE_CXX_FLAGS_INIT "-B${ARM_TOOLCHAIN_DIR}")
+# only for successful compilation of CMake test
+set(CMAKE_EXE_LINKER_FLAGS_INIT "--specs=nosys.specs")
+# provide clang with ARM GCC toolchain include directory info
+include_directories(${ARM_TOOLCHAIN_DIR}/../arm-none-eabi/include)
 
-SET(CMAKE_C_COMPILER   ${TOOLCHAIN_DIR}/${LLVM_VERSION}/bin/clang)
-MESSAGE(STATUS "CMAKE_C_COMPILER: " ${CMAKE_C_COMPILER})
-SET(CMAKE_CXX_COMPILER ${TOOLCHAIN_DIR}/${LLVM_VERSION}/bin/clang++)
-MESSAGE(STATUS "CMAKE_CXX_COMPILER: " ${CMAKE_CXX_COMPILER})
+set(CMAKE_OBJCOPY ${ARM_TOOLCHAIN_DIR}/arm-none-eabi-objcopy CACHE INTERNAL "objcopy tool")
+set(CMAKE_SIZE_UTIL ${ARM_TOOLCHAIN_DIR}/arm-none-eabi-size CACHE INTERNAL "size tool")
 
-SET(CMAKE_AR      ${TOOLCHAIN_DIR}/${LLVM_VERSION}/bin/llvm-ar)
-SET(CMAKE_LINKER  ${TOOLCHAIN_DIR}/${LLVM_VERSION}/bin/llvm-link)
-SET(CMAKE_NM      ${TOOLCHAIN_DIR}/${LLVM_VERSION}/bin/llvm-nm)
-SET(CMAKE_OBJDUMP ${TOOLCHAIN_DIR}/${LLVM_VERSION}/bin/llvm-objdump)
-SET(CMAKE_RANLIB  ${TOOLCHAIN_DIR}/${LLVM_VERSION}/bin/llvm-ranlib)
+set(CMAKE_FIND_ROOT_PATH ${ARM_TOOLCHAIN_DIR})
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
-SET(ARMGCC_DIR "$ENV{ARMGCC_DIR}")
-set(CMAKE_CLANG_FLAGS "-v -target arm-none-eabi --sysroot=${ARMGCC_DIR}/arm-none-eabi -isystem ${ARMGCC_DIR}/arm-none-eabi/include/")
-MESSAGE(STATUS "CMAKE Clang Flags: " ${CMAKE_CLANG_FLAGS})
+macro(_generate_object target suffix type)
+    add_custom_command(TARGET ${target} POST_BUILD
+        COMMAND ${CMAKE_OBJCOPY} -O${type}
+        "${CMAKE_CURRENT_BINARY_DIR}/${target}${CMAKE_EXECUTABLE_SUFFIX}" "${CMAKE_CURRENT_BINARY_DIR}/${target}${suffix}"
+    )
+endmacro()
+
+macro(_firmware_size target)
+    add_custom_command(TARGET ${target} POST_BUILD
+        COMMAND ${CMAKE_SIZE_UTIL} -B
+        "${CMAKE_CURRENT_BINARY_DIR}/${target}${CMAKE_EXECUTABLE_SUFFIX}"
+    )
+endmacro()
+
+SET(CMAKE_CLANG_FLAGS "${CMAKE_CLANG_FLAGS} -D__clang__")
 
 # ------------- DEBUG BUILD FLAGS (no optimizations) ------------- #
 
-SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_CLANG_FLAGS} ${CMAKE_C_FLAGS_DEBUG} -O0 -g" CACHE INTERNAL "c compiler flags debug")
-SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CLANG_FLAGS} ${CMAKE_CXX_FLAGS_DEBUG} -O0 -g" CACHE INTERNAL "cxx compiler flags debug")
-SET(CMAKE_ASM_FLAGS_DEBUG "${CMAKE_CLANG_FLAGS} ${CMAKE_ASM_FLAGS_DEBUG} -g" CACHE INTERNAL "asm compiler flags debug")
-SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} " CACHE INTERNAL "linker flags debug")
+SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_CLANG_FLAGS} ${CMAKE_C_FLAGS_DEBUG}" CACHE INTERNAL "c compiler flags debug")
+SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}" CACHE INTERNAL "cxx compiler flags debug")
+SET(CMAKE_ASM_FLAGS_DEBUG "${CMAKE_ASM_FLAGS_DEBUG}" CACHE INTERNAL "asm compiler flags debug")
+SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG}" CACHE INTERNAL "linker flags debug")
 
 
-# ------------- RELEASE BUILD FLAGS (no optimizations) ------------- #
+# ------------- RELEASE BUILD FLAGS (use optimizations) ------------- #
 
-SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_CLANG_FLAGS} ${CMAKE_C_FLAGS_RELEASE} -O2 " CACHE INTERNAL "c compiler flags release")
-SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CLANG_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE} -O2 " CACHE INTERNAL "cxx compiler flags release")
-SET(CMAKE_ASM_FLAGS_RELEASE "${CMAKE_CLANG_FLAGS} ${CMAKE_ASM_FLAGS_RELEASE}" CACHE INTERNAL "asm compiler flags release")
-SET(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} " CACHE INTERNAL "linker flags release")
+SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_CLANG_FLAGS} ${CMAKE_C_FLAGS_RELEASE}" CACHE INTERNAL "c compiler flags release")
+SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}" CACHE INTERNAL "cxx compiler flags release")
+SET(CMAKE_ASM_FLAGS_RELEASE "${CMAKE_ASM_FLAGS_RELEASE}" CACHE INTERNAL "asm compiler flags release")
+SET(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE}" CACHE INTERNAL "linker flags release")
 
 SET(CMAKE_FIND_ROOT_PATH ${TOOLCHAIN_DIR} ${EXTRA_FIND_PATH})
 SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
@@ -62,11 +78,15 @@ SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
 IF(CMAKE_BUILD_TYPE MATCHES Release)
-    SET(EXECUTABLE_OUTPUT_PATH ${ProjDirPath}/build/release)
-    SET(LIBRARY_OUTPUT_PATH ${ProjDirPath}/build/release)
+    SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/build/release)
+    SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/build/release)
 ELSEIF(CMAKE_BUILD_TYPE MATCHES Debug)
-    SET(EXECUTABLE_OUTPUT_PATH ${ProjDirPath}/build/debug)
-    SET(LIBRARY_OUTPUT_PATH ${ProjDirPath}/build/debug)
+    SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/build/debug)
+    SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/build/debug)
 ENDIF()
 
 MESSAGE(STATUS "BUILD_TYPE: " ${CMAKE_BUILD_TYPE})
+
+
+
+# -----------------------------------------------------------------------------#
