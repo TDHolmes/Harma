@@ -24,7 +24,7 @@ SET(ProjDirPath ${CMAKE_CURRENT_SOURCE_DIR}/..)
 # ARMGCC DIRECTORY, if null string will use environmental variables
 SET(TOOLCHAIN_DIR "" CACHE STRING "Directory to use for ARM GCC")
 
-# ------------------------------ FLAGS USED BY EVERYONE ------------------------------ #
+# -------------------------- FLAGS USED BY EVERYONE -------------------------- #
 
 # clang doesn't support link time optimizations...
 # TODO: Fix this?
@@ -32,7 +32,7 @@ if (COMPILER_TYPE MATCHES GCC)
 	SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -flto")
 ELSE()
 	SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -fshort-enums")
-	# SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -flto") #  -fuse-ld=gold
+	# SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -flto=thin") #  -fuse-ld=gold
 ENDIF()
 
 SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -mcpu=cortex-m4")
@@ -51,19 +51,19 @@ SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -std=gnu99")
 SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -DUSE_HAL_DRIVER")
 SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -DSTM32F302x8")
 
-# ------------------------------ ASSEMBLY LANGUAGE FLAGS - DEBUG ------------------------------ #
+# ---------------------- ASSEMBLY LANGUAGE FLAGS - DEBUG --------------------- #
 SET(CMAKE_ASM_FLAGS_DEBUG "${CMAKE_ASM_FLAGS_DEBUG} -DDEBUG")
 SET(CMAKE_ASM_FLAGS_DEBUG "${CMAKE_ASM_FLAGS_DEBUG} -D__STARTUP_CLEAR_BSS")
 SET(CMAKE_ASM_FLAGS_DEBUG "${CMAKE_ASM_FLAGS_DEBUG} -g")
 SET(CMAKE_ASM_FLAGS_DEBUG "${CMAKE_ASM_FLAGS_DEBUG} ${CMAKE_GENERAL_FLAGS}")
 
 
-# ------------------------------ ASSEMBLY LANGUAGE FLAGS - DEBUG ------------------------------ #
+# --------------------- ASSEMBLY LANGUAGE FLAGS - DEBUG ---------------------- #
 SET(CMAKE_ASM_FLAGS_RELEASE "${CMAKE_ASM_FLAGS_RELEASE} -D__STARTUP_CLEAR_BSS")
 SET(CMAKE_ASM_FLAGS_RELEASE "${CMAKE_ASM_FLAGS_RELEASE} ${CMAKE_GENERAL_FLAGS}")
 
 
-# ------------------------------ C LANGUAGE FLAGS - DEBUG ------------------------------ #
+# ------------------------- C LANGUAGE FLAGS - DEBUG ------------------------- #
 SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG")
 SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g")
 SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O0")
@@ -71,13 +71,12 @@ SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -MMD")
 SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -MP")
 SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} ${CMAKE_GENERAL_FLAGS}")
 
-# ------------------------------ C LANGUAGE FLAGS - RELEASE ------------------------------ #
+# ------------------------ C LANGUAGE FLAGS - RELEASE ------------------------ #
 SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -DNDEBUG")
 SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Os")
 SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -MMD")
 SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -MP")
 SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} ${CMAKE_GENERAL_FLAGS}")
-
 
 SET(CMAKE_MAP_PATH "${ProjDirPath}/compiler/build/${CMAKE_BUILD_TYPE}/pensel.map")
 SET(CMAKE_EXE_LINKER_FLAGS_GENERAL "--specs=nano.specs")
@@ -85,28 +84,30 @@ SET(CMAKE_EXE_LINKER_FLAGS_GENERAL "${CMAKE_EXE_LINKER_FLAGS_GENERAL} -Xlinker -
 SET(CMAKE_EXE_LINKER_FLAGS_GENERAL "${CMAKE_EXE_LINKER_FLAGS_GENERAL} -Xlinker -static")
 SET(CMAKE_EXE_LINKER_FLAGS_GENERAL "${CMAKE_EXE_LINKER_FLAGS_GENERAL} -Xlinker -z")
 SET(CMAKE_EXE_LINKER_FLAGS_GENERAL "${CMAKE_EXE_LINKER_FLAGS_GENERAL} -Xlinker muldefs")
-SET(CMAKE_EXE_LINKER_FLAGS_GENERAL "${CMAKE_EXE_LINKER_FLAGS_GENERAL} -Xlinker -defsym=__stack_size__=0xcc0")  # ~20% of ram
+SET(CMAKE_EXE_LINKER_FLAGS_GENERAL "${CMAKE_EXE_LINKER_FLAGS_GENERAL} -Xlinker -defsym=__stack_size__=0xcc0")
 SET(CMAKE_EXE_LINKER_FLAGS_GENERAL "${CMAKE_EXE_LINKER_FLAGS_GENERAL} -Xlinker -defsym=__heap_size__=0x800")
-# ------------------------------ LINKER FLAGS - RELEASE ------------------------------ #
-SET(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} ${CMAKE_GENERAL_FLAGS} ${CMAKE_EXE_LINKER_FLAGS_GENERAL}")
+
+# --------------------------- LINKER FLAGS - RELEASE ------------------------- #
+SET(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} ${CMAKE_GENERAL_FLAGS}")
+SET(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} ${CMAKE_EXE_LINKER_FLAGS_GENERAL}")
 SET(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -Xlinker -Map=${CMAKE_MAP_PATH}")
 
-
-# ------------------------------ LINKER FLAGS - DEBUG ------------------------------ #
-SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} ${CMAKE_GENERAL_FLAGS} ${CMAKE_EXE_LINKER_FLAGS_GENERAL}")
+# ---------------------------- LINKER FLAGS - DEBUG -------------------------- #
+SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} ${CMAKE_GENERAL_FLAGS}")
+SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} ${CMAKE_EXE_LINKER_FLAGS_GENERAL}")
 SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} -g")
 # SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} -u _printf_float")
 SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} -Xlinker -Map=${CMAKE_MAP_PATH}")
 
 
-# ------------------------------ INCLUDE DIRECTORIES ------------------------------ #
+# ---------------------------- INCLUDE DIRECTORIES --------------------------- #
 
 include_directories(${ProjDirPath})
 include_directories(${ProjDirPath}/include/)
 include_directories(${ProjDirPath}/CMSIS/Include/)
 include_directories(${ProjDirPath}/CMSIS/Device/ST/STM32F3xx/Include/)
 
-# ------------------------------ SOURCE FILES ------------------------------ #
+# ------------------------------- SOURCE FILES ------------------------------- #
 
 add_executable(pensel.elf
 	# user code
@@ -165,6 +166,7 @@ add_executable(pensel.elf
 	"${ProjDirPath}/Drivers/stm32f3xx_hal_def.h"
 	"${ProjDirPath}/Drivers/stm32f3xx_hal_cortex.c"
 	"${ProjDirPath}/Drivers/stm32f3xx_hal_cortex.h"
+
 	# peripheral drivers
 	"${ProjDirPath}/Drivers/stm32f3xx_hal_gpio.c"
 	"${ProjDirPath}/Drivers/stm32f3xx_hal_gpio.h"
@@ -185,13 +187,13 @@ add_executable(pensel.elf
 	"${ProjDirPath}/Drivers/stm32f3xx_hal_rcc.h"
 	"${ProjDirPath}/Drivers/stm32f3xx_hal_rcc_ex.c"
 	"${ProjDirPath}/Drivers/stm32f3xx_hal_rcc_ex.h"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_flash.c"
-	"${ProjDirPath}/Drivers/stm32f3xx_hal_flash.h"
 	"${ProjDirPath}/Drivers/stm32f3xx_hal_adc.c"
 	"${ProjDirPath}/Drivers/stm32f3xx_hal_adc.h"
 	"${ProjDirPath}/Drivers/stm32f3xx_hal_adc_ex.c"
 	"${ProjDirPath}/Drivers/stm32f3xx_hal_adc_ex.h"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_wwdg.c"
+	"${ProjDirPath}/Drivers/stm32f3xx_hal_flash.h"
+	# "${ProjDirPath}/Drivers/stm32f3xx_hal_flash.c"
+	# "${ProjDirPath}/Drivers/stm32f3xx_hal_wwdg.c" # TODO: add watchdog support
 	# "${ProjDirPath}/Drivers/stm32f3xx_hal_wwdg.h"
 	# "${ProjDirPath}/Drivers/stm32f3xx_hal_usart.c"
 	# "${ProjDirPath}/Drivers/stm32f3xx_hal_usart.h"
@@ -222,7 +224,7 @@ add_executable(pensel.elf
 	# "${ProjDirPath}/Drivers/stm32f3xx_hal_irda.c"
 	# "${ProjDirPath}/Drivers/stm32f3xx_hal_irda.h"
 	# "${ProjDirPath}/Drivers/stm32f3xx_hal_irda_ex.h"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_iwdg.c"
+	# "${ProjDirPath}/Drivers/stm32f3xx_hal_iwdg.c" # TODO: add watchdog support
 	# "${ProjDirPath}/Drivers/stm32f3xx_hal_iwdg.h"
 	# "${ProjDirPath}/Drivers/stm32f3xx_hal_msp_template.c"
 	# "${ProjDirPath}/Drivers/stm32f3xx_hal_nand.c"
@@ -274,14 +276,13 @@ add_executable(pensel.elf
 )
 
 
-# ------------------------------ LINKER FILES ------------------------------ #
+# ------------------------------- LINKER FILES ------------------------------- #
 set(LINKER_LOCATION "${ProjDirPath}/compiler")
 set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} -T${LINKER_LOCATION}/pensel.ld -static")
 set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -T${LINKER_LOCATION}/pensel.ld -static")
 
 
-
-# --------------------- RESOLVING CIRCULAR DEPENDENCIES -------------------- #
+# ---------------------- RESOLVING CIRCULAR DEPENDENCIES --------------------- #
 # http://stackoverflow.com/questions/5651869/gcc-what-are-the-start-group-and-end-group-command-line-options
 
 TARGET_LINK_LIBRARIES(pensel.elf -Wl,--start-group)

@@ -55,6 +55,7 @@ macro(_firmware_size target)
     )
 endmacro()
 
+# there are some source differences between clang and arm-none-eabi-gcc
 SET(CMAKE_CLANG_FLAGS "${CMAKE_CLANG_FLAGS} -D__clang__")
 
 # ------------- DEBUG BUILD FLAGS (no optimizations) ------------- #

@@ -21,16 +21,19 @@
 #include "Drivers/stm32f3xx_hal_rcc.h"
 #include "Drivers/stm32f3xx_hal_flash.h"
 #include "Drivers/stm32f3xx_hal_gpio.h"
+#include "Drivers/stm32f3xx_hal_iwdg.h"
 #include "Drivers/stm32f3xx_ll_bus.h"
 
 
 //! The amount of time, in ms, that must ellapse before changing button / switch state
 #define IO_DEBOUNCE_TIMEOUT (10)
+#define WDG_COUNT (410u)
 
+IWDG_HandleTypeDef hiwdg;
 
 static GPIO_InitTypeDef  GPIO_InitStruct;
 
-
+void wdg_clearFlags(void);
 void button_interrupt_handler(uint16_t GPIO_Pin);
 void switch_intterupt_handler(uint16_t GPIO_Pin);
 
@@ -172,6 +175,70 @@ void switch_intterupt_handler(uint16_t GPIO_Pin)
     } else {
         switch_admin.changing = false;
     }
+}
+
+
+/* independent watchdog code */
+
+/*! Initializes the independent watchdog module to require a pet every 10 ms
+ *
+ * @return success or failure of initializing the watchdog module
+ */
+ret_t wdg_init(void)
+{
+    // the LSI counter used for wdg timer is @41KHz.
+    // 10 ms counter window count: counter_val = (10 ms) * (41 kHz) ~= 410
+    hiwdg.Instance = IWDG;
+    //! Select the prescaler of the IWDG. This parameter can be a value of @ref IWDG_Prescaler
+    hiwdg.Init.Prescaler = IWDG_PRESCALER_4;
+    /*! Specifies the IWDG down-counter reload value. This parameter must
+      be a number between Min_Data = 0 and Max_Data = 0x0FFFU */
+    hiwdg.Init.Reload = WDG_COUNT;
+    /*!< Specifies the window value to be compared to the down-counter.
+        This parameter must be a number between Min_Data = 0 and Max_Data = 0x0FFFU */
+    hiwdg.Init.Window = WDG_COUNT;
+
+    if (HAL_IWDG_Init(&hiwdg) != HAL_OK) {
+        return RET_GEN_ERR;
+    }
+    __HAL_DBGMCU_FREEZE_IWDG();
+    return RET_OK;
+}
+
+/*! Resets the watchdog timer (pets it) so we don't reset
+ *
+ * @return success or failure of petting the watchdog
+ */
+ret_t wdg_pet(void)
+{
+    if (HAL_IWDG_Refresh(&hiwdg) == HAL_OK) {
+        return RET_OK;
+    } else {
+        return RET_GEN_ERR;
+    }
+}
+
+/*! Checks if the watchdog was the reason for our reset
+ *
+ * @return true if watchdog was the reason for the reset
+ */
+bool wdg_isSet(void)
+{
+    if (__HAL_RCC_GET_FLAG(RCC_FLAG_IWDGRST) == RESET) {
+        wdg_clearFlags();
+        return false;
+    } else {
+        wdg_clearFlags();
+        return true;
+    }
+}
+
+/*! Private method to reset the reset flags on boot
+ */
+void wdg_clearFlags(void)
+{
+    // Clear reset flags
+    __HAL_RCC_CLEAR_RESET_FLAGS();
 }
 
 

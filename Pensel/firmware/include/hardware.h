@@ -10,7 +10,9 @@
 #ifndef _HARDWARE_H_
 #define _HARDWARE_H_
 
-
+#include <stdint.h>
+#include <stdbool.h>
+#include "common.h"
 #include "stm32f3xx.h"
 
 // Sensor stuff
@@ -58,6 +60,11 @@ typedef enum {
 // Public function definitions
 void SystemClock_Config(void);
 void configure_pins(void);
+
+
+ret_t wdg_init(void);
+ret_t wdg_pet(void);
+bool wdg_isSet(void);
 
 void button_periodic_handler(uint32_t current_tick);
 void switch_periodic_handler(uint32_t current_tick);

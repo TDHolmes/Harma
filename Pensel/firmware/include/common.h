@@ -24,7 +24,8 @@ typedef enum {
     RET_GEN_ERR,    //!< Lame catch all general error
     RET_NORPT_ERR,  //!< No available report
     RET_INVALID_ARGS_ERR,  //!< Incorrect arguments to the function called
-    RET_MAX_LEN_ERR        //!< Maximum length was violated
+    RET_MAX_LEN_ERR,       //!< Maximum length was violated
+    RET_WDG_SET            //!< Return code if the watchdog flag was set on reset
 } ret_t;
 
 
