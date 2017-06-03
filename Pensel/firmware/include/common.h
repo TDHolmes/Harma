@@ -12,12 +12,20 @@
 
 #include <stdint.h>
 
+/* Common macros */
+#ifdef __GNUC__
+    #define UNUSED_PARAM(x) UNUSED_ ## x __attribute__((__unused__))
+#else
+    #define UNUSED_PARAM(x) UNUSED_ ## x
+#endif
+
 
 //! Common return type for the entire project
 typedef enum {
     RET_OK,         //!< The return code if all goes well
     RET_VAL_ERR,    //!< If the values given cause an error
     RET_NODATA_ERR, //!< If not enough data was given
+    RET_NOMEM_ERR,  //!< If not enough memory is available
     RET_LEN_ERR,    //!< If there was some sort of length related error
     RET_COM_ERR,    //!< Some sort of communication error
     RET_BUSY_ERR,   //!< Some sort of busy resource
