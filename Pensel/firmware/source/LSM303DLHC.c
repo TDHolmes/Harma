@@ -261,7 +261,7 @@ ret_t LSM303DLHC_temp_getData(int16_t * temp_val_ptr)
     if (retval != RET_OK) { return retval; }
 
     // build up value!
-    *temp_val_ptr = (bytes[0] << 8 | (bytes[1] & 0xF0));
+    *temp_val_ptr = (int16_t)(bytes[0] << 8 | (bytes[1] & 0xF0)) >> 3;  // 8 LSB/°C -> divide by 8 to get °C
 
     return RET_OK;
 }
@@ -309,7 +309,7 @@ ret_t LSM303DLHC_checkStatus(void)
  *   2. Based on the status, get the available data.
  *   3. Put that data into a packet queue.
  */
-void LSM303DLHC_drdy_handler(void)
+void LSM303DLHC_drdy_ISR(void)
 {
     ret_t retval;
     float accel_data_x;
