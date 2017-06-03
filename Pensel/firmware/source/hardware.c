@@ -34,8 +34,22 @@ IWDG_HandleTypeDef hiwdg;
 static GPIO_InitTypeDef  GPIO_InitStruct;
 
 void wdg_clearFlags(void);
-void button_interrupt_handler(uint16_t GPIO_Pin);
-void switch_intterupt_handler(uint16_t GPIO_Pin);
+void button_ISR(uint16_t GPIO_Pin);
+void switch_ISR(uint16_t GPIO_Pin);
+
+// Private IRQ enablers / disablers
+inline void mainbtn_irq_enable(void);
+inline void mainbtn_irq_disable(void);
+inline void auxbtn_irq_enable(void);
+inline void auxbtn_irq_disable(void);
+inline void switch_irq_enable(void);
+inline void switch_irq_disable(void);
+
+inline void sensorDRDY_irq_enable(void);
+/* TODO: I don't think I'll ever need this function as DRDY pin interrupt has no possible
+    race conditions due to how I queue packets. _I THINK_. Haven't thouroughly looked at
+    the code. */
+inline void sensorDRDY_irq_disable(void);
 
 
 //! Tracks a switch's state and manages a switch's hysteresis
@@ -46,7 +60,8 @@ typedef struct {
     bool changing;
     //! What value the switch is changing to
     volatile switch_state_t changing_value;
-    //! What time the change started. If is more than `IO_DEBOUNCE_TIMEOUT`, we will change the current state in `switch_periodic_handler`
+    /*! What time the change started. If is more than `IO_DEBOUNCE_TIMEOUT`,
+            we will change the current state in `switch_periodic_handler` */
     volatile uint32_t changing_timestamp;
 } switch_t;
 
@@ -59,7 +74,8 @@ typedef struct {
     bool changing;
     //! What value the switch is changing to
     volatile uint8_t changing_value;
-    //! What time the change started. If is more than `IO_DEBOUNCE_TIMEOUT`, we will change the current state in `button_periodic_handler`
+    /*! What time the change started. If is more than `IO_DEBOUNCE_TIMEOUT`,
+        we will change the current state in `button_periodic_handler` */
     volatile uint32_t changing_timestamp;
 } button_t;
 
@@ -73,173 +89,6 @@ switch_state_t switch_getval(void) { return switch_admin.state; }
 uint8_t mainbutton_getval(void)    { return mainbutton_admin.state; }
 uint8_t auxbutton_getval(void)     { return auxbutton_admin.state; }
 
-
-/*! Gets called periodically and handles if we should update the either of the
- *  buttons state based on if it has gotten out of the debounce timeout.
- *
- * @param[in] current_tick (uint32_t): Current system tick in ms
- */
-void button_periodic_handler(uint32_t current_tick)
-{
-    // first, handle the main button
-    if (mainbutton_admin.changing == true) {
-        if (current_tick - mainbutton_admin.changing_timestamp >= IO_DEBOUNCE_TIMEOUT) {
-            mainbutton_admin.state = mainbutton_admin.changing_value;
-            mainbutton_admin.changing = false;
-        }
-    }
-
-    // next, aux button
-    if (auxbutton_admin.changing == true) {
-        if (current_tick - auxbutton_admin.changing_timestamp >= IO_DEBOUNCE_TIMEOUT) {
-            auxbutton_admin.state = auxbutton_admin.changing_value;
-            auxbutton_admin.changing = false;
-        }
-    }
-}
-
-
-/*! Gets called periodically and handles if we should update the switch
- *  state based on if it has gotten out of the debounce timeout.
- *
- * @param[in] current_tick (uint32_t): Current system tick in ms
- */
-void switch_periodic_handler(uint32_t current_tick)
-{
-    if (switch_admin.changing == true) {
-        if (current_tick - switch_admin.changing_timestamp >= IO_DEBOUNCE_TIMEOUT) {
-            switch_admin.state = switch_admin.changing_value;
-            switch_admin.changing = false;
-        }
-    }
-}
-
-
-/*! gets called if either button has triggered the HW falling / rising interrupt.
- *  We then update the button structs accordingly to indicate if we're changing states.
- *
- * @param[in] GPIO_Pin (uint16_t): Which pin triggered the interrupt.
- */
-void button_interrupt_handler(uint16_t GPIO_Pin)
-{
-    uint8_t pin_val = HAL_GPIO_ReadPin(SWITCH_BUTTON_PORT, GPIO_Pin);
-
-    if (GPIO_Pin == BUTTON_MAIN) {
-        if (mainbutton_admin.state != pin_val) {
-            mainbutton_admin.changing_value = pin_val;
-            mainbutton_admin.changing_timestamp = HAL_GetTick();
-            mainbutton_admin.changing = true;
-        } else {
-            mainbutton_admin.changing = false;
-        }
-    } else {
-        if (auxbutton_admin.state != pin_val) {
-            auxbutton_admin.changing_value = pin_val;
-            auxbutton_admin.changing_timestamp = HAL_GetTick();
-            auxbutton_admin.changing = true;
-        } else {
-            auxbutton_admin.changing = false;
-        }
-    }
-}
-
-
-/*! gets called if any of the switch pins have triggered the HW falling interrupt.
- *  We then update the switch struct accordingly to indicate if we're changing states.
- *
- * @param[in] GPIO_Pin (uint16_t): Which pin triggered the interrupt.
- */
-void switch_intterupt_handler(uint16_t GPIO_Pin)
-{
-    switch_state_t new_state = switch_admin.state;
-
-    // Figure out which pin caused the interrupt
-    switch(GPIO_Pin) {
-        case SWITCH_0:
-            new_state = kSwitch_0;
-            break;
-
-        case SWITCH_1:
-            new_state = kSwitch_1;
-            break;
-
-        case SWITCH_2:
-            new_state = kSwitch_2;
-            break;
-    }
-
-    if (switch_admin.state != new_state) {
-        switch_admin.changing_value = new_state;
-        switch_admin.changing_timestamp = HAL_GetTick();
-        switch_admin.changing = true;
-    } else {
-        switch_admin.changing = false;
-    }
-}
-
-
-/* independent watchdog code */
-
-/*! Initializes the independent watchdog module to require a pet every 10 ms
- *
- * @return success or failure of initializing the watchdog module
- */
-ret_t wdg_init(void)
-{
-    // the LSI counter used for wdg timer is @41KHz.
-    // 10 ms counter window count: counter_val = (10 ms) * (41 kHz) ~= 410
-    hiwdg.Instance = IWDG;
-    //! Select the prescaler of the IWDG. This parameter can be a value of @ref IWDG_Prescaler
-    hiwdg.Init.Prescaler = IWDG_PRESCALER_4;
-    /*! Specifies the IWDG down-counter reload value. This parameter must
-      be a number between Min_Data = 0 and Max_Data = 0x0FFFU */
-    hiwdg.Init.Reload = WDG_COUNT;
-    /*!< Specifies the window value to be compared to the down-counter.
-        This parameter must be a number between Min_Data = 0 and Max_Data = 0x0FFFU */
-    hiwdg.Init.Window = WDG_COUNT;
-
-    if (HAL_IWDG_Init(&hiwdg) != HAL_OK) {
-        return RET_GEN_ERR;
-    }
-    __HAL_DBGMCU_FREEZE_IWDG();
-    return RET_OK;
-}
-
-/*! Resets the watchdog timer (pets it) so we don't reset
- *
- * @return success or failure of petting the watchdog
- */
-ret_t wdg_pet(void)
-{
-    if (HAL_IWDG_Refresh(&hiwdg) == HAL_OK) {
-        return RET_OK;
-    } else {
-        return RET_GEN_ERR;
-    }
-}
-
-/*! Checks if the watchdog was the reason for our reset
- *
- * @return true if watchdog was the reason for the reset
- */
-bool wdg_isSet(void)
-{
-    if (__HAL_RCC_GET_FLAG(RCC_FLAG_IWDGRST) == RESET) {
-        wdg_clearFlags();
-        return false;
-    } else {
-        wdg_clearFlags();
-        return true;
-    }
-}
-
-/*! Private method to reset the reset flags on boot
- */
-void wdg_clearFlags(void)
-{
-    // Clear reset flags
-    __HAL_RCC_CLEAR_RESET_FLAGS();
-}
 
 
 /**
@@ -260,29 +109,33 @@ void SystemClock_Config(void)
 {
     RCC_ClkInitTypeDef RCC_ClkInitStruct;
     RCC_OscInitTypeDef RCC_OscInitStruct;
+    HAL_StatusTypeDef retval;
 
     /* HSI Oscillator already ON after system reset, activate PLL with HSI as source */
     RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_NONE;
     RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
     RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
     RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL16;
-    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+    retval = HAL_RCC_OscConfig(&RCC_OscInitStruct);
+    if (retval != HAL_OK)
     {
         /* Initialization Error */
-        while(1);
+        fatal_error_handler(__FILE__, __LINE__, retval);
     }
 
     /* Select PLL as system clock source and configure the HCLK, PCLK1 and PCLK2
      clocks dividers */
-    RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2);
+    RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK |
+                                   RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2);
     RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
     RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
     RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
     RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
-    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
+    retval = HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2);
+    if (retval != HAL_OK)
     {
         /* Initialization Error */
-        while(1);
+        fatal_error_handler(__FILE__, __LINE__, retval);
     }
 }
 
@@ -375,12 +228,236 @@ void configure_pins(void)
     HAL_NVIC_SetPriority((IRQn_Type)(EXTI4_IRQn), 4, 1);     // Aux button
 
     // enable interrupts
+    switch_irq_enable();
+    mainbtn_irq_enable();
+    auxbtn_irq_enable();
+    sensorDRDY_irq_enable();
+}
+
+/*! Enables the interrupt corrisponding to the LSM303DLHC DRDY pin. */
+inline void sensorDRDY_irq_enable(void)
+{
+    HAL_NVIC_EnableIRQ((IRQn_Type)(EXTI15_10_IRQn));
+}
+
+/*! Disables the interrupt corrisponding to the LSM303DLHC DRDY pin. */
+inline void sensorDRDY_irq_disable(void)
+{
+    HAL_NVIC_DisableIRQ((IRQn_Type)(EXTI15_10_IRQn));
+}
+
+/*! Enables the interrupt corrisponding to the main button pin. */
+inline void mainbtn_irq_enable(void)
+{
+    HAL_NVIC_EnableIRQ((IRQn_Type)(EXTI9_5_IRQn));
+}
+
+/*! Disables the interrupt corrisponding to the main button pin. */
+inline void mainbtn_irq_disable(void)
+{
+    HAL_NVIC_DisableIRQ((IRQn_Type)(EXTI9_5_IRQn));
+}
+
+/*! Enables the interrupt corrisponding to the auxilary button pin. */
+inline void auxbtn_irq_enable(void)
+{
+    HAL_NVIC_EnableIRQ((IRQn_Type)(EXTI4_IRQn));
+}
+
+/*! Disables the interrupt corrisponding to the auxilary button pin. */
+inline void auxbtn_irq_disable(void)
+{
+    HAL_NVIC_DisableIRQ((IRQn_Type)(EXTI4_IRQn));
+}
+
+/*! Enables the interrupts corrisponding to the 3 position switch pins. */
+inline void switch_irq_enable(void)
+{
     HAL_NVIC_EnableIRQ((IRQn_Type)(EXTI1_IRQn));
     HAL_NVIC_EnableIRQ((IRQn_Type)(EXTI2_TSC_IRQn));
     HAL_NVIC_EnableIRQ((IRQn_Type)(EXTI3_IRQn));
-    HAL_NVIC_EnableIRQ((IRQn_Type)(EXTI4_IRQn));
-    HAL_NVIC_EnableIRQ((IRQn_Type)(EXTI9_5_IRQn));
-    HAL_NVIC_EnableIRQ((IRQn_Type)(EXTI15_10_IRQn));
+}
+
+/*! Disables the interrupts corrisponding to the 3 position switch pins. */
+inline void switch_irq_disable(void)
+{
+    HAL_NVIC_DisableIRQ((IRQn_Type)(EXTI1_IRQn));
+    HAL_NVIC_DisableIRQ((IRQn_Type)(EXTI2_TSC_IRQn));
+    HAL_NVIC_DisableIRQ((IRQn_Type)(EXTI3_IRQn));
+}
+
+
+/*! Gets called periodically and handles if we should update the either of the
+ *  buttons state based on if it has gotten out of the debounce timeout.
+ *
+ * @param[in] current_tick (uint32_t): Current system tick in ms
+ */
+void button_periodic_handler(uint32_t current_tick)
+{
+    // first, handle the main button
+    mainbtn_irq_disable();
+    if (mainbutton_admin.changing == true) {
+        if (current_tick - mainbutton_admin.changing_timestamp >= IO_DEBOUNCE_TIMEOUT) {
+            mainbutton_admin.state = mainbutton_admin.changing_value;
+            mainbutton_admin.changing = false;
+        }
+    }
+    mainbtn_irq_enable();
+
+    // next, aux button
+    auxbtn_irq_disable();
+    if (auxbutton_admin.changing == true) {
+        if (current_tick - auxbutton_admin.changing_timestamp >= IO_DEBOUNCE_TIMEOUT) {
+            auxbutton_admin.state = auxbutton_admin.changing_value;
+            auxbutton_admin.changing = false;
+        }
+    }
+    auxbtn_irq_enable();
+}
+
+
+/*! Gets called periodically and handles if we should update the switch
+ *  state based on if it has gotten out of the debounce timeout.
+ *
+ * @param[in] current_tick (uint32_t): Current system tick in ms
+ */
+void switch_periodic_handler(uint32_t current_tick)
+{
+    switch_irq_disable();
+    if (switch_admin.changing == true) {
+        if (current_tick - switch_admin.changing_timestamp >= IO_DEBOUNCE_TIMEOUT) {
+            switch_admin.state = switch_admin.changing_value;
+            switch_admin.changing = false;
+        }
+    }
+    switch_irq_enable();
+}
+
+
+/*! gets called if either button has triggered the HW falling / rising interrupt.
+ *  We then update the button structs accordingly to indicate if we're changing states.
+ *
+ * @param[in] GPIO_Pin (uint16_t): Which pin triggered the interrupt.
+ */
+void button_ISR(uint16_t GPIO_Pin)
+{
+    uint8_t pin_val = HAL_GPIO_ReadPin(SWITCH_BUTTON_PORT, GPIO_Pin);
+
+    if (GPIO_Pin == BUTTON_MAIN) {
+        if (mainbutton_admin.state != pin_val) {
+            mainbutton_admin.changing_value = pin_val;
+            mainbutton_admin.changing_timestamp = HAL_GetTick();
+            mainbutton_admin.changing = true;
+        } else {
+            mainbutton_admin.changing = false;
+        }
+    } else {
+        if (auxbutton_admin.state != pin_val) {
+            auxbutton_admin.changing_value = pin_val;
+            auxbutton_admin.changing_timestamp = HAL_GetTick();
+            auxbutton_admin.changing = true;
+        } else {
+            auxbutton_admin.changing = false;
+        }
+    }
+}
+
+
+/*! gets called if any of the switch pins have triggered the HW falling interrupt.
+ *  We then update the switch struct accordingly to indicate if we're changing states.
+ *
+ * @param[in] GPIO_Pin (uint16_t): Which pin triggered the interrupt.
+ */
+void switch_ISR(uint16_t GPIO_Pin)
+{
+    switch_state_t new_state = switch_admin.state;
+
+    // Figure out which pin caused the interrupt
+    switch(GPIO_Pin) {
+        case SWITCH_0:
+            new_state = kSwitch_0;
+            break;
+
+        case SWITCH_1:
+            new_state = kSwitch_1;
+            break;
+
+        case SWITCH_2:
+            new_state = kSwitch_2;
+            break;
+    }
+
+    if (switch_admin.state != new_state) {
+        switch_admin.changing_value = new_state;
+        switch_admin.changing_timestamp = HAL_GetTick();
+        switch_admin.changing = true;
+    } else {
+        switch_admin.changing = false;
+    }
+}
+
+
+/* independent watchdog code */
+
+/*! Initializes the independent watchdog module to require a pet every 10 ms
+ *
+ * @return success or failure of initializing the watchdog module
+ */
+ret_t wdg_init(void)
+{
+    // the LSI counter used for wdg timer is @41KHz.
+    // 10 ms counter window count: counter_val = (10 ms) * (41 kHz) ~= 410
+    hiwdg.Instance = IWDG;
+    //! Select the prescaler of the IWDG. This parameter can be a value of @ref IWDG_Prescaler
+    hiwdg.Init.Prescaler = IWDG_PRESCALER_4;
+    /*! Specifies the IWDG down-counter reload value. This parameter must
+      be a number between Min_Data = 0 and Max_Data = 0x0FFFU */
+    hiwdg.Init.Reload = WDG_COUNT;
+    /*!< Specifies the window value to be compared to the down-counter.
+        This parameter must be a number between Min_Data = 0 and Max_Data = 0x0FFFU */
+    hiwdg.Init.Window = WDG_COUNT;
+
+    if (HAL_IWDG_Init(&hiwdg) != HAL_OK) {
+        return RET_GEN_ERR;
+    }
+    __HAL_DBGMCU_FREEZE_IWDG();
+    return RET_OK;
+}
+
+/*! Resets the watchdog timer (pets it) so we don't reset
+ *
+ * @return success or failure of petting the watchdog
+ */
+ret_t wdg_pet(void)
+{
+    if (HAL_IWDG_Refresh(&hiwdg) == HAL_OK) {
+        return RET_OK;
+    } else {
+        return RET_GEN_ERR;
+    }
+}
+
+/*! Checks if the watchdog was the reason for our reset
+ *
+ * @return true if watchdog was the reason for the reset
+ */
+bool wdg_isSet(void)
+{
+    if (__HAL_RCC_GET_FLAG(RCC_FLAG_IWDGRST) == RESET) {
+        wdg_clearFlags();
+        return false;
+    } else {
+        wdg_clearFlags();
+        return true;
+    }
+}
+
+/*! Private method to reset the reset flags on boot
+ */
+void wdg_clearFlags(void)
+{
+    // Clear reset flags
+    __HAL_RCC_CLEAR_RESET_FLAGS();
 }
 
 
@@ -394,16 +471,16 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     switch (GPIO_Pin) {
         case BUTTON_MAIN:
         case BUTTON_AUX:
-            button_interrupt_handler(GPIO_Pin);
+            button_ISR(GPIO_Pin);
             break;
 
         case SWITCH_0:
         case SWITCH_1:
         case SWITCH_2:
-            switch_intterupt_handler(GPIO_Pin);
+            switch_ISR(GPIO_Pin);
             break;
         case SENSOR_DRDY:
-            LSM303DLHC_drdy_handler();
+            LSM303DLHC_drdy_ISR();
             break;
         // case SENSOR_INT:
         //     LSM303DLHC_int_handler();
