@@ -102,7 +102,7 @@ uint32_t LSM303DLHC_mag_HardwareOverwriteCount(void);
 ret_t LSM303DLHC_temp_getData(int16_t * temp_val_ptr);
 
 // functions to be called by the hardware pin interrupt handler
-void LSM303DLHC_drdy_handler(void);
+void LSM303DLHC_drdy_ISR(void);
 // void LSM303DLHC_int_handler(void);
 
 
