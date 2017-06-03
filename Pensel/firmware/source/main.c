@@ -1,6 +1,9 @@
-/*
- *
- *
+/*!
+ * @file    main.c
+ * @author  Tyler Holmes
+ * @version 0.1.0
+ * @date    20-May-2017
+ * @brief   Main project logic.
  */
 
 #include <stdint.h>
@@ -9,10 +12,10 @@
 
 // Sensors
 #include "LSM303DLHC.h"
-#include "ADC.h"  // for thumbwheel
-#include "hardware.h" // HW support and button / switch functions
+#include "ADC.h"        // for thumbwheel
+#include "hardware.h"   // HW support and button / switch functions
 
-// Communications and other
+// Communications and such
 #include "I2C.h"
 #include "UART.h"
 #include "reports.h"
@@ -23,20 +26,18 @@
 #include "stm32f3xx_hal_conf.h"
 
 
-const uint8_t hello_world_str[] = {"Hello!!!\r\n"};
-uint8_t data_to_send[10];
-
 //! HAL millisecond tick
 extern __IO uint32_t uwTick;
 
-
+/*! Main function code. Does the following:
+ *      1. Initializes all sub-modules
+ *      2. Loops forever and behaves as such given switch state:
+ *          Switch 0: Runs report parsing only
+ *          Switch 1: Runs debug print output only
+ */
 int main(void)
 {
     ret_t retval;
-    // uint32_t prev_tick = 0;
-    // switch_state_t switch_state = kSwitch_0;
-    // uint8_t main_btn_state = 0;
-    // uint8_t aux_btn_state = 0;
     mag_packet_t mag_pkt;
     accel_packet_t accel_pkt;
 
@@ -66,45 +67,66 @@ int main(void)
         fatal_error_handler(__FILE__, __LINE__, (int8_t)retval);
     }
 
-    retval = LSM303DLHC_init(kAccelODR_100_Hz, kOne_mg_per_LSB, kMagODR_75_Hz, kXY_1100_Z_980_LSB_per_g);
+    retval = LSM303DLHC_init(kAccelODR_100_Hz, kOne_mg_per_LSB,
+                             kMagODR_75_Hz, kXY_1100_Z_980_LSB_per_g);
     if (retval != RET_OK) {
         fatal_error_handler(__FILE__, __LINE__, (int8_t)retval);
     }
 
-    // retval = rpt_init(UART_sendChar, UART_getChar);
-    // if (retval != RET_OK) {
-    //     fatal_error_handler(__FILE__, __LINE__, (int8_t)retval);
-    // }
+    retval = rpt_init(UART_sendChar, UART_getChar);
+    if (retval != RET_OK) {
+        fatal_error_handler(__FILE__, __LINE__, (int8_t)retval);
+    }
 
     while (true) {
-        if( LSM303DLHC_accel_dataAvailable() ) {
-            if ( LSM303DLHC_accel_getPacket(&accel_pkt, false) == RET_OK ) {
-                UART_sendString("Acc ");
-                UART_sendfloat(accel_pkt.x, 3);
-                UART_sendString(", ");
-                UART_sendfloat(accel_pkt.y, 3);
-                UART_sendString(", ");
-                UART_sendfloat(accel_pkt.z, 3);
-                UART_sendString("\r\n");
-            } else {
-                UART_sendString("Failed to get accel packet...\r\n");
+        // If we're in normal mode, run the report parser
+        if ( switch_getval() == kSwitch_0) {
+            // Parse reports and such
+            rpt_run();
+        }
+        // If we're in debug output mode, print packets to UART
+        else if ( switch_getval() == kSwitch_1 ) {
+            if( LSM303DLHC_accel_dataAvailable() ) {
+                if ( LSM303DLHC_accel_getPacket(&accel_pkt, false) == RET_OK ) {
+                    UART_sendString("Acc ");
+                    UART_sendfloat(accel_pkt.x, 3);
+                    UART_sendString(", ");
+                    UART_sendfloat(accel_pkt.y, 3);
+                    UART_sendString(", ");
+                    UART_sendfloat(accel_pkt.z, 3);
+                    UART_sendString("\r\n");
+                } else {
+                    UART_sendString("Failed to get accel packet...\r\n");
+                }
+            }
+            if( LSM303DLHC_mag_dataAvailable() ) {
+                if ( LSM303DLHC_mag_getPacket(&mag_pkt, false) == RET_OK ) {
+                    UART_sendString("Mag ");
+                    UART_sendfloat(mag_pkt.x, 3);
+                    UART_sendString(" ");
+                    UART_sendfloat(mag_pkt.y, 3);
+                    UART_sendString(" ");
+                    UART_sendfloat(mag_pkt.z, 3);
+                    UART_sendString("\r\n");
+                } else {
+                    UART_sendString("Failed to get mag packet...\r\n");
+                }
             }
         }
-        if( LSM303DLHC_mag_dataAvailable() ) {
-            if ( LSM303DLHC_mag_getPacket(&mag_pkt, false) == RET_OK ) {
-                UART_sendString("Mag ");
-                UART_sendfloat(mag_pkt.x, 3);
-                UART_sendString(" ");
-                UART_sendfloat(mag_pkt.y, 3);
-                UART_sendString(" ");
-                UART_sendfloat(mag_pkt.z, 3);
-                UART_sendString("\r\n");
-            } else {
-                UART_sendString("Failed to get mag packet...\r\n");
+        // If we're in normal run mode, digest packets and try to figure out orientation!
+        else if ( switch_getval() == kSwitch_2 ) {
+            // Process accel if available
+            if( LSM303DLHC_accel_dataAvailable() ) {
+
+            }
+            // Process mag if available
+            if( LSM303DLHC_mag_dataAvailable() ) {
+
             }
         }
-    }
-}
+
+    } /* while (true) */
+} /* main() */
 
 /*! millisecond ISR that increments the global time as well as calls some functions
  *  that need to be periodically serviced. We do a few things:
