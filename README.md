@@ -41,8 +41,9 @@ There will be one unified design to control the iron, solder, and/or wire/compon
    * 72MHz
    * CAN, I²C, IrDA, LIN, SPI, UART/USART, USB
    * DMA, I²S, POR, PWM, WDT
+   * Hardware FPU
 * Sensors
-   * Two Accelerometers (MMA8452Q) on opposite sides of the PCB (far left and far right)
+   * Combined Accelerometer and Magnetometer (LSM303DLHC) to detect orientation & movement
    * A button to trigger "active" mode
    * An auxiliary button to generate an action
    * A three position switch to indicate the active mode
@@ -50,4 +51,4 @@ There will be one unified design to control the iron, solder, and/or wire/compon
 
 ### Robotic Arms (Working title)
 
-This section has not been thought through yet  .
+This section has not been thought through yet. I am currently only focusing on the Pensel sub-component.
