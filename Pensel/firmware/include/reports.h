@@ -17,6 +17,6 @@
 
 
 ret_t rpt_init(ret_t (*putchr)(uint8_t), ret_t (*getchr)(uint8_t *));
-ret_t rpt_run(void);
+void rpt_run(void);
 
 #endif /* _REPORTS_H_ */

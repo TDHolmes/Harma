@@ -12,16 +12,26 @@
 #include "LSM303DLHC.h"
 
 
+// TODO: Is this extern declaration a good idea? Or should I include the HAL header?
+extern uint32_t HAL_GetTick(void);
+
+
 #define READ_BUFF_SIZE (255)
+#define RPT_MAGIC_NUMBER_0 (0xBE)
+#define RPT_MAGIC_NUMBER_1 (0xEF)
+
+#define RPT_TIMEOUT (100)  //!< Report timeout time (in ms)
 
 
 //! The current state of the rpt workloop
 typedef enum {
-    kRead_rpt,     //!< Read the report ID (the first byte of the transaction)
-    kRead_len,     //!< Read the length of the report payload (2nd byte)
-    kRead_payload, //!< Read the report payload (N bytes...)
-    kEvaluate,     //!< Evaluate the report on our end
-    kPrint         //!< Send back the response (x bytes)
+    kRpt_ReadMagic_0,  //!< Read in the first magic value to signify the start of a report transaction
+    kRpt_ReadMagic_1,  //!< Read in the second magic value to signify the start of a report transaction
+    kRpt_ReadRpt,      //!< Read the report ID (the first byte of the transaction)
+    kRpt_ReadLen,      //!< Read the length of the report payload (2nd byte)
+    kRpt_ReadPayload,  //!< Read the report payload (N bytes...)
+    kRpt_Evaluate,     //!< Evaluate the report on our end
+    kRpt_Print         //!< Send back the response (x bytes)
 } rpt_state_t;
 
 
@@ -30,7 +40,10 @@ typedef struct {
     ret_t (*putchr)(uint8_t);   //!< function pointer to send chars out
     ret_t (*getchr)(uint8_t *); //!< function pointer to recieve chars
     rpt_state_t state;          //!< Current state of the report module
-    uint8_t read_buff[READ_BUFF_SIZE]; //!< Buffer to read the reports in
+    uint32_t start_time;        //!< Start time from HAL_GetTick() of the active report. Times out after `RPT_TIMEOUT`
+    uint16_t invalid_chrs;      //!< Number of invalid bytes we've received
+    uint16_t timeouts;          //!< Number of times a command times out
+    uint8_t read_buff[READ_BUFF_SIZE];  //!< Buffer to read the reports in
 } rpt_t;
 
 //! Bufer to hold the reply of the report
@@ -45,18 +58,48 @@ ret_t rpt_lookup(uint8_t rpt_type, uint8_t *input_buff_ptr, uint8_t input_buff_l
 
 /* -------------- Initializer and runner ------------------------ */
 
-
+/*! Initializes the reporting interface by storing the get and put char functions and
+ *    initializing the admin structure.
+ *
+ * @param putchr: Function pointer used to write out a character. Returns ret_t and
+ *      takes a uint8_t in as a parameter.
+ * @param getchr: Function pointer used to read in a character. Returns ret_t and
+ *      takes a uint8_t pointer in as a parameter.
+ * @return success / failure of initializing.
+ */
 ret_t rpt_init(ret_t (*putchr)(uint8_t), ret_t (*getchr)(uint8_t *))
 {
     rpt.putchr = putchr;
     rpt.getchr = getchr;
-    rpt.state = kRead_rpt;
+    rpt.invalid_chrs = 0;
+    rpt.timeouts = 0;
+    rpt.state = kRpt_ReadMagic_0;
 
     return RET_OK;
 }
 
+/*! Checks if a currently active report has timed out (`RPT_TIMEOUT` ms after the
+ *      first magic byte)
+ *
+ *  @Note: This function is inlined as it is a very small stub of code.
+ */
+static inline void rpt_checkForTimeout(void) {
+    if ( HAL_GetTick() > rpt.start_time + RPT_TIMEOUT ) {
+        rpt.timeouts += 1;
+        rpt.state = kRpt_ReadMagic_0;
+    }
+}
 
-ret_t rpt_run(void)
+/*! Initializes the reporting interface by storing the get and put char functions and
+ *    initializing the admin structure.
+ *
+ * @param putchr: Function pointer used to write out a character. Returns ret_t and
+ *      takes a uint8_t in as a parameter.
+ * @param getchr: Function pointer used to read in a character. Returns ret_t and
+ *      takes a uint8_t pointer in as a parameter.
+ * @return success / failure of initializing.
+ */
+void rpt_run(void)
 {
     uint8_t chr;
     ret_t retval = RET_GEN_ERR;
@@ -66,85 +109,166 @@ ret_t rpt_run(void)
     uint8_t * rpt_out_buff_ptr = 0;
     uint8_t rpt_in_buff_len = 0;
     uint8_t rpt_out_buff_len = 0;
+
+    // Keeps track of how many bytes of the payload we've read in
     static uint8_t payload_readin_ind = 0;
 
     switch (rpt.state) {
-        case kRead_rpt:
+        case kRpt_ReadMagic_0:
             retval = rpt.getchr(&chr);
             if (retval == RET_OK) {
-                rpt_type = chr;
-                rpt.state = kRead_len;
+                if (chr == RPT_MAGIC_NUMBER_0) {
+                    rpt.start_time = HAL_GetTick();
+                    rpt.state = kRpt_ReadMagic_1;
+                } else {
+                    // invalid character!
+                    rpt.invalid_chrs += 1;
+                }
             }
             break;
 
-        case kRead_len:
+        case kRpt_ReadMagic_1:
+            retval = rpt.getchr(&chr);
+            if (retval == RET_OK) {
+                if (chr == RPT_MAGIC_NUMBER_1) {
+                    rpt.state = kRpt_ReadRpt;
+                } else {
+                    // invalid character!
+                    rpt.invalid_chrs += 1;
+                }
+            }
+
+            // Check for timeout
+            rpt_checkForTimeout();
+            break;
+
+        case kRpt_ReadRpt:
+            retval = rpt.getchr(&chr);
+            if (retval == RET_OK) {
+                // 0-255 value is valid.
+                rpt_type = chr;
+                rpt.state = kRpt_ReadLen;
+            }
+
+            // Check for timeout
+            rpt_checkForTimeout();
+            break;
+
+        case kRpt_ReadLen:
             retval = rpt.getchr(&chr);
             if (retval == RET_OK) {
                 rpt_in_buff_len = chr;
                 payload_readin_ind = 0;
-                rpt.state = kRead_payload;
+
+                if (rpt_in_buff_len != 0) {
+                    // This report does have a payload. Read it in.
+                    rpt.state = kRpt_ReadPayload;
+                } else {
+                    // nothing to read in, skip to execution
+                    rpt.state = kRpt_Evaluate;
+                }
             }
+
+            // Check for timeout
+            rpt_checkForTimeout();
             break;
 
-        case kRead_payload:
+        case kRpt_ReadPayload:
             retval = rpt.getchr(&chr);
             if (retval == RET_OK) {
                 rpt.read_buff[payload_readin_ind] = chr;
                 payload_readin_ind += 1;
 
                 if (payload_readin_ind == rpt_in_buff_len - 1) {
-                    rpt.state = kEvaluate;
+                    rpt.state = kRpt_Evaluate;
                     payload_readin_ind = 0;
+                    break;
                 }
             }
+
+            // Check for timeout
+            rpt_checkForTimeout();
             break;
 
-        case kEvaluate:
-            // need to somehow call a function to handle this data
+        case kRpt_Evaluate:
+            // Fetch and execute the requested function
             retval = rpt_lookup(rpt_type, rpt.read_buff, rpt_in_buff_len,
                                 rpt_out_buff_ptr, &rpt_out_buff_len);
             break;
 
-        case kPrint:
+        case kRpt_Print:
             // print out the results
             rpt.putchr(retval);
             // if we succeeded in the report, continue on
             if (retval == RET_OK) {
                 rpt.putchr(rpt_out_buff_len);
                 while (rpt_out_buff_len > 0) {
-                    rpt_out_buff_len -= 1;
+                    rpt_out_buff_len -= 1;  /* Properly indexes into the array */
                     rpt.putchr(rpt_out_buff_ptr[rpt_out_buff_len]);
                 }
             }
-            rpt.state = kRead_rpt;
-
+            // start over! :D
+            rpt.state = kRpt_ReadMagic_0;
             break;
     }
-
-    return RET_OK;
 }
 
 
 /* ---------------- Define all reports that can be get / set ---------------- */
 
-// Default report when we have an error
-ret_t rpt_err(uint8_t * in_p, uint8_t in_len, uint8_t * out_p, uint8_t * out_len_ptr)
+/* ------ REPORT REPORTS ------ */
+// # Meta
+
+/*! Default report when we don't have the requested report defined.
+ */
+ret_t rpt_err(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len),
+              uint8_t * UNUSED_PARAM(out_p), uint8_t * UNUSED_PARAM(out_len_ptr))
 {
-    out_p = 0;
-    *out_len_ptr = 0;
     return RET_NORPT_ERR;
+}
+
+/*! Report 0x10 that gets the number of times a report has timed out.
+ */
+ret_t rpt_report_getTimeoutCount(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len),
+                                 uint8_t * out_p, uint8_t * out_len_ptr)
+{
+    // We don't need input data
+    *out_len_ptr = sizeof(rpt.timeouts);
+    *(uint32_t *)out_p = rpt.timeouts;
+    return RET_OK;
+    // return in_len;
+}
+
+/*! Report 0x11 that gets the number of invalid characters received by this module.
+ */
+ret_t rpt_report_getInvalidCharsCount(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len),
+                                      uint8_t * out_p, uint8_t * out_len_ptr)
+{
+    // We don't need input data
+    *out_len_ptr = sizeof(rpt.invalid_chrs);
+    *(uint32_t *)out_p = rpt.invalid_chrs;
+    return RET_OK;
 }
 
 /* ------ LSM303DLHC REPORTS ------ */
 
-// Report 0x20
+/*! Report 0x20 that changes the configuration of the LSM303DLHC chip. The argument structure
+ *      Is as follows packed into the in buffer:
+ *          1. accel_ODR_t
+ *          2. accel_sensitivity_t
+ *          3. mag_ODR_t
+ *          4. mag_sensitivity_t
+ */
 ret_t rpt_LSM303DLHC_changeConfig(uint8_t * in_p, uint8_t in_len, uint8_t * out_p, uint8_t * out_len_ptr)
 {
     ret_t retval;
-    accel_ODR_t accel_ODR;
-    accel_sensitivity_t accel_sensitivity;
     mag_ODR_t mag_ODR;
+    accel_ODR_t accel_ODR;
     mag_sensitivity_t mag_sensitivity;
+    accel_sensitivity_t accel_sensitivity;
+
+    out_p[0] = 0;      // Just to use the parameter...
+    *out_len_ptr = 0;  // We don't return any data
 
     // do some bounds checking
     if (in_len != (sizeof(accel_ODR_t) + sizeof(accel_sensitivity_t) +
@@ -165,11 +289,17 @@ ret_t rpt_LSM303DLHC_changeConfig(uint8_t * in_p, uint8_t in_len, uint8_t * out_
     return retval;
 }
 
-// Report 0x21
-ret_t rpt_LSM303DLHC_getTemp(uint8_t * in_p, uint8_t in_len, uint8_t * out_p, uint8_t * out_len_ptr)
+/*! Report 0x21 that returns the temperature from LSM303DLHC. Takes in no parameters.
+ *      Returns the temperature (int16_t)
+ */
+ret_t rpt_LSM303DLHC_getTemp(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len),
+                             uint8_t * out_p, uint8_t * out_len_ptr)
 {
     ret_t retval;
     int16_t temp_val;
+
+    // We don't need input data
+
     retval = LSM303DLHC_temp_getData(&temp_val);
     if (retval != RET_OK) { return retval; }
 
@@ -178,7 +308,9 @@ ret_t rpt_LSM303DLHC_getTemp(uint8_t * in_p, uint8_t in_len, uint8_t * out_p, ui
     return RET_OK;
 }
 
-// Report 0x22
+/*! Report 0x22
+ *
+ */
 ret_t rpt_LSM303DLHC_getAccel(uint8_t * in_p, uint8_t in_len, uint8_t * out_p, uint8_t * out_len_ptr)
 {
     ret_t retval;
@@ -262,8 +394,8 @@ ret_t rpt_lookup(uint8_t rpt_type, uint8_t *input_buff_ptr, uint8_t input_buff_l
         /* Report 0x0d */ rpt_err,
         /* Report 0x0e */ rpt_err,
         /* Report 0x0f */ rpt_err,
-        /* Report 0x10 */ rpt_err,
-        /* Report 0x11 */ rpt_err,
+        /* Report 0x10 */ rpt_report_getTimeoutCount,
+        /* Report 0x11 */ rpt_report_getInvalidCharsCount,
         /* Report 0x12 */ rpt_err,
         /* Report 0x13 */ rpt_err,
         /* Report 0x14 */ rpt_err,
