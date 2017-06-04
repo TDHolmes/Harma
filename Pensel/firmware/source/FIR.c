@@ -25,7 +25,7 @@ ret_t FIR_init(FIR_admin_t * FIR_ptr, uint16_t FIR_len, const float * coefficent
         return RET_NOMEM_ERR;
     }
     // initialize the memory
-    for (uint16_t i = FIR_ptr->order - 1; i >= 0; i--) {
+    for (int16_t i = FIR_ptr->order - 1; i >= 0; i--) {
         FIR_ptr->buffer[i] = 0.0f;
     }
     return RET_OK;
@@ -42,7 +42,7 @@ float FIR_run(FIR_admin_t * FIR_ptr, float new_val)
     // input new item into filter
     FIR_ptr->buffer[0] = new_val;
     // calculate output value from filter!
-    for (uint16_t i = FIR_ptr->order - 1; i >= 0; i--) {
+    for (int16_t i = FIR_ptr->order - 1; i >= 0; i--) {
         out_val += FIR_ptr->coefficents_ptr[i] * FIR_ptr->buffer[i];
     }
     // TODO: combine for loops into single one
