@@ -105,6 +105,7 @@ SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} -Xlinker -Map=
 
 include_directories(${ProjDirPath})
 include_directories(${ProjDirPath}/include/)
+include_directories(${ProjDirPath}/DriverConf/inc/)
 include_directories(${ProjDirPath}/CMSIS/Include/)
 include_directories(${ProjDirPath}/CMSIS/Device/ST/STM32F3xx/Include/)
 
@@ -123,9 +124,9 @@ add_executable(pensel.elf
 	"${ProjDirPath}/source/startup_stm32f302x8.s"
 
 	# --- Driver configuration files ----
-	"${ProjDirPath}/source/stm32f3xx_hal_msp.c"
-	"${ProjDirPath}/source/system_stm32f3xx.c"
-	"${ProjDirPath}/source/stm32f3xx_it.c"
+	"${ProjDirPath}/DriverConf/src/stm32f3xx_hal_msp.c"
+	"${ProjDirPath}/DriverConf/src/system_stm32f3xx.c"
+	"${ProjDirPath}/DriverConf/src/stm32f3xx_it.c"
 
 	# --- CMSIS Stuff ----
 
