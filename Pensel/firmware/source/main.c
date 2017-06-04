@@ -20,6 +20,9 @@
 #include "UART.h"
 #include "reports.h"
 
+// Algssss
+#include "orientation.h"
+
 // STM Drivers
 #include "Drivers/stm32f3xx_hal_def.h"
 #include "Drivers/stm32f3xx_hal.h"
@@ -28,6 +31,12 @@
 
 //! HAL millisecond tick
 extern __IO uint32_t uwTick;
+
+inline void check_retval_fatal(char * filename, uint32_t lineno, ret_t retval) {
+    if (retval != RET_OK) {
+        fatal_error_handler(filename, lineno, (int8_t)retval);
+    }
+}
 
 /*! Main function code. Does the following:
  *      1. Initializes all sub-modules
@@ -47,38 +56,29 @@ int main(void)
     configure_pins();
 
     retval = UART_init(115200);
-    if (retval != RET_OK) {
-        fatal_error_handler(__FILE__, __LINE__, (int8_t)retval);
-    }
+    check_retval_fatal(__FILE__, __LINE__, retval);
 
     #ifdef WATCHDOG_ENABLE
     retval = wdg_init();
-    if (retval != RET_OK) {
-        fatal_error_handler(__FILE__, __LINE__, (int8_t)retval);
-    }
+    check_retval_fatal(__FILE__, __LINE__, retval);
     #endif
 
     // peripheral configuration
     retval = I2C_init();
-    if (retval != RET_OK) {
-        fatal_error_handler(__FILE__, __LINE__, (int8_t)retval);
-    }
+    check_retval_fatal(__FILE__, __LINE__, retval);
 
     retval = ADC_init();
-    if (retval != RET_OK) {
-        fatal_error_handler(__FILE__, __LINE__, (int8_t)retval);
-    }
+    check_retval_fatal(__FILE__, __LINE__, retval);
 
     retval = LSM303DLHC_init(kAccelODR_100_Hz, kOne_mg_per_LSB,
                              kMagODR_75_Hz, kXY_1100_Z_980_LSB_per_g);
-    if (retval != RET_OK) {
-        fatal_error_handler(__FILE__, __LINE__, (int8_t)retval);
-    }
+    check_retval_fatal(__FILE__, __LINE__, retval);
 
     retval = rpt_init(UART_sendChar, UART_getChar);
-    if (retval != RET_OK) {
-        fatal_error_handler(__FILE__, __LINE__, (int8_t)retval);
-    }
+    check_retval_fatal(__FILE__, __LINE__, retval);
+
+    retval = orient_init();
+    check_retval_fatal(__FILE__, __LINE__, retval);
 
     while (true) {
         // If we're in normal mode, run the report parser

@@ -11,5 +11,9 @@
 #define _ORIENTATION_H_
 
 #include <stdint.h>
+#include "common.h"
+
+
+ret_t orient_init(void);
 
 #endif /* _ORIENTATION_H_ */
