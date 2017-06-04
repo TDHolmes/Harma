@@ -252,6 +252,8 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     build = args.build.strip().lower()
+    # move to the directory this file is in!
+    os.chdir("/".join(os.path.realpath(__file__).split("/")[:-1]))
 
     build_clean(remove_elf_files=True)
 
