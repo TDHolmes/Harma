@@ -27,13 +27,18 @@
 
 //! The amount of time, in ms, that must ellapse before changing button / switch state
 #define IO_DEBOUNCE_TIMEOUT (10)
+
+static GPIO_InitTypeDef  GPIO_InitStruct;
+
+#ifdef WATCHDOG_ENABLE
+
 #define WDG_COUNT (410u)
 
 IWDG_HandleTypeDef hiwdg;
 
-static GPIO_InitTypeDef  GPIO_InitStruct;
-
 void wdg_clearFlags(void);
+#endif
+
 void button_ISR(uint16_t GPIO_Pin);
 void switch_ISR(uint16_t GPIO_Pin);
 
@@ -398,6 +403,7 @@ void switch_ISR(uint16_t GPIO_Pin)
 
 
 /* independent watchdog code */
+#ifdef WATCHDOG_ENABLE
 
 /*! Initializes the independent watchdog module to require a pet every 10 ms
  *
@@ -459,6 +465,7 @@ void wdg_clearFlags(void)
     // Clear reset flags
     __HAL_RCC_CLEAR_RESET_FLAGS();
 }
+#endif
 
 
 /*! Figure out which pin triggered the interrupt and call the corrisponding

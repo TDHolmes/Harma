@@ -61,10 +61,11 @@ typedef enum {
 void SystemClock_Config(void);
 void configure_pins(void);
 
-
+#ifdef WATCHDOG_ENABLE
 ret_t wdg_init(void);
 ret_t wdg_pet(void);
 bool wdg_isSet(void);
+#endif
 
 void button_periodic_handler(uint32_t current_tick);
 void switch_periodic_handler(uint32_t current_tick);

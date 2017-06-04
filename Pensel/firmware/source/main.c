@@ -51,10 +51,12 @@ int main(void)
         fatal_error_handler(__FILE__, __LINE__, (int8_t)retval);
     }
 
+    #ifdef WATCHDOG_ENABLE
     retval = wdg_init();
     if (retval != RET_OK) {
         fatal_error_handler(__FILE__, __LINE__, (int8_t)retval);
     }
+    #endif
 
     // peripheral configuration
     retval = I2C_init();
@@ -156,9 +158,11 @@ void HAL_IncTick(void)
     }
 
     // every 5 ms, pet the watchdog. Need to pet the watchdog every 10 ms!
+    #ifdef WATCHDOG_ENABLE
     if (sub_count == 5) {
         wdg_pet();
     }
+    #endif
 
     // Heartbeat LED flash
     if (second_count >= 1000) {
@@ -194,7 +198,7 @@ void fatal_error_handler(char file[], uint32_t line, int8_t err_code)
         for (i = 0; i < 25; i++) {
             HAL_Delay(5U);
             // If we're in debug mode, keep the watchdog kickin
-            #ifdef DEBUG
+            #if defined(DEBUG) && defined(WATCHDOG_ENABLE)
                 wdg_pet();
             #endif
         }
