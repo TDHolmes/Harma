@@ -194,11 +194,11 @@ def build_get_section_info(build_type, chip_total_flash, chip_total_ram):
     data = []
     data_by_sections = {}
     for line in stdout.splitlines():
-        sym_ref, size, sym_type, name = line.split()
         try:
+            sym_ref, size, sym_type, name = line.split()
             sym_type = sym_type.lower()
         except Exception:
-            pass
+            continue
         data.append((name, sym_type, int(size)))
         if sym_type not in data_by_sections.keys():
             data_by_sections[sym_type] = []
