@@ -5,11 +5,16 @@ import os
 import pensel_utils
 
 
-def build_documentation(verbose=False):
+def build_documentation(verbose=False, filename="Pensel"):
+    print("Building doxygen documentation...")
     stdout, stderr, retcode = pensel_utils.run_command("doxygen", verbose)
     os.chdir("output/latex/")
+    print("Building PDF...")
     stdout, stderr, retcode = pensel_utils.run_command("make", verbose)
+    print("Renaming PDF...")
+    stdout, stderr, retcode = pensel_utils.run_command("mv ./refman.pdf ../{}.pdf".format(filename), verbose)
     os.chdir("../../")
+    print("Done!")
 
 
 if __name__ == '__main__':
@@ -18,6 +23,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("-v", "--verbose", action="store_true",
                         help="Shows the individual calls made by make.")
+    parser.add_argument("-f", "--filename", default="Pensel",
+                        help="Name of the PDF file we create.")
 
     args = parser.parse_args()
 
@@ -25,4 +32,4 @@ if __name__ == '__main__':
     # make sure all our folder paths exist
     current_path = os.path.abspath("./")
 
-    build_documentation(args.verbose)
+    build_documentation(args.verbose, args.filename)
