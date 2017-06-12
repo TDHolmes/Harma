@@ -20,11 +20,11 @@ Harma comes from the word Härma, which means Mimic in Swedish. A fitting name s
 
 As stated above, this project consists of two major parts: The thing the user holds to control the robot and the robotic arms itself.
 
-### Pensel
+### [Pensel][Pensel Link]
 
 Pensel, or brush/pencil in Swedish, is the device the user interfaces with to control the robotic arms. It is this sub-component that I will first tackle to make the whole system. The design as it stands is as follows:
 
-There will be one unified design to control the iron, solder, and/or wire/components. As such, there must be a generic control methodology built into the Pensel. The Pensel will have as follows:
+There will be one unified design to control the iron, solder, and/or wire/components. As such, there must be a generic control methodology built into the Pensel. The Pensel will have:
 
 1. A three position toggle switch for the user to indicate what mode the Pensel is operating in (Soldering iron, solder, or wire/component).
 2. One push button to indicate that we are actively moving and want the robot to respond
@@ -32,6 +32,8 @@ There will be one unified design to control the iron, solder, and/or wire/compon
    * Feed solder
    * Feed wire
    * release component
+
+Further Pensel documentation can be found [here][[Pensel Link]].
 
 #### The Current design
 
@@ -52,3 +54,6 @@ There will be one unified design to control the iron, solder, and/or wire/compon
 ### Robotic Arms (Working title)
 
 This section has not been thought through yet. I am currently only focusing on the Pensel sub-component.
+
+
+[Pensel Link]: http://www.holmesengineering.com/Harma/Pensel "Pensel Sub-Project Page"
