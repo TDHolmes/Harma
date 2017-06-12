@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Holmes Engineering: Projects by Tyler Holmes</title>
+    <title>{{ site.title | default: site.github.repository_name }} by {{ site.github.owner_name }}</title>
     <link rel="shortcut icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
@@ -15,8 +15,8 @@
   <body>
     <div class="wrapper">
       <header>
-        <h1>{{ site.title | default: "Holmes Engineering" }}</h1>
-        <p>{{ site.description | default: "Projects by Tyler Holmes." }}</p>
+        <h1>{{ site.title | default: site.github.repository_name }}</h1>
+        <p>{{ site.description | default: site.github.project_tagline }}</p>
 
         {% if site.github.is_project_page %}
           <p class="view"><a href="{{ site.github.repository_url }}">View the Project on GitHub <small>{{ github_name }}</small></a></p>
