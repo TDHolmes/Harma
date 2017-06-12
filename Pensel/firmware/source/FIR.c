@@ -35,7 +35,7 @@ ret_t FIR_init(FIR_admin_t * FIR_ptr, uint16_t FIR_len, const float * coefficent
 float FIR_run(FIR_admin_t * FIR_ptr, float new_val)
 {
     float out_val = 0.0f;
-    // Shift values through buffer. TODO: inefficient
+    // Shift values through buffer. TODO: inefficient. circular buffer?
     for (uint16_t i = FIR_ptr->order - 1; i > 0; i--) {
         FIR_ptr->buffer[i] = FIR_ptr->buffer[i - 1];
     }

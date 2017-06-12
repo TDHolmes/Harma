@@ -49,7 +49,7 @@ typedef struct {
 //! Bufer to hold the reply of the report
 uint8_t output_buffer[OUTPUT_BUFF_LEN];
 
-rpt_t rpt;
+static rpt_t rpt;
 
 // private function declarations
 ret_t rpt_lookup(uint8_t rpt_type, uint8_t *input_buff_ptr, uint8_t input_buff_len,

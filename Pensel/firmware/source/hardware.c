@@ -43,18 +43,18 @@ void button_ISR(uint16_t GPIO_Pin);
 void switch_ISR(uint16_t GPIO_Pin);
 
 // Private IRQ enablers / disablers
-inline void mainbtn_irq_enable(void);
-inline void mainbtn_irq_disable(void);
-inline void auxbtn_irq_enable(void);
-inline void auxbtn_irq_disable(void);
-inline void switch_irq_enable(void);
-inline void switch_irq_disable(void);
+static inline void mainbtn_irq_enable(void);
+static inline void mainbtn_irq_disable(void);
+static inline void auxbtn_irq_enable(void);
+static inline void auxbtn_irq_disable(void);
+static inline void switch_irq_enable(void);
+static inline void switch_irq_disable(void);
 
-inline void sensorDRDY_irq_enable(void);
+static inline void sensorDRDY_irq_enable(void);
 /* TODO: I don't think I'll ever need this function as DRDY pin interrupt has no possible
     race conditions due to how I queue packets. _I THINK_. Haven't thouroughly looked at
     the code. */
-inline void sensorDRDY_irq_disable(void);
+static inline void sensorDRDY_irq_disable(void);
 
 
 //! Tracks a switch's state and manages a switch's hysteresis
@@ -240,43 +240,43 @@ void configure_pins(void)
 }
 
 /*! Enables the interrupt corrisponding to the LSM303DLHC DRDY pin. */
-inline void sensorDRDY_irq_enable(void)
+static inline void sensorDRDY_irq_enable(void)
 {
     HAL_NVIC_EnableIRQ((IRQn_Type)(EXTI15_10_IRQn));
 }
 
 /*! Disables the interrupt corrisponding to the LSM303DLHC DRDY pin. */
-inline void sensorDRDY_irq_disable(void)
+static inline void sensorDRDY_irq_disable(void)
 {
     HAL_NVIC_DisableIRQ((IRQn_Type)(EXTI15_10_IRQn));
 }
 
 /*! Enables the interrupt corrisponding to the main button pin. */
-inline void mainbtn_irq_enable(void)
+static inline void mainbtn_irq_enable(void)
 {
     HAL_NVIC_EnableIRQ((IRQn_Type)(EXTI9_5_IRQn));
 }
 
 /*! Disables the interrupt corrisponding to the main button pin. */
-inline void mainbtn_irq_disable(void)
+static inline void mainbtn_irq_disable(void)
 {
     HAL_NVIC_DisableIRQ((IRQn_Type)(EXTI9_5_IRQn));
 }
 
 /*! Enables the interrupt corrisponding to the auxilary button pin. */
-inline void auxbtn_irq_enable(void)
+static inline void auxbtn_irq_enable(void)
 {
     HAL_NVIC_EnableIRQ((IRQn_Type)(EXTI4_IRQn));
 }
 
 /*! Disables the interrupt corrisponding to the auxilary button pin. */
-inline void auxbtn_irq_disable(void)
+static inline void auxbtn_irq_disable(void)
 {
     HAL_NVIC_DisableIRQ((IRQn_Type)(EXTI4_IRQn));
 }
 
 /*! Enables the interrupts corrisponding to the 3 position switch pins. */
-inline void switch_irq_enable(void)
+static inline void switch_irq_enable(void)
 {
     HAL_NVIC_EnableIRQ((IRQn_Type)(EXTI1_IRQn));
     HAL_NVIC_EnableIRQ((IRQn_Type)(EXTI2_TSC_IRQn));
@@ -284,7 +284,7 @@ inline void switch_irq_enable(void)
 }
 
 /*! Disables the interrupts corrisponding to the 3 position switch pins. */
-inline void switch_irq_disable(void)
+static inline void switch_irq_disable(void)
 {
     HAL_NVIC_DisableIRQ((IRQn_Type)(EXTI1_IRQn));
     HAL_NVIC_DisableIRQ((IRQn_Type)(EXTI2_TSC_IRQn));

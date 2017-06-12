@@ -26,8 +26,7 @@ SET(TOOLCHAIN_DIR "" CACHE STRING "Directory to use for ARM GCC")
 
 # -------------------------- FLAGS USED BY EVERYONE -------------------------- #
 
-# clang doesn't support link time optimizations...
-# TODO: Fix this?
+# clang doesn't support link time optimizations with existing ARM GCC tools...
 if (COMPILER_TYPE MATCHES GCC)
 	SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -flto")
 ELSE()
@@ -149,7 +148,7 @@ add_executable(pensel.elf
 	"${ProjDirPath}/Drivers/stm32f3xx_hal_rcc_ex.c"
 	"${ProjDirPath}/Drivers/stm32f3xx_hal_adc.c"
 	"${ProjDirPath}/Drivers/stm32f3xx_hal_adc_ex.c"
-	"${ProjDirPath}/Drivers/stm32f3xx_hal_iwdg.c"  # TODO: add watchdog support
+	"${ProjDirPath}/Drivers/stm32f3xx_hal_iwdg.c"
 	# "${ProjDirPath}/Drivers/stm32f3xx_hal_flash.c"
 	# "${ProjDirPath}/Drivers/stm32f3xx_hal_wwdg.c"
 	# "${ProjDirPath}/Drivers/stm32f3xx_hal_usart.c"

@@ -116,7 +116,7 @@ const float AccelGainOffsets[] = {1.0f, 2.0f, 4.0f, 12.0f};
 
 /*! Master struct for this module. Marked as volatile as we update it in
  *   the I2C & DRDY pin interrupt context */
-volatile LSM303DLHC_admin_t LSM303DLHC;
+static volatile LSM303DLHC_admin_t LSM303DLHC;
 
 
 /*! Initializer of the LSM303DLHC module and chip. Sets the datarate and sensitivity of the
