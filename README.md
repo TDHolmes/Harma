@@ -33,7 +33,7 @@ There will be one unified design to control the iron, solder, and/or wire/compon
    * Feed wire
    * release component
 
-Further Pensel documentation can be found [here][[Pensel Link]].
+Further Pensel documentation can be found [here][Pensel Link].
 
 #### The Current design
 
