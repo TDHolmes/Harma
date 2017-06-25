@@ -97,8 +97,10 @@ typedef struct {
     mag_packet_t mag_pkts[MAG_QUEUE_SIZE];        //!< Mag queue to store packets
     queue_t accel_queue;            //!< Accel admin struct of the accel_queues
     queue_t mag_queue;              //!< Mag admin struct of the mag_queues
-    uint8_t accel_data_available;   //!< Flag we set when we see there's data acording to the status register
-    uint8_t mag_data_available;     //!< Flag we set when we see there's data acording to MAG_SR_REG_M
+    //! Flag we set when we see there's data acording to the accel status register
+    uint8_t accel_data_available;
+    //! Flag we set when we see there's data acording to MAG_SR_REG_M
+    uint8_t mag_data_available;
     accel_ODR_t accel_datarate;     //!< Rate at which accel data gets updated on chip
     mag_ODR_t mag_datarate;         //!< Rate at which mag data gets updated on chip
     accel_sensitivity_t accel_sensitivity;  //!< Accel fullscale setting
@@ -261,7 +263,8 @@ ret_t LSM303DLHC_temp_getData(int16_t * temp_val_ptr)
     if (retval != RET_OK) { return retval; }
 
     // build up value!
-    *temp_val_ptr = (int16_t)(bytes[0] << 8 | (bytes[1] & 0xF0)) >> 3;  // 8 LSB/°C -> divide by 8 to get °C
+    // 8 LSB/°C -> divide by 8 to get °C
+    *temp_val_ptr = ((int16_t)((bytes[0] << 8) | (bytes[1] & 0xF0))) >> 3;
 
     return RET_OK;
 }
