@@ -16,7 +16,7 @@ operating in (Soldering iron, solder, or wire/component).
    * Feed wire
    * release component
 
-## The Current design
+## Hardware Basics
 
 * Processor
    * STM32F302K8U6
@@ -25,8 +25,22 @@ operating in (Soldering iron, solder, or wire/component).
    * CAN, I²C, IrDA, LIN, SPI, UART/USART, USB
    * DMA, I²S, POR, PWM, WDT
 * Sensors
-   * Two Accelerometers (MMA8452Q) on opposite sides of the PCB (far left and far right)
+   * One LSM303DLHC with accelerometer and magnetometer for orientation and movement detection
    * A button to trigger "active" mode
    * An auxiliary button to generate an action
    * A three position switch to indicate the active mode
    * A thumbwheel potentiometer to control sensitivity
+
+
+## Software Design
+
+Below is an overview of all of the modules in the system.
+
+![alt text][Pensel Software Diagram]
+
+Below is an overview of the control and call structure of the system.
+
+![alt text][Pensel Control Diagram]
+
+[Pensel Software Diagram]: https://raw.githubusercontent.com/TDHolmes/Harma/master/Pensel/documentation/pictures/Pensel_SoftwareDiagram.png "Overall Pensel software diagram"
+[Pensel Control Diagram]: https://raw.githubusercontent.com/TDHolmes/Harma/master/Pensel/documentation/pictures/Pensel_ControlHierarchy.png "Pensel control flow"
