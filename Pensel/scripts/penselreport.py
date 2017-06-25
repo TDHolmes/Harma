@@ -3,6 +3,12 @@ import serial
 import os
 import struct
 
+import pensel_utils as pu
+
+
+class PenselError(RuntimeError):
+    pass
+
 
 class Pensel(object):
     def __init__(self, serialport, baudrate, verbose=False):
@@ -109,8 +115,7 @@ def parse_report(reportID, payload):
         #     float y;             //!< Accel Y value
         #     float z;             //!< Accel Z value
         # } accel_packet_t;
-        packed_data = struct.pack("BBBBBBBBBBBBBBBBBBBB", *payload)
-        frame_num, timestamp, x, y, z = struct.unpack("IIfff", packed_data)
+        frame_num, timestamp, x, y, z = pu.parse_accel_packet(payload)
         print("   Accel Packet:")
         print("       Frame #: {}".format(frame_num))
         print("     Timestamp: {} ms".format(timestamp))
@@ -126,8 +131,7 @@ def parse_report(reportID, payload):
         #     float y;             //!< Mag Y value
         #     float z;             //!< Mag Z value
         # } mag_packet_t;
-        packed_data = struct.pack("BBBBBBBBBBBBBBBBBBBB", *payload)
-        frame_num, timestamp, x, y, z = struct.unpack("IIfff", packed_data)
+        frame_num, timestamp, x, y, z = pu.parse_mag_packet(payload)
         print("   Mag Packet:")
         print("      Frame #: {}".format(frame_num))
         print("    Timestamp: {} ms".format(timestamp))

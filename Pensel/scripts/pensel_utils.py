@@ -2,6 +2,7 @@
 # -*- coding: UTF-8 -*-
 import sys
 import time
+import struct
 
 import subprocess
 from threading import Thread
@@ -34,6 +35,18 @@ class bcolors:
     COLOR_YELLOW = '\033[1;33m'
     COLOR_GRAY = '\033[0;30m'
     COLOR_LIGHT_GRAY = '\033[0;37m'
+
+
+def parse_accel_packet(payload):
+    packed_data = struct.pack("BBBBBBBBBBBBBBBBBBBB", *payload)
+    frame_num, timestamp, x, y, z = struct.unpack("IIfff", packed_data)
+    return frame_num, timestamp, x, y, z
+
+
+def parse_mag_packet(payload):
+    packed_data = struct.pack("BBBBBBBBBBBBBBBBBBBB", *payload)
+    frame_num, timestamp, x, y, z = struct.unpack("IIfff", packed_data)
+    return frame_num, timestamp, x, y, z
 
 
 def run_command(cmd, print_output=True):
