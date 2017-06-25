@@ -14,6 +14,7 @@
 #include <stdbool.h>
 #include "common.h"
 #include "stm32f3xx.h"
+#include "Drivers/stm32f3xx_hal_gpio.h"
 
 // Sensor stuff
 #define SENSOR_PORT (GPIOA)

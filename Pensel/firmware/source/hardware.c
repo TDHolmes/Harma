@@ -517,12 +517,20 @@ void LED_toggle(uint16_t LED)
  */
 void LED_set(uint16_t LED, uint8_t value)
 {
-    if (value == GPIO_PIN_RESET || value == GPIO_PIN_SET) {
-        if (LED == LED_0) {
-            HAL_GPIO_WritePin(LED_PORT, LED_0, value);
-        } else if (LED == LED_1) {
-            HAL_GPIO_WritePin(LED_PORT, LED_1, value);
-        }
+    // LEDs are active low config...
+    if (value == GPIO_PIN_RESET) {
+        value = GPIO_PIN_SET;
+    } else if(value == GPIO_PIN_SET) {
+        value = GPIO_PIN_RESET;
+    } else {
+        return;  // invalid value!!
+    }
+
+    // Write the value to the LED...
+    if (LED == LED_0) {
+        HAL_GPIO_WritePin(LED_PORT, LED_0, value);
+    } else if (LED == LED_1) {
+        HAL_GPIO_WritePin(LED_PORT, LED_1, value);
     }
 }
 
