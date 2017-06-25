@@ -97,6 +97,8 @@ typedef struct {
     mag_packet_t mag_pkts[MAG_QUEUE_SIZE];        //!< Mag queue to store packets
     queue_t accel_queue;            //!< Accel admin struct of the accel_queues
     queue_t mag_queue;              //!< Mag admin struct of the mag_queues
+    uint32_t accel_framenum;        //!< Accel frame number Increments on each accel packet
+    uint32_t mag_framenum;          //!< Mag frame number. Increments on each mag packet
     //! Flag we set when we see there's data acording to the accel status register
     uint8_t accel_data_available;
     //! Flag we set when we see there's data acording to MAG_SR_REG_M
@@ -160,6 +162,8 @@ ret_t LSM303DLHC_init(accel_ODR_t accel_datarate, accel_sensitivity_t accel_sens
     LSM303DLHC.mag_sensitivity = mag_sensitivity;
     LSM303DLHC.accel_hw_overwrite_count = 0;
     LSM303DLHC.mag_hw_overwrite_count = 0;
+    LSM303DLHC.mag_framenum = 0;
+    LSM303DLHC.accel_framenum = 0;
 
     // we've initialized properly!
     return RET_OK;
@@ -368,6 +372,9 @@ ret_t LSM303DLHC_accel_putPacket(float * data_x_ptr, float * data_y_ptr, float *
 {
     // Get the data from the queue...
     accel_packet_t pkt;
+
+    pkt.frame_num = LSM303DLHC.accel_framenum;
+    LSM303DLHC.accel_framenum++;
     pkt.timestamp = HAL_GetTick();
     pkt.x = *data_x_ptr;
     pkt.y = *data_y_ptr;
@@ -393,6 +400,9 @@ ret_t LSM303DLHC_accel_putPacket(float * data_x_ptr, float * data_y_ptr, float *
 ret_t LSM303DLHC_mag_putPacket(float * data_x_ptr, float * data_y_ptr, float * data_z_ptr)
 {
     mag_packet_t pkt;
+
+    pkt.frame_num = LSM303DLHC.mag_framenum;
+    LSM303DLHC.mag_framenum++;
     pkt.timestamp = HAL_GetTick();
     pkt.x = *data_x_ptr;
     pkt.y = *data_y_ptr;

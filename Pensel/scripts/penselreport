@@ -102,30 +102,34 @@ class Pensel(object):
 
 def parse_report(reportID, payload):
     if reportID == 0x22:
-        # typedef struct {
+        # typedef struct __attribute__((packed)) {
+        #     uint32_t frame_num;   //!< Frame number
         #     uint32_t timestamp;  //!< Timestamp when the packet was received
         #     float x;             //!< Accel X value
         #     float y;             //!< Accel Y value
         #     float z;             //!< Accel Z value
         # } accel_packet_t;
-        packed_data = struct.pack("BBBBBBBBBBBBBBBB", *payload)
-        timestamp, x, y, z = struct.unpack("Ifff", packed_data)
+        packed_data = struct.pack("BBBBBBBBBBBBBBBBBBBB", *payload)
+        frame_num, timestamp, x, y, z = struct.unpack("IIfff", packed_data)
         print("   Accel Packet:")
+        print("       Frame #: {}".format(frame_num))
         print("     Timestamp: {} ms".format(timestamp))
         print("        X Axis: {}".format(x))
         print("        Y Axis: {}".format(y))
         print("        Z Axis: {}".format(z))
 
     elif reportID == 0x23:
-        # typedef struct {
+        # typedef struct __attribute__((packed)) {
+        #     uint32_t frame_num;   //!< Frame number
         #     uint32_t timestamp;  //!< Timestamp when the packet was received
         #     float x;             //!< Mag X value
         #     float y;             //!< Mag Y value
         #     float z;             //!< Mag Z value
         # } mag_packet_t;
-        packed_data = struct.pack("BBBBBBBBBBBBBBBB", *payload)
-        timestamp, x, y, z = struct.unpack("Ifff", packed_data)
+        packed_data = struct.pack("BBBBBBBBBBBBBBBBBBBB", *payload)
+        frame_num, timestamp, x, y, z = struct.unpack("IIfff", packed_data)
         print("   Mag Packet:")
+        print("      Frame #: {}".format(frame_num))
         print("    Timestamp: {} ms".format(timestamp))
         print("       X Axis: {}".format(x))
         print("       Y Axis: {}".format(y))

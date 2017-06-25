@@ -68,7 +68,8 @@ typedef enum {
 } FIFO_mode_t;
 
 //! Accel packet definition
-typedef struct {
+typedef struct __attribute__((packed)) {
+    uint32_t frame_num;   //!< Frame number
     uint32_t timestamp;  //!< Timestamp when the packet was received
     float x;             //!< Accel X value
     float y;             //!< Accel Y value
@@ -76,7 +77,8 @@ typedef struct {
 } accel_packet_t;
 
 //! Mag packet definition
-typedef struct {
+typedef struct __attribute__((packed)) {
+    uint32_t frame_num;   //!< Frame number
     uint32_t timestamp;  //!< Timestamp when the packet was received
     float x;             //!< Mag X value
     float y;             //!< Mag Y value
