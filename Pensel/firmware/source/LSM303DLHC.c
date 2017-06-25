@@ -510,18 +510,18 @@ bool LSM303DLHC_mag_dataAvailable(void)
 
 /*! Gets the number of packet drops in the accel queue.
  *
- * @retval (uint8_t): Number of queue overwrites.
+ * @retval (uint32_t): Number of queue overwrites.
  */
-uint8_t LSM303DLHC_accel_packetOverwriteCount(void)
+uint32_t LSM303DLHC_accel_packetOverwriteCount(void)
 {
     return LSM303DLHC.accel_queue.overwrite_count;
 }
 
 /*! Gets the number of packet drops in the mag queue.
  *
- * @retval (uint8_t): Number of queue overwrites.
+ * @retval (uint32_t): Number of queue overwrites.
  */
-uint8_t LSM303DLHC_mag_packetOverwriteCount(void)
+uint32_t LSM303DLHC_mag_packetOverwriteCount(void)
 {
     return LSM303DLHC.mag_queue.overwrite_count;
 }

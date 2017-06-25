@@ -367,7 +367,9 @@ ret_t rpt_LSM303DLHC_getAccel(uint8_t * in_p, uint8_t in_len,
     return RET_OK;
 }
 
-// Report 0x23
+/*! Report 0x23: Gets an mag packet
+ *
+ */
 ret_t rpt_LSM303DLHC_getMag(uint8_t * in_p, uint8_t in_len,
                             uint8_t * out_p, uint8_t * out_len_ptr)
 {
@@ -410,6 +412,29 @@ ret_t rpt_LSM303DLHC_getMag(uint8_t * in_p, uint8_t in_len,
 }
 
 
+/*! Report 0x24: Gets LSM303DLHC errors
+ *
+ */
+ret_t rpt_LSM303DLHC_getErrors(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len),
+                               uint8_t * out_p, uint8_t * out_len_ptr)
+{
+    uint32_t accel_pkt_ovrwt = LSM303DLHC_accel_packetOverwriteCount();
+    uint32_t mag_pkt_ovrwt = LSM303DLHC_mag_packetOverwriteCount();
+    uint32_t accel_hw_ovrwt = LSM303DLHC_accel_HardwareOverwriteCount();
+    uint32_t mag_hw_ovrwt = LSM303DLHC_mag_HardwareOverwriteCount();
+
+    *(uint32_t *)out_p = accel_pkt_ovrwt;
+    out_p += sizeof(uint32_t);
+    *(uint32_t *)out_p = mag_pkt_ovrwt;
+    out_p += sizeof(uint32_t);
+    *(uint32_t *)out_p = accel_hw_ovrwt;
+    out_p += sizeof(uint32_t);
+    *(uint32_t *)out_p = mag_hw_ovrwt;
+    *out_len_ptr = 4 * sizeof(uint32_t);
+    return RET_OK;
+}
+
+
 /* ---------- PENSEL REPORTS ---------- */
 
 // These are reports relating to pensel internals
@@ -425,13 +450,24 @@ ret_t rpt_pensel_getVersion(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(i
     return RET_OK;
 }
 
-/*! Report 0x30 returns the pensels current system time (in ms)
+/*! Report 0x31 returns the pensels current system time (in ms)
  */
 ret_t rpt_pensel_getTimestamp(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len),
                               uint8_t * out_p, uint8_t * out_len_ptr)
 {
     *(uint32_t *)out_p = HAL_GetTick();
     *out_len_ptr = sizeof(uint32_t);
+    return RET_OK;
+}
+
+/*! Report 0x32 Returns the pensel's coms errors (currently only UART dropped packets)
+ */
+ret_t rpt_pensel_getComsErrors(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len),
+                              uint8_t * out_p, uint8_t * out_len_ptr)
+{
+    uint8_t dropped_packets = UART_droppedPackets();
+    out_p[0] = dropped_packets;
+    *out_len_ptr = 1;
     return RET_OK;
 }
 
@@ -482,7 +518,7 @@ ret_t rpt_lookup(uint8_t rpt_type, uint8_t *input_buff_ptr, uint8_t input_buff_l
         /* Report 0x21 */ rpt_LSM303DLHC_getTemp,
         /* Report 0x22 */ rpt_LSM303DLHC_getAccel,
         /* Report 0x23 */ rpt_LSM303DLHC_getMag,
-        /* Report 0x24 */ rpt_err,
+        /* Report 0x24 */ rpt_LSM303DLHC_getErrors,
         /* Report 0x25 */ rpt_err,
         /* Report 0x26 */ rpt_err,
         /* Report 0x27 */ rpt_err,
@@ -496,7 +532,7 @@ ret_t rpt_lookup(uint8_t rpt_type, uint8_t *input_buff_ptr, uint8_t input_buff_l
         /* Report 0x2f */ rpt_err,
         /* Report 0x30 */ rpt_pensel_getVersion,
         /* Report 0x31 */ rpt_pensel_getTimestamp,
-        /* Report 0x32 */ rpt_err,
+        /* Report 0x32 */ rpt_pensel_getComsErrors,
         /* Report 0x33 */ rpt_err,
         /* Report 0x34 */ rpt_err,
         /* Report 0x35 */ rpt_err,

@@ -135,6 +135,15 @@ def parse_report(reportID, payload):
         print("       Y Axis: {}".format(y))
         print("       Z Axis: {}".format(z))
 
+    elif reportID == 0x24:
+        packed_data = struct.pack("BBBBBBBBBBBBBBBB", *payload)
+        accel_pkt_ovrwt, mag_pkt_ovrwt, accel_hw_ovrwt, mag_hw_ovrwt = struct.unpack("=IIII", packed_data)
+        print("   LSM303DLHC errors:")
+        print("     Accel Packet Overwrites: {}".format(accel_pkt_ovrwt))
+        print("       Mag Packet Overwrites: {}".format(mag_pkt_ovrwt))
+        print("   Accel Hardware Overwrites: {}".format(accel_hw_ovrwt))
+        print("     Mag Hardware Overwrites: {}".format(mag_hw_ovrwt))
+
     elif reportID == 0x30:
         # Pensel Version
         print("    Pensel v{}.{}".format(payload[0], payload[1]))

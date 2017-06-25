@@ -17,7 +17,7 @@ typedef struct {
     volatile uint8_t head_ind;  //!< Tracks the front of the buffer (where new info gets pushed)
     volatile uint8_t tail_ind;  //!< Tracks the back of the buffer (where data is read from)
     volatile uint8_t unread_items;    //!< Number of un-popped items
-    volatile uint8_t overwrite_count; //!< Number of items that were lost to overwrite
+    volatile uint32_t overwrite_count; //!< Number of items that were lost to overwrite
 } queue_t;
 
 
