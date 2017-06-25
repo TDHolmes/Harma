@@ -153,6 +153,11 @@ def parse_report(reportID, payload):
         timestamp = struct.unpack("I", packed_data)[0]
         print("    Timestamp: {} ms".format(timestamp))
 
+    elif reportID == 0x33:
+        print("    Switch State: {}".format(payload[0]))
+        print("     Main Button: {}".format("open" if payload[1] else "pressed"))
+        print("      Aux Button: {}".format("open" if payload[2] else "pressed"))
+
     else:
         print("    {}".format(" ".join(["{:0>2X}".format(b) for b in output])))
 

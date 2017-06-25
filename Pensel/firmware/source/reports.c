@@ -471,6 +471,18 @@ ret_t rpt_pensel_getComsErrors(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_PARA
     return RET_OK;
 }
 
+/*! Report 0x33 Returns the pensel's button & switch states
+ */
+ret_t rpt_pensel_getButtonSwitchState(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len),
+                                      uint8_t * out_p, uint8_t * out_len_ptr)
+{
+    *(switch_state_t *)out_p = switch_getval();
+    *(out_p + 1) = mainbutton_getval();
+    *(out_p + 2) = auxbutton_getval();
+    *out_len_ptr = 3;
+    return RET_OK;
+}
+
 
 /* ------------------------- MASTER LOOKUP FUNCTION ------------------------- */
 
@@ -533,7 +545,7 @@ ret_t rpt_lookup(uint8_t rpt_type, uint8_t *input_buff_ptr, uint8_t input_buff_l
         /* Report 0x30 */ rpt_pensel_getVersion,
         /* Report 0x31 */ rpt_pensel_getTimestamp,
         /* Report 0x32 */ rpt_pensel_getComsErrors,
-        /* Report 0x33 */ rpt_err,
+        /* Report 0x33 */ rpt_pensel_getButtonSwitchState,
         /* Report 0x34 */ rpt_err,
         /* Report 0x35 */ rpt_err,
         /* Report 0x36 */ rpt_err,
