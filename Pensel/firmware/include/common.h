@@ -20,6 +20,10 @@
 #endif
 
 
+#define PENSEL_VERSION_MAJOR (0)
+#define PENSEL_VERSION_MINOR (5)
+
+
 //! Common return type for the entire project
 typedef enum {
     RET_OK,         //!< The return code if all goes well
