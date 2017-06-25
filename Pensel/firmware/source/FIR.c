@@ -11,13 +11,16 @@
 #include "common.h"
 #include "FIR.h"
 
+/*! Initializes the given FIR admin pointer to be used in FIR_run.
+ *
+ * @param FIR_ptr (FIR_admin_t *): A pointer to an already allocated FIR_admin_t structure
+ *      to be used in this initialization.
+ * @param FIR_len (uint16_t): The length of the coefficients to be used
+ * @param coefficents_ptr (const float *): The coefficients to be used in this filter
+ * @return retval (ret_t): Success or failure reason of initializing the FIR structure
+ */
 ret_t FIR_init(FIR_admin_t * FIR_ptr, uint16_t FIR_len, const float * coefficents_ptr)
 {
-    FIR_ptr = malloc(sizeof(FIR_admin_t));
-    if (FIR_ptr == NULL) {
-        return RET_NOMEM_ERR;
-    }
-
     FIR_ptr->coefficents_ptr = coefficents_ptr;
     FIR_ptr->order = FIR_len;
     FIR_ptr->buffer = malloc(sizeof(float) * FIR_len); // TODO: Make circular?
@@ -31,7 +34,13 @@ ret_t FIR_init(FIR_admin_t * FIR_ptr, uint16_t FIR_len, const float * coefficent
     return RET_OK;
 }
 
-
+/*! Runs a cycle of the given FIR filter with a new value and returns the output value.
+ *
+ * @param FIR_ptr (FIR_admin_t *): A pointer to an already initialized
+ *          FIR_admin_t structure
+ * @param new_val (float): The new value to be added to the filter pipeline
+ * @return out_val (float): The resulting value from the filter
+ */
 float FIR_run(FIR_admin_t * FIR_ptr, float new_val)
 {
     float out_val = 0.0f;
