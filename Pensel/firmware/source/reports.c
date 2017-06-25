@@ -10,6 +10,8 @@
 #include "common.h"
 #include "reports.h"
 #include "LSM303DLHC.h"
+#include "UART.h"  // TODO: Remove and switch back to function pointers
+#include "hardware.h"
 
 
 // TODO: Is this extern declaration a good idea? Or should I include the HAL header?
@@ -25,13 +27,15 @@ extern uint32_t HAL_GetTick(void);
 
 //! The current state of the rpt workloop
 typedef enum {
-    kRpt_ReadMagic_0,  //!< Read in the first magic value to signify the start of a report transaction
-    kRpt_ReadMagic_1,  //!< Read in the second magic value to signify the start of a report transaction
+    //!< Read in the first magic value to signify the start of a report transaction
+    kRpt_ReadMagic_0,
+    //!< Read in the second magic value to signify the start of a report transaction
+    kRpt_ReadMagic_1,
     kRpt_ReadRpt,      //!< Read the report ID (the first byte of the transaction)
     kRpt_ReadLen,      //!< Read the length of the report payload (2nd byte)
     kRpt_ReadPayload,  //!< Read the report payload (N bytes...)
-    kRpt_Evaluate,     //!< Evaluate the report on our end
-    kRpt_Print         //!< Send back the response (x bytes)
+    //! Evaluate the report on our end and send back the response (x bytes)
+    kRpt_EvaluateAndPrint,
 } rpt_state_t;
 
 
@@ -40,7 +44,8 @@ typedef struct {
     ret_t (*putchr)(uint8_t);   //!< function pointer to send chars out
     ret_t (*getchr)(uint8_t *); //!< function pointer to recieve chars
     rpt_state_t state;          //!< Current state of the report module
-    uint32_t start_time;        //!< Start time from HAL_GetTick() of the active report. Times out after `RPT_TIMEOUT`
+    //! Start time from HAL_GetTick() of the active report. Times out after `RPT_TIMEOUT`
+    uint32_t start_time;
     uint16_t invalid_chrs;      //!< Number of invalid bytes we've received
     uint16_t timeouts;          //!< Number of times a command times out
     uint8_t read_buff[READ_BUFF_SIZE];  //!< Buffer to read the reports in
@@ -53,7 +58,7 @@ static rpt_t rpt;
 
 // private function declarations
 ret_t rpt_lookup(uint8_t rpt_type, uint8_t *input_buff_ptr, uint8_t input_buff_len,
-                 uint8_t * output_buff_ptr, uint8_t * output_buff_len_ptr);
+                 uint8_t * output_buff_len_ptr);
 
 
 /* -------------- Initializer and runner ------------------------ */
@@ -105,9 +110,9 @@ void rpt_run(void)
     ret_t retval = RET_GEN_ERR;
 
     // report buffers and variables
-    uint8_t rpt_type = 0;
-    uint8_t * rpt_out_buff_ptr = 0;
-    uint8_t rpt_in_buff_len = 0;
+    static uint8_t rpt_type = 0;
+    static uint8_t rpt_in_buff_len = 0;
+    // uint8_t * rpt_out_buff_ptr = 0;
     uint8_t rpt_out_buff_len = 0;
 
     // Keeps track of how many bytes of the payload we've read in
@@ -115,7 +120,7 @@ void rpt_run(void)
 
     switch (rpt.state) {
         case kRpt_ReadMagic_0:
-            retval = rpt.getchr(&chr);
+            retval = UART_getChar(&chr);
             if (retval == RET_OK) {
                 if (chr == RPT_MAGIC_NUMBER_0) {
                     rpt.start_time = HAL_GetTick();
@@ -128,7 +133,7 @@ void rpt_run(void)
             break;
 
         case kRpt_ReadMagic_1:
-            retval = rpt.getchr(&chr);
+            retval = UART_getChar(&chr);
             if (retval == RET_OK) {
                 if (chr == RPT_MAGIC_NUMBER_1) {
                     rpt.state = kRpt_ReadRpt;
@@ -143,7 +148,7 @@ void rpt_run(void)
             break;
 
         case kRpt_ReadRpt:
-            retval = rpt.getchr(&chr);
+            retval = UART_getChar(&chr);
             if (retval == RET_OK) {
                 // 0-255 value is valid.
                 rpt_type = chr;
@@ -155,7 +160,7 @@ void rpt_run(void)
             break;
 
         case kRpt_ReadLen:
-            retval = rpt.getchr(&chr);
+            retval = UART_getChar(&chr);
             if (retval == RET_OK) {
                 rpt_in_buff_len = chr;
                 payload_readin_ind = 0;
@@ -165,7 +170,7 @@ void rpt_run(void)
                     rpt.state = kRpt_ReadPayload;
                 } else {
                     // nothing to read in, skip to execution
-                    rpt.state = kRpt_Evaluate;
+                    rpt.state = kRpt_EvaluateAndPrint;
                 }
             }
 
@@ -174,13 +179,13 @@ void rpt_run(void)
             break;
 
         case kRpt_ReadPayload:
-            retval = rpt.getchr(&chr);
+            retval = UART_getChar(&chr);
             if (retval == RET_OK) {
                 rpt.read_buff[payload_readin_ind] = chr;
                 payload_readin_ind += 1;
 
-                if (payload_readin_ind == rpt_in_buff_len - 1) {
-                    rpt.state = kRpt_Evaluate;
+                if (payload_readin_ind == rpt_in_buff_len) {
+                    rpt.state = kRpt_EvaluateAndPrint;
                     payload_readin_ind = 0;
                     break;
                 }
@@ -190,25 +195,33 @@ void rpt_run(void)
             rpt_checkForTimeout();
             break;
 
-        case kRpt_Evaluate:
+        case kRpt_EvaluateAndPrint:
             // Fetch and execute the requested function
             retval = rpt_lookup(rpt_type, rpt.read_buff, rpt_in_buff_len,
-                                rpt_out_buff_ptr, &rpt_out_buff_len);
-            break;
+                                &rpt_out_buff_len);
 
-        case kRpt_Print:
             // print out the results
-            rpt.putchr(retval);
+            UART_sendChar(retval);
             // if we succeeded in the report, continue on
             if (retval == RET_OK) {
-                rpt.putchr(rpt_out_buff_len);
-                while (rpt_out_buff_len > 0) {
-                    rpt_out_buff_len -= 1;  /* Properly indexes into the array */
-                    rpt.putchr(rpt_out_buff_ptr[rpt_out_buff_len]);
+                UART_sendChar(rpt_out_buff_len);
+
+                chr = 0;
+                while (chr < rpt_out_buff_len) {
+                    UART_sendChar(output_buffer[chr]);
+                    chr += 1;
                 }
+            } else {
+                // We've failed the report, so nothing to read back
+                UART_sendChar(0);
             }
             // start over! :D
             rpt.state = kRpt_ReadMagic_0;
+            break;
+
+        default:
+            // Should never get here...
+            fatal_error_handler(__FILE__, __LINE__, rpt.state);
             break;
     }
 }
@@ -259,7 +272,8 @@ ret_t rpt_report_getInvalidCharsCount(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUS
  *          3. mag_ODR_t
  *          4. mag_sensitivity_t
  */
-ret_t rpt_LSM303DLHC_changeConfig(uint8_t * in_p, uint8_t in_len, uint8_t * out_p, uint8_t * out_len_ptr)
+ret_t rpt_LSM303DLHC_changeConfig(uint8_t * in_p, uint8_t in_len,
+                                  uint8_t * out_p, uint8_t * out_len_ptr)
 {
     ret_t retval;
     mag_ODR_t mag_ODR;
@@ -308,63 +322,116 @@ ret_t rpt_LSM303DLHC_getTemp(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(
     return RET_OK;
 }
 
-/*! Report 0x22
+/*! Report 0x22: Gets an accel packet
  *
  */
-ret_t rpt_LSM303DLHC_getAccel(uint8_t * in_p, uint8_t in_len, uint8_t * out_p, uint8_t * out_len_ptr)
+ret_t rpt_LSM303DLHC_getAccel(uint8_t * in_p, uint8_t in_len,
+                              uint8_t * out_p, uint8_t * out_len_ptr)
 {
     ret_t retval;
     accel_packet_t pkt;
-    bool peak;
+    bool peak, block;
 
     // do some bounds checking
     if (in_len != 1) { return RET_INVALID_ARGS_ERR; }
 
     // check if we should peak or pop the packet
-    if (in_p[0] == 0) {
-        peak = false;
-    } else if (in_p[1] == 1) {
+    if (in_p[0] & 0b01) {
         peak = true;
     } else {
-        return RET_INVALID_ARGS_ERR;
+        peak = false;
     }
 
-    // call the actual function
-    retval = LSM303DLHC_accel_getPacket(&pkt, peak);
-    if (retval != RET_OK) { return retval; }
+    // check if we should block on data being available
+    if (in_p[0] == 0b10) {
+        block = true;
+    } else {
+        block = false;
+    }
 
-    // put the data onto the output buffer
-    *(accel_packet_t *)out_p = pkt;
-    *out_len_ptr = sizeof(accel_packet_t);
+    // if block, wait for data to be available
+    while (block && !LSM303DLHC_accel_dataAvailable());
+
+    if ( LSM303DLHC_accel_dataAvailable() ) {
+        // call the actual function
+        retval = LSM303DLHC_accel_getPacket(&pkt, peak);
+        if (retval != RET_OK) { *out_len_ptr = 0; return retval; }
+
+        // put the data onto the output buffer
+        *(accel_packet_t *)out_p = pkt;
+        *out_len_ptr = sizeof(accel_packet_t);
+    } else {
+        *out_len_ptr = 0;
+    }
+
     return RET_OK;
 }
 
 // Report 0x23
-ret_t rpt_LSM303DLHC_getMag(uint8_t * in_p, uint8_t in_len, uint8_t * out_p, uint8_t * out_len_ptr)
+ret_t rpt_LSM303DLHC_getMag(uint8_t * in_p, uint8_t in_len,
+                            uint8_t * out_p, uint8_t * out_len_ptr)
 {
     ret_t retval;
     mag_packet_t pkt;
-    bool peak;
+    bool peak, block;
 
     // do some bounds checking
     if (in_len != 1) { return RET_INVALID_ARGS_ERR; }
 
     // check if we should peak or pop the packet
-    if (in_p[0] == 0) {
-        peak = false;
-    } else if (in_p[1] == 1) {
+    if (in_p[0] & 0b01) {
         peak = true;
     } else {
-        return RET_INVALID_ARGS_ERR;
+        peak = false;
     }
 
-    // call the actual function
-    retval = LSM303DLHC_mag_getPacket(&pkt, peak);
-    if (retval != RET_OK) { return retval; }
+    // check if we should block on data being available
+    if (in_p[0] == 0b10) {
+        block = true;
+    } else {
+        block = false;
+    }
 
-    // put the data onto the output buffer
-    *(mag_packet_t *)out_p = pkt;
-    *out_len_ptr = sizeof(mag_packet_t);
+    // if block, wait for data to be available
+    while (block && !LSM303DLHC_mag_dataAvailable());
+
+    // call the actual function
+    if (LSM303DLHC_mag_dataAvailable()) {
+        retval = LSM303DLHC_mag_getPacket(&pkt, peak);
+        if (retval != RET_OK) { *out_len_ptr = 0; return retval; }
+
+        // put the data onto the output buffer
+        *(mag_packet_t *)out_p = pkt;
+        *out_len_ptr = sizeof(mag_packet_t);
+    } else {
+        *out_len_ptr = 0;
+    }
+    return RET_OK;
+}
+
+
+/* ---------- PENSEL REPORTS ---------- */
+
+// These are reports relating to pensel internals
+
+/*! Report 0x30 returns the pensels major and minor version
+ */
+ret_t rpt_pensel_getVersion(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len),
+                            uint8_t * out_p, uint8_t * out_len_ptr)
+{
+    *out_len_ptr = 2;
+    out_p[0] = (uint8_t)PENSEL_VERSION_MAJOR;
+    out_p[1] = (uint8_t)PENSEL_VERSION_MINOR;
+    return RET_OK;
+}
+
+/*! Report 0x30 returns the pensels current system time (in ms)
+ */
+ret_t rpt_pensel_getTimestamp(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len),
+                              uint8_t * out_p, uint8_t * out_len_ptr)
+{
+    *(uint32_t *)out_p = HAL_GetTick();
+    *out_len_ptr = sizeof(uint32_t);
     return RET_OK;
 }
 
@@ -373,11 +440,12 @@ ret_t rpt_LSM303DLHC_getMag(uint8_t * in_p, uint8_t in_len, uint8_t * out_p, uin
 
 
 ret_t rpt_lookup(uint8_t rpt_type, uint8_t *input_buff_ptr, uint8_t input_buff_len,
-                 uint8_t * output_buff_ptr, uint8_t * output_buff_len_ptr)
+                 uint8_t * output_buff_len_ptr)
 {
     // define the report lookup table
     static ret_t (*report_function_lookup[])(uint8_t *input_buff_ptr, uint8_t input_buff_len,
-                                             uint8_t * output_buff_ptr, uint8_t * output_buff_len_ptr) = {
+                                             uint8_t * output_buff_ptr,
+                                             uint8_t * output_buff_len_ptr) = {
         /* Report 0x00 */ rpt_err,
         /* Report 0x01 */ rpt_err,
         /* Report 0x02 */ rpt_err,
@@ -426,8 +494,8 @@ ret_t rpt_lookup(uint8_t rpt_type, uint8_t *input_buff_ptr, uint8_t input_buff_l
         /* Report 0x2d */ rpt_err,
         /* Report 0x2e */ rpt_err,
         /* Report 0x2f */ rpt_err,
-        /* Report 0x30 */ rpt_err,
-        /* Report 0x31 */ rpt_err,
+        /* Report 0x30 */ rpt_pensel_getVersion,
+        /* Report 0x31 */ rpt_pensel_getTimestamp,
         /* Report 0x32 */ rpt_err,
         /* Report 0x33 */ rpt_err,
         /* Report 0x34 */ rpt_err,
@@ -636,7 +704,8 @@ ret_t rpt_lookup(uint8_t rpt_type, uint8_t *input_buff_ptr, uint8_t input_buff_l
         /* Report 0xff */ rpt_err};
 
     // call the function specified
-    output_buff_len_ptr = 0;
-    output_buff_ptr = output_buffer;
-    return report_function_lookup[rpt_type](input_buff_ptr, input_buff_len, output_buff_ptr, output_buff_len_ptr);
+    *output_buff_len_ptr = 0;
+    // output_buff_ptr = output_buffer;
+    return report_function_lookup[rpt_type](input_buff_ptr, input_buff_len,
+                                            output_buffer, output_buff_len_ptr);
 }

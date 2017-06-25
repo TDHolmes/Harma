@@ -32,7 +32,7 @@
 //! HAL millisecond tick
 extern __IO uint32_t uwTick;
 
-inline void check_retval_fatal(char * filename, uint32_t lineno, ret_t retval) {
+static inline void check_retval_fatal(char * filename, uint32_t lineno, ret_t retval) {
     if (retval != RET_OK) {
         fatal_error_handler(filename, lineno, (int8_t)retval);
     }
@@ -49,6 +49,7 @@ int main(void)
     ret_t retval;
     mag_packet_t mag_pkt;
     accel_packet_t accel_pkt;
+    uint32_t subcount = 0;
 
     // system configuration...
     HAL_Init();
@@ -74,58 +75,69 @@ int main(void)
                              kMagODR_75_Hz, kXY_1100_Z_980_LSB_per_g);
     check_retval_fatal(__FILE__, __LINE__, retval);
 
-    retval = rpt_init(UART_sendChar, UART_getChar);
+    retval = rpt_init(&UART_sendChar, &UART_getChar);
     check_retval_fatal(__FILE__, __LINE__, retval);
 
     retval = orient_init();
     check_retval_fatal(__FILE__, __LINE__, retval);
 
+    LED_set(LED_0, 0);
+    LED_set(LED_1, 0);
+
     while (true) {
-        // If we're in normal mode, run the report parser
-        if ( switch_getval() == kSwitch_0) {
-            // Parse reports and such
-            rpt_run();
+        // Parse reports and such
+        rpt_run();
+        if (subcount == 100000) {
+            LED_toggle(LED_1);
+            subcount = 0;
+        } else {
+            subcount++;
         }
-        // If we're in debug output mode, print packets to UART
-        else if ( switch_getval() == kSwitch_1 ) {
-            if( LSM303DLHC_accel_dataAvailable() ) {
-                if ( LSM303DLHC_accel_getPacket(&accel_pkt, false) == RET_OK ) {
-                    UART_sendString("Acc ");
-                    UART_sendfloat(accel_pkt.x, 3);
-                    UART_sendString(", ");
-                    UART_sendfloat(accel_pkt.y, 3);
-                    UART_sendString(", ");
-                    UART_sendfloat(accel_pkt.z, 3);
-                    UART_sendString("\r\n");
-                } else {
-                    UART_sendString("Failed to get accel packet...\r\n");
-                }
-            }
-            if( LSM303DLHC_mag_dataAvailable() ) {
-                if ( LSM303DLHC_mag_getPacket(&mag_pkt, false) == RET_OK ) {
-                    UART_sendString("Mag ");
-                    UART_sendfloat(mag_pkt.x, 3);
-                    UART_sendString(" ");
-                    UART_sendfloat(mag_pkt.y, 3);
-                    UART_sendString(" ");
-                    UART_sendfloat(mag_pkt.z, 3);
-                    UART_sendString("\r\n");
-                } else {
-                    UART_sendString("Failed to get mag packet...\r\n");
-                }
-            }
-        }
-        // If we're in normal run mode, digest packets and try to figure out orientation!
-        else if ( switch_getval() == kSwitch_2 ) {
-            // Process accel if available
-            if( LSM303DLHC_accel_dataAvailable() ) {
 
-            }
-            // Process mag if available
-            if( LSM303DLHC_mag_dataAvailable() ) {
-
-            }
-        }
+        // // If we're in normal mode, run the report parser
+        // if ( switch_getval() == kSwitch_0) {
+        //     // do nothing for now...
+        // }
+        // // If we're in debug output mode, print packets to UART
+        // else if ( switch_getval() == kSwitch_1 ) {
+        //     if( LSM303DLHC_accel_dataAvailable() ) {
+        //         if ( LSM303DLHC_accel_getPacket(&accel_pkt, false) == RET_OK ) {
+        //             UART_sendString("Acc ");
+        //             UART_sendfloat(accel_pkt.x, 3);
+        //             UART_sendString(", ");
+        //             UART_sendfloat(accel_pkt.y, 3);
+        //             UART_sendString(", ");
+        //             UART_sendfloat(accel_pkt.z, 3);
+        //             UART_sendString("\r\n");
+        //         } else {
+        //             UART_sendString("Failed to get accel packet...\r\n");
+        //         }
+        //     }
+        //     if( LSM303DLHC_mag_dataAvailable() ) {
+        //         if ( LSM303DLHC_mag_getPacket(&mag_pkt, false) == RET_OK ) {
+        //             UART_sendString("Mag ");
+        //             UART_sendfloat(mag_pkt.x, 3);
+        //             UART_sendString(" ");
+        //             UART_sendfloat(mag_pkt.y, 3);
+        //             UART_sendString(" ");
+        //             UART_sendfloat(mag_pkt.z, 3);
+        //             UART_sendString("\r\n");
+        //         } else {
+        //             UART_sendString("Failed to get mag packet...\r\n");
+        //         }
+        //     }
+        // }
+        // // If we're in normal run mode, digest packets and try to figure out orientation!
+        // else if ( switch_getval() == kSwitch_2 ) {
+        //     // Process accel if available
+        //     if( LSM303DLHC_accel_dataAvailable() ) {
+        //
+        //     }
+        //     // Process mag if available
+        //     if( LSM303DLHC_mag_dataAvailable() ) {
+        //
+        //     }
+        // }
 
     } /* while (true) */
 } /* main() */
@@ -178,7 +190,8 @@ void HAL_IncTick(void)
  *
  * @param file (char *): File in which the error comes from. Use the __FILE__ macro.
  * @param line (uint32_t): Line number in which the error comes from. Use the __LINE__ macro.
- * @param err_code (int8_t): Error code that was thrown. Usually the ret_t value that caused the fail.
+ * @param err_code (int8_t): Error code that was thrown. Usually the ret_t value
+    that caused the fail.
  */
 void fatal_error_handler(char file[], uint32_t line, int8_t err_code)
 {
