@@ -72,7 +72,7 @@ int main(void)
     check_retval_fatal(__FILE__, __LINE__, retval);
 
     retval = LSM303DLHC_init(kAccelODR_100_Hz, kOne_mg_per_LSB,
-                             kMagODR_75_Hz, kXY_1100_Z_980_LSB_per_g);
+                             kMagODR_75_Hz, kXY_450_Z_400_LSB_per_g);
     check_retval_fatal(__FILE__, __LINE__, retval);
 
     retval = rpt_init(&UART_sendChar, &UART_getChar);
