@@ -1,5 +1,6 @@
 #! /usr/bin/python
 import os
+import math
 import matplotlib.pyplot as plt
 
 # required import, but unused :( stupid matplotlib
@@ -33,7 +34,7 @@ def plot_accel_or_mag(pensel, axis, plot_type):
         frame_num, timestamp, x, y, z = pu.parse_accel_packet(payload)
         print("Plotting packet# {} ({} ms)\t\t({}, {}, {})".format(frame_num, timestamp, x, y, z))
         # plot it
-        axis.quiver(0.5, 0.5, 0.5, x, y, z, length=0.1, normalize=True)
+        axis.quiver(0.5, 0.5, 0.5, x, y, z, length=(0.5 / math.sqrt(x**2 + y**2 + z**2)))
     else:
         raise penselreport.PenselError("Error! Retval: {}".format(retval))
 
@@ -46,6 +47,12 @@ def main(port, plot_type):
         while True:
             if plot_type == "accel" or plot_type == "mag":
                 plot_accel_or_mag(pensel, ax, plot_type)
+            ax.set_xlim(0, 1)
+            ax.set_ylim(0, 1)
+            ax.set_zlim(0, 1)
+            ax.set_xlabel('X axis')
+            ax.set_ylabel('Y axis')
+            ax.set_zlabel('Z axis')
             plt.show()
             plt.pause(0.0001)
 
