@@ -173,9 +173,8 @@ ret_t LSM303DLHC_init(accel_ODR_t accel_datarate, accel_sensitivity_t accel_sens
 
 /*! Gets the new accel data via I2C.
  *
- * @param data_x_ptr (float *): Location where the data from the x axis should be stored.
- * @param data_y_ptr (float *): Location where the data from the y axis should be stored.
- * @param data_z_ptr (float *): Location where the data from the z axis should be stored.
+ * @param pkt (accel_packet_t *): destination of accel data from the LSM303DLHC without
+ *      timing info (frame and timestamp)
  * @retval (ret_t): Success or failure of getting the accel packet from the chip via I2C.
  */
 ret_t LSM303DLHC_accel_getData(accel_packet_t * pkt)
@@ -215,9 +214,8 @@ ret_t LSM303DLHC_accel_getData(accel_packet_t * pkt)
 
 /*! Gets the new mag data via I2C.
  *
- * @param data_x_ptr (float *): Location where the data from the x axis should be stored.
- * @param data_y_ptr (float *): Location where the data from the y axis should be stored.
- * @param data_z_ptr (float *): Location where the data from the z axis should be stored.
+ * @param pkt (mag_packet_t *): destination of mag data from the LSM303DLHC without
+ *      timing info (frame and timestamp)
  * @retval (ret_t): Success or failure of getting the mag packet from the chip via I2C.
  */
 ret_t LSM303DLHC_mag_getData(mag_packet_t * pkt)
@@ -361,9 +359,8 @@ void LSM303DLHC_drdy_ISR(void)
  * Note: This is the ONLY function that modifies the head index of the accel queue.
  *   It also can modify the tail index if we're overwritting unread data.
  *
- * @param data_x_ptr (float *): Location where the data from the x axis should be stored.
- * @param data_y_ptr (float *): Location where the data from the y axis should be stored.
- * @param data_z_ptr (float *): Location where the data from the z axis should be stored.
+ * @param pkt (accel_packet_t): accel data from the LSM303DLHC without timing info
+ *      (frame and timestamp)
  * @retval (ret_t): Success or failure of putting the new packet onto the accel queue.
  */
 ret_t LSM303DLHC_accel_putPacket(accel_packet_t pkt)
@@ -385,9 +382,8 @@ ret_t LSM303DLHC_accel_putPacket(accel_packet_t pkt)
  * Note: This is the ONLY function that modifies the head index of the mag queue.
  *   It also can modify the tail index if we're overwritting unread data.
  *
- * @param data_x_ptr (float *): Location where the data from the x axis should be stored.
- * @param data_y_ptr (float *): Location where the data from the y axis should be stored.
- * @param data_z_ptr (float *): Location where the data from the z axis should be stored.
+ * @param pkt (mag_packet_t): mag data from the LSM303DLHC without timing info
+ *      (frame and timestamp)
  * @retval (ret_t): Success or failure of putting the new packet onto the mag queue.
  */
 ret_t LSM303DLHC_mag_putPacket(mag_packet_t pkt)
