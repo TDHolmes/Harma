@@ -1,4 +1,4 @@
-update=Saturday, March 18, 2017 'AMt' 10:27:08 AM
+update=Sunday, June 25, 2017 'PMt' 09:17:58 PM
 version=1
 last_client=kicad
 [pcbnew]
@@ -116,3 +116,13 @@ LibName84=Xicor
 LibName85=xilinx
 LibName86=zetex
 LibName87=Zilog
+[schematic_editor]
+version=1
+PageLayoutDescrFile=
+PlotDirectoryName=
+SubpartIdSeparator=0
+SubpartFirstId=65
+NetFmtName=
+SpiceAjustPassiveValues=0
+LabSize=60
+ERC_TestSimilarLabels=1
