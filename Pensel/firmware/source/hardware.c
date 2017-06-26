@@ -156,11 +156,11 @@ void configure_pins(void)
     LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
     LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOF);
 
-    // Push-Pull outputs for the LEDs!
+    // Push-Pull outputs for the LEDs and timing pin!
     GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
     GPIO_InitStruct.Pull  = GPIO_PULLUP;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-    GPIO_InitStruct.Pin   = (LED_0 | LED_1);
+    GPIO_InitStruct.Pin   = (LED_0 | LED_1 | EXTRA_GPIO);
 
     HAL_GPIO_Init(LED_PORT, &GPIO_InitStruct);
 
