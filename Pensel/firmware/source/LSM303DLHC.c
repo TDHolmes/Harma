@@ -81,12 +81,12 @@ Mag sensor address behavior:
 
 
 // Private functions to get I2C data
-ret_t LSM303DLHC_accel_getData(float * data_x_ptr, float * data_y_ptr, float * data_z_ptr);
-ret_t LSM303DLHC_mag_getData(float * data_x_ptr, float * data_y_ptr, float * data_z_ptr);
+ret_t LSM303DLHC_accel_getData(accel_packet_t * pkt);
+ret_t LSM303DLHC_mag_getData(mag_packet_t * pkt);
 
 // Private functions to put data onto our queues
-ret_t LSM303DLHC_accel_putPacket(float * data_x_ptr, float * data_y_ptr, float * data_z_ptr);
-ret_t LSM303DLHC_mag_putPacket(float * data_x_ptr, float * data_y_ptr, float * data_z_ptr);
+ret_t LSM303DLHC_accel_putPacket(accel_packet_t pkt);
+ret_t LSM303DLHC_mag_putPacket(mag_packet_t pkt);
 
 
 //! LSM303DLHC structure to store packets, overwrite stats, and LSM303DLHC settings
@@ -178,7 +178,7 @@ ret_t LSM303DLHC_init(accel_ODR_t accel_datarate, accel_sensitivity_t accel_sens
  * @param data_z_ptr (float *): Location where the data from the z axis should be stored.
  * @retval (ret_t): Success or failure of getting the accel packet from the chip via I2C.
  */
-ret_t LSM303DLHC_accel_getData(float * data_x_ptr, float * data_y_ptr, float * data_z_ptr)
+ret_t LSM303DLHC_accel_getData(accel_packet_t * pkt)
 {
     int16_t temp_data;
     uint8_t bytes[6];
@@ -189,22 +189,22 @@ ret_t LSM303DLHC_accel_getData(float * data_x_ptr, float * data_y_ptr, float * d
     for (i = 0; i < 6; i++) {
         bytes[i] = 0;
     }
-    *data_x_ptr = 0;
-    *data_y_ptr = 0;
-    *data_z_ptr = 0;
+    pkt->x = 0;
+    pkt->y = 0;
+    pkt->z = 0;
 
     // read the data starting at register 1
     retval = I2C_readData(ACCEL_ADDRESS, ACCEL_OUT_X_L_A | 0x80, bytes, 6);
     if (retval == RET_OK) {
         // Build the data up and normalize!
         temp_data = (int16_t)((bytes[1] << 8) | (bytes[0])) >> 4;
-        *data_x_ptr = ((float)temp_data) * AccelGainOffsets[LSM303DLHC.accel_sensitivity];
+        pkt->x = ((float)temp_data) * AccelGainOffsets[LSM303DLHC.accel_sensitivity];
 
         temp_data = (int16_t)((bytes[3] << 8) | (bytes[2])) >> 4;
-        *data_y_ptr = ((float)temp_data) * AccelGainOffsets[LSM303DLHC.accel_sensitivity];
+        pkt->y = ((float)temp_data) * AccelGainOffsets[LSM303DLHC.accel_sensitivity];
 
         temp_data = (int16_t)((bytes[5] << 8) | (bytes[4])) >> 4;
-        *data_z_ptr = ((float)temp_data) * AccelGainOffsets[LSM303DLHC.accel_sensitivity];
+        pkt->z = ((float)temp_data) * AccelGainOffsets[LSM303DLHC.accel_sensitivity];
 
         return RET_OK;
     } else {
@@ -220,7 +220,7 @@ ret_t LSM303DLHC_accel_getData(float * data_x_ptr, float * data_y_ptr, float * d
  * @param data_z_ptr (float *): Location where the data from the z axis should be stored.
  * @retval (ret_t): Success or failure of getting the mag packet from the chip via I2C.
  */
-ret_t LSM303DLHC_mag_getData(float * data_x_ptr, float * data_y_ptr, float * data_z_ptr)
+ret_t LSM303DLHC_mag_getData(mag_packet_t * pkt)
 {
     int16_t temp_data;
     uint8_t bytes[6];
@@ -231,20 +231,26 @@ ret_t LSM303DLHC_mag_getData(float * data_x_ptr, float * data_y_ptr, float * dat
     for (i = 0; i < 6; i++) {
         bytes[i] = 0;
     }
-    *data_x_ptr = 0;
-    *data_y_ptr = 0;
-    *data_z_ptr = 0;
+    pkt->x = 0;
+    pkt->y = 0;
+    pkt->z = 0;
 
     // read the data starting at register 1
     retval = I2C_readData(MAG_ADDRESS, MAG_OUT_X_H_M, bytes, 6);
     if (retval == RET_OK) {
         // Build the data up and normalize!
         temp_data = (int16_t)((bytes[0] << 8) | (bytes[1]));
-        *data_x_ptr = ((float)temp_data) * MagGainOffsets_XY[LSM303DLHC.mag_sensitivity - 1];
+        // *data_x_ptr = ((float)temp_data) * MagGainOffsets_XY[LSM303DLHC.mag_sensitivity - 1];
+        pkt->x = (float)temp_data;
+
         temp_data = (int16_t)((bytes[2] << 8) | (bytes[3]));
-        *data_y_ptr = ((float)temp_data) * MagGainOffsets_XY[LSM303DLHC.mag_sensitivity - 1];
+        // *data_y_ptr = ((float)temp_data) * MagGainOffsets_XY[LSM303DLHC.mag_sensitivity - 1];
+        pkt->y = (float)temp_data;
+
         temp_data = (int16_t)((bytes[4] << 8) | (bytes[5]));
-        *data_z_ptr = ((float)temp_data) * MagGainOffsets_Z[LSM303DLHC.mag_sensitivity - 1];
+        // *data_z_ptr = ((float)temp_data) * MagGainOffsets_Z[LSM303DLHC.mag_sensitivity - 1];
+        pkt->z = (float)temp_data;
+
         return RET_OK;
     } else {
         // Raise some sort of error...
@@ -319,13 +325,9 @@ ret_t LSM303DLHC_checkStatus(void)
 void LSM303DLHC_drdy_ISR(void)
 {
     ret_t retval;
-    float accel_data_x;
-    float accel_data_y;
-    float accel_data_z;
-
-    float mag_data_x;
-    float mag_data_y;
-    float mag_data_z;
+    accel_packet_t a_pkt;
+    mag_packet_t m_pkt;
+    TimingPin_set(1);
 
     retval = LSM303DLHC_checkStatus();
     if (retval == RET_OK) {
@@ -333,26 +335,22 @@ void LSM303DLHC_drdy_ISR(void)
         if (LSM303DLHC.accel_data_available != 0) {
             LSM303DLHC.accel_data_available = 0;
             // TODO: Check round trip latency of getting accel packet & putting it into the queue
-            TimingPin_set(1);
-            retval = LSM303DLHC_accel_getData(&accel_data_x, &accel_data_y, &accel_data_z);
+            retval = LSM303DLHC_accel_getData(&a_pkt);
             if (retval == RET_OK) {
-                retval = LSM303DLHC_accel_putPacket(&accel_data_x, &accel_data_y, &accel_data_z);
+                retval = LSM303DLHC_accel_putPacket(a_pkt);
             }  // else { error!!!; }
-            TimingPin_set(0);
         }
         // check if we have mag packets to get
         if (LSM303DLHC.mag_data_available != 0) {
             LSM303DLHC.mag_data_available = 0;
             // TODO: Check round trip latency of getting mag packet & putting it into the queue
-            TimingPin_set(1);
-            retval = LSM303DLHC_mag_getData(&mag_data_x, &mag_data_y, &mag_data_z);
+            retval = LSM303DLHC_mag_getData(&m_pkt);
             if (retval == RET_OK) {
-                retval = LSM303DLHC_mag_putPacket(&mag_data_x, &mag_data_y, &mag_data_z);
+                retval = LSM303DLHC_mag_putPacket(m_pkt);
             }  // else { error!!!; }
-            TimingPin_set(0);
         }
     }
-
+    TimingPin_set(0);
 }
 
 /* -------------- Functions to set/get data to/from our queues -------------- */
@@ -368,17 +366,12 @@ void LSM303DLHC_drdy_ISR(void)
  * @param data_z_ptr (float *): Location where the data from the z axis should be stored.
  * @retval (ret_t): Success or failure of putting the new packet onto the accel queue.
  */
-ret_t LSM303DLHC_accel_putPacket(float * data_x_ptr, float * data_y_ptr, float * data_z_ptr)
+ret_t LSM303DLHC_accel_putPacket(accel_packet_t pkt)
 {
-    // Get the data from the queue...
-    accel_packet_t pkt;
-
+    // fill in some time info and add it to the queue
     pkt.frame_num = LSM303DLHC.accel_framenum;
     LSM303DLHC.accel_framenum++;
     pkt.timestamp = HAL_GetTick();
-    pkt.x = *data_x_ptr;
-    pkt.y = *data_y_ptr;
-    pkt.z = *data_z_ptr;
     LSM303DLHC.accel_pkts[LSM303DLHC.accel_queue.head_ind] = pkt;
 
     // move the head forward and handle overwrite cases
@@ -397,16 +390,11 @@ ret_t LSM303DLHC_accel_putPacket(float * data_x_ptr, float * data_y_ptr, float *
  * @param data_z_ptr (float *): Location where the data from the z axis should be stored.
  * @retval (ret_t): Success or failure of putting the new packet onto the mag queue.
  */
-ret_t LSM303DLHC_mag_putPacket(float * data_x_ptr, float * data_y_ptr, float * data_z_ptr)
+ret_t LSM303DLHC_mag_putPacket(mag_packet_t pkt)
 {
-    mag_packet_t pkt;
-
     pkt.frame_num = LSM303DLHC.mag_framenum;
     LSM303DLHC.mag_framenum++;
     pkt.timestamp = HAL_GetTick();
-    pkt.x = *data_x_ptr;
-    pkt.y = *data_y_ptr;
-    pkt.z = *data_z_ptr;
     // Put the data on the queue...
     LSM303DLHC.mag_pkts[LSM303DLHC.mag_queue.head_ind] = pkt;
 
