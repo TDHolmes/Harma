@@ -9,5 +9,7 @@
 
 #include "LSM303DLHC.h"
 #include "quanternions.h"
+#include "FIR_coefficients.h"
+
 
 // TODO: band pass filter on raw accel data to get good movement readings
