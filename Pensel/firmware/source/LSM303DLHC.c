@@ -89,8 +89,8 @@ ret_t LSM303DLHC_accel_putPacket(accel_raw_t pkt);
 ret_t LSM303DLHC_mag_putPacket(mag_raw_t pkt);
 
 // Private functions to normalize raw packets before sending to the user
-void LSM303DLHC_accel_normalize(accel_raw_t * raw_pkt, accel_norm_t * norm_pkt_ptr)
-void LSM303DLHC_mag_normalize(mag_raw_t * raw_pkt, mag_norm_t * norm_pkt_ptr)
+void LSM303DLHC_accel_normalize(accel_raw_t * raw_pkt, accel_norm_t * norm_pkt_ptr);
+void LSM303DLHC_mag_normalize(mag_raw_t * raw_pkt, mag_norm_t * norm_pkt_ptr);
 
 
 //! LSM303DLHC structure to store packets, overwrite stats, and LSM303DLHC settings
