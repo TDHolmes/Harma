@@ -114,7 +114,7 @@ def parse_report(reportID, payload):
         #     float x;             //!< Accel X value
         #     float y;             //!< Accel Y value
         #     float z;             //!< Accel Z value
-        # } accel_packet_t;
+        # } accel_norm_t;
         frame_num, timestamp, x, y, z = pu.parse_accel_packet(payload)
         print("   Accel Packet:")
         print("       Frame #: {}".format(frame_num))
@@ -130,7 +130,7 @@ def parse_report(reportID, payload):
         #     float x;             //!< Mag X value
         #     float y;             //!< Mag Y value
         #     float z;             //!< Mag Z value
-        # } mag_packet_t;
+        # } mag_norm_t;
         frame_num, timestamp, x, y, z = pu.parse_mag_packet(payload)
         print("   Mag Packet:")
         print("      Frame #: {}".format(frame_num))
