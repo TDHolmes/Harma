@@ -38,6 +38,12 @@ static inline void check_retval_fatal(char * filename, uint32_t lineno, ret_t re
     }
 }
 
+void clear_critical_errors(void) {
+    #ifdef WATCHDOG_ENABLE
+        gCriticalErrors.wdg_reset = 0;
+    #endif
+}
+
 /*! Main function code. Does the following:
  *      1. Initializes all sub-modules
  *      2. Loops forever and behaves as such given switch state:
@@ -47,19 +53,24 @@ static inline void check_retval_fatal(char * filename, uint32_t lineno, ret_t re
 int main(void)
 {
     ret_t retval;
-    mag_packet_t mag_pkt;
-    accel_packet_t accel_pkt;
+    mag_norm_t mag_pkt;
+    accel_norm_t accel_pkt;
     uint32_t subcount = 0;
 
     // system configuration...
     HAL_Init();
     SystemClock_Config();
     configure_pins();
+    clear_critical_errors();
 
     retval = UART_init(115200);
     check_retval_fatal(__FILE__, __LINE__, retval);
 
     #ifdef WATCHDOG_ENABLE
+    if ( wdg_isSet() ) {
+        // set a report variable in critical errors
+        gCriticalErrors.wdg_reset = 1;  // TODO: add critical errors get report
+    }
     retval = wdg_init();
     check_retval_fatal(__FILE__, __LINE__, retval);
     #endif
@@ -87,6 +98,8 @@ int main(void)
     while (true) {
         // Parse reports and such
         rpt_run();
+
+        // let the user know roughly how many workloops are ocurring
         if (subcount == 100000) {
             LED_toggle(LED_1);
             subcount = 0;
@@ -94,51 +107,35 @@ int main(void)
             subcount++;
         }
 
-        // // If we're in normal mode, run the report parser
-        // if ( switch_getval() == kSwitch_0) {
-        //     // do nothing for now...
-        // }
-        // // If we're in debug output mode, print packets to UART
-        // else if ( switch_getval() == kSwitch_1 ) {
-        //     if( LSM303DLHC_accel_dataAvailable() ) {
-        //         if ( LSM303DLHC_accel_getPacket(&accel_pkt, false) == RET_OK ) {
-        //             UART_sendString("Acc ");
-        //             UART_sendfloat(accel_pkt.x, 3);
-        //             UART_sendString(", ");
-        //             UART_sendfloat(accel_pkt.y, 3);
-        //             UART_sendString(", ");
-        //             UART_sendfloat(accel_pkt.z, 3);
-        //             UART_sendString("\r\n");
-        //         } else {
-        //             UART_sendString("Failed to get accel packet...\r\n");
-        //         }
-        //     }
-        //     if( LSM303DLHC_mag_dataAvailable() ) {
-        //         if ( LSM303DLHC_mag_getPacket(&mag_pkt, false) == RET_OK ) {
-        //             UART_sendString("Mag ");
-        //             UART_sendfloat(mag_pkt.x, 3);
-        //             UART_sendString(" ");
-        //             UART_sendfloat(mag_pkt.y, 3);
-        //             UART_sendString(" ");
-        //             UART_sendfloat(mag_pkt.z, 3);
-        //             UART_sendString("\r\n");
-        //         } else {
-        //             UART_sendString("Failed to get mag packet...\r\n");
-        //         }
-        //     }
-        // }
-        // // If we're in normal run mode, digest packets and try to figure out orientation!
-        // else if ( switch_getval() == kSwitch_2 ) {
-        //     // Process accel if available
-        //     if( LSM303DLHC_accel_dataAvailable() ) {
-        //
-        //     }
-        //     // Process mag if available
-        //     if( LSM303DLHC_mag_dataAvailable() ) {
-        //
-        //     }
-        // }
+        if( LSM303DLHC_accel_dataAvailable() ) {
+            if ( LSM303DLHC_accel_getPacket(&accel_pkt, false) == RET_OK ) {
+                // Transmit the packet if we're streaming it
+                if (gEnableAccelStream == true) {
+                    rpt_sendStreamReport(ACCEL_STREAM_REPORT_ID, sizeof(accel_norm_t),
+                                         (uint8_t *)&accel_pkt);
+                }
+                // ingest it into the interested parties
+            }
+        }
+        if( LSM303DLHC_mag_dataAvailable() ) {
+            if ( LSM303DLHC_mag_getPacket(&mag_pkt, false) == RET_OK ) {
+                // Transmit the packet if we're streaming it
+                if (gEnableMagStream == true) {
+                    rpt_sendStreamReport(MAG_STREAM_REPORT_ID, sizeof(mag_norm_t),
+                                         (uint8_t *)&mag_pkt);
+                }
+                // ingest it into the interested parties
+            }
+        }
 
+        // If we're in debug mode, don't run nothin'
+        if ( switch_getval() == kSwitch_0) {
+            // do nothing for now...
+        }
+        // If we're in debug output mode, print packets to UART
+        else if ( switch_getval() == kSwitch_1 || switch_getval() == kSwitch_2 ) {
+            // do nothing for now...
+        }
     } /* while (true) */
 } /* main() */
 
