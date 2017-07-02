@@ -67,23 +67,41 @@ typedef enum {
     kFIFO_MODE_Trigger
 } FIFO_mode_t;
 
-//! Accel packet definition
+//! Raw accel packet definition
+typedef struct __attribute__((packed)) {
+    uint32_t frame_num;   //!< Frame number
+    uint32_t timestamp;   //!< Timestamp when the packet was received
+    int16_t x;            //!< Accel X value
+    int16_t y;            //!< Accel Y value
+    int16_t z;            //!< Accel Z value
+} accel_raw_t;
+
+//! Normalized accel packet definition
 typedef struct __attribute__((packed)) {
     uint32_t frame_num;   //!< Frame number
     uint32_t timestamp;  //!< Timestamp when the packet was received
     float x;             //!< Accel X value
     float y;             //!< Accel Y value
     float z;             //!< Accel Z value
-} accel_packet_t;
+} accel_norm_t;
 
-//! Mag packet definition
+//! Raw mag packet definition
+typedef struct __attribute__((packed)) {
+    uint32_t frame_num;   //!< Frame number
+    uint32_t timestamp;   //!< Timestamp when the packet was received
+    int16_t x;            //!< Mag X value
+    int16_t y;            //!< Mag Y value
+    int16_t z;            //!< Mag Z value
+} mag_raw_t;
+
+//! Normalized mag packet definition
 typedef struct __attribute__((packed)) {
     uint32_t frame_num;   //!< Frame number
     uint32_t timestamp;  //!< Timestamp when the packet was received
     float x;             //!< Mag X value
     float y;             //!< Mag Y value
     float z;             //!< Mag Z value
-} mag_packet_t;
+} mag_norm_t;
 
 
 ret_t LSM303DLHC_init(accel_ODR_t accel_datarate, accel_sensitivity_t accel_sensitivity,
@@ -92,8 +110,8 @@ ret_t LSM303DLHC_init(accel_ODR_t accel_datarate, accel_sensitivity_t accel_sens
 // functions to get packets and check for data!
 bool LSM303DLHC_accel_dataAvailable(void);
 bool LSM303DLHC_mag_dataAvailable(void);
-ret_t LSM303DLHC_accel_getPacket(accel_packet_t * pkt_ptr, bool peak);
-ret_t LSM303DLHC_mag_getPacket(mag_packet_t * pkt_ptr, bool peak);
+ret_t LSM303DLHC_accel_getPacket(accel_norm_t * pkt_ptr, bool peak);
+ret_t LSM303DLHC_mag_getPacket(mag_norm_t * pkt_ptr, bool peak);
 // error counting methods...
 uint32_t LSM303DLHC_accel_packetOverwriteCount(void);
 uint32_t LSM303DLHC_mag_packetOverwriteCount(void);
@@ -106,6 +124,21 @@ ret_t LSM303DLHC_temp_getData(int16_t * temp_val_ptr);
 // functions to be called by the hardware pin interrupt handler
 void LSM303DLHC_drdy_ISR(void);
 // void LSM303DLHC_int_handler(void);
+
+ret_t rpt_LSM303DLHC_enableStreams(uint8_t * in_p, uint8_t in_len,
+                                   uint8_t * UNUSED_PARAM(out_p),
+                                   uint8_t * UNUSED_PARAM(out_len_ptr));
+ret_t rpt_LSM303DLHC_changeConfig(uint8_t * in_p, uint8_t in_len,
+                                  uint8_t * UNUSED_PARAM(out_p),
+                                  uint8_t * UNUSED_PARAM(out_len_ptr));
+ret_t rpt_LSM303DLHC_getTemp(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len),
+                             uint8_t * out_p, uint8_t * out_len_ptr);
+ret_t rpt_LSM303DLHC_getAccel(uint8_t * in_p, uint8_t in_len,
+                              uint8_t * out_p, uint8_t * out_len_ptr);
+ret_t rpt_LSM303DLHC_getMag(uint8_t * in_p, uint8_t in_len,
+                            uint8_t * out_p, uint8_t * out_len_ptr);
+ret_t rpt_LSM303DLHC_getErrors(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len),
+                               uint8_t * out_p, uint8_t * out_len_ptr);
 
 
 #endif /* _LSM303DLHC_H_ */
