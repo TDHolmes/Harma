@@ -17,6 +17,7 @@
 
 
 ret_t rpt_init(ret_t (*putchr)(uint8_t), ret_t (*getchr)(uint8_t *));
+ret_t rpt_sendStreamReport(uint8_t reportID, uint8_t payload_len, uint8_t * payload_ptr);
 void rpt_run(void);
 
 #endif /* _REPORTS_H_ */

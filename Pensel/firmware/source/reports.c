@@ -18,11 +18,18 @@
 extern uint32_t HAL_GetTick(void);
 
 
-#define READ_BUFF_SIZE (255)
-#define RPT_MAGIC_NUMBER_0 (0xBE)
-#define RPT_MAGIC_NUMBER_1 (0xEF)
+#define READ_BUFF_SIZE (255)      //!< Maximum data we can read in
+#define RPT_MAGIC_NUMBER_0 (0xBE) //!< First magic number to specify start of report from host
+#define RPT_MAGIC_NUMBER_1 (0xEF) //!< Second magic number to specify start of report from host
 
 #define RPT_TIMEOUT (100)  //!< Report timeout time (in ms)
+
+// some bit masks to be applied on top of report IDs when replying or streaming to the host
+#define RPT_REPORT_MASK (0 << 7)  //!< bitmask to specify a packet is a report
+#define RPT_STREAM_MASK (1 << 7)  //!< bitmask to specify a packet is a stream
+
+//! Can only have up to 0x7F as the first bit is used to indicate stream or report
+#define MAX_REPORT_ID (0x7F)
 
 
 //! The current state of the rpt workloop
@@ -201,6 +208,7 @@ void rpt_run(void)
                                 &rpt_out_buff_len);
 
             // print out the results
+            UART_sendChar(rpt_type | RPT_REPORT_MASK);
             UART_sendChar(retval);
             // if we succeeded in the report, continue on
             if (retval == RET_OK) {
@@ -224,6 +232,21 @@ void rpt_run(void)
             fatal_error_handler(__FILE__, __LINE__, rpt.state);
             break;
     }
+}
+
+/*! Function to send a "stream" report
+ *
+ */
+ret_t rpt_sendStreamReport(uint8_t reportID, uint8_t payload_len, uint8_t * payload_ptr)
+{
+    UART_sendChar(reportID | RPT_STREAM_MASK);
+    UART_sendChar(payload_len);
+    while (payload_len > 0) {
+        UART_sendChar(*payload_ptr);
+        payload_len--;
+        payload_ptr++;
+    }
+    return RET_OK;
 }
 
 
@@ -260,177 +283,6 @@ ret_t rpt_report_getInvalidCharsCount(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUS
     // We don't need input data
     *out_len_ptr = sizeof(rpt.invalid_chrs);
     *(uint32_t *)out_p = rpt.invalid_chrs;
-    return RET_OK;
-}
-
-/* ------ LSM303DLHC REPORTS ------ */
-
-/*! Report 0x20 that changes the configuration of the LSM303DLHC chip. The argument structure
- *      Is as follows packed into the in buffer:
- *          1. accel_ODR_t
- *          2. accel_sensitivity_t
- *          3. mag_ODR_t
- *          4. mag_sensitivity_t
- */
-ret_t rpt_LSM303DLHC_changeConfig(uint8_t * in_p, uint8_t in_len,
-                                  uint8_t * out_p, uint8_t * out_len_ptr)
-{
-    ret_t retval;
-    mag_ODR_t mag_ODR;
-    accel_ODR_t accel_ODR;
-    mag_sensitivity_t mag_sensitivity;
-    accel_sensitivity_t accel_sensitivity;
-
-    out_p[0] = 0;      // Just to use the parameter...
-    *out_len_ptr = 0;  // We don't return any data
-
-    // do some bounds checking
-    if (in_len != (sizeof(accel_ODR_t) + sizeof(accel_sensitivity_t) +
-                   sizeof(mag_ODR_t) + sizeof(mag_sensitivity_t))) {
-        return RET_INVALID_ARGS_ERR;
-    }
-
-    // unpack the data and check for validity
-    accel_ODR = (accel_ODR_t)in_p[0];
-    accel_sensitivity = (accel_sensitivity_t)in_p[sizeof(accel_ODR_t)];
-    mag_ODR = (mag_ODR_t)in_p[sizeof(accel_ODR_t) + sizeof(accel_sensitivity_t)];
-    mag_sensitivity = (mag_sensitivity_t)in_p[sizeof(accel_ODR_t) +
-                                              sizeof(accel_sensitivity_t) +
-                                              sizeof(mag_ODR_t)];
-
-    // Now, actually reconfigure the module!
-    retval = LSM303DLHC_init(accel_ODR, accel_sensitivity, mag_ODR, mag_sensitivity);
-    return retval;
-}
-
-/*! Report 0x21 that returns the temperature from LSM303DLHC. Takes in no parameters.
- *      Returns the temperature (int16_t)
- */
-ret_t rpt_LSM303DLHC_getTemp(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len),
-                             uint8_t * out_p, uint8_t * out_len_ptr)
-{
-    ret_t retval;
-    int16_t temp_val;
-
-    // We don't need input data
-
-    retval = LSM303DLHC_temp_getData(&temp_val);
-    if (retval != RET_OK) { return retval; }
-
-    *(int16_t *)out_p = temp_val;
-    *out_len_ptr = sizeof(temp_val);
-    return RET_OK;
-}
-
-/*! Report 0x22: Gets an accel packet
- *
- */
-ret_t rpt_LSM303DLHC_getAccel(uint8_t * in_p, uint8_t in_len,
-                              uint8_t * out_p, uint8_t * out_len_ptr)
-{
-    ret_t retval;
-    accel_packet_t pkt;
-    bool peak, block;
-
-    // do some bounds checking
-    if (in_len != 1) { return RET_INVALID_ARGS_ERR; }
-
-    // check if we should peak or pop the packet
-    if (in_p[0] & 0b01) {
-        peak = true;
-    } else {
-        peak = false;
-    }
-
-    // check if we should block on data being available
-    if (in_p[0] == 0b10) {
-        block = true;
-    } else {
-        block = false;
-    }
-
-    // if block, wait for data to be available
-    while (block && !LSM303DLHC_accel_dataAvailable());
-
-    if ( LSM303DLHC_accel_dataAvailable() ) {
-        // call the actual function
-        retval = LSM303DLHC_accel_getPacket(&pkt, peak);
-        if (retval != RET_OK) { *out_len_ptr = 0; return retval; }
-
-        // put the data onto the output buffer
-        *(accel_packet_t *)out_p = pkt;
-        *out_len_ptr = sizeof(accel_packet_t);
-    } else {
-        *out_len_ptr = 0;
-    }
-
-    return RET_OK;
-}
-
-/*! Report 0x23: Gets an mag packet
- *
- */
-ret_t rpt_LSM303DLHC_getMag(uint8_t * in_p, uint8_t in_len,
-                            uint8_t * out_p, uint8_t * out_len_ptr)
-{
-    ret_t retval;
-    mag_packet_t pkt;
-    bool peak, block;
-
-    // do some bounds checking
-    if (in_len != 1) { return RET_INVALID_ARGS_ERR; }
-
-    // check if we should peak or pop the packet
-    if (in_p[0] & 0b01) {
-        peak = true;
-    } else {
-        peak = false;
-    }
-
-    // check if we should block on data being available
-    if (in_p[0] == 0b10) {
-        block = true;
-    } else {
-        block = false;
-    }
-
-    // if block, wait for data to be available
-    while (block && !LSM303DLHC_mag_dataAvailable());
-
-    // call the actual function
-    if (LSM303DLHC_mag_dataAvailable()) {
-        retval = LSM303DLHC_mag_getPacket(&pkt, peak);
-        if (retval != RET_OK) { *out_len_ptr = 0; return retval; }
-
-        // put the data onto the output buffer
-        *(mag_packet_t *)out_p = pkt;
-        *out_len_ptr = sizeof(mag_packet_t);
-    } else {
-        *out_len_ptr = 0;
-    }
-    return RET_OK;
-}
-
-
-/*! Report 0x24: Gets LSM303DLHC errors
- *
- */
-ret_t rpt_LSM303DLHC_getErrors(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len),
-                               uint8_t * out_p, uint8_t * out_len_ptr)
-{
-    uint32_t accel_pkt_ovrwt = LSM303DLHC_accel_packetOverwriteCount();
-    uint32_t mag_pkt_ovrwt = LSM303DLHC_mag_packetOverwriteCount();
-    uint32_t accel_hw_ovrwt = LSM303DLHC_accel_HardwareOverwriteCount();
-    uint32_t mag_hw_ovrwt = LSM303DLHC_mag_HardwareOverwriteCount();
-
-    *(uint32_t *)out_p = accel_pkt_ovrwt;
-    out_p += sizeof(uint32_t);
-    *(uint32_t *)out_p = mag_pkt_ovrwt;
-    out_p += sizeof(uint32_t);
-    *(uint32_t *)out_p = accel_hw_ovrwt;
-    out_p += sizeof(uint32_t);
-    *(uint32_t *)out_p = mag_hw_ovrwt;
-    *out_len_ptr = 4 * sizeof(uint32_t);
     return RET_OK;
 }
 
@@ -526,12 +378,12 @@ ret_t rpt_lookup(uint8_t rpt_type, uint8_t *input_buff_ptr, uint8_t input_buff_l
         /* Report 0x1d */ rpt_err,
         /* Report 0x1e */ rpt_err,
         /* Report 0x1f */ rpt_err,
-        /* Report 0x20 */ rpt_LSM303DLHC_changeConfig,
-        /* Report 0x21 */ rpt_LSM303DLHC_getTemp,
+        /* Report 0x20 */ rpt_LSM303DLHC_enableStreams,
+        /* Report 0x21 */ rpt_LSM303DLHC_changeConfig,
         /* Report 0x22 */ rpt_LSM303DLHC_getAccel,
         /* Report 0x23 */ rpt_LSM303DLHC_getMag,
-        /* Report 0x24 */ rpt_LSM303DLHC_getErrors,
-        /* Report 0x25 */ rpt_err,
+        /* Report 0x24 */ rpt_LSM303DLHC_getTemp,
+        /* Report 0x25 */ rpt_LSM303DLHC_getErrors,
         /* Report 0x26 */ rpt_err,
         /* Report 0x27 */ rpt_err,
         /* Report 0x28 */ rpt_err,
@@ -621,138 +473,13 @@ ret_t rpt_lookup(uint8_t rpt_type, uint8_t *input_buff_ptr, uint8_t input_buff_l
         /* Report 0x7c */ rpt_err,
         /* Report 0x7d */ rpt_err,
         /* Report 0x7e */ rpt_err,
-        /* Report 0x7f */ rpt_err,
-        /* Report 0x80 */ rpt_err,
-        /* Report 0x81 */ rpt_err,
-        /* Report 0x82 */ rpt_err,
-        /* Report 0x83 */ rpt_err,
-        /* Report 0x84 */ rpt_err,
-        /* Report 0x85 */ rpt_err,
-        /* Report 0x86 */ rpt_err,
-        /* Report 0x87 */ rpt_err,
-        /* Report 0x88 */ rpt_err,
-        /* Report 0x89 */ rpt_err,
-        /* Report 0x8a */ rpt_err,
-        /* Report 0x8b */ rpt_err,
-        /* Report 0x8c */ rpt_err,
-        /* Report 0x8d */ rpt_err,
-        /* Report 0x8e */ rpt_err,
-        /* Report 0x8f */ rpt_err,
-        /* Report 0x90 */ rpt_err,
-        /* Report 0x91 */ rpt_err,
-        /* Report 0x92 */ rpt_err,
-        /* Report 0x93 */ rpt_err,
-        /* Report 0x94 */ rpt_err,
-        /* Report 0x95 */ rpt_err,
-        /* Report 0x96 */ rpt_err,
-        /* Report 0x97 */ rpt_err,
-        /* Report 0x98 */ rpt_err,
-        /* Report 0x99 */ rpt_err,
-        /* Report 0x9a */ rpt_err,
-        /* Report 0x9b */ rpt_err,
-        /* Report 0x9c */ rpt_err,
-        /* Report 0x9d */ rpt_err,
-        /* Report 0x9e */ rpt_err,
-        /* Report 0x9f */ rpt_err,
-        /* Report 0xa0 */ rpt_err,
-        /* Report 0xa1 */ rpt_err,
-        /* Report 0xa2 */ rpt_err,
-        /* Report 0xa3 */ rpt_err,
-        /* Report 0xa4 */ rpt_err,
-        /* Report 0xa5 */ rpt_err,
-        /* Report 0xa6 */ rpt_err,
-        /* Report 0xa7 */ rpt_err,
-        /* Report 0xa8 */ rpt_err,
-        /* Report 0xa9 */ rpt_err,
-        /* Report 0xaa */ rpt_err,
-        /* Report 0xab */ rpt_err,
-        /* Report 0xac */ rpt_err,
-        /* Report 0xad */ rpt_err,
-        /* Report 0xae */ rpt_err,
-        /* Report 0xaf */ rpt_err,
-        /* Report 0xb0 */ rpt_err,
-        /* Report 0xb1 */ rpt_err,
-        /* Report 0xb2 */ rpt_err,
-        /* Report 0xb3 */ rpt_err,
-        /* Report 0xb4 */ rpt_err,
-        /* Report 0xb5 */ rpt_err,
-        /* Report 0xb6 */ rpt_err,
-        /* Report 0xb7 */ rpt_err,
-        /* Report 0xb8 */ rpt_err,
-        /* Report 0xb9 */ rpt_err,
-        /* Report 0xba */ rpt_err,
-        /* Report 0xbb */ rpt_err,
-        /* Report 0xbc */ rpt_err,
-        /* Report 0xbd */ rpt_err,
-        /* Report 0xbe */ rpt_err,
-        /* Report 0xbf */ rpt_err,
-        /* Report 0xc0 */ rpt_err,
-        /* Report 0xc1 */ rpt_err,
-        /* Report 0xc2 */ rpt_err,
-        /* Report 0xc3 */ rpt_err,
-        /* Report 0xc4 */ rpt_err,
-        /* Report 0xc5 */ rpt_err,
-        /* Report 0xc6 */ rpt_err,
-        /* Report 0xc7 */ rpt_err,
-        /* Report 0xc8 */ rpt_err,
-        /* Report 0xc9 */ rpt_err,
-        /* Report 0xca */ rpt_err,
-        /* Report 0xcb */ rpt_err,
-        /* Report 0xcc */ rpt_err,
-        /* Report 0xcd */ rpt_err,
-        /* Report 0xce */ rpt_err,
-        /* Report 0xcf */ rpt_err,
-        /* Report 0xd0 */ rpt_err,
-        /* Report 0xd1 */ rpt_err,
-        /* Report 0xd2 */ rpt_err,
-        /* Report 0xd3 */ rpt_err,
-        /* Report 0xd4 */ rpt_err,
-        /* Report 0xd5 */ rpt_err,
-        /* Report 0xd6 */ rpt_err,
-        /* Report 0xd7 */ rpt_err,
-        /* Report 0xd8 */ rpt_err,
-        /* Report 0xd9 */ rpt_err,
-        /* Report 0xda */ rpt_err,
-        /* Report 0xdb */ rpt_err,
-        /* Report 0xdc */ rpt_err,
-        /* Report 0xdd */ rpt_err,
-        /* Report 0xde */ rpt_err,
-        /* Report 0xdf */ rpt_err,
-        /* Report 0xe0 */ rpt_err,
-        /* Report 0xe1 */ rpt_err,
-        /* Report 0xe2 */ rpt_err,
-        /* Report 0xe3 */ rpt_err,
-        /* Report 0xe4 */ rpt_err,
-        /* Report 0xe5 */ rpt_err,
-        /* Report 0xe6 */ rpt_err,
-        /* Report 0xe7 */ rpt_err,
-        /* Report 0xe8 */ rpt_err,
-        /* Report 0xe9 */ rpt_err,
-        /* Report 0xea */ rpt_err,
-        /* Report 0xeb */ rpt_err,
-        /* Report 0xec */ rpt_err,
-        /* Report 0xed */ rpt_err,
-        /* Report 0xee */ rpt_err,
-        /* Report 0xef */ rpt_err,
-        /* Report 0xf0 */ rpt_err,
-        /* Report 0xf1 */ rpt_err,
-        /* Report 0xf2 */ rpt_err,
-        /* Report 0xf3 */ rpt_err,
-        /* Report 0xf4 */ rpt_err,
-        /* Report 0xf5 */ rpt_err,
-        /* Report 0xf6 */ rpt_err,
-        /* Report 0xf7 */ rpt_err,
-        /* Report 0xf8 */ rpt_err,
-        /* Report 0xf9 */ rpt_err,
-        /* Report 0xfa */ rpt_err,
-        /* Report 0xfb */ rpt_err,
-        /* Report 0xfc */ rpt_err,
-        /* Report 0xfd */ rpt_err,
-        /* Report 0xfe */ rpt_err,
-        /* Report 0xff */ rpt_err};
+        /* Report 0x7f */ rpt_err};
 
     // call the function specified
     *output_buff_len_ptr = 0;
+    if (rpt_type > MAX_REPORT_ID) {
+        return RET_NORPT_ERR;
+    }
     // output_buff_ptr = output_buffer;
     return report_function_lookup[rpt_type](input_buff_ptr, input_buff_len,
                                             output_buffer, output_buff_len_ptr);
