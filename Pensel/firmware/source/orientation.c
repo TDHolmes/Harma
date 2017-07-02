@@ -77,9 +77,9 @@ void orient_calcPenselOrientation(void)
 /*! Takes in a new magnetometer packet and updates the magnetic north orientation
  *  calculation.
  *
- * @param pkt (mag_packet_t): New magnetometer packet from sensor.
+ * @param pkt (mag_norm_t): New magnetometer packet from sensor.
  */
-void orient_calcMagOrientation(mag_packet_t pkt)
+void orient_calcMagOrientation(mag_norm_t pkt)
 {
     // Update orient.north_vector!
     // TODO: low pass filter on raw mag data to get good north readings
@@ -88,9 +88,9 @@ void orient_calcMagOrientation(mag_packet_t pkt)
 /*! Takes in a new accelerometer packet and updates the gravity vector orientation
  *  calculation.
  *
- * @param pkt (accel_packet_t): New accelerometer packet from sensor.
+ * @param pkt (accel_norm_t): New accelerometer packet from sensor.
  */
-void orient_calcAccelOrientation(accel_packet_t pkt)
+void orient_calcAccelOrientation(accel_norm_t pkt)
 {
     // Update orient.gravity_vector!
     // TODO: low pass filter on raw accel data to get good gravity readings
