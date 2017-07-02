@@ -21,6 +21,7 @@ typedef struct {
 } queue_t;
 
 
+void queue_init(volatile queue_t * queue_admin_ptr);
 void queue_increment_tail(volatile queue_t * queue_admin_ptr, const uint8_t queue_size);
 void queue_increment_head(volatile queue_t * queue_admin_ptr, const uint8_t queue_size);
 
