@@ -11,6 +11,7 @@
 #define _COMMON_H_
 
 #include <stdint.h>
+#include <stdbool.h>
 
 /* Common macros */
 #ifdef __GNUC__
@@ -22,6 +23,17 @@
 
 #define PENSEL_VERSION_MAJOR (0)
 #define PENSEL_VERSION_MINOR (5)
+
+#define LSM303DLHC_ENABLE_ACCEL_STREAM (0x01)
+#define LSM303DLHC_ENABLE_MAG_STREAM (0x02)
+
+#define ACCEL_STREAM_REPORT_ID (0x01)
+#define MAG_STREAM_REPORT_ID (0x02)
+
+
+// Global variables to influence state
+bool gEnableMagStream = false;   //!< Global toggle to enable/disable streaming mag data
+bool gEnableAccelStream = false; //!< Global toggle to enable/disable streaming accel data
 
 
 //! Common return type for the entire project
@@ -40,6 +52,14 @@ typedef enum {
     RET_WDG_SET            //!< Return code if the watchdog flag was set on reset
 } ret_t;
 
+//! Structure to keep track of our critical errors
+typedef struct {
+    #ifdef WATCHDOG_ENABLE
+        uint32_t wdg_reset : 1;
+    #endif
+} critical_errors_t;
+
+critical_errors_t gCriticalErrors;
 
 void fatal_error_handler(char file[], uint32_t line, int8_t err_code);
 
