@@ -81,16 +81,16 @@ Mag sensor address behavior:
 
 
 // Private functions to get I2C data (raw packets)
-ret_t LSM303DLHC_accel_getData(accel_raw_t * pkt);
-ret_t LSM303DLHC_mag_getData(mag_raw_t * pkt);
+static inline ret_t LSM303DLHC_accel_getData(accel_raw_t * pkt);
+static inline ret_t LSM303DLHC_mag_getData(mag_raw_t * pkt);
 
 // Private functions to put data onto our queues (raw packets to be normalized later)
-ret_t LSM303DLHC_accel_putPacket(accel_raw_t pkt);
-ret_t LSM303DLHC_mag_putPacket(mag_raw_t pkt);
+static inline ret_t LSM303DLHC_accel_putPacket(accel_raw_t pkt);
+static inline ret_t LSM303DLHC_mag_putPacket(mag_raw_t pkt);
 
 // Private functions to normalize raw packets before sending to the user
-void LSM303DLHC_accel_normalize(accel_raw_t * raw_pkt, accel_norm_t * norm_pkt_ptr);
-void LSM303DLHC_mag_normalize(mag_raw_t * raw_pkt, mag_norm_t * norm_pkt_ptr);
+static void LSM303DLHC_accel_normalize(accel_raw_t * raw_pkt, accel_norm_t * norm_pkt_ptr);
+static void LSM303DLHC_mag_normalize(mag_raw_t * raw_pkt, mag_norm_t * norm_pkt_ptr);
 
 
 //! LSM303DLHC structure to store packets, overwrite stats, and LSM303DLHC settings
@@ -99,10 +99,11 @@ typedef struct {
     uint32_t mag_hw_overwrite_count;   //!< Mag overwrites on the chip itself
     accel_raw_t accel_pkts[ACCEL_QUEUE_SIZE];  //!< Accel queue to store raw packets
     mag_raw_t mag_pkts[MAG_QUEUE_SIZE];        //!< Mag queue to store raw packets
-    queue_t accel_queue;            //!< Accel admin struct of the accel_queues
-    queue_t mag_queue;              //!< Mag admin struct of the mag_queues
-    uint32_t accel_framenum;        //!< Accel frame number Increments on each accel packet
-    uint32_t mag_framenum;          //!< Mag frame number. Increments on each mag packet
+    queue_t accel_queue;        //!< Accel admin struct of the accel_queues
+    queue_t mag_queue;          //!< Mag admin struct of the mag_queues
+    uint32_t accel_framenum;    //!< Accel frame number Increments on each accel packet
+    uint32_t mag_framenum;      //!< Mag frame number. Increments on each mag packet
+    bool data_ready;            //!< Flag we set when the LSM303DLHC data ready pin fires
     //! Flag we set when we see there's data acording to the accel status register
     uint8_t accel_data_available;
     //! Flag we set when we see there's data acording to MAG_SR_REG_M
@@ -185,7 +186,7 @@ ret_t LSM303DLHC_init(accel_ODR_t accel_datarate, accel_sensitivity_t accel_sens
  *      timing info (frame and timestamp)
  * @retval (ret_t): Success or failure of getting the accel packet from the chip via I2C.
  */
-ret_t LSM303DLHC_accel_getData(accel_raw_t * pkt)
+static inline ret_t LSM303DLHC_accel_getData(accel_raw_t * pkt)
 {
     uint8_t bytes[6];
     uint8_t i;
@@ -220,7 +221,7 @@ ret_t LSM303DLHC_accel_getData(accel_raw_t * pkt)
  *      timing info (frame and timestamp)
  * @retval (ret_t): Success or failure of getting the mag packet from the chip via I2C.
  */
-ret_t LSM303DLHC_mag_getData(mag_raw_t * pkt)
+static inline ret_t LSM303DLHC_mag_getData(mag_raw_t * pkt)
 {
     uint8_t bytes[6];
     uint8_t i;
@@ -307,41 +308,52 @@ ret_t LSM303DLHC_checkStatus(void)
 /* ----------- Interrupt handlers (Get data from chip when ready) ----------- */
 
 
-/*! Interrupt handler for the DRDY interrupt pin coming from this chip.
+/*! Interrupt handler for the DRDY interrupt pin coming from this chip. All it does is
+ * set a flag so the LSM303DLHC_run function can handle the I2C stuff to get packets.
+ */
+void LSM303DLHC_drdy_ISR(void) {
+    LSM303DLHC.data_ready = true;
+}
+
+/*! LSM303DLHC runner that gets new data if the data ready IRQ fired.
  *
+ * If there's data ready:
  *   1. Check the status register of the chip, update error flags, and check for available data.
  *   2. Based on the status, get the available data.
  *   3. Put that data into a packet queue.
  */
-void LSM303DLHC_drdy_ISR(void)
+ret_t LSM303DLHC_run(void)
 {
     ret_t retval;
     accel_raw_t a_pkt;
     mag_raw_t m_pkt;
-    TimingPin_set(1);
 
-    retval = LSM303DLHC_checkStatus();
-    if (retval == RET_OK) {
-        // check if we have accel packets to get
-        if (LSM303DLHC.accel_data_available != 0) {
-            LSM303DLHC.accel_data_available = 0;
-            // TODO: Check round trip latency of getting accel packet & putting it into the queue
-            retval = LSM303DLHC_accel_getData(&a_pkt);
-            if (retval == RET_OK) {
-                retval = LSM303DLHC_accel_putPacket(a_pkt);
-            }  // else { error!!!; }
-        }
-        // check if we have mag packets to get
-        if (LSM303DLHC.mag_data_available != 0) {
-            LSM303DLHC.mag_data_available = 0;
-            // TODO: Check round trip latency of getting mag packet & putting it into the queue
-            retval = LSM303DLHC_mag_getData(&m_pkt);
-            if (retval == RET_OK) {
-                retval = LSM303DLHC_mag_putPacket(m_pkt);
-            }  // else { error!!!; }
+    if (LSM303DLHC.data_ready) {
+        LSM303DLHC.data_ready = false;
+
+        retval = LSM303DLHC_checkStatus();
+        if (retval == RET_OK) {
+            // check if we have accel packets to get
+            if (LSM303DLHC.accel_data_available != 0) {
+                LSM303DLHC.accel_data_available = 0;
+
+                retval = LSM303DLHC_accel_getData(&a_pkt);
+                if (retval == RET_OK) {
+                    retval = LSM303DLHC_accel_putPacket(a_pkt);
+                } else { return retval; }
+            }
+            // check if we have mag packets to get
+            if (LSM303DLHC.mag_data_available != 0) {
+                LSM303DLHC.mag_data_available = 0;
+
+                retval = LSM303DLHC_mag_getData(&m_pkt);
+                if (retval == RET_OK) {
+                    retval = LSM303DLHC_mag_putPacket(m_pkt);
+                } else { return retval; }
+            }
         }
     }
-    TimingPin_set(0);
+    return RET_OK;
 }
 
 /* -------------- Functions to set/get data to/from our queues -------------- */
@@ -356,7 +368,7 @@ void LSM303DLHC_drdy_ISR(void)
  *      (frame and timestamp)
  * @retval (ret_t): Success or failure of putting the new packet onto the accel queue.
  */
-ret_t LSM303DLHC_accel_putPacket(accel_raw_t pkt)
+static inline ret_t LSM303DLHC_accel_putPacket(accel_raw_t pkt)
 {
     // fill in some time info and add it to the queue
     pkt.frame_num = LSM303DLHC.accel_framenum;
@@ -379,7 +391,7 @@ ret_t LSM303DLHC_accel_putPacket(accel_raw_t pkt)
  *      (frame and timestamp)
  * @retval (ret_t): Success or failure of putting the new packet onto the mag queue.
  */
-ret_t LSM303DLHC_mag_putPacket(mag_raw_t pkt)
+static inline ret_t LSM303DLHC_mag_putPacket(mag_raw_t pkt)
 {
     pkt.frame_num = LSM303DLHC.mag_framenum;
     LSM303DLHC.mag_framenum++;
@@ -394,7 +406,7 @@ ret_t LSM303DLHC_mag_putPacket(mag_raw_t pkt)
 }
 
 
-void LSM303DLHC_accel_normalize(accel_raw_t * raw_pkt, accel_norm_t * norm_pkt_ptr)
+static void LSM303DLHC_accel_normalize(accel_raw_t * raw_pkt, accel_norm_t * norm_pkt_ptr)
 {
     norm_pkt_ptr->frame_num = raw_pkt->frame_num;
     norm_pkt_ptr->timestamp = raw_pkt->timestamp;
@@ -403,7 +415,7 @@ void LSM303DLHC_accel_normalize(accel_raw_t * raw_pkt, accel_norm_t * norm_pkt_p
     norm_pkt_ptr->z = (float)raw_pkt->z * AccelGainOffsets[LSM303DLHC.accel_sensitivity];
 }
 
-void LSM303DLHC_mag_normalize(mag_raw_t * raw_pkt, mag_norm_t * norm_pkt_ptr)
+static void LSM303DLHC_mag_normalize(mag_raw_t * raw_pkt, mag_norm_t * norm_pkt_ptr)
 {
     norm_pkt_ptr->frame_num = raw_pkt->frame_num;
     norm_pkt_ptr->timestamp = raw_pkt->timestamp;
