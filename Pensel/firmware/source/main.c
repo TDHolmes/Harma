@@ -32,6 +32,28 @@
 //! HAL millisecond tick
 extern __IO uint32_t uwTick;
 
+#ifdef WATCHDOG_ENABLE
+    //! Global indicating whether or not to pet the watchdog
+    static bool gPetWdg = false;
+
+
+    void wdg_captureAlert(void) {
+        // If we want, we can catch if a watchdog has ocurred
+        uint32_t subcount = 0;
+
+        LED_set(LED_0, 0);
+        LED_set(LED_1, 1);
+        while (1) {
+            subcount++;
+            if (subcount > 1000000) {
+                subcount = 0;
+                LED_toggle(LED_0);
+                LED_toggle(LED_1);
+            }
+        }
+    }
+#endif
+
 static inline void check_retval_fatal(char * filename, uint32_t lineno, ret_t retval) {
     if (retval != RET_OK) {
         fatal_error_handler(filename, lineno, (int8_t)retval);
@@ -43,6 +65,7 @@ void clear_critical_errors(void) {
         gCriticalErrors.wdg_reset = 0;
     #endif
 }
+
 
 /*! Main function code. Does the following:
  *      1. Initializes all sub-modules
@@ -70,9 +93,13 @@ int main(void)
     if ( wdg_isSet() ) {
         // set a report variable in critical errors
         gCriticalErrors.wdg_reset = 1;  // TODO: add critical errors get report
+        #ifdef WATCHDOG_CAPTURE
+            wdg_captureAlert(void);
+        #endif
     }
     retval = wdg_init();
     check_retval_fatal(__FILE__, __LINE__, retval);
+    gPetWdg = true;
     #endif
 
     // peripheral configuration
@@ -98,6 +125,9 @@ int main(void)
     while (true) {
         // Parse reports and such
         rpt_run();
+
+        // get packets and such
+        LSM303DLHC_run();
 
         // let the user know roughly how many workloops are ocurring
         if (subcount == 100000) {
@@ -168,7 +198,7 @@ void HAL_IncTick(void)
 
     // every 5 ms, pet the watchdog. Need to pet the watchdog every 10 ms!
     #ifdef WATCHDOG_ENABLE
-    if (sub_count == 5) {
+    if (sub_count == 5 && gPetWdg) {
         wdg_pet();
     }
     #endif
@@ -193,28 +223,33 @@ void HAL_IncTick(void)
 void fatal_error_handler(char file[], uint32_t line, int8_t err_code)
 {
     // FREAK OUT
-    uint8_t i;
-    LED_set(LED_0, 0);
-    LED_set(LED_1, 1);
-    while (1) {
-        /* TODO: Switch to logging the error to a logging system and allow
-         *   watchdog to reset us when in a release compile */
-        UART_sendString(file);
-        UART_sendString(":");
-        UART_sendint((int64_t)line);
-        UART_sendString(" threw ");
-        UART_sendint((int64_t)err_code);
-        UART_sendString("\r\n");
-        for (i = 0; i < 25; i++) {
-            HAL_Delay(5U);
-            // If we're in debug mode, keep the watchdog kickin
-            #if defined(DEBUG) && defined(WATCHDOG_ENABLE)
-                wdg_pet();
-            #endif
+    #ifdef DEBUG
+        uint32_t timer_count, i = 0;
+        LED_set(LED_0, 0);
+        LED_set(LED_1, 1);
+
+        // Can't rely on HAL tick as we maybe in the ISR context...
+        while (1) {
+            for (i = 0; i < 25; i++) {
+                while (timer_count < 100000) {
+                    timer_count++;
+                }
+                timer_count = 0;
+                // If we're in debug mode, keep the watchdog kickin
+                #if defined(DEBUG) && defined(WATCHDOG_ENABLE)
+                    if (gPetWdg) {
+                        wdg_pet();
+                    }
+                #endif
+            }
+            LED_toggle(LED_0);
+            LED_toggle(LED_1);
         }
-        LED_toggle(LED_0);
-        LED_toggle(LED_1);
-    }
+    #else
+        // TODO: Reset everything
+        // for now, just let the watchdog happen
+        while (1);
+    #endif
 }
 
 // HAL uses this function. Call our error function.
