@@ -3,4 +3,5 @@
 -ICMSIS/Include/
 -ICMSIS/Device/ST/STM32F3xx/Include/
 -Iinclude/
+-IDriverConf/inc/
 -DSTM32F302x8
