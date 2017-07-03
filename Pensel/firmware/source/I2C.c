@@ -44,8 +44,7 @@ SCLDEL    0x4
 tSCLDEL   5 x 250 ns = 1250 ns
 */
 // PRESC[3:0] Res[3:0] SCLDEL[3:0] SDADEL[3:0] SCLH[7:0] SCLL[7:0]
-// TODO: LOWER I2C speed to 400 kHz
-// #define I2C_TIMING      0x00400B27
+// TODO: I2C speed currently 135 kHz with 0xB0420f13. Increase?
 #define I2C_TIMING      0xB0420f13
 
 /* I2C handler declaration */
@@ -141,7 +140,15 @@ ret_t I2C_readData(uint8_t address, uint8_t mem_address, uint8_t * data_ptr, uin
 
 bool I2C_isBusy(void)
 {
-    return (HAL_I2C_GetState(&I2cHandle) != HAL_I2C_STATE_READY);
+    HAL_I2C_StateTypeDef state = HAL_I2C_GetState(&I2cHandle);
+    if ( state == HAL_I2C_STATE_ABORT ||
+         state == HAL_I2C_STATE_TIMEOUT ||
+         state == HAL_I2C_STATE_ERROR ||
+         state == HAL_I2C_STATE_RESET) {
+        // major error!
+        fatal_error_handler(__FILE__, __LINE__, state);
+    }
+    return (state != HAL_I2C_STATE_READY);
 }
 
 
@@ -180,5 +187,5 @@ void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef *I2cHandle)
   */
 void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *I2cHandle)
 {
-    fatal_error_handler(__FILE__, __LINE__, 0);
+    fatal_error_handler(__FILE__, __LINE__, HAL_I2C_GetError(I2cHandle) );
 }
