@@ -14,6 +14,10 @@
 #include "common.h"
 
 
+//! Timeout time for UART
+#define UART_TIMEOUT_MS (50)  // can send 1150/2 chars in 50 miliseconds
+
+
 ret_t UART_init(uint32_t baudrate);
 bool UART_dataAvailable(void);
 bool UART_TXisReady(void);

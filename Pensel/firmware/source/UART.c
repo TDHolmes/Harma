@@ -87,6 +87,24 @@ bool UART_TXisReady(void)
     }
 }
 
+
+/*! Function that waits on the UART driver to be ready with a `UART_TIMEOUT_MS` ms
+ * timeout.
+ *
+ * @retval Return code indicating success / failure of the start of the transmit
+ */
+ret_t UART_waitForReady_withTimeout(void)
+{
+    uint32_t timeout = HAL_GetTick() + UART_TIMEOUT_MS;
+    while( UART_TXisReady() == false ) {
+        if ( HAL_GetTick() > timeout ) {
+            return RET_BUSY_ERR;
+        }
+    }
+    return RET_OK;
+}
+
+
 /*! Sends a buffer of data over UART
  *
  * @param data_ptr (uint8_t *): pointer to the data you want to transmit
@@ -119,10 +137,16 @@ ret_t UART_sendData(uint8_t * data_ptr, uint8_t num_bytes)
  *
  * @param data (uint8_t): Byte to send
  * @retval Return code indicating success / failure of the start of the transmit
+ *
+ * @note this function will timeout after `UART_TIMEOUT_MS` miliseconds of the
+ *      HAL UART driver being busy.
  */
 ret_t UART_sendChar(uint8_t data)
 {
-    while( UART_TXisReady() == false );
+    ret_t ready_result = UART_waitForReady_withTimeout();
+    if (ready_result != RET_OK) {
+        return ready_result;
+    }
     return UART_sendData(&data, 1);
 }
 
@@ -163,7 +187,6 @@ ret_t UART_sendint(int64_t data)
     uint8_t chr = 0;
     if (data < 0) {
         UART_sendChar(0x2d);  // "-"
-        while( UART_TXisReady() == false );
         data = -data;
     }
     UART_sendString("0x");
@@ -180,8 +203,7 @@ ret_t UART_sendint(int64_t data)
             }
             retval = UART_sendChar(chr);
             if (retval != RET_OK) { return retval; }
-            // wait for UART to be ready
-            while( UART_TXisReady() == false );
+
             chr = val & 0xF;
             if (chr >= 0xA) {
                 chr += 0x37;  // into A-F
@@ -190,8 +212,6 @@ ret_t UART_sendint(int64_t data)
             }
             retval = UART_sendChar(chr);
             if (retval != RET_OK) { return retval; }
-            // wait for UART to be ready
-            while( UART_TXisReady() == false );
         }
         shift_val -= 8;
     }
