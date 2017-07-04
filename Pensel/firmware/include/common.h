@@ -32,8 +32,8 @@
 
 
 // Global variables to influence state
-bool gEnableMagStream = false;   //!< Global toggle to enable/disable streaming mag data
-bool gEnableAccelStream = false; //!< Global toggle to enable/disable streaming accel data
+bool gEnableMagStream = true;   //!< Global toggle to enable/disable streaming mag data
+bool gEnableAccelStream = true; //!< Global toggle to enable/disable streaming accel data
 
 
 //! Common return type for the entire project
@@ -44,12 +44,12 @@ typedef enum {
     RET_NOMEM_ERR,  //!< If not enough memory is available
     RET_LEN_ERR,    //!< If there was some sort of length related error
     RET_COM_ERR,    //!< Some sort of communication error
-    RET_BUSY_ERR,   //!< Some sort of busy resource
+    RET_BUSY_ERR,   //!< Some sort of busy resource / timeout
     RET_GEN_ERR,    //!< Lame catch all general error
     RET_NORPT_ERR,  //!< No available report
     RET_INVALID_ARGS_ERR,  //!< Incorrect arguments to the function called
     RET_MAX_LEN_ERR,       //!< Maximum length was violated
-    RET_WDG_SET            //!< Return code if the watchdog flag was set on reset
+    RET_WDG_SET,           //!< Return code if the watchdog flag was set on reset
 } ret_t;
 
 //! Structure to keep track of our critical errors
