@@ -107,6 +107,9 @@ typedef struct __attribute__((packed)) {
 ret_t LSM303DLHC_init(accel_ODR_t accel_datarate, accel_sensitivity_t accel_sensitivity,
                       mag_ODR_t mag_datarate, mag_sensitivity_t mag_sensitivity);
 
+// Function to take care of getting packets after an ISR is handled
+ret_t LSM303DLHC_run(void);
+
 // functions to get packets and check for data!
 bool LSM303DLHC_accel_dataAvailable(void);
 bool LSM303DLHC_mag_dataAvailable(void);
