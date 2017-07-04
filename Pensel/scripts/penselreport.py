@@ -15,8 +15,10 @@ class Pensel(object):
         self.serialport = serialport
         self.baudrate = baudrate
         self.verbose = verbose
-        self.magic_num_0 = 0xBE
-        self.magic_num_1 = 0xEF
+        self.MAGIC_NUM_0 = 0xBE
+        self.MAGIC_NUM_1 = 0xEF
+        self.MAGIC_REPLY_0_EXPECTED = 0xDE
+        self.MAGIC_REPLY_1_EXPECTED = 0xAD
 
         if self.verbose:
             print("Opening serial port...")
@@ -61,6 +63,12 @@ class Pensel(object):
 
         return out_list
 
+    def num_bytes_available(self):
+        """
+        Returns the number of bytes in the input buffer.
+        """
+        return self.serial.in_waiting
+
     def send_report(self, report_ID, payload=None):
         """
         Sends a report to the pensel and reads back the result
@@ -68,8 +76,8 @@ class Pensel(object):
         if report_ID < 0 or report_ID > 0x255:
             raise ValueError("Report ID is out of the valid range!")
 
-        self.serial_write(self.magic_num_0)
-        self.serial_write(self.magic_num_1)
+        self.serial_write(self.MAGIC_NUM_0)
+        self.serial_write(self.MAGIC_NUM_1)
         self.serial_write(report_ID)
         if payload is None or len(payload) == 0:
             self.serial_write(0)
@@ -81,6 +89,58 @@ class Pensel(object):
                 self.serial_write(b)
 
         # read back the result
+        if self.check_for_start():
+            report, retval, payload = self.receive_packet()
+            if report != report_ID:
+                print("ERROR: Unexpected report reply!")
+                return None, None
+        else:
+            print("ERROR: No reply from Pensel!")
+            return None, None
+        return retval, payload
+
+    def check_for_start(self):
+        """
+        Checks for the start of a reply from Pensel.
+        """
+        data = self.serial_read(2)
+        if len(data) == 2:
+            if data[0] == self.MAGIC_REPLY_0_EXPECTED:
+                if data[1] == self.MAGIC_REPLY_1_EXPECTED:
+                    # Both bytes are what we expect!
+                    if self.verbose:
+                        print("Detected start!")
+                    return True
+                else:
+                    # first byte correct, but second isn't. False activation
+                    if self.verbose:
+                        print("Failed to detect start...")
+                    return False
+            elif data[1] == self.MAGIC_REPLY_0_EXPECTED:
+                # maybe we were just off by 1
+                data = self.serial_read(1)
+                if len(data) == 1 and data[0] == self.MAGIC_REPLY_1_EXPECTED:
+                    # We've got a start!
+                    if self.verbose:
+                        print("Detected start!")
+                    return True
+
+        # default, no start :(
+        if self.verbose:
+            print("Failed to detect start...")
+        return False
+
+    def receive_packet(self):
+        """
+        Receives a packet, whether from a report reply or an input report,
+        from Pensel. Doesn't check for start of packet. That's `check_for_start`
+        """
+        report = self.serial_read(1)
+        if len(report) != 1:
+            print("ERROR: Didn't read back a report!")
+            report = -1
+        else:
+            report = report[0]
         retval = self.serial_read(1)
         if len(retval) != 1:
             print("ERROR: Didn't read back a return value!")
@@ -100,9 +160,10 @@ class Pensel(object):
         else:
             return_payload = []
 
-        return retval, return_payload
+        return report, retval, return_payload
 
     def close(self):
+        print("\n\tClosing serial port...\n")
         self.serial.close()
 
 

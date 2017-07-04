@@ -19,8 +19,10 @@ extern uint32_t HAL_GetTick(void);
 
 
 #define READ_BUFF_SIZE (255)      //!< Maximum data we can read in
-#define RPT_MAGIC_NUMBER_0 (0xBE) //!< First magic number to specify start of report from host
-#define RPT_MAGIC_NUMBER_1 (0xEF) //!< Second magic number to specify start of report from host
+#define RPT_RESPONSE_MAGIC_NUMBER_0 (0xDE)  //!< First magic number to specify start of report from host
+#define RPT_RESPONSE_MAGIC_NUMBER_1 (0xAD)  //!< Second magic number to specify start of report from host
+#define RPT_START_MAGIC_NUMBER_0 (0xBE)     //!< First magic number to specify start of report from host
+#define RPT_START_MAGIC_NUMBER_1 (0xEF)     //!< Second magic number to specify start of report from host
 
 #define RPT_TIMEOUT (100)  //!< Report timeout time (in ms)
 
@@ -129,7 +131,7 @@ void rpt_run(void)
         case kRpt_ReadMagic_0:
             retval = UART_getChar(&chr);
             if (retval == RET_OK) {
-                if (chr == RPT_MAGIC_NUMBER_0) {
+                if (chr == RPT_START_MAGIC_NUMBER_0) {
                     rpt.start_time = HAL_GetTick();
                     rpt.state = kRpt_ReadMagic_1;
                 } else {
@@ -142,7 +144,7 @@ void rpt_run(void)
         case kRpt_ReadMagic_1:
             retval = UART_getChar(&chr);
             if (retval == RET_OK) {
-                if (chr == RPT_MAGIC_NUMBER_1) {
+                if (chr == RPT_START_MAGIC_NUMBER_1) {
                     rpt.state = kRpt_ReadRpt;
                 } else {
                     // invalid character!
@@ -208,6 +210,8 @@ void rpt_run(void)
                                 &rpt_out_buff_len);
 
             // print out the results
+            UART_sendChar(RPT_RESPONSE_MAGIC_NUMBER_0);
+            UART_sendChar(RPT_RESPONSE_MAGIC_NUMBER_1);
             UART_sendChar(rpt_type | RPT_REPORT_MASK);
             UART_sendChar(retval);
             // if we succeeded in the report, continue on
@@ -239,7 +243,10 @@ void rpt_run(void)
  */
 ret_t rpt_sendStreamReport(uint8_t reportID, uint8_t payload_len, uint8_t * payload_ptr)
 {
+    UART_sendChar(RPT_RESPONSE_MAGIC_NUMBER_0);
+    UART_sendChar(RPT_RESPONSE_MAGIC_NUMBER_1);
     UART_sendChar(reportID | RPT_STREAM_MASK);
+    UART_sendChar(0);  // currently no sense of retval in stream mode
     UART_sendChar(payload_len);
     while (payload_len > 0) {
         UART_sendChar(*payload_ptr);
