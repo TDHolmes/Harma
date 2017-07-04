@@ -94,7 +94,7 @@ int main(void)
         // set a report variable in critical errors
         gCriticalErrors.wdg_reset = 1;  // TODO: add critical errors get report
         #ifdef WATCHDOG_CAPTURE
-            wdg_captureAlert(void);
+            wdg_captureAlert();
         #endif
     }
     retval = wdg_init();
@@ -247,6 +247,7 @@ void fatal_error_handler(char file[], uint32_t line, int8_t err_code)
         }
     #else
         // TODO: Reset everything
+        // TODO: Log failure
         // for now, just let the watchdog happen
         while (1);
     #endif
