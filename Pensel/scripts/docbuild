@@ -33,3 +33,5 @@ if __name__ == '__main__':
     current_path = os.path.abspath("./")
 
     build_documentation(args.verbose, args.filename)
+
+    print("Output available at: {}".format(current_path))
