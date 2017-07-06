@@ -4,10 +4,8 @@
  * @version 0.1.0
  * @date    20-May-2017
  * @brief   Interface to define get/set reports as a debug hook.
- *
  */
-#ifndef _REPORTS_H_
-#define _REPORTS_H_
+#pragma once
 
 #include <stdint.h>
 #include "common.h"
@@ -19,5 +17,3 @@
 ret_t rpt_init(ret_t (*putchr)(uint8_t), ret_t (*getchr)(uint8_t *));
 ret_t rpt_sendStreamReport(uint8_t reportID, uint8_t payload_len, uint8_t * payload_ptr);
 void rpt_run(void);
-
-#endif /* _REPORTS_H_ */

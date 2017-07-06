@@ -1,6 +1,11 @@
-
-#ifndef _ACCEL_COEFFICIENTS_H_
-#define _ACCEL_COEFFICIENTS_H_
+/*!
+ * @file    FIR_coefficients.h
+ * @author  Tyler Holmes
+ * @version 0.1.0
+ * @date    20-May-2017
+ * @brief   FIR coefficients to be used by application code.
+ */
+#pragma once
 
 #define FIR_ACCEL_GRAVITY_ORDER (16)
 #define FIR_ACCEL_MOVEMENT_ORDER (15)
@@ -27,6 +32,3 @@ const float mag_coefficients_LPF[FIR_MAG_NORTH_ORDER] = {-0.00240944875944f,
     -0.0379541806908f, -0.0695728329288f, 0.137360839193f, 0.447230387014f,
     0.447230387014f, 0.137360839193f, -0.0695728329288f, -0.0379541806908f,
     0.0199709259953f, 0.009536485428f, -0.00416217525112f, -0.00240944875944f};
-
-
-#endif /* _ACCEL_COEFFICIENTS_H_ */

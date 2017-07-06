@@ -6,9 +6,7 @@
  * @brief   A common set of return codes and functions all files have access to.
  *
  */
-
-#ifndef _COMMON_H_
-#define _COMMON_H_
+#pragma once
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -62,6 +60,3 @@ typedef struct {
 critical_errors_t gCriticalErrors;
 
 void fatal_error_handler(char file[], uint32_t line, int8_t err_code);
-
-
-#endif /* _COMMON_H_ */

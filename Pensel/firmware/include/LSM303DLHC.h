@@ -4,10 +4,8 @@
  * @version 0.1.0
  * @date    20-May-2017
  * @brief   Functions and definitions to interface with the accelerometer + magnetometer chip LSM303DLHC.
- *
  */
- #ifndef _LSM303DLHC_H_
- #define _LSM303DLHC_H_
+#pragma once
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -142,6 +140,3 @@ ret_t rpt_LSM303DLHC_getMag(uint8_t * in_p, uint8_t in_len,
                             uint8_t * out_p, uint8_t * out_len_ptr);
 ret_t rpt_LSM303DLHC_getErrors(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len),
                                uint8_t * out_p, uint8_t * out_len_ptr);
-
-
-#endif /* _LSM303DLHC_H_ */

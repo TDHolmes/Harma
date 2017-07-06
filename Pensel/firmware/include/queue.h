@@ -4,10 +4,8 @@
  * @version 0.1.0
  * @date    20-May-2017
  * @brief   Simple circular buffer handler.
- *
  */
-#ifndef _QUEUE_H_
-#define _QUEUE_H_
+#pragma once
 
 #include <stdint.h>
 
@@ -24,5 +22,3 @@ typedef struct {
 void queue_init(volatile queue_t * queue_admin_ptr);
 void queue_increment_tail(volatile queue_t * queue_admin_ptr, const uint8_t queue_size);
 void queue_increment_head(volatile queue_t * queue_admin_ptr, const uint8_t queue_size);
-
-#endif /* _QUEUE_H_ */

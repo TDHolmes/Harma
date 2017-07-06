@@ -1,5 +1,3 @@
-#ifndef _NEWQUEUE_H_
-#define _NEWQUEUE_H_
 /*!
  * @file    newqueue.h
  * @author  Tyler Holmes
@@ -8,6 +6,7 @@
  * @brief   General purpose circular buffer handler that uses malloc.
  *
  */
+#pragma once
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -30,6 +29,3 @@ ret_t newqueue_init(newqueue_t * newqueue, uint8_t num_elements, uint8_t item_si
 ret_t newqueue_deinit(newqueue_t * newqueue);
 ret_t newqueue_pop(newqueue_t * queue, void * data_ptr, bool peak);
 ret_t newqueue_push(newqueue_t * queue, void * data_ptr);
-
-
-#endif /* _NEWQUEUE_H_ */

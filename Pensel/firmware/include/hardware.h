@@ -4,11 +4,8 @@
  * @version 0.1.0
  * @date    20-May-2017
  * @brief   Hardware specific definitions and function calls.
- *
  */
-
-#ifndef _HARDWARE_H_
-#define _HARDWARE_H_
+#pragma once
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -79,6 +76,3 @@ void LED_set(uint16_t LED, uint8_t value);
 
 void TimingPin_toggle(void);
 void TimingPin_set(uint8_t value);
-
-
-#endif /* _HARDWARE_H_ */

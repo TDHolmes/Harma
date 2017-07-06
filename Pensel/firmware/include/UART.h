@@ -4,10 +4,8 @@
  * @version 0.1.0
  * @date    20-May-2017
  * @brief   Wrapper functions around the stm32f3xx HAL UART functions.
- *
  */
-#ifndef _UART_H_
-#define _UART_H_
+#pragma once
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -31,6 +29,3 @@ ret_t UART_sendfloat(float data, uint8_t percision);
 ret_t UART_getChar(uint8_t * data_ptr);
 ret_t UART_sendChar(uint8_t data);
 ret_t UART_peakChar(uint8_t * data_ptr);
-
-
-#endif /* _UART_H_ */
