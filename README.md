@@ -1,6 +1,6 @@
 # Harma Project
 
-The Harma project first came about when I was talking to my friend and coworker Ben. We are both tinkerers and He used to work as a rework technician, so is quite good at fine pitch soldering. I however, have very shaky hands, so I shy away from anything smaller than an 0805 passive component.
+The Harma project first came about when I was talking to my friend and (ex-)coworker Ben. We are both tinkerers and He used to work as a rework technician, so is quite good at fine pitch soldering. I however, have very shaky hands, so I shy away from anything smaller than an 0805 passive component.
 
 That got me thinking, there are robotic assistants for surgeries, so why not for an over caffeinated tinkerer like myself?
 
