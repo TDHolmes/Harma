@@ -9,6 +9,38 @@
 
 #include <stdint.h>
 
+//! Direction Cosine Matrix type
 typedef struct {
-    // TODO: Figure out what needs to go into a quanternion vector! :X
-} quanternion_vector_t;
+    float vector[3][3];
+} dcs_t;
+
+
+typedef union {
+    float vector[3];
+    struct {
+        float x;
+        float y;
+        float z;
+    };
+} cartesian_vect_t;
+
+
+typedef union {
+    float vector[4];
+    struct {
+        float one;
+        float two;
+        float three;
+        float four;
+    };
+    //! Rotation about the eigenAxis
+    float rotation;
+} quanternion_vect_t;
+
+
+quanternion_vect_t quanternion_create(cartesian_vect_t eigen_axis, float rotation_angle);
+dcs_t quanternion_calcDCS(quanternion_vect_t vector);
+
+// conversion methods
+cartesian_vect_t quanternion_toCartesian(quanternion_vect_t vector);
+quanternion_vect_t quanternion_fromCartesian(cartesian_vect_t vector);
