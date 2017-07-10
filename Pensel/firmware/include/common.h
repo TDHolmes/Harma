@@ -48,6 +48,7 @@ typedef enum {
     RET_INVALID_ARGS_ERR,  //!< Incorrect arguments to the function called
     RET_MAX_LEN_ERR,       //!< Maximum length was violated
     RET_WDG_SET,           //!< Return code if the watchdog flag was set on reset
+    RET_CAL_ERR,    //!< General error relating to calibration
 } ret_t;
 
 //! Structure to keep track of our critical errors
@@ -55,6 +56,9 @@ typedef struct {
     #ifdef WATCHDOG_ENABLE
         uint32_t wdg_reset : 1;
     #endif
+    uint32_t cal_header_err : 1;
+    uint32_t cal_version_err : 1;
+    uint32_t cal_checksum_err : 1;
 } critical_errors_t;
 
 critical_errors_t gCriticalErrors;
