@@ -1,6 +1,8 @@
 var searchData=
 [
-  ['switch_5fisr',['switch_ISR',['../hardware_8c.html#a5e1b736804cefd8204520f0e9b6d7be3',1,'hardware.c']]],
-  ['switch_5fperiodic_5fhandler',['switch_periodic_handler',['../hardware_8c.html#a226f34fdcab4836ad0e26fc944ee5ba1',1,'switch_periodic_handler(uint32_t current_tick):&#160;hardware.c'],['../hardware_8h.html#a226f34fdcab4836ad0e26fc944ee5ba1',1,'switch_periodic_handler(uint32_t current_tick):&#160;hardware.c']]],
-  ['systemclock_5fconfig',['SystemClock_Config',['../hardware_8c.html#a70af21c671abfcc773614a9a4f63d920',1,'SystemClock_Config(void):&#160;hardware.c'],['../hardware_8h.html#a70af21c671abfcc773614a9a4f63d920',1,'SystemClock_Config(void):&#160;hardware.c']]]
+  ['orient_5fcalcaccelorientation',['orient_calcAccelOrientation',['../orientation_8c.html#a518c9eae5d885aa16a13867f1b181a5c',1,'orientation.c']]],
+  ['orient_5fcalcmagorientation',['orient_calcMagOrientation',['../orientation_8c.html#aaa2ac46ad6172df8cb87d9ef5fbfa59a',1,'orientation.c']]],
+  ['orient_5fgetaccelorientation',['orient_getAccelOrientation',['../orientation_8c.html#a542f0b3fb0a084d8301848d4f90fc750',1,'orientation.c']]],
+  ['orient_5fgetmagorientation',['orient_getMagOrientation',['../orientation_8c.html#a19727dbf49cf65079fae1a6bf473b546',1,'orientation.c']]],
+  ['orient_5fgetpenselorientation',['orient_getPenselOrientation',['../orientation_8c.html#aaf8b041fdfcfcbf367e3b1104e8a9a0e',1,'orientation.c']]]
 ];

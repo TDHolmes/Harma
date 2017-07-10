@@ -108,6 +108,8 @@ Functions</h2></td></tr>
 <tr class="separator:a97e81ed2e2edb00db32143156b74419d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a86a2752c3dd2fe29c49d256c26b5d9f0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_u_a_r_t_8c.html#a86a2752c3dd2fe29c49d256c26b5d9f0">UART_TXisReady</a> (void)</td></tr>
 <tr class="separator:a86a2752c3dd2fe29c49d256c26b5d9f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a24c6edd3cf76f379d6b7f5286cddaa8e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_u_a_r_t_8c.html#a24c6edd3cf76f379d6b7f5286cddaa8e">UART_waitForReady_withTimeout</a> (void)</td></tr>
+<tr class="separator:a24c6edd3cf76f379d6b7f5286cddaa8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a16359b1b046504c6c11fe19767d72aea"><td class="memItemLeft" align="right" valign="top"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_u_a_r_t_8c.html#a16359b1b046504c6c11fe19767d72aea">UART_sendData</a> (uint8_t *data_ptr, uint8_t num_bytes)</td></tr>
 <tr class="separator:a16359b1b046504c6c11fe19767d72aea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5467a132843f3cd829b44e5dfea8c7d3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_u_a_r_t_8c.html#a5467a132843f3cd829b44e5dfea8c7d3">UART_sendChar</a> (uint8_t data)</td></tr>
@@ -359,10 +361,11 @@ UART_HandleTypeDef&#160;</td><td class="memItemRight" valign="bottom"><b>HAL_UAR
 </dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
-    <tr><td class="paramname">Return</td><td>code indicating success / failure of the start of the transmit </td></tr>
+    <tr><td class="paramname">Return</td><td>code indicating success / failure of the start of the transmit</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section note"><dt>Note</dt><dd>this function will timeout after <code>UART_TIMEOUT_MS</code> miliseconds of the HAL UART driver being busy. </dd></dl>
 
 </div>
 </div>
@@ -534,6 +537,31 @@ UART_HandleTypeDef&#160;</td><td class="memItemRight" valign="bottom"><b>HAL_UAR
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">Boolean</td><td>indicating if UART TX is ready to send </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a24c6edd3cf76f379d6b7f5286cddaa8e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a24c6edd3cf76f379d6b7f5286cddaa8e">&#9670;&nbsp;</a></span>UART_waitForReady_withTimeout()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a> UART_waitForReady_withTimeout </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Function that waits on the UART driver to be ready with a <code>UART_TIMEOUT_MS</code> ms timeout.</p>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">Return</td><td>code indicating success / failure of the start of the transmit </td></tr>
   </table>
   </dd>
 </dl>

@@ -63,7 +63,8 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Data Structures</a>  </div>
+<a href="#nested-classes">Data Structures</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">quanternions.h File Reference</div>  </div>
 </div><!--header-->
@@ -77,8 +78,28 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structquanternion__vector__t.html">quanternion_vector_t</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdcs__t.html">dcs_t</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Direction Cosine Matrix type.  <a href="structdcs__t.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">union &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="unioncartesian__vect__t.html">cartesian_vect_t</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">union &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="unionquanternion__vect__t.html">quanternion_vect_t</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a36640ca45635e4e9c87f7daea7971e45"><td class="memItemLeft" align="right" valign="top"><a id="a36640ca45635e4e9c87f7daea7971e45"></a>
+<a class="el" href="unionquanternion__vect__t.html">quanternion_vect_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>quanternion_create</b> (<a class="el" href="unioncartesian__vect__t.html">cartesian_vect_t</a> eigen_axis, float rotation_angle)</td></tr>
+<tr class="separator:a36640ca45635e4e9c87f7daea7971e45"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a6f9afa24821624a59037c600723a47"><td class="memItemLeft" align="right" valign="top"><a id="a1a6f9afa24821624a59037c600723a47"></a>
+<a class="el" href="structdcs__t.html">dcs_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>quanternion_calcDCS</b> (<a class="el" href="unionquanternion__vect__t.html">quanternion_vect_t</a> vector)</td></tr>
+<tr class="separator:a1a6f9afa24821624a59037c600723a47"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6dd4cce0f85804e6c6df1218aafd004"><td class="memItemLeft" align="right" valign="top"><a id="ac6dd4cce0f85804e6c6df1218aafd004"></a>
+<a class="el" href="unioncartesian__vect__t.html">cartesian_vect_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>quanternion_toCartesian</b> (<a class="el" href="unionquanternion__vect__t.html">quanternion_vect_t</a> vector)</td></tr>
+<tr class="separator:ac6dd4cce0f85804e6c6df1218aafd004"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af1db26c8409fa5f78da8525a99f3db34"><td class="memItemLeft" align="right" valign="top"><a id="af1db26c8409fa5f78da8525a99f3db34"></a>
+<a class="el" href="unionquanternion__vect__t.html">quanternion_vect_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>quanternion_fromCartesian</b> (<a class="el" href="unioncartesian__vect__t.html">cartesian_vect_t</a> vector)</td></tr>
+<tr class="separator:af1db26c8409fa5f78da8525a99f3db34"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Module for doing quanternion-y things. </p>

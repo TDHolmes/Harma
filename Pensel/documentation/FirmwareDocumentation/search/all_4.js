@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['getchr',['getchr',['../structrpt__t.html#a5bce16b6a972de1f5f20b7346a1a0b38',1,'rpt_t']]],
-  ['gravity_5fvector',['gravity_vector',['../structorientation__admin__t.html#a45bc306087571680a091b0fd640095b0',1,'orientation_admin_t']]]
+  ['data_5fready',['data_ready',['../struct_l_s_m303_d_l_h_c__admin__t.html#a424b4eb805c3d60a85d493673f0297a1',1,'LSM303DLHC_admin_t']]],
+  ['dcs_5ft',['dcs_t',['../structdcs__t.html',1,'']]]
 ];

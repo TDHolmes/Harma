@@ -63,9 +63,9 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Data Structures</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
 <div class="title">LSM303DLHC.h File Reference</div>  </div>
 </div><!--header-->
@@ -79,15 +79,6 @@ $(function() {
 </div>
 <p><a href="_l_s_m303_d_l_h_c_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
-Data Structures</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structaccel__packet__t.html">accel_packet_t</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accel packet definition.  <a href="structaccel__packet__t.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmag__packet__t.html">mag_packet_t</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mag packet definition.  <a href="structmag__packet__t.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr class="memitem:a991029ee54fe14d5cccb896514198ece"><td class="memItemLeft" align="right" valign="top"><a id="a991029ee54fe14d5cccb896514198ece"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_l_s_m303_d_l_h_c_8h.html#a991029ee54fe14d5cccb896514198ece">accel_sensitivity_t</a> { <b>kOne_mg_per_LSB</b>, 
@@ -151,20 +142,25 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:ab898071398b359603a35c202e9c65f3b"><td class="memItemLeft" align="right" valign="top">struct&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_l_s_m303_d_l_h_c_8h.html#ab898071398b359603a35c202e9c65f3b">__attribute__</a> ((packed))</td></tr>
+<tr class="memdesc:ab898071398b359603a35c202e9c65f3b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Raw accel packet definition.  <a href="#ab898071398b359603a35c202e9c65f3b">More...</a><br /></td></tr>
+<tr class="separator:ab898071398b359603a35c202e9c65f3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a46a55573da4d97046f6d978514455241"><td class="memItemLeft" align="right" valign="top"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_l_s_m303_d_l_h_c_8h.html#a46a55573da4d97046f6d978514455241">LSM303DLHC_init</a> (<a class="el" href="_l_s_m303_d_l_h_c_8h.html#ab00bd08da6adffa5f619bf4518987646">accel_ODR_t</a> accel_datarate, <a class="el" href="_l_s_m303_d_l_h_c_8h.html#a991029ee54fe14d5cccb896514198ece">accel_sensitivity_t</a> accel_sensitivity, <a class="el" href="_l_s_m303_d_l_h_c_8h.html#a15695b60e53efaad440a68cbab308e76">mag_ODR_t</a> mag_datarate, <a class="el" href="_l_s_m303_d_l_h_c_8h.html#a852b7a4df3a7f1dead0887918aade192">mag_sensitivity_t</a> mag_sensitivity)</td></tr>
 <tr class="separator:a46a55573da4d97046f6d978514455241"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47c442e6c9edd6352a219b6237154cd2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_l_s_m303_d_l_h_c_8h.html#a47c442e6c9edd6352a219b6237154cd2">LSM303DLHC_run</a> (void)</td></tr>
+<tr class="separator:a47c442e6c9edd6352a219b6237154cd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a884a150785bb1cdcf4bc609bb7c37c72"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_l_s_m303_d_l_h_c_8h.html#a884a150785bb1cdcf4bc609bb7c37c72">LSM303DLHC_accel_dataAvailable</a> (void)</td></tr>
 <tr class="separator:a884a150785bb1cdcf4bc609bb7c37c72"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a06a42a819793de9e204e27b2cac456ba"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_l_s_m303_d_l_h_c_8h.html#a06a42a819793de9e204e27b2cac456ba">LSM303DLHC_mag_dataAvailable</a> (void)</td></tr>
 <tr class="separator:a06a42a819793de9e204e27b2cac456ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0a904bc24f08aacaf4742ccfd9b872a4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_l_s_m303_d_l_h_c_8h.html#a0a904bc24f08aacaf4742ccfd9b872a4">LSM303DLHC_accel_getPacket</a> (<a class="el" href="structaccel__packet__t.html">accel_packet_t</a> *pkt_ptr, bool peak)</td></tr>
-<tr class="separator:a0a904bc24f08aacaf4742ccfd9b872a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3292c7f493f6d4551dac66099972cfb6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_l_s_m303_d_l_h_c_8h.html#a3292c7f493f6d4551dac66099972cfb6">LSM303DLHC_mag_getPacket</a> (<a class="el" href="structmag__packet__t.html">mag_packet_t</a> *pkt_ptr, bool peak)</td></tr>
-<tr class="separator:a3292c7f493f6d4551dac66099972cfb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a319f26f1f67736fb80b3e86ba56720b7"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_l_s_m303_d_l_h_c_8h.html#a319f26f1f67736fb80b3e86ba56720b7">LSM303DLHC_accel_packetOverwriteCount</a> (void)</td></tr>
-<tr class="separator:a319f26f1f67736fb80b3e86ba56720b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac1fb5409a0c4fcdf01df1dd7592c8837"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_l_s_m303_d_l_h_c_8h.html#ac1fb5409a0c4fcdf01df1dd7592c8837">LSM303DLHC_mag_packetOverwriteCount</a> (void)</td></tr>
-<tr class="separator:ac1fb5409a0c4fcdf01df1dd7592c8837"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a994de7065a748702b8db45664b6cb11a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_l_s_m303_d_l_h_c_8h.html#a994de7065a748702b8db45664b6cb11a">LSM303DLHC_accel_getPacket</a> (accel_norm_t *pkt_ptr, bool peak)</td></tr>
+<tr class="separator:a994de7065a748702b8db45664b6cb11a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a110ceb2bfe3a4eb5737e405dd9efac"><td class="memItemLeft" align="right" valign="top"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_l_s_m303_d_l_h_c_8h.html#a3a110ceb2bfe3a4eb5737e405dd9efac">LSM303DLHC_mag_getPacket</a> (mag_norm_t *pkt_ptr, bool peak)</td></tr>
+<tr class="separator:a3a110ceb2bfe3a4eb5737e405dd9efac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9122f0e5ce7af3c9250cef54d2314cb0"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_l_s_m303_d_l_h_c_8h.html#a9122f0e5ce7af3c9250cef54d2314cb0">LSM303DLHC_accel_packetOverwriteCount</a> (void)</td></tr>
+<tr class="separator:a9122f0e5ce7af3c9250cef54d2314cb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f9ddfc3d6eb49b615c291de243ef4e0"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_l_s_m303_d_l_h_c_8h.html#a7f9ddfc3d6eb49b615c291de243ef4e0">LSM303DLHC_mag_packetOverwriteCount</a> (void)</td></tr>
+<tr class="separator:a7f9ddfc3d6eb49b615c291de243ef4e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a101c7cd3976460dda8c06ce07cce7f60"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_l_s_m303_d_l_h_c_8h.html#a101c7cd3976460dda8c06ce07cce7f60">LSM303DLHC_accel_HardwareOverwriteCount</a> (void)</td></tr>
 <tr class="separator:a101c7cd3976460dda8c06ce07cce7f60"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a827f4bf513a9ea382f492b6eb3838482"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_l_s_m303_d_l_h_c_8h.html#a827f4bf513a9ea382f492b6eb3838482">LSM303DLHC_mag_HardwareOverwriteCount</a> (void)</td></tr>
@@ -173,6 +169,34 @@ Functions</h2></td></tr>
 <tr class="separator:a0113ffeb13bf968750796a337cfaaed3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3887eee3a661ce3071adfc40f7410364"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_l_s_m303_d_l_h_c_8h.html#a3887eee3a661ce3071adfc40f7410364">LSM303DLHC_drdy_ISR</a> (void)</td></tr>
 <tr class="separator:a3887eee3a661ce3071adfc40f7410364"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d79709b7a63faad68a17a899fcdfbef"><td class="memItemLeft" align="right" valign="top"><a id="a2d79709b7a63faad68a17a899fcdfbef"></a>
+<a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>rpt_LSM303DLHC_enableStreams</b> (uint8_t *in_p, uint8_t in_len, uint8_t *UNUSED_PARAM(out_p), uint8_t *UNUSED_PARAM(out_len_ptr))</td></tr>
+<tr class="separator:a2d79709b7a63faad68a17a899fcdfbef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3c62db94f001ed64dec4f49c88c31ce0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_l_s_m303_d_l_h_c_8h.html#a3c62db94f001ed64dec4f49c88c31ce0">rpt_LSM303DLHC_changeConfig</a> (uint8_t *in_p, uint8_t in_len, uint8_t *UNUSED_PARAM(out_p), uint8_t *UNUSED_PARAM(out_len_ptr))</td></tr>
+<tr class="separator:a3c62db94f001ed64dec4f49c88c31ce0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a52176917932772fe9948587ad55e2404"><td class="memItemLeft" align="right" valign="top"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_l_s_m303_d_l_h_c_8h.html#a52176917932772fe9948587ad55e2404">rpt_LSM303DLHC_getTemp</a> (uint8_t *UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len), uint8_t *out_p, uint8_t *out_len_ptr)</td></tr>
+<tr class="separator:a52176917932772fe9948587ad55e2404"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a22507471b25b9f07e30f286ecc632660"><td class="memItemLeft" align="right" valign="top"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_l_s_m303_d_l_h_c_8h.html#a22507471b25b9f07e30f286ecc632660">rpt_LSM303DLHC_getAccel</a> (uint8_t *in_p, uint8_t in_len, uint8_t *out_p, uint8_t *out_len_ptr)</td></tr>
+<tr class="separator:a22507471b25b9f07e30f286ecc632660"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa93d1b1bbeda209384772418b0d7d5ec"><td class="memItemLeft" align="right" valign="top"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_l_s_m303_d_l_h_c_8h.html#aa93d1b1bbeda209384772418b0d7d5ec">rpt_LSM303DLHC_getMag</a> (uint8_t *in_p, uint8_t in_len, uint8_t *out_p, uint8_t *out_len_ptr)</td></tr>
+<tr class="separator:aa93d1b1bbeda209384772418b0d7d5ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af667f18dd8abc8294d02bf4dbba26900"><td class="memItemLeft" align="right" valign="top"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_l_s_m303_d_l_h_c_8h.html#af667f18dd8abc8294d02bf4dbba26900">rpt_LSM303DLHC_getErrors</a> (uint8_t *UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len), uint8_t *out_p, uint8_t *out_len_ptr)</td></tr>
+<tr class="separator:af667f18dd8abc8294d02bf4dbba26900"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:aae1c0b2edc4dbc99e2a97715c3d969e1"><td class="memItemLeft" align="right" valign="top"><a id="aae1c0b2edc4dbc99e2a97715c3d969e1"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>accel_raw_t</b></td></tr>
+<tr class="separator:aae1c0b2edc4dbc99e2a97715c3d969e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6bbbc5257db0bbbcc0f61d1a66061f4d"><td class="memItemLeft" align="right" valign="top"><a id="a6bbbc5257db0bbbcc0f61d1a66061f4d"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>accel_norm_t</b></td></tr>
+<tr class="separator:a6bbbc5257db0bbbcc0f61d1a66061f4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a59463e8de1f7862fce8672c8f2d2a0b6"><td class="memItemLeft" align="right" valign="top"><a id="a59463e8de1f7862fce8672c8f2d2a0b6"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>mag_raw_t</b></td></tr>
+<tr class="separator:a59463e8de1f7862fce8672c8f2d2a0b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ea242ae2801cc1db35d25d1aec93554"><td class="memItemLeft" align="right" valign="top"><a id="a4ea242ae2801cc1db35d25d1aec93554"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>mag_norm_t</b></td></tr>
+<tr class="separator:a4ea242ae2801cc1db35d25d1aec93554"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Functions and definitions to interface with the accelerometer + magnetometer chip LSM303DLHC. </p>
@@ -180,6 +204,49 @@ Functions</h2></td></tr>
 <dl class="section version"><dt>Version</dt><dd>0.1.0 </dd></dl>
 <dl class="section date"><dt>Date</dt><dd>20-May-2017 </dd></dl>
 </div><h2 class="groupheader">Function Documentation</h2>
+<a id="ab898071398b359603a35c202e9c65f3b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab898071398b359603a35c202e9c65f3b">&#9670;&nbsp;</a></span>__attribute__()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct __attribute__ </td>
+          <td>(</td>
+          <td class="paramtype">(packed)&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Raw accel packet definition. </p>
+<p>Normalized mag packet definition.</p>
+<p>Raw mag packet definition.</p>
+<p>Normalized accel packet definition. </p>
+<p>&lt; Frame number</p>
+<p>&lt; Timestamp when the packet was received</p>
+<p>&lt; Accel X value</p>
+<p>&lt; Accel Y value</p>
+<p>&lt; Accel Z value</p>
+<p>&lt; Frame number</p>
+<p>&lt; Timestamp when the packet was received</p>
+<p>&lt; Accel X value</p>
+<p>&lt; Accel Y value</p>
+<p>&lt; Accel Z value</p>
+<p>&lt; Frame number</p>
+<p>&lt; Timestamp when the packet was received</p>
+<p>&lt; Mag X value</p>
+<p>&lt; Mag Y value</p>
+<p>&lt; Mag Z value</p>
+<p>&lt; Frame number</p>
+<p>&lt; Timestamp when the packet was received</p>
+<p>&lt; Mag X value</p>
+<p>&lt; Mag Y value</p>
+<p>&lt; Mag Z value </p>
+
+</div>
+</div>
 <a id="a884a150785bb1cdcf4bc609bb7c37c72"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a884a150785bb1cdcf4bc609bb7c37c72">&#9670;&nbsp;</a></span>LSM303DLHC_accel_dataAvailable()</h2>
 
@@ -205,8 +272,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a0a904bc24f08aacaf4742ccfd9b872a4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0a904bc24f08aacaf4742ccfd9b872a4">&#9670;&nbsp;</a></span>LSM303DLHC_accel_getPacket()</h2>
+<a id="a994de7065a748702b8db45664b6cb11a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a994de7065a748702b8db45664b6cb11a">&#9670;&nbsp;</a></span>LSM303DLHC_accel_getPacket()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -214,7 +281,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a> LSM303DLHC_accel_getPacket </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structaccel__packet__t.html">accel_packet_t</a> *&#160;</td>
+          <td class="paramtype">accel_norm_t *&#160;</td>
           <td class="paramname"><em>pkt_ptr</em>, </td>
         </tr>
         <tr>
@@ -234,7 +301,7 @@ Functions</h2></td></tr>
 <p>Note: This is function modifies the tail index if we're overwritting unread data. LSM303DLHC_accel_putPacket also can modify it, so we must check for that case in this function as LSM303DLHC_accel_getPacket gets called asynchronously.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">pkt_ptr</td><td>(<a class="el" href="structaccel__packet__t.html" title="Accel packet definition. ">accel_packet_t</a> *): Place to put the retreived accel packet. </td></tr>
+    <tr><td class="paramname">pkt_ptr</td><td>(accel_norm_t *): Place to put the retreived accel packet. </td></tr>
     <tr><td class="paramname">peak</td><td>(bool): Whether or not we should pop it off the queue or to just peak at it. </td></tr>
   </table>
   </dd>
@@ -274,14 +341,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a319f26f1f67736fb80b3e86ba56720b7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a319f26f1f67736fb80b3e86ba56720b7">&#9670;&nbsp;</a></span>LSM303DLHC_accel_packetOverwriteCount()</h2>
+<a id="a9122f0e5ce7af3c9250cef54d2314cb0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9122f0e5ce7af3c9250cef54d2314cb0">&#9670;&nbsp;</a></span>LSM303DLHC_accel_packetOverwriteCount()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint8_t LSM303DLHC_accel_packetOverwriteCount </td>
+          <td class="memname">uint32_t LSM303DLHC_accel_packetOverwriteCount </td>
           <td>(</td>
           <td class="paramtype">void&#160;</td>
           <td class="paramname"></td><td>)</td>
@@ -292,7 +359,7 @@ Functions</h2></td></tr>
 <p>Gets the number of packet drops in the accel queue.</p>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
-    <tr><td class="paramname">(uint8_t)</td><td>Number of queue overwrites. </td></tr>
+    <tr><td class="paramname">(uint32_t)</td><td>Number of queue overwrites. </td></tr>
   </table>
   </dd>
 </dl>
@@ -314,12 +381,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Interrupt handler for the DRDY interrupt pin coming from this chip.</p>
-<ol type="1">
-<li>Check the status register of the chip, update error flags, and check for available data.</li>
-<li>Based on the status, get the available data.</li>
-<li>Put that data into a packet queue. </li>
-</ol>
+<p>Interrupt handler for the DRDY interrupt pin coming from this chip. All it does is set a flag so the LSM303DLHC_run function can handle the I2C stuff to get packets. </p>
 
 </div>
 </div>
@@ -404,8 +466,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a3292c7f493f6d4551dac66099972cfb6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3292c7f493f6d4551dac66099972cfb6">&#9670;&nbsp;</a></span>LSM303DLHC_mag_getPacket()</h2>
+<a id="a3a110ceb2bfe3a4eb5737e405dd9efac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3a110ceb2bfe3a4eb5737e405dd9efac">&#9670;&nbsp;</a></span>LSM303DLHC_mag_getPacket()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -413,7 +475,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a> LSM303DLHC_mag_getPacket </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structmag__packet__t.html">mag_packet_t</a> *&#160;</td>
+          <td class="paramtype">mag_norm_t *&#160;</td>
           <td class="paramname"><em>pkt_ptr</em>, </td>
         </tr>
         <tr>
@@ -433,7 +495,7 @@ Functions</h2></td></tr>
 <p>Note: This is function modifies the tail index if we're overwritting unread data. LSM303DLHC_mag_putPacket also can modify it, so we must check for that case in this function as LSM303DLHC_mag_getPacket gets called asynchronously.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">pkt_ptr</td><td>(<a class="el" href="structmag__packet__t.html" title="Mag packet definition. ">mag_packet_t</a> *): Place to put the retreived mag packet. </td></tr>
+    <tr><td class="paramname">pkt_ptr</td><td>(mag_norm_t *): Place to put the retreived mag packet. </td></tr>
     <tr><td class="paramname">peak</td><td>(bool): Whether or not we should pop it off the queue or to just peak at it. </td></tr>
   </table>
   </dd>
@@ -473,14 +535,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ac1fb5409a0c4fcdf01df1dd7592c8837"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac1fb5409a0c4fcdf01df1dd7592c8837">&#9670;&nbsp;</a></span>LSM303DLHC_mag_packetOverwriteCount()</h2>
+<a id="a7f9ddfc3d6eb49b615c291de243ef4e0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7f9ddfc3d6eb49b615c291de243ef4e0">&#9670;&nbsp;</a></span>LSM303DLHC_mag_packetOverwriteCount()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint8_t LSM303DLHC_mag_packetOverwriteCount </td>
+          <td class="memname">uint32_t LSM303DLHC_mag_packetOverwriteCount </td>
           <td>(</td>
           <td class="paramtype">void&#160;</td>
           <td class="paramname"></td><td>)</td>
@@ -491,10 +553,34 @@ Functions</h2></td></tr>
 <p>Gets the number of packet drops in the mag queue.</p>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
-    <tr><td class="paramname">(uint8_t)</td><td>Number of queue overwrites. </td></tr>
+    <tr><td class="paramname">(uint32_t)</td><td>Number of queue overwrites. </td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a47c442e6c9edd6352a219b6237154cd2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a47c442e6c9edd6352a219b6237154cd2">&#9670;&nbsp;</a></span>LSM303DLHC_run()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a> LSM303DLHC_run </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>LSM303DLHC runner that gets new data if the data ready IRQ fired.</p>
+<p>If there's data ready:</p><ol type="1">
+<li>Check the status register of the chip, update error flags, and check for available data.</li>
+<li>Based on the status, get the available data.</li>
+<li>Put that data into a packet queue. </li>
+</ol>
 
 </div>
 </div>
@@ -526,6 +612,216 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a3c62db94f001ed64dec4f49c88c31ce0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3c62db94f001ed64dec4f49c88c31ce0">&#9670;&nbsp;</a></span>rpt_LSM303DLHC_changeConfig()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a> rpt_LSM303DLHC_changeConfig </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>in_p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>in_len</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>UNUSED_PARAM</em>out_p, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>UNUSED_PARAM</em>out_len_ptr&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Report 0x20 that changes the configuration of the LSM303DLHC chip. The argument structure Is as follows packed into the in buffer:</p><ol type="1">
+<li>accel_ODR_t</li>
+<li>accel_sensitivity_t</li>
+<li>mag_ODR_t</li>
+<li>mag_sensitivity_t </li>
+</ol>
+
+</div>
+</div>
+<a id="a22507471b25b9f07e30f286ecc632660"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a22507471b25b9f07e30f286ecc632660">&#9670;&nbsp;</a></span>rpt_LSM303DLHC_getAccel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a> rpt_LSM303DLHC_getAccel </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>in_p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>in_len</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>out_p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>out_len_ptr</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Report 0x22: Gets an accel packet </p>
+
+</div>
+</div>
+<a id="af667f18dd8abc8294d02bf4dbba26900"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af667f18dd8abc8294d02bf4dbba26900">&#9670;&nbsp;</a></span>rpt_LSM303DLHC_getErrors()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a> rpt_LSM303DLHC_getErrors </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>UNUSED_PARAM</em>in_p, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t &#160;</td>
+          <td class="paramname"><em>UNUSED_PARAM</em>in_len, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>out_p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>out_len_ptr</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Report 0x24: Gets LSM303DLHC errors </p>
+
+</div>
+</div>
+<a id="aa93d1b1bbeda209384772418b0d7d5ec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa93d1b1bbeda209384772418b0d7d5ec">&#9670;&nbsp;</a></span>rpt_LSM303DLHC_getMag()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a> rpt_LSM303DLHC_getMag </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>in_p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>in_len</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>out_p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>out_len_ptr</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Report 0x23: Gets an mag packet </p>
+
+</div>
+</div>
+<a id="a52176917932772fe9948587ad55e2404"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a52176917932772fe9948587ad55e2404">&#9670;&nbsp;</a></span>rpt_LSM303DLHC_getTemp()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a> rpt_LSM303DLHC_getTemp </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>UNUSED_PARAM</em>in_p, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t &#160;</td>
+          <td class="paramname"><em>UNUSED_PARAM</em>in_len, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>out_p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>out_len_ptr</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Report 0x21 that returns the temperature from LSM303DLHC. Takes in no parameters. Returns the temperature (int16_t) </p>
 
 </div>
 </div>

@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['mag_5fpacket_5ft',['mag_packet_t',['../structmag__packet__t.html',1,'']]],
-  ['movement_5ft',['movement_t',['../structmovement__t.html',1,'']]]
+  ['lsm303dlhc_5fadmin_5ft',['LSM303DLHC_admin_t',['../struct_l_s_m303_d_l_h_c__admin__t.html',1,'']]]
 ];

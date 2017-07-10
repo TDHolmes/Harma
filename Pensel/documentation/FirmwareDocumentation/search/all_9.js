@@ -1,20 +1,8 @@
 var searchData=
 [
-  ['mag_5fdata_5favailable',['mag_data_available',['../struct_l_s_m303_d_l_h_c__admin__t.html#add95fbd66a438f3a9692d58edd1c622c',1,'LSM303DLHC_admin_t']]],
-  ['mag_5fdatarate',['mag_datarate',['../struct_l_s_m303_d_l_h_c__admin__t.html#a57f9c63af358667b876a8c6191f28448',1,'LSM303DLHC_admin_t']]],
-  ['mag_5fhw_5foverwrite_5fcount',['mag_hw_overwrite_count',['../struct_l_s_m303_d_l_h_c__admin__t.html#ad667c555d3b418379c510b7c3e4d984a',1,'LSM303DLHC_admin_t']]],
-  ['mag_5fodr_5ft',['mag_ODR_t',['../_l_s_m303_d_l_h_c_8h.html#a15695b60e53efaad440a68cbab308e76',1,'LSM303DLHC.h']]],
-  ['mag_5fpacket_5ft',['mag_packet_t',['../structmag__packet__t.html',1,'']]],
-  ['mag_5fpkts',['mag_pkts',['../struct_l_s_m303_d_l_h_c__admin__t.html#a88ac25b5991cac8f512be6f3689facbf',1,'LSM303DLHC_admin_t']]],
-  ['mag_5fqueue',['mag_queue',['../struct_l_s_m303_d_l_h_c__admin__t.html#a2c96997e096a11b0a635c9777fcd7047',1,'LSM303DLHC_admin_t']]],
-  ['mag_5fsensitivity',['mag_sensitivity',['../struct_l_s_m303_d_l_h_c__admin__t.html#ae17b297e4baf40203c1943abe87073b0',1,'LSM303DLHC_admin_t']]],
-  ['mag_5fsensitivity_5ft',['mag_sensitivity_t',['../_l_s_m303_d_l_h_c_8h.html#a852b7a4df3a7f1dead0887918aade192',1,'LSM303DLHC.h']]],
-  ['maggainoffsets_5fxy',['MagGainOffsets_XY',['../_l_s_m303_d_l_h_c_8c.html#a7b0a78cfe9cf857743bf94d31be0f3ae',1,'LSM303DLHC.c']]],
-  ['maggainoffsets_5fz',['MagGainOffsets_Z',['../_l_s_m303_d_l_h_c_8c.html#a415a091d065eee3986081cf2fb4a6e34',1,'LSM303DLHC.c']]],
-  ['main',['main',['../main_8c.html#a840291bc02cba5474a4cb46a9b9566fe',1,'main.c']]],
-  ['main_2ec',['main.c',['../main_8c.html',1,'']]],
-  ['mainbutton_5fadmin',['mainbutton_admin',['../hardware_8c.html#a762dfea2571a0ddc27580c7b4719ecb7',1,'hardware.c']]],
-  ['movement_2ec',['movement.c',['../movement_8c.html',1,'']]],
-  ['movement_2eh',['movement.h',['../movement_8h.html',1,'']]],
-  ['movement_5ft',['movement_t',['../structmovement__t.html',1,'']]]
+  ['krpt_5fevaluateandprint',['kRpt_EvaluateAndPrint',['../reports_8c.html#a36ac5da527590376bcbfdfb1d07bec3aac10a12cae1ede5a9ccb143b56dba794a',1,'reports.c']]],
+  ['krpt_5freadlen',['kRpt_ReadLen',['../reports_8c.html#a36ac5da527590376bcbfdfb1d07bec3aaec99495e090a77b03bae10be59b90cfb',1,'reports.c']]],
+  ['krpt_5freadmagic_5f0',['kRpt_ReadMagic_0',['../reports_8c.html#a36ac5da527590376bcbfdfb1d07bec3aaeeef87c652796504e30c492243a064e7',1,'reports.c']]],
+  ['krpt_5freadpayload',['kRpt_ReadPayload',['../reports_8c.html#a36ac5da527590376bcbfdfb1d07bec3aa99f1a24fa0c9858bebbbb93703a116a4',1,'reports.c']]],
+  ['krpt_5freadrpt',['kRpt_ReadRpt',['../reports_8c.html#a36ac5da527590376bcbfdfb1d07bec3aaedf3b0c46200e7e04739810e0d1853d0',1,'reports.c']]]
 ];

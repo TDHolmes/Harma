@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['i2c_2ec',['I2C.c',['../_i2_c_8c.html',1,'']]],
-  ['i2c_2eh',['I2C.h',['../_i2_c_8h.html',1,'']]],
-  ['invalid_5fchrs',['invalid_chrs',['../structrpt__t.html#a4b4d772b4835efe71d964659a87d0634',1,'rpt_t']]],
-  ['io_5fdebounce_5ftimeout',['IO_DEBOUNCE_TIMEOUT',['../hardware_8c.html#aa030c0fb55f3a32272f769f4c4d80f9c',1,'hardware.c']]],
-  ['item_5fsize',['item_size',['../structnewqueue__t.html#ad8c263288fa165e914d4d7496ba30bd5',1,'newqueue_t']]]
+  ['gcal',['gCal',['../cal_8h.html#ac756c0ff536c0ccefae3077148279fc3',1,'cal.h']]],
+  ['genableaccelstream',['gEnableAccelStream',['../common_8h.html#a8fc8374010b6d68afeee2e15e43f5897',1,'common.h']]],
+  ['genablemagstream',['gEnableMagStream',['../common_8h.html#aefc45a3e2533459fcf0ca68c7d8d6171',1,'common.h']]],
+  ['getchr',['getchr',['../structrpt__t.html#a5bce16b6a972de1f5f20b7346a1a0b38',1,'rpt_t']]],
+  ['gravity_5fvector',['gravity_vector',['../structorientation__admin__t.html#a45bc306087571680a091b0fd640095b0',1,'orientation_admin_t']]]
 ];

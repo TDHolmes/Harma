@@ -63,6 +63,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">UART.h File Reference</div>  </div>
@@ -77,6 +78,13 @@ $(function() {
 </div>
 <p><a href="_u_a_r_t_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a6bfddf84ea47d906536cc8ffcc9dd5cc"><td class="memItemLeft" align="right" valign="top"><a id="a6bfddf84ea47d906536cc8ffcc9dd5cc"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_u_a_r_t_8h.html#a6bfddf84ea47d906536cc8ffcc9dd5cc">UART_TIMEOUT_MS</a>&#160;&#160;&#160;(50)</td></tr>
+<tr class="memdesc:a6bfddf84ea47d906536cc8ffcc9dd5cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Timeout time for UART. <br /></td></tr>
+<tr class="separator:a6bfddf84ea47d906536cc8ffcc9dd5cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a97e81ed2e2edb00db32143156b74419d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_u_a_r_t_8h.html#a97e81ed2e2edb00db32143156b74419d">UART_init</a> (uint32_t baudrate)</td></tr>
@@ -270,10 +278,11 @@ Functions</h2></td></tr>
 </dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
-    <tr><td class="paramname">Return</td><td>code indicating success / failure of the start of the transmit </td></tr>
+    <tr><td class="paramname">Return</td><td>code indicating success / failure of the start of the transmit</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section note"><dt>Note</dt><dd>this function will timeout after <code>UART_TIMEOUT_MS</code> miliseconds of the HAL UART driver being busy. </dd></dl>
 
 </div>
 </div>

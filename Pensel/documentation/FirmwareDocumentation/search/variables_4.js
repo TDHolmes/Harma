@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['getchr',['getchr',['../structrpt__t.html#a5bce16b6a972de1f5f20b7346a1a0b38',1,'rpt_t']]],
-  ['gravity_5fvector',['gravity_vector',['../structorientation__admin__t.html#a45bc306087571680a091b0fd640095b0',1,'orientation_admin_t']]]
+  ['fir_5faccelgrav_5fptr',['FIR_accelGrav_ptr',['../structorientation__admin__t.html#a8346982acd52a31b8b94d52659fb7c8f',1,'orientation_admin_t']]],
+  ['fir_5fmagnorth_5fptr',['FIR_magNorth_ptr',['../structorientation__admin__t.html#ae3ebec344494eb60a8d3c46eb9a6848a',1,'orientation_admin_t']]]
 ];

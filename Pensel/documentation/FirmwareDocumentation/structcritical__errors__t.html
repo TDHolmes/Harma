@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.14"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Pensel: mag_packet_t Struct Reference</title>
+<title>Pensel: critical_errors_t Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -61,38 +61,31 @@ $(function() {
   <div class="summary">
 <a href="#pub-attribs">Data Fields</a>  </div>
   <div class="headertitle">
-<div class="title">mag_packet_t Struct Reference</div>  </div>
+<div class="title">critical_errors_t Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>Mag packet definition.  
- <a href="structmag__packet__t.html#details">More...</a></p>
+<p>Structure to keep track of our critical errors.  
+ <a href="structcritical__errors__t.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="_l_s_m303_d_l_h_c_8h_source.html">LSM303DLHC.h</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="common_8h_source.html">common.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr class="memitem:a3c0445396f4521dd33bffce6f017673c"><td class="memItemLeft" align="right" valign="top"><a id="a3c0445396f4521dd33bffce6f017673c"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmag__packet__t.html#a3c0445396f4521dd33bffce6f017673c">timestamp</a></td></tr>
-<tr class="memdesc:a3c0445396f4521dd33bffce6f017673c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Timestamp when the packet was received. <br /></td></tr>
-<tr class="separator:a3c0445396f4521dd33bffce6f017673c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a906fbf370d8771dca215f6110caeba9f"><td class="memItemLeft" align="right" valign="top"><a id="a906fbf370d8771dca215f6110caeba9f"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmag__packet__t.html#a906fbf370d8771dca215f6110caeba9f">x</a></td></tr>
-<tr class="memdesc:a906fbf370d8771dca215f6110caeba9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mag X value. <br /></td></tr>
-<tr class="separator:a906fbf370d8771dca215f6110caeba9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a90bd4985d2a9ae577b3abddb841e99a7"><td class="memItemLeft" align="right" valign="top"><a id="a90bd4985d2a9ae577b3abddb841e99a7"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmag__packet__t.html#a90bd4985d2a9ae577b3abddb841e99a7">y</a></td></tr>
-<tr class="memdesc:a90bd4985d2a9ae577b3abddb841e99a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mag Y value. <br /></td></tr>
-<tr class="separator:a90bd4985d2a9ae577b3abddb841e99a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3b35cb1aec9c97c067db548b00dbf220"><td class="memItemLeft" align="right" valign="top"><a id="a3b35cb1aec9c97c067db548b00dbf220"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmag__packet__t.html#a3b35cb1aec9c97c067db548b00dbf220">z</a></td></tr>
-<tr class="memdesc:a3b35cb1aec9c97c067db548b00dbf220"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mag Z value. <br /></td></tr>
-<tr class="separator:a3b35cb1aec9c97c067db548b00dbf220"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e6d4ef990b288949246ced0d32508d8"><td class="memItemLeft" align="right" valign="top"><a id="a3e6d4ef990b288949246ced0d32508d8"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>cal_header_err</b>: 1</td></tr>
+<tr class="separator:a3e6d4ef990b288949246ced0d32508d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b2895053cea6a4b2e22daaf453d018c"><td class="memItemLeft" align="right" valign="top"><a id="a8b2895053cea6a4b2e22daaf453d018c"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>cal_version_err</b>: 1</td></tr>
+<tr class="separator:a8b2895053cea6a4b2e22daaf453d018c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae406c7690711808e981619dd3c7c9db1"><td class="memItemLeft" align="right" valign="top"><a id="ae406c7690711808e981619dd3c7c9db1"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>cal_checksum_err</b>: 1</td></tr>
+<tr class="separator:ae406c7690711808e981619dd3c7c9db1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Mag packet definition. </p>
+<div class="textblock"><p>Structure to keep track of our critical errors. </p>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>
-<li>firmware/include/<a class="el" href="_l_s_m303_d_l_h_c_8h_source.html">LSM303DLHC.h</a></li>
+<li>firmware/include/<a class="el" href="common_8h_source.html">common.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

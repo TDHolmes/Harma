@@ -1,6 +1,7 @@
 var searchData=
 [
   ['ret_5fbusy_5ferr',['RET_BUSY_ERR',['../common_8h.html#a18a6141fb52597a7d96dc02105928b47aef270a5ed8b734f3b3e348fed4d4939e',1,'common.h']]],
+  ['ret_5fcal_5ferr',['RET_CAL_ERR',['../common_8h.html#a18a6141fb52597a7d96dc02105928b47aeba6a4cd20d0abc56f629a700b41dc2c',1,'common.h']]],
   ['ret_5fcom_5ferr',['RET_COM_ERR',['../common_8h.html#a18a6141fb52597a7d96dc02105928b47ac5094c15e130b0e6daa51dc85bb2e330',1,'common.h']]],
   ['ret_5fgen_5ferr',['RET_GEN_ERR',['../common_8h.html#a18a6141fb52597a7d96dc02105928b47a120300d1e83ca226e82850b42da77256',1,'common.h']]],
   ['ret_5finvalid_5fargs_5ferr',['RET_INVALID_ARGS_ERR',['../common_8h.html#a18a6141fb52597a7d96dc02105928b47ab98008aedadd5e5420776344ed5be9b1',1,'common.h']]],

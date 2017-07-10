@@ -78,14 +78,14 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_l_s_m303_d_l_h_c__admin__t.html#ad667c555d3b418379c510b7c3e4d984a">mag_hw_overwrite_count</a></td></tr>
 <tr class="memdesc:ad667c555d3b418379c510b7c3e4d984a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mag overwrites on the chip itself. <br /></td></tr>
 <tr class="separator:ad667c555d3b418379c510b7c3e4d984a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a61bbaa222d88187f6dd6fca3d3396008"><td class="memItemLeft" align="right" valign="top"><a id="a61bbaa222d88187f6dd6fca3d3396008"></a>
-<a class="el" href="structaccel__packet__t.html">accel_packet_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_l_s_m303_d_l_h_c__admin__t.html#a61bbaa222d88187f6dd6fca3d3396008">accel_pkts</a> [ACCEL_QUEUE_SIZE]</td></tr>
-<tr class="memdesc:a61bbaa222d88187f6dd6fca3d3396008"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accel queue to store X packets. <br /></td></tr>
-<tr class="separator:a61bbaa222d88187f6dd6fca3d3396008"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a88ac25b5991cac8f512be6f3689facbf"><td class="memItemLeft" align="right" valign="top"><a id="a88ac25b5991cac8f512be6f3689facbf"></a>
-<a class="el" href="structmag__packet__t.html">mag_packet_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_l_s_m303_d_l_h_c__admin__t.html#a88ac25b5991cac8f512be6f3689facbf">mag_pkts</a> [MAG_QUEUE_SIZE]</td></tr>
-<tr class="memdesc:a88ac25b5991cac8f512be6f3689facbf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mag queue to store packets. <br /></td></tr>
-<tr class="separator:a88ac25b5991cac8f512be6f3689facbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe2b85b3eb230878fc1c229ba72c0b2b"><td class="memItemLeft" align="right" valign="top"><a id="afe2b85b3eb230878fc1c229ba72c0b2b"></a>
+accel_raw_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_l_s_m303_d_l_h_c__admin__t.html#afe2b85b3eb230878fc1c229ba72c0b2b">accel_pkts</a> [ACCEL_QUEUE_SIZE]</td></tr>
+<tr class="memdesc:afe2b85b3eb230878fc1c229ba72c0b2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accel queue to store raw packets. <br /></td></tr>
+<tr class="separator:afe2b85b3eb230878fc1c229ba72c0b2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7bc8cba2a71411476fe389e65a49c329"><td class="memItemLeft" align="right" valign="top"><a id="a7bc8cba2a71411476fe389e65a49c329"></a>
+mag_raw_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_l_s_m303_d_l_h_c__admin__t.html#a7bc8cba2a71411476fe389e65a49c329">mag_pkts</a> [MAG_QUEUE_SIZE]</td></tr>
+<tr class="memdesc:a7bc8cba2a71411476fe389e65a49c329"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mag queue to store raw packets. <br /></td></tr>
+<tr class="separator:a7bc8cba2a71411476fe389e65a49c329"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af721fae7dd9cb947a4bfabde938a8b23"><td class="memItemLeft" align="right" valign="top"><a id="af721fae7dd9cb947a4bfabde938a8b23"></a>
 <a class="el" href="structqueue__t.html">queue_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_l_s_m303_d_l_h_c__admin__t.html#af721fae7dd9cb947a4bfabde938a8b23">accel_queue</a></td></tr>
 <tr class="memdesc:af721fae7dd9cb947a4bfabde938a8b23"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accel admin struct of the accel_queues. <br /></td></tr>
@@ -94,9 +94,19 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 <a class="el" href="structqueue__t.html">queue_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_l_s_m303_d_l_h_c__admin__t.html#a2c96997e096a11b0a635c9777fcd7047">mag_queue</a></td></tr>
 <tr class="memdesc:a2c96997e096a11b0a635c9777fcd7047"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mag admin struct of the mag_queues. <br /></td></tr>
 <tr class="separator:a2c96997e096a11b0a635c9777fcd7047"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0943f8a47da7848e2b7fc22ac4c0dd5d"><td class="memItemLeft" align="right" valign="top"><a id="a0943f8a47da7848e2b7fc22ac4c0dd5d"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_l_s_m303_d_l_h_c__admin__t.html#a0943f8a47da7848e2b7fc22ac4c0dd5d">accel_framenum</a></td></tr>
+<tr class="memdesc:a0943f8a47da7848e2b7fc22ac4c0dd5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accel frame number Increments on each accel packet. <br /></td></tr>
+<tr class="separator:a0943f8a47da7848e2b7fc22ac4c0dd5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d52e2a3039bef5b1243472de49e95fc"><td class="memItemLeft" align="right" valign="top"><a id="a6d52e2a3039bef5b1243472de49e95fc"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_l_s_m303_d_l_h_c__admin__t.html#a6d52e2a3039bef5b1243472de49e95fc">mag_framenum</a></td></tr>
+<tr class="memdesc:a6d52e2a3039bef5b1243472de49e95fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mag frame number. Increments on each mag packet. <br /></td></tr>
+<tr class="separator:a6d52e2a3039bef5b1243472de49e95fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a424b4eb805c3d60a85d493673f0297a1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_l_s_m303_d_l_h_c__admin__t.html#a424b4eb805c3d60a85d493673f0297a1">data_ready</a></td></tr>
+<tr class="separator:a424b4eb805c3d60a85d493673f0297a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae6fcab6c87425eefb64575153975a274"><td class="memItemLeft" align="right" valign="top"><a id="ae6fcab6c87425eefb64575153975a274"></a>
 uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_l_s_m303_d_l_h_c__admin__t.html#ae6fcab6c87425eefb64575153975a274">accel_data_available</a></td></tr>
-<tr class="memdesc:ae6fcab6c87425eefb64575153975a274"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag we set when we see there's data acording to the status register. <br /></td></tr>
+<tr class="memdesc:ae6fcab6c87425eefb64575153975a274"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag we set when we see there's data acording to the accel status register. <br /></td></tr>
 <tr class="separator:ae6fcab6c87425eefb64575153975a274"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add95fbd66a438f3a9692d58edd1c622c"><td class="memItemLeft" align="right" valign="top"><a id="add95fbd66a438f3a9692d58edd1c622c"></a>
 uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_l_s_m303_d_l_h_c__admin__t.html#add95fbd66a438f3a9692d58edd1c622c">mag_data_available</a></td></tr>
@@ -121,7 +131,23 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="s
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>LSM303DLHC structure to store packets, overwrite stats, and LSM303DLHC settings. </p>
-</div><hr/>The documentation for this struct was generated from the following file:<ul>
+</div><h2 class="groupheader">Field Documentation</h2>
+<a id="a424b4eb805c3d60a85d493673f0297a1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a424b4eb805c3d60a85d493673f0297a1">&#9670;&nbsp;</a></span>data_ready</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool LSM303DLHC_admin_t::data_ready</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Flag we set when the LSM303DLHC data ready pin fires </p>
+
+</div>
+</div>
+<hr/>The documentation for this struct was generated from the following file:<ul>
 <li>firmware/source/<a class="el" href="_l_s_m303_d_l_h_c_8c.html">LSM303DLHC.c</a></li>
 </ul>
 </div><!-- contents -->

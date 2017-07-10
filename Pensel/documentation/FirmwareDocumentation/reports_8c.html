@@ -79,6 +79,8 @@ $(function() {
 <code>#include &quot;<a class="el" href="common_8h_source.html">common.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="reports_8h_source.html">reports.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="_l_s_m303_d_l_h_c_8h_source.html">LSM303DLHC.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="_u_a_r_t_8h_source.html">UART.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="hardware_8h_source.html">hardware.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
@@ -89,30 +91,52 @@ Data Structures</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:aaf64c261c28332edbea9b9f295d269b2"><td class="memItemLeft" align="right" valign="top"><a id="aaf64c261c28332edbea9b9f295d269b2"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>READ_BUFF_SIZE</b>&#160;&#160;&#160;(255)</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="reports_8c.html#aaf64c261c28332edbea9b9f295d269b2">READ_BUFF_SIZE</a>&#160;&#160;&#160;(255)</td></tr>
+<tr class="memdesc:aaf64c261c28332edbea9b9f295d269b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum data we can read in. <br /></td></tr>
 <tr class="separator:aaf64c261c28332edbea9b9f295d269b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a115ff0c5ee8977d54427c157b28453e0"><td class="memItemLeft" align="right" valign="top"><a id="a115ff0c5ee8977d54427c157b28453e0"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>RPT_MAGIC_NUMBER_0</b>&#160;&#160;&#160;(0xBE)</td></tr>
-<tr class="separator:a115ff0c5ee8977d54427c157b28453e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac8571db99a47753cf0c13b42886f6990"><td class="memItemLeft" align="right" valign="top"><a id="ac8571db99a47753cf0c13b42886f6990"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>RPT_MAGIC_NUMBER_1</b>&#160;&#160;&#160;(0xEF)</td></tr>
-<tr class="separator:ac8571db99a47753cf0c13b42886f6990"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad55b449e3e12b701a7e26d6af7c1f7dc"><td class="memItemLeft" align="right" valign="top"><a id="ad55b449e3e12b701a7e26d6af7c1f7dc"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="reports_8c.html#ad55b449e3e12b701a7e26d6af7c1f7dc">RPT_RESPONSE_MAGIC_NUMBER_0</a>&#160;&#160;&#160;(0xDE)</td></tr>
+<tr class="memdesc:ad55b449e3e12b701a7e26d6af7c1f7dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">First magic number to specify start of report from host. <br /></td></tr>
+<tr class="separator:ad55b449e3e12b701a7e26d6af7c1f7dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adcf3b4300d17126cce5a7e630521f228"><td class="memItemLeft" align="right" valign="top"><a id="adcf3b4300d17126cce5a7e630521f228"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="reports_8c.html#adcf3b4300d17126cce5a7e630521f228">RPT_RESPONSE_MAGIC_NUMBER_1</a>&#160;&#160;&#160;(0xAD)</td></tr>
+<tr class="memdesc:adcf3b4300d17126cce5a7e630521f228"><td class="mdescLeft">&#160;</td><td class="mdescRight">Second magic number to specify start of report from host. <br /></td></tr>
+<tr class="separator:adcf3b4300d17126cce5a7e630521f228"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a62bd201feec0188ed3d625bfa327a8cf"><td class="memItemLeft" align="right" valign="top"><a id="a62bd201feec0188ed3d625bfa327a8cf"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="reports_8c.html#a62bd201feec0188ed3d625bfa327a8cf">RPT_START_MAGIC_NUMBER_0</a>&#160;&#160;&#160;(0xBE)</td></tr>
+<tr class="memdesc:a62bd201feec0188ed3d625bfa327a8cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">First magic number to specify start of report from host. <br /></td></tr>
+<tr class="separator:a62bd201feec0188ed3d625bfa327a8cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0277f3a774ccdb18797a50e4daa0bcc2"><td class="memItemLeft" align="right" valign="top"><a id="a0277f3a774ccdb18797a50e4daa0bcc2"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="reports_8c.html#a0277f3a774ccdb18797a50e4daa0bcc2">RPT_START_MAGIC_NUMBER_1</a>&#160;&#160;&#160;(0xEF)</td></tr>
+<tr class="memdesc:a0277f3a774ccdb18797a50e4daa0bcc2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Second magic number to specify start of report from host. <br /></td></tr>
+<tr class="separator:a0277f3a774ccdb18797a50e4daa0bcc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a01cf429e59384aabc3def370407c37bc"><td class="memItemLeft" align="right" valign="top"><a id="a01cf429e59384aabc3def370407c37bc"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="reports_8c.html#a01cf429e59384aabc3def370407c37bc">RPT_TIMEOUT</a>&#160;&#160;&#160;(100)</td></tr>
 <tr class="memdesc:a01cf429e59384aabc3def370407c37bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Report timeout time (in ms) <br /></td></tr>
 <tr class="separator:a01cf429e59384aabc3def370407c37bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a946fd1dec7b7f28e302062a4aa6e69"><td class="memItemLeft" align="right" valign="top"><a id="a6a946fd1dec7b7f28e302062a4aa6e69"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="reports_8c.html#a6a946fd1dec7b7f28e302062a4aa6e69">RPT_REPORT_MASK</a>&#160;&#160;&#160;(0 &lt;&lt; 7)</td></tr>
+<tr class="memdesc:a6a946fd1dec7b7f28e302062a4aa6e69"><td class="mdescLeft">&#160;</td><td class="mdescRight">bitmask to specify a packet is a report <br /></td></tr>
+<tr class="separator:a6a946fd1dec7b7f28e302062a4aa6e69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0607b528f58a295a2b5ad6e3562ff859"><td class="memItemLeft" align="right" valign="top"><a id="a0607b528f58a295a2b5ad6e3562ff859"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="reports_8c.html#a0607b528f58a295a2b5ad6e3562ff859">RPT_STREAM_MASK</a>&#160;&#160;&#160;(1 &lt;&lt; 7)</td></tr>
+<tr class="memdesc:a0607b528f58a295a2b5ad6e3562ff859"><td class="mdescLeft">&#160;</td><td class="mdescRight">bitmask to specify a packet is a stream <br /></td></tr>
+<tr class="separator:a0607b528f58a295a2b5ad6e3562ff859"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad57375fcc89bcd0d5af3cd899d460291"><td class="memItemLeft" align="right" valign="top"><a id="ad57375fcc89bcd0d5af3cd899d460291"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="reports_8c.html#ad57375fcc89bcd0d5af3cd899d460291">MAX_REPORT_ID</a>&#160;&#160;&#160;(0x7F)</td></tr>
+<tr class="memdesc:ad57375fcc89bcd0d5af3cd899d460291"><td class="mdescLeft">&#160;</td><td class="mdescRight">Can only have up to 0x7F as the first bit is used to indicate stream or report. <br /></td></tr>
+<tr class="separator:ad57375fcc89bcd0d5af3cd899d460291"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr class="memitem:a36ac5da527590376bcbfdfb1d07bec3a"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="reports_8c.html#a36ac5da527590376bcbfdfb1d07bec3a">rpt_state_t</a> { <br />
 &#160;&#160;<a class="el" href="reports_8c.html#a36ac5da527590376bcbfdfb1d07bec3aaeeef87c652796504e30c492243a064e7">kRpt_ReadMagic_0</a>, 
-<a class="el" href="reports_8c.html#a36ac5da527590376bcbfdfb1d07bec3aa5625bc21b86393b92664966864a8158e">kRpt_ReadMagic_1</a>, 
+<b>kRpt_ReadMagic_1</b>, 
 <a class="el" href="reports_8c.html#a36ac5da527590376bcbfdfb1d07bec3aaedf3b0c46200e7e04739810e0d1853d0">kRpt_ReadRpt</a>, 
 <a class="el" href="reports_8c.html#a36ac5da527590376bcbfdfb1d07bec3aaec99495e090a77b03bae10be59b90cfb">kRpt_ReadLen</a>, 
 <br />
 &#160;&#160;<a class="el" href="reports_8c.html#a36ac5da527590376bcbfdfb1d07bec3aa99f1a24fa0c9858bebbbb93703a116a4">kRpt_ReadPayload</a>, 
-<a class="el" href="reports_8c.html#a36ac5da527590376bcbfdfb1d07bec3aa0f594e95178f277fbce9d439f8d54c53">kRpt_Evaluate</a>, 
-<a class="el" href="reports_8c.html#a36ac5da527590376bcbfdfb1d07bec3aa7d0ad1cadb78998c1eb7fd36ec31dba8">kRpt_Print</a>
+<a class="el" href="reports_8c.html#a36ac5da527590376bcbfdfb1d07bec3aac10a12cae1ede5a9ccb143b56dba794a">kRpt_EvaluateAndPrint</a>
 <br />
  }<tr class="memdesc:a36ac5da527590376bcbfdfb1d07bec3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">The current state of the rpt workloop.  <a href="reports_8c.html#a36ac5da527590376bcbfdfb1d07bec3a">More...</a><br /></td></tr>
 </td></tr>
@@ -123,28 +147,29 @@ Functions</h2></td></tr>
 <tr class="memitem:af2c4f03d53e997a54e1fd5e80daa55c4"><td class="memItemLeft" align="right" valign="top"><a id="af2c4f03d53e997a54e1fd5e80daa55c4"></a>
 uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>HAL_GetTick</b> (void)</td></tr>
 <tr class="separator:af2c4f03d53e997a54e1fd5e80daa55c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac2daa2648064af0df0d5d02c2fff5759"><td class="memItemLeft" align="right" valign="top"><a id="ac2daa2648064af0df0d5d02c2fff5759"></a>
-<a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>rpt_lookup</b> (uint8_t rpt_type, uint8_t *input_buff_ptr, uint8_t input_buff_len, uint8_t *output_buff_ptr, uint8_t *output_buff_len_ptr)</td></tr>
-<tr class="separator:ac2daa2648064af0df0d5d02c2fff5759"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aafbe466b969d1d0c967933a2cd972f10"><td class="memItemLeft" align="right" valign="top"><a id="aafbe466b969d1d0c967933a2cd972f10"></a>
+<a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>rpt_lookup</b> (uint8_t rpt_type, uint8_t *input_buff_ptr, uint8_t input_buff_len, uint8_t *output_buff_len_ptr)</td></tr>
+<tr class="separator:aafbe466b969d1d0c967933a2cd972f10"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a29d44647915147d2ce567ec9db9c368b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="reports_8c.html#a29d44647915147d2ce567ec9db9c368b">rpt_init</a> (<a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>(*putchr)(uint8_t), <a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>(*getchr)(uint8_t *))</td></tr>
 <tr class="separator:a29d44647915147d2ce567ec9db9c368b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1103af61ff4bc0d714e187397261bbc1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="reports_8c.html#a1103af61ff4bc0d714e187397261bbc1">rpt_run</a> (void)</td></tr>
 <tr class="separator:a1103af61ff4bc0d714e187397261bbc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d12dc7f2af049a7a112e5aa1c201a87"><td class="memItemLeft" align="right" valign="top"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="reports_8c.html#a8d12dc7f2af049a7a112e5aa1c201a87">rpt_sendStreamReport</a> (uint8_t reportID, uint8_t payload_len, uint8_t *payload_ptr)</td></tr>
+<tr class="separator:a8d12dc7f2af049a7a112e5aa1c201a87"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1e79865c27f2c10580803d3605f541b4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="reports_8c.html#a1e79865c27f2c10580803d3605f541b4">rpt_err</a> (uint8_t *UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len), uint8_t *UNUSED_PARAM(out_p), uint8_t *UNUSED_PARAM(out_len_ptr))</td></tr>
 <tr class="separator:a1e79865c27f2c10580803d3605f541b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4052830b84b1b8ae93f713824e86f659"><td class="memItemLeft" align="right" valign="top"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="reports_8c.html#a4052830b84b1b8ae93f713824e86f659">rpt_report_getTimeoutCount</a> (uint8_t *UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len), uint8_t *out_p, uint8_t *out_len_ptr)</td></tr>
 <tr class="separator:a4052830b84b1b8ae93f713824e86f659"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8217fdcd1d495d6e4467007450386eda"><td class="memItemLeft" align="right" valign="top"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="reports_8c.html#a8217fdcd1d495d6e4467007450386eda">rpt_report_getInvalidCharsCount</a> (uint8_t *UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len), uint8_t *out_p, uint8_t *out_len_ptr)</td></tr>
 <tr class="separator:a8217fdcd1d495d6e4467007450386eda"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a55dbc8c8470825f78d9a1273ed52c955"><td class="memItemLeft" align="right" valign="top"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="reports_8c.html#a55dbc8c8470825f78d9a1273ed52c955">rpt_LSM303DLHC_changeConfig</a> (uint8_t *in_p, uint8_t in_len, uint8_t *out_p, uint8_t *out_len_ptr)</td></tr>
-<tr class="separator:a55dbc8c8470825f78d9a1273ed52c955"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a52176917932772fe9948587ad55e2404"><td class="memItemLeft" align="right" valign="top"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="reports_8c.html#a52176917932772fe9948587ad55e2404">rpt_LSM303DLHC_getTemp</a> (uint8_t *UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len), uint8_t *out_p, uint8_t *out_len_ptr)</td></tr>
-<tr class="separator:a52176917932772fe9948587ad55e2404"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a22507471b25b9f07e30f286ecc632660"><td class="memItemLeft" align="right" valign="top"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="reports_8c.html#a22507471b25b9f07e30f286ecc632660">rpt_LSM303DLHC_getAccel</a> (uint8_t *in_p, uint8_t in_len, uint8_t *out_p, uint8_t *out_len_ptr)</td></tr>
-<tr class="separator:a22507471b25b9f07e30f286ecc632660"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa93d1b1bbeda209384772418b0d7d5ec"><td class="memItemLeft" align="right" valign="top"><a id="aa93d1b1bbeda209384772418b0d7d5ec"></a>
-<a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>rpt_LSM303DLHC_getMag</b> (uint8_t *in_p, uint8_t in_len, uint8_t *out_p, uint8_t *out_len_ptr)</td></tr>
-<tr class="separator:aa93d1b1bbeda209384772418b0d7d5ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa74d62404023ed854fb3404d8976b840"><td class="memItemLeft" align="right" valign="top"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="reports_8c.html#aa74d62404023ed854fb3404d8976b840">rpt_pensel_getVersion</a> (uint8_t *UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len), uint8_t *out_p, uint8_t *out_len_ptr)</td></tr>
+<tr class="separator:aa74d62404023ed854fb3404d8976b840"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae187acfc7ce4740f843b522def46445f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="reports_8c.html#ae187acfc7ce4740f843b522def46445f">rpt_pensel_getTimestamp</a> (uint8_t *UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len), uint8_t *out_p, uint8_t *out_len_ptr)</td></tr>
+<tr class="separator:ae187acfc7ce4740f843b522def46445f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0133646c441f10562949f4c779144c2c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="reports_8c.html#a0133646c441f10562949f4c779144c2c">rpt_pensel_getComsErrors</a> (uint8_t *UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len), uint8_t *out_p, uint8_t *out_len_ptr)</td></tr>
+<tr class="separator:a0133646c441f10562949f4c779144c2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a83985775ea71d112e47a10184aa6425f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="reports_8c.html#a83985775ea71d112e47a10184aa6425f">rpt_pensel_getButtonSwitchState</a> (uint8_t *UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len), uint8_t *out_p, uint8_t *out_len_ptr)</td></tr>
+<tr class="separator:a83985775ea71d112e47a10184aa6425f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
@@ -174,8 +199,7 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="r
 <p>The current state of the rpt workloop. </p>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a36ac5da527590376bcbfdfb1d07bec3aaeeef87c652796504e30c492243a064e7"></a>kRpt_ReadMagic_0&#160;</td><td class="fielddoc"><p>Read in the first magic value to signify the start of a report transaction. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="a36ac5da527590376bcbfdfb1d07bec3aa5625bc21b86393b92664966864a8158e"></a>kRpt_ReadMagic_1&#160;</td><td class="fielddoc"><p>Read in the second magic value to signify the start of a report transaction. </p>
+<p>Read in the second magic value to signify the start of a report transaction </p>
 </td></tr>
 <tr><td class="fieldname"><a id="a36ac5da527590376bcbfdfb1d07bec3aaedf3b0c46200e7e04739810e0d1853d0"></a>kRpt_ReadRpt&#160;</td><td class="fielddoc"><p>Read the report ID (the first byte of the transaction) </p>
 </td></tr>
@@ -183,9 +207,7 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="r
 </td></tr>
 <tr><td class="fieldname"><a id="a36ac5da527590376bcbfdfb1d07bec3aa99f1a24fa0c9858bebbbb93703a116a4"></a>kRpt_ReadPayload&#160;</td><td class="fielddoc"><p>Read the report payload (N bytes...) </p>
 </td></tr>
-<tr><td class="fieldname"><a id="a36ac5da527590376bcbfdfb1d07bec3aa0f594e95178f277fbce9d439f8d54c53"></a>kRpt_Evaluate&#160;</td><td class="fielddoc"><p>Evaluate the report on our end. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="a36ac5da527590376bcbfdfb1d07bec3aa7d0ad1cadb78998c1eb7fd36ec31dba8"></a>kRpt_Print&#160;</td><td class="fielddoc"><p>Send back the response (x bytes) </p>
+<tr><td class="fieldname"><a id="a36ac5da527590376bcbfdfb1d07bec3aac10a12cae1ede5a9ccb143b56dba794a"></a>kRpt_EvaluateAndPrint&#160;</td><td class="fielddoc"><p>Evaluate the report on our end and send back the response (x bytes) </p>
 </td></tr>
 </table>
 
@@ -270,101 +292,14 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="r
 
 </div>
 </div>
-<a id="a55dbc8c8470825f78d9a1273ed52c955"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a55dbc8c8470825f78d9a1273ed52c955">&#9670;&nbsp;</a></span>rpt_LSM303DLHC_changeConfig()</h2>
+<a id="a83985775ea71d112e47a10184aa6425f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a83985775ea71d112e47a10184aa6425f">&#9670;&nbsp;</a></span>rpt_pensel_getButtonSwitchState()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a> rpt_LSM303DLHC_changeConfig </td>
-          <td>(</td>
-          <td class="paramtype">uint8_t *&#160;</td>
-          <td class="paramname"><em>in_p</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>in_len</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t *&#160;</td>
-          <td class="paramname"><em>out_p</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t *&#160;</td>
-          <td class="paramname"><em>out_len_ptr</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Report 0x20 that changes the configuration of the LSM303DLHC chip. The argument structure Is as follows packed into the in buffer:</p><ol type="1">
-<li>accel_ODR_t</li>
-<li>accel_sensitivity_t</li>
-<li>mag_ODR_t</li>
-<li>mag_sensitivity_t </li>
-</ol>
-
-</div>
-</div>
-<a id="a22507471b25b9f07e30f286ecc632660"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a22507471b25b9f07e30f286ecc632660">&#9670;&nbsp;</a></span>rpt_LSM303DLHC_getAccel()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a> rpt_LSM303DLHC_getAccel </td>
-          <td>(</td>
-          <td class="paramtype">uint8_t *&#160;</td>
-          <td class="paramname"><em>in_p</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>in_len</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t *&#160;</td>
-          <td class="paramname"><em>out_p</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t *&#160;</td>
-          <td class="paramname"><em>out_len_ptr</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Report 0x22 </p>
-
-</div>
-</div>
-<a id="a52176917932772fe9948587ad55e2404"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a52176917932772fe9948587ad55e2404">&#9670;&nbsp;</a></span>rpt_LSM303DLHC_getTemp()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a> rpt_LSM303DLHC_getTemp </td>
+          <td class="memname"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a> rpt_pensel_getButtonSwitchState </td>
           <td>(</td>
           <td class="paramtype">uint8_t *&#160;</td>
           <td class="paramname"><em>UNUSED_PARAM</em>in_p, </td>
@@ -394,7 +329,130 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="r
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Report 0x21 that returns the temperature from LSM303DLHC. Takes in no parameters. Returns the temperature (int16_t) </p>
+<p>Report 0x33 Returns the pensel's button &amp; switch states </p>
+
+</div>
+</div>
+<a id="a0133646c441f10562949f4c779144c2c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0133646c441f10562949f4c779144c2c">&#9670;&nbsp;</a></span>rpt_pensel_getComsErrors()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a> rpt_pensel_getComsErrors </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>UNUSED_PARAM</em>in_p, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t &#160;</td>
+          <td class="paramname"><em>UNUSED_PARAM</em>in_len, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>out_p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>out_len_ptr</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Report 0x32 Returns the pensel's coms errors (currently only UART dropped packets) </p>
+
+</div>
+</div>
+<a id="ae187acfc7ce4740f843b522def46445f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae187acfc7ce4740f843b522def46445f">&#9670;&nbsp;</a></span>rpt_pensel_getTimestamp()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a> rpt_pensel_getTimestamp </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>UNUSED_PARAM</em>in_p, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t &#160;</td>
+          <td class="paramname"><em>UNUSED_PARAM</em>in_len, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>out_p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>out_len_ptr</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Report 0x31 returns the pensels current system time (in ms) </p>
+
+</div>
+</div>
+<a id="aa74d62404023ed854fb3404d8976b840"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa74d62404023ed854fb3404d8976b840">&#9670;&nbsp;</a></span>rpt_pensel_getVersion()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a> rpt_pensel_getVersion </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>UNUSED_PARAM</em>in_p, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t &#160;</td>
+          <td class="paramname"><em>UNUSED_PARAM</em>in_len, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>out_p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>out_len_ptr</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Report 0x30 returns the pensels major and minor version </p>
 
 </div>
 </div>
@@ -504,6 +562,41 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="r
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>success / failure of initializing. </dd></dl>
+
+</div>
+</div>
+<a id="a8d12dc7f2af049a7a112e5aa1c201a87"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d12dc7f2af049a7a112e5aa1c201a87">&#9670;&nbsp;</a></span>rpt_sendStreamReport()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a> rpt_sendStreamReport </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>reportID</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>payload_len</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>payload_ptr</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Function to send a "stream" report </p>
 
 </div>
 </div>

@@ -63,9 +63,11 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Data Structures</a> &#124;
 <a href="#define-members">Macros</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
 <div class="title">common.h File Reference</div>  </div>
 </div><!--header-->
@@ -74,14 +76,39 @@ $(function() {
 <p>A common set of return codes and functions all files have access to.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;stdint.h&gt;</code><br />
+<code>#include &lt;stdbool.h&gt;</code><br />
 </div>
 <p><a href="common_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcritical__errors__t.html">critical_errors_t</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structure to keep track of our critical errors.  <a href="structcritical__errors__t.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:a6c7ba74ad57863d1342878d2c703e660"><td class="memItemLeft" align="right" valign="top"><a id="a6c7ba74ad57863d1342878d2c703e660"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>UNUSED_PARAM</b>(x)&#160;&#160;&#160;UNUSED_ ## x</td></tr>
 <tr class="separator:a6c7ba74ad57863d1342878d2c703e660"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b573abff5e7fa1bf2c5e8b9a88df5f7"><td class="memItemLeft" align="right" valign="top"><a id="a2b573abff5e7fa1bf2c5e8b9a88df5f7"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>PENSEL_VERSION_MAJOR</b>&#160;&#160;&#160;(0)</td></tr>
+<tr class="separator:a2b573abff5e7fa1bf2c5e8b9a88df5f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae31d491ecc9f0149a01a5f61e9b94114"><td class="memItemLeft" align="right" valign="top"><a id="ae31d491ecc9f0149a01a5f61e9b94114"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>PENSEL_VERSION_MINOR</b>&#160;&#160;&#160;(5)</td></tr>
+<tr class="separator:ae31d491ecc9f0149a01a5f61e9b94114"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d255d890fe3412e04ee26f601db26d4"><td class="memItemLeft" align="right" valign="top"><a id="a4d255d890fe3412e04ee26f601db26d4"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>LSM303DLHC_ENABLE_ACCEL_STREAM</b>&#160;&#160;&#160;(0x01)</td></tr>
+<tr class="separator:a4d255d890fe3412e04ee26f601db26d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a37960ebe1eacfe21d2c17c275cf5d6eb"><td class="memItemLeft" align="right" valign="top"><a id="a37960ebe1eacfe21d2c17c275cf5d6eb"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>LSM303DLHC_ENABLE_MAG_STREAM</b>&#160;&#160;&#160;(0x02)</td></tr>
+<tr class="separator:a37960ebe1eacfe21d2c17c275cf5d6eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a193da01b7f1cf00bbf85d8e688de2e74"><td class="memItemLeft" align="right" valign="top"><a id="a193da01b7f1cf00bbf85d8e688de2e74"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>ACCEL_STREAM_REPORT_ID</b>&#160;&#160;&#160;(0x01)</td></tr>
+<tr class="separator:a193da01b7f1cf00bbf85d8e688de2e74"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab836a3c3bd1a073f27c0abd5c32aab61"><td class="memItemLeft" align="right" valign="top"><a id="ab836a3c3bd1a073f27c0abd5c32aab61"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>MAG_STREAM_REPORT_ID</b>&#160;&#160;&#160;(0x02)</td></tr>
+<tr class="separator:ab836a3c3bd1a073f27c0abd5c32aab61"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -99,7 +126,9 @@ Enumerations</h2></td></tr>
 &#160;&#160;<a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47af58e56908328bf9d0566ce07c514bc70">RET_NORPT_ERR</a>, 
 <a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47ab98008aedadd5e5420776344ed5be9b1">RET_INVALID_ARGS_ERR</a>, 
 <a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47a7fcff49f9e365dcbca93924dcc00e33c">RET_MAX_LEN_ERR</a>, 
-<a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47a345ba97d91c3e77f1b77109109b2b944">RET_WDG_SET</a>
+<a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47a345ba97d91c3e77f1b77109109b2b944">RET_WDG_SET</a>, 
+<br />
+&#160;&#160;<a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47aeba6a4cd20d0abc56f629a700b41dc2c">RET_CAL_ERR</a>
 <br />
  }<tr class="memdesc:a18a6141fb52597a7d96dc02105928b47"><td class="mdescLeft">&#160;</td><td class="mdescRight">Common return type for the entire project.  <a href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">More...</a><br /></td></tr>
 </td></tr>
@@ -109,6 +138,20 @@ Enumerations</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:a3c1540c226614215822d35442cb2b17f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="common_8h.html#a3c1540c226614215822d35442cb2b17f">fatal_error_handler</a> (char file[], uint32_t line, int8_t err_code)</td></tr>
 <tr class="separator:a3c1540c226614215822d35442cb2b17f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:aefc45a3e2533459fcf0ca68c7d8d6171"><td class="memItemLeft" align="right" valign="top"><a id="aefc45a3e2533459fcf0ca68c7d8d6171"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="common_8h.html#aefc45a3e2533459fcf0ca68c7d8d6171">gEnableMagStream</a> = true</td></tr>
+<tr class="memdesc:aefc45a3e2533459fcf0ca68c7d8d6171"><td class="mdescLeft">&#160;</td><td class="mdescRight">Global toggle to enable/disable streaming mag data. <br /></td></tr>
+<tr class="separator:aefc45a3e2533459fcf0ca68c7d8d6171"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8fc8374010b6d68afeee2e15e43f5897"><td class="memItemLeft" align="right" valign="top"><a id="a8fc8374010b6d68afeee2e15e43f5897"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="common_8h.html#a8fc8374010b6d68afeee2e15e43f5897">gEnableAccelStream</a> = true</td></tr>
+<tr class="memdesc:a8fc8374010b6d68afeee2e15e43f5897"><td class="mdescLeft">&#160;</td><td class="mdescRight">Global toggle to enable/disable streaming accel data. <br /></td></tr>
+<tr class="separator:a8fc8374010b6d68afeee2e15e43f5897"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93075d2139d95f9e8021870120199f28"><td class="memItemLeft" align="right" valign="top"><a id="a93075d2139d95f9e8021870120199f28"></a>
+<a class="el" href="structcritical__errors__t.html">critical_errors_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>gCriticalErrors</b></td></tr>
+<tr class="separator:a93075d2139d95f9e8021870120199f28"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A common set of return codes and functions all files have access to. </p>
@@ -142,7 +185,7 @@ Functions</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><a id="a18a6141fb52597a7d96dc02105928b47ac5094c15e130b0e6daa51dc85bb2e330"></a>RET_COM_ERR&#160;</td><td class="fielddoc"><p>Some sort of communication error. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="a18a6141fb52597a7d96dc02105928b47aef270a5ed8b734f3b3e348fed4d4939e"></a>RET_BUSY_ERR&#160;</td><td class="fielddoc"><p>Some sort of busy resource. </p>
+<tr><td class="fieldname"><a id="a18a6141fb52597a7d96dc02105928b47aef270a5ed8b734f3b3e348fed4d4939e"></a>RET_BUSY_ERR&#160;</td><td class="fielddoc"><p>Some sort of busy resource / timeout. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="a18a6141fb52597a7d96dc02105928b47a120300d1e83ca226e82850b42da77256"></a>RET_GEN_ERR&#160;</td><td class="fielddoc"><p>Lame catch all general error. </p>
 </td></tr>
@@ -153,6 +196,8 @@ Functions</h2></td></tr>
 <tr><td class="fieldname"><a id="a18a6141fb52597a7d96dc02105928b47a7fcff49f9e365dcbca93924dcc00e33c"></a>RET_MAX_LEN_ERR&#160;</td><td class="fielddoc"><p>Maximum length was violated. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="a18a6141fb52597a7d96dc02105928b47a345ba97d91c3e77f1b77109109b2b944"></a>RET_WDG_SET&#160;</td><td class="fielddoc"><p>Return code if the watchdog flag was set on reset. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a18a6141fb52597a7d96dc02105928b47aeba6a4cd20d0abc56f629a700b41dc2c"></a>RET_CAL_ERR&#160;</td><td class="fielddoc"><p>General error relating to calibration. </p>
 </td></tr>
 </table>
 

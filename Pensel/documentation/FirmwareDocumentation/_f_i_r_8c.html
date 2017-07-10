@@ -74,15 +74,13 @@ $(function() {
 <div class="textblock"><code>#include &lt;stdint.h&gt;</code><br />
 <code>#include &lt;stdlib.h&gt;</code><br />
 <code>#include &quot;<a class="el" href="common_8h_source.html">common.h</a>&quot;</code><br />
-<code>#include &quot;FIR.h&quot;</code><br />
+<code>#include &quot;<a class="el" href="_f_i_r_8h_source.html">FIR.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a1ce5a98a047da6a31d3554d68a19d2ab"><td class="memItemLeft" align="right" valign="top"><a id="a1ce5a98a047da6a31d3554d68a19d2ab"></a>
-<a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>FIR_init</b> (<a class="el" href="struct_f_i_r__admin__t.html">FIR_admin_t</a> *FIR_ptr, uint16_t FIR_len, const float *coefficents_ptr)</td></tr>
+<tr class="memitem:a1ce5a98a047da6a31d3554d68a19d2ab"><td class="memItemLeft" align="right" valign="top"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_f_i_r_8c.html#a1ce5a98a047da6a31d3554d68a19d2ab">FIR_init</a> (<a class="el" href="struct_f_i_r__admin__t.html">FIR_admin_t</a> *FIR_ptr, uint16_t FIR_len, const float *coefficents_ptr)</td></tr>
 <tr class="separator:a1ce5a98a047da6a31d3554d68a19d2ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a311028ed5854568f6c607af8dfd2cadd"><td class="memItemLeft" align="right" valign="top"><a id="a311028ed5854568f6c607af8dfd2cadd"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>FIR_run</b> (<a class="el" href="struct_f_i_r__admin__t.html">FIR_admin_t</a> *FIR_ptr, float new_val)</td></tr>
+<tr class="memitem:a311028ed5854568f6c607af8dfd2cadd"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_f_i_r_8c.html#a311028ed5854568f6c607af8dfd2cadd">FIR_run</a> (<a class="el" href="struct_f_i_r__admin__t.html">FIR_admin_t</a> *FIR_ptr, float new_val)</td></tr>
 <tr class="separator:a311028ed5854568f6c607af8dfd2cadd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -90,7 +88,89 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>FIR_run</b> (<a clas
 <dl class="section author"><dt>Author</dt><dd>Tyler Holmes </dd></dl>
 <dl class="section version"><dt>Version</dt><dd>0.1.0 </dd></dl>
 <dl class="section date"><dt>Date</dt><dd>29-May-2017 </dd></dl>
-</div></div><!-- contents -->
+</div><h2 class="groupheader">Function Documentation</h2>
+<a id="a1ce5a98a047da6a31d3554d68a19d2ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1ce5a98a047da6a31d3554d68a19d2ab">&#9670;&nbsp;</a></span>FIR_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="common_8h.html#a18a6141fb52597a7d96dc02105928b47">ret_t</a> FIR_init </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct_f_i_r__admin__t.html">FIR_admin_t</a> *&#160;</td>
+          <td class="paramname"><em>FIR_ptr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>FIR_len</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const float *&#160;</td>
+          <td class="paramname"><em>coefficents_ptr</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Initializes the given FIR admin pointer to be used in FIR_run.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">FIR_ptr</td><td>(<a class="el" href="struct_f_i_r__admin__t.html">FIR_admin_t</a> *): A pointer to an already allocated <a class="el" href="struct_f_i_r__admin__t.html">FIR_admin_t</a> structure to be used in this initialization. </td></tr>
+    <tr><td class="paramname">FIR_len</td><td>(uint16_t): The length of the coefficients to be used </td></tr>
+    <tr><td class="paramname">coefficents_ptr</td><td>(const float *): The coefficients to be used in this filter </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>retval (ret_t): Success or failure reason of initializing the FIR structure </dd></dl>
+
+</div>
+</div>
+<a id="a311028ed5854568f6c607af8dfd2cadd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a311028ed5854568f6c607af8dfd2cadd">&#9670;&nbsp;</a></span>FIR_run()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float FIR_run </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct_f_i_r__admin__t.html">FIR_admin_t</a> *&#160;</td>
+          <td class="paramname"><em>FIR_ptr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>new_val</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Runs a cycle of the given FIR filter with a new value and returns the output value.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">FIR_ptr</td><td>(<a class="el" href="struct_f_i_r__admin__t.html">FIR_admin_t</a> *): A pointer to an already initialized <a class="el" href="struct_f_i_r__admin__t.html">FIR_admin_t</a> structure </td></tr>
+    <tr><td class="paramname">new_val</td><td>(float): The new value to be added to the filter pipeline </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>out_val (float): The resulting value from the filter </dd></dl>
+
+</div>
+</div>
+</div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">
