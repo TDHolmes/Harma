@@ -22,6 +22,7 @@
 
 // Algssss
 #include "orientation.h"
+#include "cal.h"
 
 // STM Drivers
 #include "Drivers/stm32f3xx_hal_def.h"
@@ -118,6 +119,12 @@ int main(void)
 
     retval = orient_init();
     check_retval_fatal(__FILE__, __LINE__, retval);
+
+    // Load Calibration
+    cal_loadFromFlash();
+    if (cal_checkValidity() != RET_OK) {
+        cal_loadDefaults();
+    }
 
     LED_set(LED_0, 0);
     LED_set(LED_1, 0);
@@ -227,6 +234,9 @@ void fatal_error_handler(char file[], uint32_t line, int8_t err_code)
         uint32_t timer_count, i = 0;
         LED_set(LED_0, 0);
         LED_set(LED_1, 1);
+        UART_sendString(file);
+        UART_sendint((int64_t)line);
+        UART_sendint((int64_t)err_code);
 
         // Can't rely on HAL tick as we maybe in the ISR context...
         while (1) {
