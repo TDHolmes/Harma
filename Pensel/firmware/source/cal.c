@@ -17,8 +17,8 @@
 #include "default_cal.h"
 
 // Private function definitions
-uint8_t cal_calcChecksum(uint32_t length, uint8_t * data_ptr);
-ret_t cal_writeToFlash(uint32_t * dataToWrite_ptr);
+static uint8_t cal_calcChecksum(uint32_t length, uint8_t * data_ptr);
+static ret_t cal_writeToFlash(uint32_t * dataToWrite_ptr);
 
 
 /*! Function to calculate the checksum of a block of memory. Simple twos complement addition
@@ -27,7 +27,7 @@ ret_t cal_writeToFlash(uint32_t * dataToWrite_ptr);
  * @param data_ptr (uint8_t *): Pointer to the data in memory.
  * @return checksum (uint8_t): The calculated checksum.
  */
-uint8_t cal_calcChecksum(uint32_t length, uint8_t * data_ptr)
+static uint8_t cal_calcChecksum(uint32_t length, uint8_t * data_ptr)
 {
     uint8_t checksum = 0;
 
@@ -41,9 +41,7 @@ uint8_t cal_calcChecksum(uint32_t length, uint8_t * data_ptr)
 
 /*! Function to load calibration from flash memory
  *
- * @param length (uint32_t): Number of bytes in the data to be calculated.
- * @param data_ptr (uint8_t *): Pointer to the data in memory.
- * @return checksum (uint8_t): The calculated checksum.
+ * @return retval (ret_t): The success or failure.
  */
 ret_t cal_loadFromFlash(void)
 {
@@ -103,7 +101,7 @@ ret_t cal_checkValidity(void)
  *
  * @Note Does not check the values being written for validity.
  */
-ret_t cal_writeToFlash(uint32_t * dataToWrite_ptr)
+static ret_t cal_writeToFlash(uint32_t * dataToWrite_ptr)
 {
     ret_t retval = RET_OK;
     FLASH_EraseInitTypeDef eraseInitStruct;
