@@ -1,4 +1,11 @@
-#pragma once
+/*!
+ * @file    default_cal.h
+ * @author  Tyler Holmes
+ * @version 0.1.0
+ * @date    20-May-2017
+ * @brief   Default calibration for when calibration is not present or is corrupt.
+ */
+ #pragma once
 
 #include "cal.h"
 
