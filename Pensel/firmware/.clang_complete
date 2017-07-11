@@ -5,3 +5,5 @@
 -Iinclude/
 -IDriverConf/inc/
 -DSTM32F302x8
+-DDEBUG
+-DWATCHDOG_ENABLE
