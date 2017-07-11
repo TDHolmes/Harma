@@ -25,9 +25,9 @@
 typedef struct {
     FIR_admin_t FIR_accelGrav_ptr[3];    //!< an FIR filter for all 3 axes of accel for gravity detection
     FIR_admin_t FIR_magNorth_ptr[3];     //!< an FIR filter for all 3 axes of mag for north detection
-    quanternion_vector_t north_vector;   //!< Detected north vector in quanternion form
-    quanternion_vector_t gravity_vector; //!< Detected gravity vector in quanternion form
-    quanternion_vector_t pensel_vector;  //!< Calculated pensel orientation in quanternion form
+    quanternion_vect_t north_vector;   //!< Detected north vector in quanternion form
+    quanternion_vect_t gravity_vector; //!< Detected gravity vector in quanternion form
+    quanternion_vect_t pensel_vector;  //!< Calculated pensel orientation in quanternion form
 } orientation_admin_t;
 
 
@@ -96,29 +96,29 @@ void orient_calcAccelOrientation(accel_norm_t pkt)
     // TODO: low pass filter on raw accel data to get good gravity readings
 }
 
-/*! Returns the currently computed pensel orientation (quanternion_vector_t)
+/*! Returns the currently computed pensel orientation (quanternion_vect_t)
  *
  * @return pensel_vector: The current pensel vector.
  */
-quanternion_vector_t orient_getPenselOrientation(void)
+quanternion_vect_t orient_getPenselOrientation(void)
 {
     return orient.pensel_vector;
 }
 
-/*! Returns the currently computed magnetic north orientation (quanternion_vector_t)
+/*! Returns the currently computed magnetic north orientation (quanternion_vect_t)
  *
  * @return pensel_vector: The current north vector.
  */
-quanternion_vector_t orient_getMagOrientation(void)
+quanternion_vect_t orient_getMagOrientation(void)
 {
     return orient.north_vector;
 }
 
-/*! Returns the currently computed gravity orientation (quanternion_vector_t)
+/*! Returns the currently computed gravity orientation (quanternion_vect_t)
  *
  * @return pensel_vector: The current gravity vector.
  */
-quanternion_vector_t orient_getAccelOrientation(void)
+quanternion_vect_t orient_getAccelOrientation(void)
 {
     return orient.gravity_vector;
 }
