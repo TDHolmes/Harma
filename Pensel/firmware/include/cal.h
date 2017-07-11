@@ -23,12 +23,12 @@
 typedef struct {
     uint32_t header;   //!< Header to signify start of cal region (`PENSEL_CAL_HEADER`)
     uint16_t version;  //!< Version of this cal structure (`PENSEL_CAL_VERSION`)
-    uint16_t accel_offsets[3];  //!< Static offsets to be applied to accel data
-    uint16_t accel_gains[3];    //!< gain multipliers to be applied to accel data
-    uint16_t mag_offsets[3];    //!< Static offsets to be applied to mag data
-    uint16_t mag_gains[3];      //!< gain multipliers to be applied to mag data
-    uint8_t padding[1];         //!< zero padding to make flashing easier
-    uint8_t checksum;  //!< Checksum to validate this memory isn't corrupt. Should checksum to zero
+    float accel_offsets[3];  //!< Static offsets to be applied to accel data
+    float accel_gains[3];    //!< gain multipliers to be applied to accel data
+    float mag_offsets[3];    //!< Static offsets to be applied to mag data
+    float mag_gains[3];      //!< gain multipliers to be applied to mag data
+    uint8_t padding[1];      //!< zero padding to make flashing easier
+    uint8_t checksum;        //!< Checksum to validate this memory isn't corrupt. Should checksum to zero
 } pensel_cal_t;
 
 
