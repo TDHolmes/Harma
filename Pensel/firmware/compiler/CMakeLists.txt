@@ -117,6 +117,7 @@ add_executable(pensel.elf
 	"${ProjDirPath}/source/reports.c"
 	"${ProjDirPath}/source/orientation.c"
 	"${ProjDirPath}/source/movement.c"
+	"${ProjDirPath}/source/cal.c"
 	"${ProjDirPath}/source/FIR.c"
 	"${ProjDirPath}/source/queue.c"
 	"${ProjDirPath}/source/UART.c"
