@@ -1,5 +1,6 @@
 #! /usr/bin/python
 import os
+import struct
 
 import penselinputs as pi
 import pensel_utils as pu
@@ -49,6 +50,23 @@ def crunch_accel(accel_pkts):
         offsets[ind] = float(max_val - min_val) / 2.0
         # TODO: Figure out gain calculation
     return offsets, gains
+
+
+def generate_checksum(list_of_data):
+    checksum = 0
+    for b in list_of_data:
+        checksum = (checksum + b) & 0xFF
+    return 256 - checksum - 1  # twos complement of a byte
+
+
+def generate_calBlob(mag_offsets, mag_gains, accel_offsets, accel_gains):
+    PENSEL_CAL_HEADER = 0x9f5366f1   # cal header
+    PENSEL_CAL_VERSION = 0x0001      # Cal version: v00.01
+    args = mag_offsets + mag_gains + accel_offsets + accel_gains + [0]
+    blob = struct.pack("IHffffffffffffB", PENSEL_CAL_HEADER, PENSEL_CAL_VERSION, *args)
+    blob = list(blob)
+    checksum = generate_checksum(blob)
+    return blob.append(checksum)
 
 
 if __name__ == '__main__':
