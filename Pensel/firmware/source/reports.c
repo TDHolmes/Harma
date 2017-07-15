@@ -402,7 +402,7 @@ ret_t rpt_lookup(uint8_t rpt_type, uint8_t *input_buff_ptr, uint8_t input_buff_l
         /* Report 0x23 */ rpt_LSM303DLHC_getMag,
         /* Report 0x24 */ rpt_LSM303DLHC_getTemp,
         /* Report 0x25 */ rpt_LSM303DLHC_getErrors,
-        /* Report 0x26 */ rpt_err,
+        /* Report 0x26 */ rpt_LSM303DLHC_setGainAdjustFlag,
         /* Report 0x27 */ rpt_err,
         /* Report 0x28 */ rpt_err,
         /* Report 0x29 */ rpt_err,
