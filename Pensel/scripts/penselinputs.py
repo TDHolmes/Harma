@@ -1,5 +1,7 @@
 #! /usr/bin/python
 import os
+import threading
+import Queue
 
 import pensel_utils as pu
 import penselreport as pr
@@ -8,15 +10,62 @@ import penselreport as pr
 class PenselInputs(pr.Pensel):
     partial_pkt = []
 
+    def __init__(self, *args, **kwargs):
+        super(PenselInputs, self).__init__(*args, **kwargs)
+        self.start_listener()
+        self._clear_serial = False
+
+    def start_listener(self):
+        self.thread_run = True
+        self.queue = Queue.Queue()
+        self.thread = threading.Thread(target=self.listener)  # , args=(self,)
+        self.thread.start()  # start it off
+
     def run_parser(self):
         if self.check_for_start():
             report, retval, payload = self.receive_packet()
-            if report >= 0:
-                return report, retval, payload
-            else:
-                return None
+            if report >= 0 and retval == 0:
+                self.queue.put((report, retval, payload))
+                return True
 
+        return False
+
+    def listener(self):
+        while self.thread_run is True:
+            self.run_parser()
+            if self._clear_serial:
+                self.serial_clear()  # clear old serial data that we don't care about :P
+                self._clear_serial = False
+
+    def get_packet(self):
+        if self.thread.is_alive() is False:
+            raise RuntimeError("Thread is dead!!")
+        # elif self.verbose:
+        #     print("Thread is still alive")
+
+        if not self.queue.empty():
+            try:
+                return self.queue.get_nowait()
+            except Queue.Empty:
+                pass
+        else:
+            # queue is empty...
+            pass
         return None
+
+    def clear_queue(self):
+        while True:
+            try:
+                self.queue.get_nowait()
+            except Queue.Empty:
+                if self.verbose:
+                    print("Queue cleared!")
+                break
+
+    def close(self):
+        super(PenselInputs, self).close()
+        print("Killing thread")
+        self.thread_run = False
 
 
 def parse_inputreport(reportID, payload):
@@ -99,7 +148,7 @@ if __name__ == '__main__':
 
     with PenselInputs(port, args.baudrate, args.verbose) as pi:
         while True:
-            pkt = pi.run_parser()
+            pkt = pi.get_packet()
             if pkt:
                 report, retval, payload = pkt
                 if len(reports_to_stream) == 0 or report in reports_to_stream:
