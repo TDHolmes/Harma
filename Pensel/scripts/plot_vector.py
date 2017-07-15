@@ -6,55 +6,55 @@ import matplotlib.pyplot as plt
 # required import, but unused :( stupid matplotlib
 from mpl_toolkits.mplot3d import Axes3D
 
-import penselreport
+from penselinputs import PenselInputs
 import pensel_utils as pu
 
 
-plots_supported = {"accel": (0x22, 2), "mag": (0x23, 2)}
+plots_supported = {"accel": 0x81, "mag": 0x82}
+
+mag_offsets = [1304.7655029296875, 1176.2099609375, -940.0]
 
 
-def plot_accel_or_mag(pensel, axis, plot_type):
+def plot_accel_or_mag(packet, axis, plot_type):
     """
     Plotting accel and mag packets are identical..
     """
-    axis.clear()
-    # parse the args required to get the data
-    report_and_args = plots_supported[plot_type]
-    if len(report_and_args) == 1:
-        payload = []
-        reportID = report_and_args[0]
-    else:
-        payload = report_and_args[1:]
-        reportID = report_and_args[0]
-
-    # get the data
-    retval, payload = pensel.send_report(reportID, payload)
-    if retval == 0:
-        # parse it
+    report, retval, payload = packet
+    if report == plots_supported[plot_type] and retval == 0:
+        axis.clear()
+        # Parse it...
         frame_num, timestamp, x, y, z = pu.parse_accel_packet(payload)
+        if plot_type == "mag":
+            print("applying offsets...")
+            x = x - mag_offsets[0]
+            y = y - mag_offsets[1]
+            z = z - mag_offsets[2]
+
         print("Plotting packet# {} ({} ms)\t\t({}, {}, {})".format(frame_num, timestamp, x, y, z))
         # plot it
         axis.quiver(0.5, 0.5, 0.5, x, y, z, length=(0.5 / math.sqrt(x**2 + y**2 + z**2)))
-    else:
-        raise penselreport.PenselError("Error! Retval: {}".format(retval))
 
 
 def main(port, plot_type):
-    with penselreport.Pensel(port, args.baudrate, args.verbose) as pensel:
+    with PenselInputs(port, 115200, args.verbose) as pi:
         plt.ion()
         fig = plt.figure()
         ax = fig.gca(projection='3d')
         while True:
-            if plot_type == "accel" or plot_type == "mag":
-                plot_accel_or_mag(pensel, ax, plot_type)
-            ax.set_xlim(0, 1)
-            ax.set_ylim(0, 1)
-            ax.set_zlim(0, 1)
-            ax.set_xlabel('X axis')
-            ax.set_ylabel('Y axis')
-            ax.set_zlabel('Z axis')
-            plt.show()
-            plt.pause(0.0001)
+            packet = pi.get_packet()
+            if packet:
+                pi.clear_queue()   # clear it so we don't lag...
+                pi._clear_serial = True
+                if plot_type == "accel" or plot_type == "mag":
+                    plot_accel_or_mag(packet, ax, plot_type)
+                ax.set_xlim(0, 1)
+                ax.set_ylim(0, 1)
+                ax.set_zlim(0, 1)
+                ax.set_xlabel('X axis')
+                ax.set_ylabel('Y axis')
+                ax.set_zlabel('Z axis')
+                plt.show()
+                plt.pause(0.0001)
 
 
 if __name__ == '__main__':

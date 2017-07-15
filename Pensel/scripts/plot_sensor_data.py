@@ -1,14 +1,15 @@
 #! /usr/bin/python
 import matplotlib.pyplot as plt
 
-import penselreport as pr
+from penselinputs import PenselInputs
 import pensel_utils as pu
 
 
 class LSM303DLHC_Parser(object):
     def __init__(self, port, verbose=0):
         self.verbose = verbose
-        self.pensel = pr.Pensel(port, 115200, verbose=verbose)
+        self.port = port
+        self.baudrate = 115200
 
     def post_plot(self, num_samples=100, plot_mag=True, plot_accel=True):
         """
@@ -18,32 +19,31 @@ class LSM303DLHC_Parser(object):
         mag_packets = []
         accel_done = False if plot_accel else True
         mag_done = False if plot_mag else True
-        while True:
-            if plot_accel:
-                if len(accel_packets) < num_samples:
-                    retval, payload = self.pensel.send_report(0x22, [0])
-                    if retval == 0 and len(payload) != 0:
+
+        with PenselInputs(self.port, self.baudrate, self.verbose) as pi:
+            while True:
+                packet = pi.get_packet()
+                if packet:
+                    report, retval, payload = packet
+                    if report == 0x81 and retval == 0 and plot_accel:  # accel
                         frame_num, timestamp, x, y, z = pu.parse_accel_packet(payload)
+                        accel_packets.append([x, y, z])
                         if self.verbose:
                             print("Got Accel packet# {}".format(frame_num))
-                        accel_packets.append([x, y, z])
-                else:
-                    accel_done = True
-
-            if plot_mag:
-                if len(mag_packets) < num_samples:
-                    retval, payload = self.pensel.send_report(0x23, [0])
-                    if retval == 0 and len(payload) != 0:
+                    elif report == 0x82 and retval == 0 and plot_mag:  # mag
                         frame_num, timestamp, x, y, z = pu.parse_mag_packet(payload)
+                        mag_packets.append([x, y, z])
                         if self.verbose:
                             print("Got Mag packet# {}".format(frame_num))
-                        mag_packets.append([x, y, z])
-                else:
+
+                if len(accel_packets) >= num_samples:
+                    accel_done = True
+                if len(mag_packets) >= num_samples:
                     mag_done = True
 
-            # check if we're done!
-            if accel_done and mag_done:
-                break
+                # check if we're done!
+                if accel_done and mag_done:
+                    break
 
         # Markers: S, 8, >, <, ^, v, o, X, P, d
         fig, ax = plt.subplots()

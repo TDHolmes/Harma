@@ -50,9 +50,12 @@ class Pensel(object):
         """
         reads `num_bytes` from the serial port.
         """
+        if self.verbose:
+            print("Starting to read serial")
         out = self.serial.read(num_bytes)
         if len(out) != num_bytes:
             print("WARNING: Didn't get the expected number of bytes")
+            print("    Received {}, expected {}. Serial port dead?".format(num_bytes, len(out)))
 
         if self.verbose:
             print("Read in `{}`".format([ord(c) for c in out]))
@@ -62,6 +65,10 @@ class Pensel(object):
             out_list.append(ord(s))
 
         return out_list
+
+    def serial_clear(self):
+        """ Clears the serial buffer of anything received. """
+        self.serial.reset_input_buffer()
 
     def num_bytes_available(self):
         """
@@ -113,9 +120,7 @@ class Pensel(object):
                     return True
                 else:
                     # first byte correct, but second isn't. False activation
-                    if self.verbose:
-                        print("Failed to detect start...")
-                    return False
+                    pass
             elif data[1] == self.MAGIC_REPLY_0_EXPECTED:
                 # maybe we were just off by 1
                 data = self.serial_read(1)
