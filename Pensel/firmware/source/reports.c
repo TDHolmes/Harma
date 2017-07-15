@@ -9,8 +9,9 @@
 #include <stdint.h>
 #include "common.h"
 #include "reports.h"
-#include "LSM303DLHC.h"
-#include "UART.h"  // TODO: Remove and switch back to function pointers
+#include "LSM303DLHC.h"  // for LSM303DLHC reports
+#include "cal.h"         // for cal reports
+#include "UART.h"        // TODO: Remove and switch back to function pointers
 #include "hardware.h"
 
 
@@ -342,6 +343,16 @@ ret_t rpt_pensel_getButtonSwitchState(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUS
     return RET_OK;
 }
 
+/*! Report 0x34 returns the pensel's critical errors
+ */
+ret_t rpt_pensel_getCriticalErrors(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len),
+                                   uint8_t * out_p, uint8_t * out_len_ptr)
+{
+    *(critical_errors_t *)out_p = gCriticalErrors;
+    *out_len_ptr = sizeof(critical_errors_t);
+    return RET_OK;
+}
+
 
 /* ------------------------- MASTER LOOKUP FUNCTION ------------------------- */
 
@@ -405,7 +416,7 @@ ret_t rpt_lookup(uint8_t rpt_type, uint8_t *input_buff_ptr, uint8_t input_buff_l
         /* Report 0x31 */ rpt_pensel_getTimestamp,
         /* Report 0x32 */ rpt_pensel_getComsErrors,
         /* Report 0x33 */ rpt_pensel_getButtonSwitchState,
-        /* Report 0x34 */ rpt_err,
+        /* Report 0x34 */ rpt_pensel_getCriticalErrors,
         /* Report 0x35 */ rpt_err,
         /* Report 0x36 */ rpt_err,
         /* Report 0x37 */ rpt_err,
@@ -417,8 +428,8 @@ ret_t rpt_lookup(uint8_t rpt_type, uint8_t *input_buff_ptr, uint8_t input_buff_l
         /* Report 0x3d */ rpt_err,
         /* Report 0x3e */ rpt_err,
         /* Report 0x3f */ rpt_err,
-        /* Report 0x40 */ rpt_err,
-        /* Report 0x41 */ rpt_err,
+        /* Report 0x40 */ rpt_cal_read,
+        /* Report 0x41 */ rpt_cal_write,
         /* Report 0x42 */ rpt_err,
         /* Report 0x43 */ rpt_err,
         /* Report 0x44 */ rpt_err,
