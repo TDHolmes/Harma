@@ -20,7 +20,7 @@
 
 
 //! Calibration structure
-typedef struct {
+typedef struct __attribute__((packed)) {
     uint32_t header;   //!< Header to signify start of cal region (`PENSEL_CAL_HEADER`)
     uint16_t version;  //!< Version of this cal structure (`PENSEL_CAL_VERSION`)
     float accel_offsets[3];  //!< Static offsets to be applied to accel data

@@ -139,6 +139,8 @@ static ret_t cal_writeToFlash(uint32_t * dataToWrite_ptr)
 
 
 // ----------- Report functions -----------
+
+// Report 40
 ret_t rpt_cal_read(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len),
                    uint8_t * out_p, uint8_t * out_len_ptr)
 {
@@ -147,7 +149,7 @@ ret_t rpt_cal_read(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len),
     return RET_OK;
 }
 
-
+// Report 41
 ret_t rpt_cal_write(uint8_t * in_p, uint8_t in_len, uint8_t * UNUSED_PARAM(out_p), uint8_t * out_len_ptr)
 {
     *out_len_ptr = 0;
