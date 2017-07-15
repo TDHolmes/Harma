@@ -30,8 +30,8 @@
 
 
 // Global variables to influence state
-bool gEnableMagStream = true;   //!< Global toggle to enable/disable streaming mag data
-bool gEnableAccelStream = true; //!< Global toggle to enable/disable streaming accel data
+bool gEnableMagStream = false;   //!< Global toggle to enable/disable streaming mag data
+bool gEnableAccelStream = false; //!< Global toggle to enable/disable streaming accel data
 
 
 //! Common return type for the entire project
