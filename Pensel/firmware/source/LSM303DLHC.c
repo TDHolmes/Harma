@@ -144,7 +144,7 @@ ret_t LSM303DLHC_init(accel_ODR_t accel_datarate, accel_sensitivity_t accel_sens
                       mag_ODR_t mag_datarate, mag_sensitivity_t mag_sensitivity)
 {
     ret_t retval;
-    // Set datarate, enable X, Y, and Z access and turn off Low Power Mode
+    // Set datarate, enable X, Y, and Z access (axes?) and turn off Low Power Mode
     retval = I2C_writeByte(ACCEL_ADDRESS, ACCEL_CTRL_REG1_A, (accel_datarate << 4) | (0b0111), true);
     if (retval != RET_OK) { return retval; }
 
@@ -567,7 +567,7 @@ uint32_t LSM303DLHC_accel_HardwareOverwriteCount(void)
 
 /*! Gets the number of HW related drops from the chip.
  *
- * Note: Is not 100% accurate as there is only a flag for overwrite on LSM303DLHC
+ * Note: Is not 100% accurate as there is only a flag for overwrite in the LSM303DLHC
  *    rather than a counter.
  *
  * @retval (uint8_t): Number of hardware overwrites that ocurred on the LSM303DLHC.
@@ -580,7 +580,9 @@ uint32_t LSM303DLHC_mag_HardwareOverwriteCount(void)
 
 /* ------ LSM303DLHC REPORTS ------ */
 
-/*! Report 0x20 Enable / Disable mag & accel streams
+/*! Report 0x20 Enable / Disable mag & accel streams. It takes in 1 byte.
+ *     If bit 1 is set, accel streaming is enabled. If bit 2 is set, magnetometer
+ *     streaming is enabled.
  */
 ret_t rpt_LSM303DLHC_enableStreams(uint8_t * in_p, uint8_t in_len,
                                    uint8_t * UNUSED_PARAM(out_p),
@@ -604,7 +606,7 @@ ret_t rpt_LSM303DLHC_enableStreams(uint8_t * in_p, uint8_t in_len,
 
 
 /*! Report 0x21 that changes the configuration of the LSM303DLHC chip. The argument structure
- *      Is as follows packed into the in buffer:
+ *      Is as follows packed into the `in_p` buffer:
  *          1. accel_ODR_t
  *          2. accel_sensitivity_t
  *          3. mag_ODR_t
