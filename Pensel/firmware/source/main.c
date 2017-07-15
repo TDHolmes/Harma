@@ -110,8 +110,8 @@ int main(void)
     retval = ADC_init();
     check_retval_fatal(__FILE__, __LINE__, retval);
 
-    retval = LSM303DLHC_init(kAccelODR_100_Hz, kOne_mg_per_LSB,
-                             kMagODR_75_Hz, kXY_450_Z_400_LSB_per_g);
+    retval = LSM303DLHC_init(kAccelODR_200_Hz, kOne_mg_per_LSB,
+                             kMagODR_220_Hz, kXY_450_Z_400_LSB_per_g);
     check_retval_fatal(__FILE__, __LINE__, retval);
 
     retval = rpt_init(&UART_sendChar, &UART_getChar);
