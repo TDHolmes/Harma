@@ -89,8 +89,8 @@ static inline ret_t LSM303DLHC_accel_putPacket(accel_raw_t pkt);
 static inline ret_t LSM303DLHC_mag_putPacket(mag_raw_t pkt);
 
 // Private functions to normalize raw packets before sending to the user
-static void LSM303DLHC_accel_normalize(accel_raw_t * raw_pkt, accel_norm_t * norm_pkt_ptr);
-static void LSM303DLHC_mag_normalize(mag_raw_t * raw_pkt, mag_norm_t * norm_pkt_ptr);
+static void LSM303DLHC_accel_normalize(accel_raw_t * raw_pkt, accel_norm_t * norm_pkt_ptr, bool adjust_gain);
+static void LSM303DLHC_mag_normalize(mag_raw_t * raw_pkt, mag_norm_t * norm_pkt_ptr, bool adjust_gain);
 
 
 //! LSM303DLHC structure to store packets, overwrite stats, and LSM303DLHC settings
@@ -103,11 +103,14 @@ typedef struct {
     queue_t mag_queue;          //!< Mag admin struct of the mag_queues
     uint32_t accel_framenum;    //!< Accel frame number Increments on each accel packet
     uint32_t mag_framenum;      //!< Mag frame number. Increments on each mag packet
-    bool data_ready;            //!< Flag we set when the LSM303DLHC data ready pin fires
+    bool adjust_gain;           //!< Adjust for gain settings in the LSM303DLHC. Defaults to true.
+    volatile bool data_ready;   //!< Flag we set when the LSM303DLHC data ready pin fires
+
     //! Flag we set when we see there's data acording to the accel status register
     uint8_t accel_data_available;
     //! Flag we set when we see there's data acording to MAG_SR_REG_M
     uint8_t mag_data_available;
+
     accel_ODR_t accel_datarate;     //!< Rate at which accel data gets updated on chip
     mag_ODR_t mag_datarate;         //!< Rate at which mag data gets updated on chip
     accel_sensitivity_t accel_sensitivity;  //!< Accel fullscale setting
@@ -125,7 +128,7 @@ const float AccelGainOffsets[] = {1.0f, 2.0f, 4.0f, 12.0f};
 
 /*! Master struct for this module. Marked as volatile as we update it in
  *   the I2C & DRDY pin interrupt context */
-static volatile LSM303DLHC_admin_t LSM303DLHC;
+static LSM303DLHC_admin_t LSM303DLHC;
 
 
 /*! Initializer of the LSM303DLHC module and chip. Sets the datarate and sensitivity of the
@@ -169,6 +172,7 @@ ret_t LSM303DLHC_init(accel_ODR_t accel_datarate, accel_sensitivity_t accel_sens
     LSM303DLHC.mag_hw_overwrite_count = 0;
     LSM303DLHC.mag_framenum = 0;
     LSM303DLHC.accel_framenum = 0;
+    LSM303DLHC.adjust_gain = true;
 
     // (re)set the queue
     queue_init(&LSM303DLHC.accel_queue);
@@ -406,30 +410,45 @@ static inline ret_t LSM303DLHC_mag_putPacket(mag_raw_t pkt)
 }
 
 
-static void LSM303DLHC_accel_normalize(accel_raw_t * raw_pkt, accel_norm_t * norm_pkt_ptr)
+static void LSM303DLHC_accel_normalize(accel_raw_t * raw_pkt, accel_norm_t * norm_pkt_ptr, bool adjust_gain)
 {
     norm_pkt_ptr->frame_num = raw_pkt->frame_num;
     norm_pkt_ptr->timestamp = raw_pkt->timestamp;
-    norm_pkt_ptr->x = (float)raw_pkt->x * AccelGainOffsets[LSM303DLHC.accel_sensitivity];
-    norm_pkt_ptr->y = (float)raw_pkt->y * AccelGainOffsets[LSM303DLHC.accel_sensitivity];
-    norm_pkt_ptr->z = (float)raw_pkt->z * AccelGainOffsets[LSM303DLHC.accel_sensitivity];
+    norm_pkt_ptr->x = (float)raw_pkt->x;
+    norm_pkt_ptr->y = (float)raw_pkt->y;
+    norm_pkt_ptr->z = (float)raw_pkt->z;
+
+    // adjust for gain offset if specified
+    if (adjust_gain == true) {
+        norm_pkt_ptr->x *= AccelGainOffsets[LSM303DLHC.accel_sensitivity];
+        norm_pkt_ptr->y *= AccelGainOffsets[LSM303DLHC.accel_sensitivity];
+        norm_pkt_ptr->z *= AccelGainOffsets[LSM303DLHC.accel_sensitivity];
+    }
 }
 
-static void LSM303DLHC_mag_normalize(mag_raw_t * raw_pkt, mag_norm_t * norm_pkt_ptr)
+static void LSM303DLHC_mag_normalize(mag_raw_t * raw_pkt, mag_norm_t * norm_pkt_ptr, bool adjust_gain)
 {
     norm_pkt_ptr->frame_num = raw_pkt->frame_num;
     norm_pkt_ptr->timestamp = raw_pkt->timestamp;
-    norm_pkt_ptr->x = (float)raw_pkt->x * MagGainOffsets_XY[LSM303DLHC.mag_sensitivity - 1];
-    norm_pkt_ptr->y = (float)raw_pkt->y * MagGainOffsets_XY[LSM303DLHC.mag_sensitivity - 1];
-    norm_pkt_ptr->z = (float)raw_pkt->z * MagGainOffsets_Z[LSM303DLHC.mag_sensitivity - 1];
+    norm_pkt_ptr->x = (float)raw_pkt->x;
+    norm_pkt_ptr->y = (float)raw_pkt->y;
+    norm_pkt_ptr->z = (float)raw_pkt->z;
+
+    // adjust for gain offset if specified
+    if(adjust_gain == true) {
+        norm_pkt_ptr->x *= MagGainOffsets_XY[LSM303DLHC.mag_sensitivity - 1];
+        norm_pkt_ptr->y *= MagGainOffsets_XY[LSM303DLHC.mag_sensitivity - 1];
+        norm_pkt_ptr->z *= MagGainOffsets_Z[LSM303DLHC.mag_sensitivity - 1];
+    }
 }
 
 
 /*! Gets data from the accel queue.
  *
  * Note: This is function modifies the tail index if we're overwritting unread data.
- *   LSM303DLHC_accel_putPacket also can modify it, so we must check for that case in
- *   this function as LSM303DLHC_accel_getPacket gets called asynchronously.
+ *   LSM303DLHC_accel_putPacket also can modify it, but we don't need to check for
+ *   that case in this function as LSM303DLHC_accel_getPacket does NOT get called
+ *   asynchronously anymore.
  *
  * @param pkt_ptr (accel_norm_t *): Place to put the retreived accel packet.
  * @param peak (bool): Whether or not we should pop it off the queue or to just peak at it.
@@ -443,12 +462,9 @@ ret_t LSM303DLHC_accel_getPacket(accel_norm_t * pkt_ptr, bool peak)
 
         // Get the data from the queue and normalize...
         raw_pkt = LSM303DLHC.accel_pkts[queue_ind];
-        LSM303DLHC_accel_normalize(&raw_pkt, pkt_ptr);
+        LSM303DLHC_accel_normalize(&raw_pkt, pkt_ptr, LSM303DLHC.adjust_gain);
 
-        // Check if this data is valid (could've been overwritten mid way through)
-        if (queue_ind != LSM303DLHC.accel_queue.tail_ind) {
-            return RET_COM_ERR;
-        } else if (peak == false) {
+        if (peak == false) {
             // the queue didn't change while we were getting it and we aren't just peaking
             queue_increment_tail(&LSM303DLHC.accel_queue, ACCEL_QUEUE_SIZE);
             return RET_OK;
@@ -463,8 +479,9 @@ ret_t LSM303DLHC_accel_getPacket(accel_norm_t * pkt_ptr, bool peak)
 /*! Gets data from the mag queue.
  *
  * Note: This is function modifies the tail index if we're overwritting unread data.
- *   LSM303DLHC_mag_putPacket also can modify it, so we must check for that case in
- *   this function as LSM303DLHC_mag_getPacket gets called asynchronously.
+ *   LSM303DLHC_mag_putPacket also can modify it, but we don't have to check for
+ *   that case in this function as LSM303DLHC_mag_getPacket does NOT get called
+ *   asynchronously anymore.
  *
  * @param pkt_ptr (mag_norm_t *): Place to put the retreived mag packet.
  * @param peak (bool): Whether or not we should pop it off the queue or to just peak at it.
@@ -478,12 +495,9 @@ ret_t LSM303DLHC_mag_getPacket(mag_norm_t * pkt_ptr, bool peak)
 
         // Get the data from the queue and normalize...
         raw_pkt = LSM303DLHC.mag_pkts[queue_ind];
-        LSM303DLHC_mag_normalize(&raw_pkt, pkt_ptr);
+        LSM303DLHC_mag_normalize(&raw_pkt, pkt_ptr, LSM303DLHC.adjust_gain);
 
-        // Check if this data is valid (could've been overwritten mid way through)
-        if (queue_ind != LSM303DLHC.mag_queue.tail_ind) {
-            return RET_COM_ERR;
-        } else if (peak == false) {
+        if (peak == false) {
             // the queue didn't change while we were getting it and we aren't just peaking
             queue_increment_tail(&LSM303DLHC.mag_queue, MAG_QUEUE_SIZE);
             return RET_OK;
@@ -566,7 +580,8 @@ uint32_t LSM303DLHC_mag_HardwareOverwriteCount(void)
 
 /* ------ LSM303DLHC REPORTS ------ */
 
-
+/*! Report 0x20 Enable / Disable mag & accel streams
+ */
 ret_t rpt_LSM303DLHC_enableStreams(uint8_t * in_p, uint8_t in_len,
                                    uint8_t * UNUSED_PARAM(out_p),
                                    uint8_t * UNUSED_PARAM(out_len_ptr))
@@ -588,7 +603,7 @@ ret_t rpt_LSM303DLHC_enableStreams(uint8_t * in_p, uint8_t in_len,
 }
 
 
-/*! Report 0x20 that changes the configuration of the LSM303DLHC chip. The argument structure
+/*! Report 0x21 that changes the configuration of the LSM303DLHC chip. The argument structure
  *      Is as follows packed into the in buffer:
  *          1. accel_ODR_t
  *          2. accel_sensitivity_t
@@ -624,7 +639,7 @@ ret_t rpt_LSM303DLHC_changeConfig(uint8_t * in_p, uint8_t in_len,
     return retval;
 }
 
-/*! Report 0x21 that returns the temperature from LSM303DLHC. Takes in no parameters.
+/*! Report 0x24 that returns the temperature from LSM303DLHC. Takes in no parameters.
  *      Returns the temperature (int16_t)
  */
 ret_t rpt_LSM303DLHC_getTemp(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len),
@@ -733,7 +748,7 @@ ret_t rpt_LSM303DLHC_getMag(uint8_t * in_p, uint8_t in_len,
 }
 
 
-/*! Report 0x24: Gets LSM303DLHC errors
+/*! Report 0x25: Gets LSM303DLHC errors
  *
  */
 ret_t rpt_LSM303DLHC_getErrors(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len),
@@ -752,5 +767,22 @@ ret_t rpt_LSM303DLHC_getErrors(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_PARA
     out_p += sizeof(uint32_t);
     *(uint32_t *)out_p = mag_hw_ovrwt;
     *out_len_ptr = 4 * sizeof(uint32_t);
+    return RET_OK;
+}
+
+/*! Report 0x26: Disables / Enables LSM303DLHC.adjust_gain
+ */
+ret_t rpt_LSM303DLHC_setGainAdjustFlag(uint8_t * in_p, uint8_t in_len,
+                                       uint8_t * UNUSED_PARAM(out_p),
+                                       uint8_t * UNUSED_PARAM(out_len_ptr))
+{
+    if (in_len != 1) {
+        return RET_INVALID_ARGS_ERR;
+    }
+    if (*in_p == 0) {
+        LSM303DLHC.adjust_gain = false;
+    } else {
+        LSM303DLHC.adjust_gain = true;
+    }
     return RET_OK;
 }

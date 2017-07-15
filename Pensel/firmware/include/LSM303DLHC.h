@@ -126,17 +126,10 @@ ret_t LSM303DLHC_temp_getData(int16_t * temp_val_ptr);
 void LSM303DLHC_drdy_ISR(void);
 // void LSM303DLHC_int_handler(void);
 
-ret_t rpt_LSM303DLHC_enableStreams(uint8_t * in_p, uint8_t in_len,
-                                   uint8_t * UNUSED_PARAM(out_p),
-                                   uint8_t * UNUSED_PARAM(out_len_ptr));
-ret_t rpt_LSM303DLHC_changeConfig(uint8_t * in_p, uint8_t in_len,
-                                  uint8_t * UNUSED_PARAM(out_p),
-                                  uint8_t * UNUSED_PARAM(out_len_ptr));
-ret_t rpt_LSM303DLHC_getTemp(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len),
-                             uint8_t * out_p, uint8_t * out_len_ptr);
-ret_t rpt_LSM303DLHC_getAccel(uint8_t * in_p, uint8_t in_len,
-                              uint8_t * out_p, uint8_t * out_len_ptr);
-ret_t rpt_LSM303DLHC_getMag(uint8_t * in_p, uint8_t in_len,
-                            uint8_t * out_p, uint8_t * out_len_ptr);
-ret_t rpt_LSM303DLHC_getErrors(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len),
-                               uint8_t * out_p, uint8_t * out_len_ptr);
+ret_t rpt_LSM303DLHC_enableStreams(uint8_t * in_p, uint8_t in_len, uint8_t * out_p, uint8_t * out_len_ptr);
+ret_t rpt_LSM303DLHC_changeConfig(uint8_t * in_p, uint8_t in_len, uint8_t * out_p, uint8_t * out_len_ptr);
+ret_t rpt_LSM303DLHC_getTemp(uint8_t * in_p, uint8_t in_len, uint8_t * out_p, uint8_t * out_len_ptr);
+ret_t rpt_LSM303DLHC_getAccel(uint8_t * in_p, uint8_t in_len, uint8_t * out_p, uint8_t * out_len_ptr);
+ret_t rpt_LSM303DLHC_getMag(uint8_t * in_p, uint8_t in_len, uint8_t * out_p, uint8_t * out_len_ptr);
+ret_t rpt_LSM303DLHC_getErrors(uint8_t * in_p, uint8_t in_len, uint8_t * out_p, uint8_t * out_len_ptr);
+ret_t rpt_LSM303DLHC_setGainAdjustFlag(uint8_t * in_p, uint8_t in_len, uint8_t * out_p, uint8_t * out_len_ptr);
