@@ -28,6 +28,14 @@
 #define ACCEL_STREAM_REPORT_ID (0x01)
 #define MAG_STREAM_REPORT_ID (0x02)
 
+#if !defined(max)
+    #define max(v1, v2) (v1 >= v2 ? v1 : v2)
+#endif
+
+#if !defined(min)
+    #define min(v1, v2) (v1 < v2 ? v1 : v2)
+#endif
+
 
 // Global variables to influence state
 bool gEnableMagStream = false;   //!< Global toggle to enable/disable streaming mag data
