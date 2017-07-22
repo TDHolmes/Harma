@@ -8,19 +8,10 @@ uint8_t queue_buffer[QUEUE_SIZE];
 queue_t queue_admin;
 
 
-void queue_init(void)
-{
-    queue_admin.head_ind = 0;
-    queue_admin.tail_ind = 0;
-    queue_admin.unread_items = 0;
-    queue_admin.overwrite_count = 0;
-}
-
-
 void test_basicSetGet(void)
 {
     uint8_t val;
-    queue_init();
+    queue_init(&queue_admin);
     queue_buffer[queue_admin.head_ind] = 42;
     queue_increment_head(&queue_admin, QUEUE_SIZE);
     val = queue_buffer[queue_admin.tail_ind];
@@ -39,7 +30,7 @@ void test_basicSetGet(void)
 
 void test_basicSetIncrementsUnreadCount(void)
 {
-    queue_init();
+    queue_init(&queue_admin);
     queue_buffer[queue_admin.head_ind] = 42;
     queue_increment_head(&queue_admin, QUEUE_SIZE);
     // do some output if we've defined verbose output
@@ -57,7 +48,7 @@ void test_basicSetIncrementsUnreadCount(void)
 void test_basicGetDecrementsUnreadCount(void)
 {
     uint8_t val;
-    queue_init();
+    queue_init(&queue_admin);
     queue_buffer[queue_admin.head_ind] = 42;
     queue_increment_head(&queue_admin, QUEUE_SIZE);
     queue_buffer[queue_admin.head_ind] = 24;
@@ -81,7 +72,7 @@ void test_basicGetDecrementsUnreadCount(void)
 
 void test_overwriteCountIncreases(void)
 {
-    queue_init();
+    queue_init(&queue_admin);
     for (uint8_t i = 0; i <= QUEUE_SIZE; i++) {
         queue_buffer[queue_admin.head_ind] = i;
         queue_increment_head(&queue_admin, QUEUE_SIZE);
@@ -101,7 +92,7 @@ void test_overwriteCountIncreases(void)
 void test_overwrite_getExpectedValue(void)
 {
     uint8_t val;
-    queue_init();
+    queue_init(&queue_admin);
     for (uint8_t i = 0; i <= QUEUE_SIZE; i++) {
         queue_buffer[queue_admin.head_ind] = i;
         queue_increment_head(&queue_admin, QUEUE_SIZE);
