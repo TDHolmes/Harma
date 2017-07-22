@@ -50,6 +50,9 @@ def main(verbose, unity_path):
     retval += run_utest(["../firmware/source/FIR.c", "test_FIR.c"],
                         "test_FIR", unity_path, include_paths=inc_paths,
                         verbose=verbose)
+    retval += run_utest(["../firmware/source/matrixmath.c", "test_matrixmath.c"],
+                        "test_matrixmath", unity_path, include_paths=inc_paths,
+                        verbose=verbose)
     sys.exit(retval)
 
 
