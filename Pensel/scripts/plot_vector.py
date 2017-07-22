@@ -9,6 +9,8 @@ from mpl_toolkits.mplot3d import Axes3D
 from penselreport import Pensel
 import pensel_utils as pu
 
+Axes3D.__name__  # dummy call so avoid unused import error...
+
 
 plots_supported = {"accel": 0x81, "mag": 0x82}
 

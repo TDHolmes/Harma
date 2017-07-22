@@ -25,7 +25,9 @@ class LSM303DLHC_Parser(object):
         with Pensel(self.port, self.baudrate, self.verbose) as pi:
 
             # turn on accel & mag streaming
+            print("Turning on input streaming...")
             retval, response = pi.send_report(0x20, payload=[3])
+            print("Gathering packets...")
             while True:
                 packet = pi.get_packet()
                 if packet:
@@ -48,6 +50,7 @@ class LSM303DLHC_Parser(object):
 
                 # check if we're done!
                 if accel_done and mag_done:
+                    print("Done collecting data!")
                     break
 
         # Markers: S, 8, >, <, ^, v, o, X, P, d
