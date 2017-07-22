@@ -9,21 +9,24 @@ import time
 
 
 def run_utest(source_code_list, output_name, unity_path,
-              include_paths=None, verbose=False):
+              include_paths=None, verbose=False, debug=False):
     print("\n\n Running Test {}!\n\n".format(output_name))
     # build up include paths...
     include_paths_str = ""
     if type(include_paths) is list:
         for i in include_paths:
-            include_paths_str += " -I {}".format(i)
+            include_paths_str += " -I{}".format(i)
 
     # compile with gcc
-    BASE_CMD_START = "gcc {0} -I {1} {1}unity.c ".format(include_paths_str, unity_path)
+    BASE_CMD_START = "gcc-7 {0} -I{1} {1}unity.c ".format(include_paths_str, unity_path)
     # build up the command with the source and output name
     abs_path_list = [os.path.abspath(src_file) for src_file in source_code_list]
-    cmd = BASE_CMD_START + "{} -o {}".format(" ".join(abs_path_list), output_name)
+    cmd = BASE_CMD_START + " -o {} {}".format(output_name, " ".join(abs_path_list))
     if verbose:
         cmd += " -D VERBOSE_OUTPUT"
+    if debug:
+        cmd += " -v"
+    cmd += " -D UNIT_TEST"
 
     # run the program!!
     stdout, stderr, retval = run_command(cmd)
@@ -37,22 +40,22 @@ def run_utest(source_code_list, output_name, unity_path,
     return retval
 
 
-def main(verbose, unity_path):
+def main(unity_path, debug=False, verbose=False):
     retval = 0
     inc_paths = ["../firmware/include/"]
     # run all tests!
     retval += run_utest(["../firmware/source/queue.c", "test_queue.c"],
                         "test_queue", unity_path, include_paths=inc_paths,
-                        verbose=verbose)
+                        verbose=verbose, debug=debug)
     retval += run_utest(["../firmware/source/newqueue.c", "test_newqueue.c"],
                         "test_newqueue", unity_path, include_paths=inc_paths,
-                        verbose=verbose)
+                        verbose=verbose, debug=debug)
     retval += run_utest(["../firmware/source/FIR.c", "test_FIR.c"],
                         "test_FIR", unity_path, include_paths=inc_paths,
-                        verbose=verbose)
+                        verbose=verbose, debug=debug)
     retval += run_utest(["../firmware/source/matrixmath.c", "test_matrixmath.c"],
                         "test_matrixmath", unity_path, include_paths=inc_paths,
-                        verbose=verbose)
+                        verbose=verbose, debug=debug)
     sys.exit(retval)
 
 
@@ -128,7 +131,9 @@ if __name__ == '__main__':
                         help="Path to the Unity C Unit testing framework.")
     parser.add_argument("-v", "--verbose", action="store_true",
                         help="Verbose output.")
+    parser.add_argument("--debug", action="store_true",
+                        help="Debug compiler output.")
 
     args = parser.parse_args()
 
-    main(args.verbose, args.unity_path)
+    main(args.unity_path, verbose=args.verbose, debug=args.debug)

@@ -31,8 +31,8 @@ void test_impulseResponse(void)
         out_val = FIR_run(&FIR_admin, in_val);
         #ifdef VERBOSE_OUTPUT
             printf("\titter %d: put %f in, got %f out\n", i, in_val, out_val);
+            printf("\t%f == %f?\n", out_val, accel_coefficients_LPF[i]);
         #endif
-        printf("\t%f == %f?\n", out_val, accel_coefficients_LPF[i]);
         TEST_ASSERT_EQUAL_FLOAT(out_val, accel_coefficients_LPF[i]);
     }
 }

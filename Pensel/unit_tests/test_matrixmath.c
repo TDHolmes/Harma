@@ -34,6 +34,9 @@ void test_unitVectorCross(void) {
 
     // Check pass / failure
     TEST_ASSERT_EQUAL_HEX8(RET_OK, retval);
+    TEST_ASSERT_EQUAL_FLOAT(0, m_result.matrix[0][0]);
+    TEST_ASSERT_EQUAL_FLOAT(0, m_result.matrix[0][1]);
+    TEST_ASSERT_EQUAL_FLOAT(1, m_result.matrix[0][2]);
 }
 
 

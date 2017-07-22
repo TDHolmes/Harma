@@ -37,11 +37,6 @@
 #endif
 
 
-// Global variables to influence state
-bool gEnableMagStream = false;   //!< Global toggle to enable/disable streaming mag data
-bool gEnableAccelStream = false; //!< Global toggle to enable/disable streaming accel data
-
-
 //! Common return type for the entire project
 typedef enum {
     RET_OK,         //!< The return code if all goes well
@@ -69,6 +64,12 @@ typedef struct {
     uint32_t cal_checksum_err : 1;
 } critical_errors_t;
 
-critical_errors_t gCriticalErrors;
+#ifndef UNIT_TEST
+    // Global variables to influence state
+    bool gEnableMagStream = false;   //!< Global toggle to enable/disable streaming mag data
+    bool gEnableAccelStream = false; //!< Global toggle to enable/disable streaming accel data
+
+    critical_errors_t gCriticalErrors;
+#endif
 
 void fatal_error_handler(char file[], uint32_t line, int8_t err_code);
