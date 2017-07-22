@@ -2,6 +2,10 @@
 import serial
 import os
 import struct
+import time
+
+import Queue as queue
+import threading
 
 import pensel_utils as pu
 
@@ -20,12 +24,16 @@ class Pensel(object):
         self.MAGIC_REPLY_0_EXPECTED = 0xDE
         self.MAGIC_REPLY_1_EXPECTED = 0xAD
 
+        # open serial port
         if self.verbose:
             print("Opening serial port...")
-        self.serial = serial.Serial(self.serialport, self.baudrate, timeout=1)
-
+        self.serial = serial.Serial(self.serialport, self.baudrate, timeout=0.5)
         if self.verbose:
             print("Opened!")
+
+        # start listening for reports from Pensel
+        self.start_listener()
+        self._clear_serial = False
 
     def __enter__(self):
         return self
@@ -55,14 +63,11 @@ class Pensel(object):
         out = self.serial.read(num_bytes)
         if len(out) != num_bytes:
             print("WARNING: Didn't get the expected number of bytes")
-            print("    Received {}, expected {}. Serial port dead?".format(num_bytes, len(out)))
+            print("    Received {}, expected {}. Serial port dead?".format(len(out), num_bytes))
 
+        out_list = [ord(c) for c in out]
         if self.verbose:
-            print("Read in `{}`".format([ord(c) for c in out]))
-
-        out_list = []
-        for s in out:
-            out_list.append(ord(s))
+            print("Read in `{}`".format(out_list))
 
         return out_list
 
@@ -76,6 +81,69 @@ class Pensel(object):
         """
         return self.serial.in_waiting
 
+    def start_listener(self):
+        self.thread_run = True
+        self.queue = queue.Queue()
+        self.thread = threading.Thread(target=self.listener)  # , args=(self,)
+        self.thread.start()  # start it off
+
+    def packets_available(self):
+        return not self.queue.empty()
+
+    def listener(self):
+        """ The threaded listener that looks for packets from Pensel. """
+        while self.thread_run is True:
+            if self.num_bytes_available() != 0 and self.check_for_start():
+                report, retval, payload = self.receive_packet()
+                if report >= 0:
+                    self.queue.put((report, retval, payload))
+
+    def get_packet(self):
+        if self.thread.is_alive() is False:
+            raise RuntimeError("Thread is dead!!")
+
+        if not self.queue.empty():
+            return self.queue.get_nowait()
+
+        return None
+
+    def get_packet_withreportID(self, reportID):
+        """
+        Returns the first found packet with the given reportID while keeping
+        the rest of the packets on the queue in the correct order.
+        """
+        # check if we've got a correct packet in the queue
+        incorrect_packets = []
+        correct_pkt = None
+        while True:
+            pkt = self.get_packet()
+            if pkt:
+                report, retval, payload = pkt
+                # check if it's the correct report
+                if reportID == report:
+                    correct_pkt = pkt
+                    break
+                else:
+                    incorrect_packets.append(pkt)
+            else:
+                # no more packets to receive
+                break
+
+        # put back incorrect packets onto the queue
+        for pkt in incorrect_packets[::-1]:
+            self.queue.put(pkt)
+
+        return correct_pkt
+
+    def clear_queue(self):
+        while True:
+            try:
+                self.queue.get_nowait()
+            except queue.Empty:
+                if self.verbose:
+                    print("Queue cleared!")
+                break
+
     def send_report(self, report_ID, payload=None):
         """
         Sends a report to the pensel and reads back the result
@@ -86,7 +154,7 @@ class Pensel(object):
         self.serial_write(self.MAGIC_NUM_0)
         self.serial_write(self.MAGIC_NUM_1)
         self.serial_write(report_ID)
-        if payload is None or len(payload) == 0:
+        if payload is None:
             self.serial_write(0)
         else:
             self.serial_write(len(payload))
@@ -95,15 +163,22 @@ class Pensel(object):
                     raise ValueError("Value in payload out of valid range!")
                 self.serial_write(b)
 
-        # read back the result
-        if self.check_for_start():
-            report, retval, payload = self.receive_packet()
-            if report != report_ID:
-                print("ERROR: Unexpected report reply!")
-                return None, None
-        else:
-            print("ERROR: No reply from Pensel!")
-            return None, None
+        # Try to get the response
+        TIMEOUT = 2  # seconds
+        retval = None
+        payload = None
+        start_time = time.time()
+        while True:
+            pkt = self.get_packet_withreportID(report_ID)
+            if pkt:
+                report, retval, payload = pkt
+            else:
+                time.sleep(0.01)
+
+            # check for timeout
+            if time.time() - start_time > TIMEOUT:
+                break
+
         return retval, payload
 
     def check_for_start(self):
@@ -168,6 +243,11 @@ class Pensel(object):
         return report, retval, return_payload
 
     def close(self):
+        print("Killing thread")
+        self.thread_run = False
+        # wait for it to stop
+        while self.thread.is_alive():
+            pass
         print("\n\tClosing serial port...\n")
         self.serial.close()
 
@@ -232,6 +312,40 @@ def parse_report(reportID, payload):
         print("    {}".format(" ".join(["{:0>2X}".format(b) for b in output])))
 
 
+def parse_inputreport(reportID, payload):
+    if reportID == 0x81:
+        # typedef struct __attribute__((packed)) {
+        #     uint32_t frame_num;   //!< Frame number
+        #     uint32_t timestamp;  //!< Timestamp when the packet was received
+        #     float x;             //!< Accel X value
+        #     float y;             //!< Accel Y value
+        #     float z;             //!< Accel Z value
+        # } accel_norm_t;
+        frame_num, timestamp, x, y, z = pu.parse_accel_packet(payload)
+        print("   Accel Packet:")
+        print("       Frame #: {}".format(frame_num))
+        print("     Timestamp: {} ms".format(timestamp))
+        print("        X Axis: {}".format(x))
+        print("        Y Axis: {}".format(y))
+        print("        Z Axis: {}".format(z))
+
+    elif reportID == 0x82:
+        # typedef struct __attribute__((packed)) {
+        #     uint32_t frame_num;   //!< Frame number
+        #     uint32_t timestamp;  //!< Timestamp when the packet was received
+        #     float x;             //!< Mag X value
+        #     float y;             //!< Mag Y value
+        #     float z;             //!< Mag Z value
+        # } mag_norm_t;
+        frame_num, timestamp, x, y, z = pu.parse_mag_packet(payload)
+        print("   Mag Packet:")
+        print("      Frame #: {}".format(frame_num))
+        print("    Timestamp: {} ms".format(timestamp))
+        print("       X Axis: {}".format(x))
+        print("       Y Axis: {}".format(y))
+        print("       Z Axis: {}".format(z))
+
+
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description='Process data from the Pensel.')
@@ -243,8 +357,6 @@ if __name__ == '__main__':
                         help='Whether or not we should print a parsed version of the report')
     parser.add_argument('--verbose', default=False, action="store_true",
                         help='Whether or not we should print extra debug information')
-    parser.add_argument('--stream', default=False, action="store_true",
-                        help='If specified, we will do a while 1 loop querying the specified report')
 
     args = parser.parse_args()
 
@@ -289,19 +401,13 @@ if __name__ == '__main__':
             print("Report ID: {}".format(reportID))
             print("Payload: {}".format(payload))
 
-        while True:
-            retval, output = pensel.send_report(reportID, payload)
-            if retval == 0:
-                print("Report {:0>2X}:".format(reportID))
-                print("")
-                if args.parsed is False:
-                    print("    {}".format(" ".join(["{:0>2X}".format(b) for b in output])))
-                else:
-                    parse_report(reportID, output)
+        retval, output = pensel.send_report(reportID, payload)
+        if retval is not None and retval == 0:
+            print("Report {:0>2X}:".format(reportID))
+            print("")
+            if args.parsed is False:
+                print("    {}".format(" ".join(["{:0>2X}".format(b) for b in output])))
             else:
-                print("Report {:0>2X} FAILED. Error Code: {}".format(reportID, retval))
-                break
-
-            # check if we should loop forever
-            if args.stream is False:
-                break
+                parse_report(reportID, output)
+        else:
+            print("Report {:0>2X} FAILED. Error Code: {}".format(reportID, retval))

@@ -1,8 +1,10 @@
 #! /usr/bin/python
 import matplotlib.pyplot as plt
 
-from penselinputs import PenselInputs
+from penselreport import Pensel
 import pensel_utils as pu
+
+mag_offsets = [1111.877197265625, 1219.1551513671875, -951.0]
 
 
 class LSM303DLHC_Parser(object):
@@ -20,7 +22,10 @@ class LSM303DLHC_Parser(object):
         accel_done = False if plot_accel else True
         mag_done = False if plot_mag else True
 
-        with PenselInputs(self.port, self.baudrate, self.verbose) as pi:
+        with Pensel(self.port, self.baudrate, self.verbose) as pi:
+
+            # turn on accel & mag streaming
+            retval, response = pi.send_report(0x20, payload=[3])
             while True:
                 packet = pi.get_packet()
                 if packet:
@@ -32,7 +37,7 @@ class LSM303DLHC_Parser(object):
                             print("Got Accel packet# {}".format(frame_num))
                     elif report == 0x82 and retval == 0 and plot_mag:  # mag
                         frame_num, timestamp, x, y, z = pu.parse_mag_packet(payload)
-                        mag_packets.append([x, y, z])
+                        mag_packets.append([x - mag_offsets[0], y - mag_offsets[1], z - mag_offsets[2]])
                         if self.verbose:
                             print("Got Mag packet# {}".format(frame_num))
 

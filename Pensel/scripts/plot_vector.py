@@ -6,13 +6,14 @@ import matplotlib.pyplot as plt
 # required import, but unused :( stupid matplotlib
 from mpl_toolkits.mplot3d import Axes3D
 
-from penselinputs import PenselInputs
+from penselreport import Pensel
 import pensel_utils as pu
 
 
 plots_supported = {"accel": 0x81, "mag": 0x82}
 
-mag_offsets = [1304.7655029296875, 1176.2099609375, -940.0]
+mag_offsets = [1111.877197265625, 1219.1551513671875, -951.0]
+# mag_offsets = [1304.7655029296875, 1176.2099609375, -940.0]
 
 
 def plot_accel_or_mag(packet, axis, plot_type):
@@ -36,10 +37,12 @@ def plot_accel_or_mag(packet, axis, plot_type):
 
 
 def main(port, plot_type):
-    with PenselInputs(port, 115200, args.verbose) as pi:
+    with Pensel(port, 115200, args.verbose) as pi:
         plt.ion()
         fig = plt.figure()
         ax = fig.gca(projection='3d')
+        # turn on accel & mag streaming
+        retval, response = pi.send_report(0x20, payload=[3])
         while True:
             packet = pi.get_packet()
             if packet:
