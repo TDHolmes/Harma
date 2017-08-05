@@ -20,18 +20,14 @@
 #include "Drivers/stm32f3xx_hal_uart.h"
 
 
-#define RX_BUFFER_SIZE (40)  //!< The max size of the recieve buffer
-#define TX_BUFFER_SIZE (10)  //!< The max size of the transmit buffer
-
-
 // HAL UART handler declaration
 UART_HandleTypeDef HAL_UART_handle;
 
 //! UART structure to track RX / TX buffers
 typedef struct {
     // define buffers to be used by the STM drivers
-    uint8_t tx_buffer[TX_BUFFER_SIZE];  //!< transmit buffer
-    uint8_t rx_buffer[RX_BUFFER_SIZE];  //!< receive buffer
+    uint8_t tx_buffer[UART_TX_BUFFER_SIZE];  //!< transmit buffer
+    uint8_t rx_buffer[UART_RX_BUFFER_SIZE];  //!< receive buffer
     volatile queue_t rx_buffer_admin;   //!< queue_t admin to track RX circular buffer
 } UART_admin_t;
 
@@ -56,9 +52,6 @@ ret_t UART_init(uint32_t baudrate)
     HAL_UART_handle.Init.HwFlowCtl  = UART_HWCONTROL_NONE;
     HAL_UART_handle.Init.Mode       = UART_MODE_TX_RX;
     HAL_UART_handle.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-
-    // configure our own admin
-    // UART_admin.sending_data = 0;
 
     if(HAL_UART_Init(&HAL_UART_handle) != HAL_OK) {
         return RET_COM_ERR;
@@ -111,12 +104,12 @@ ret_t UART_waitForReady_withTimeout(void)
  * @param num_bytes (uint8_t): amount of bytes you want to send
  * @retval Return code indicating success / failure of the start of the transmit
  *
- * @Note Can only send a maximum of `TX_BUFFER_SIZE`
+ * @Note Can only send a maximum of `UART_TX_BUFFER_SIZE`
  */
 ret_t UART_sendData(uint8_t * data_ptr, uint8_t num_bytes)
 {
     // first, make sure we have enough room!
-    if (num_bytes > TX_BUFFER_SIZE) {
+    if (num_bytes > UART_TX_BUFFER_SIZE) {
         return RET_LEN_ERR;
     }
 
@@ -253,7 +246,7 @@ ret_t UART_getChar(uint8_t * data_ptr)
     if (UART_dataAvailable()) {
         // copy the data into the given pointer!
         *data_ptr = UART_admin.rx_buffer[UART_admin.rx_buffer_admin.tail_ind];
-        queue_increment_tail(&UART_admin.rx_buffer_admin, RX_BUFFER_SIZE);
+        queue_increment_tail(&UART_admin.rx_buffer_admin, UART_RX_BUFFER_SIZE);
         return RET_OK;
     } else {
         return RET_NODATA_ERR;
@@ -310,7 +303,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *HAL_UART_handle)
 
     // New data was put onto the buffer by the ISR!
     // move the head of the buffer forward
-    queue_increment_head(&UART_admin.rx_buffer_admin, RX_BUFFER_SIZE);
+    queue_increment_head(&UART_admin.rx_buffer_admin, UART_RX_BUFFER_SIZE);
 
     // start recieving data again @ the head index
     HAL_UART_Receive_IT(HAL_UART_handle, &UART_admin.rx_buffer[UART_admin.rx_buffer_admin.head_ind], 1);
