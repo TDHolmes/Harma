@@ -9,14 +9,16 @@
 #include <stdint.h>
 #include "common.h"
 #include "reports.h"
-#include "LSM303DLHC.h"  // for LSM303DLHC reports
-#include "cal.h"         // for cal reports
+#include "LSM303DLHC.h"
+#include "cal.h"
+#include "orientation.h"
 #include "UART.h"        // TODO: Remove and switch back to function pointers
 #include "hardware.h"
 
 
 // TODO: Is this extern declaration a good idea? Or should I include the HAL header?
 extern uint32_t HAL_GetTick(void);
+extern critical_errors_t gCriticalErrors;
 
 
 #define READ_BUFF_SIZE (255)      //!< Maximum data we can read in
@@ -44,8 +46,10 @@ typedef enum {
     kRpt_ReadRpt,      //!< Read the report ID (the first byte of the transaction)
     kRpt_ReadLen,      //!< Read the length of the report payload (2nd byte)
     kRpt_ReadPayload,  //!< Read the report payload (N bytes...)
+    kRpt_Checksum,     //!< Red in the checksum and check if it's valid
     //! Evaluate the report on our end and send back the response (x bytes)
-    kRpt_EvaluateAndPrint,
+    kRpt_Evaluate,
+    kRpt_Printing      //!< The state to send the reply out
 } rpt_state_t;
 
 
@@ -63,15 +67,27 @@ typedef struct {
 
 //! Bufer to hold the reply of the report
 uint8_t output_buffer[OUTPUT_BUFF_LEN];
+//! Buffer to hold the basic reply info
+uint8_t reply_buffer[5];  // magic bytes (2), reportID, retval, reply_length
 
 static rpt_t rpt;
 
 // private function declarations
 ret_t rpt_lookup(uint8_t rpt_type, uint8_t *input_buff_ptr, uint8_t input_buff_len,
                  uint8_t * output_buff_len_ptr);
-
+uint8_t calcChecksum(uint8_t * data, uint32_t num_bytes);
 
 /* -------------- Initializer and runner ------------------------ */
+
+uint8_t calcChecksum(uint8_t * data, uint32_t num_bytes)
+{
+    uint8_t checksum = 0;
+    while (num_bytes) {
+        checksum += *data;
+        data += 1;
+    }
+    return checksum;
+}
 
 /*! Initializes the reporting interface by storing the get and put char functions and
  *    initializing the admin structure.
@@ -122,8 +138,10 @@ void rpt_run(void)
     // report buffers and variables
     static uint8_t rpt_type = 0;
     static uint8_t rpt_in_buff_len = 0;
-    // uint8_t * rpt_out_buff_ptr = 0;
-    uint8_t rpt_out_buff_len = 0;
+
+    static uint8_t rpt_out_buff_len = 0;
+    // Keeps track of how many bytes of `rpt_out_buff_len` we've sent in state kRpt_Printing
+    static uint8_t rpt_out_sent_ind = 0;
 
     // Keeps track of how many bytes of the payload we've read in
     static uint8_t payload_readin_ind = 0;
@@ -180,7 +198,7 @@ void rpt_run(void)
                     rpt.state = kRpt_ReadPayload;
                 } else {
                     // nothing to read in, skip to execution
-                    rpt.state = kRpt_EvaluateAndPrint;
+                    rpt.state = kRpt_Checksum;
                 }
             }
 
@@ -195,8 +213,7 @@ void rpt_run(void)
                 payload_readin_ind += 1;
 
                 if (payload_readin_ind == rpt_in_buff_len) {
-                    rpt.state = kRpt_EvaluateAndPrint;
-                    payload_readin_ind = 0;
+                    rpt.state = kRpt_Checksum;
                     break;
                 }
             }
@@ -205,32 +222,77 @@ void rpt_run(void)
             rpt_checkForTimeout();
             break;
 
-        case kRpt_EvaluateAndPrint:
+        case kRpt_Checksum:
+            retval = UART_getChar(&chr);
+            if (retval == RET_OK) {
+                rpt.read_buff[payload_readin_ind] = chr;
+                uint8_t checksum = calcChecksum(rpt.read_buff, payload_readin_ind + 1);
+                if (checksum) {
+                    // print out the results (checksum error)
+                    reply_buffer[0] = RPT_RESPONSE_MAGIC_NUMBER_0;
+                    reply_buffer[1] = RPT_RESPONSE_MAGIC_NUMBER_1;
+                    reply_buffer[2] = (rpt_type | RPT_REPORT_MASK);
+                    reply_buffer[3] = RET_BAD_CHECKSUM;
+                    reply_buffer[4] = 1;
+
+                    output_buffer[0] = checksum;
+                    rpt_out_buff_len = 1;
+                    // wait for UART to finish whatever it's up to...
+                    while (UART_TXisReady() == false);
+                    UART_sendData(reply_buffer, 5);
+                    rpt.state = kRpt_Printing;
+                }
+                // No checksum error! let's finish out the report
+                rpt.state = kRpt_Evaluate;
+                payload_readin_ind = 0;
+            }
+
+            // Check for timeout
+            rpt_checkForTimeout();
+            break;
+
+        case kRpt_Evaluate:
             // Fetch and execute the requested function
             retval = rpt_lookup(rpt_type, rpt.read_buff, rpt_in_buff_len,
                                 &rpt_out_buff_len);
 
             // print out the results
-            UART_sendChar(RPT_RESPONSE_MAGIC_NUMBER_0);
-            UART_sendChar(RPT_RESPONSE_MAGIC_NUMBER_1);
-            UART_sendChar(rpt_type | RPT_REPORT_MASK);
-            UART_sendChar(retval);
-            // if we succeeded in the report, continue on
-            if (retval == RET_OK) {
-                UART_sendChar(rpt_out_buff_len);
+            reply_buffer[0] = RPT_RESPONSE_MAGIC_NUMBER_0;
+            reply_buffer[1] = RPT_RESPONSE_MAGIC_NUMBER_1;
+            reply_buffer[2] = rpt_type | RPT_REPORT_MASK;
+            reply_buffer[3] = retval;
+            reply_buffer[4] = rpt_out_buff_len;
 
-                chr = 0;
-                while (chr < rpt_out_buff_len) {
-                    UART_sendChar(output_buffer[chr]);
-                    chr += 1;
-                }
-            } else {
-                // We've failed the report, so nothing to read back
-                UART_sendChar(0);
-            }
-            // start over! :D
-            rpt.state = kRpt_ReadMagic_0;
+            // Send the initial reply out, non-blocking
+            while (UART_TXisReady() == false);  // wait for UART to be ready if it isn't
+            UART_sendData(reply_buffer, 5);
+            rpt_out_sent_ind = 0;
+            // finish the rest in the next stage
+            rpt.state = kRpt_Printing;
             break;
+
+        case kRpt_Printing:
+            // check if UART is available
+            if ( UART_TXisReady() ) {
+                // check if we're done and can go back
+                if (rpt_out_sent_ind == rpt_out_buff_len - 1) {
+                    rpt.state = kRpt_ReadMagic_0;
+                } else {
+                    // finish sending out the data
+                    if (rpt_out_buff_len - rpt_out_sent_ind - 1 >= UART_TX_BUFFER_SIZE) {
+                        // max possible amount of bytes to send out
+                        UART_sendData(output_buffer + rpt_out_sent_ind, UART_TX_BUFFER_SIZE);
+                        rpt_out_sent_ind += UART_TX_BUFFER_SIZE;
+                    } else {
+                        // finishing up the last bit
+                        uint8_t num_bytes = rpt_out_buff_len - rpt_out_sent_ind - 1;
+                        UART_sendData(output_buffer + rpt_out_sent_ind, num_bytes);
+                        rpt_out_sent_ind += num_bytes;
+                    }
+                }
+            }
+            break
+
 
         default:
             // Should never get here...
@@ -404,9 +466,9 @@ ret_t rpt_lookup(uint8_t rpt_type, uint8_t *input_buff_ptr, uint8_t input_buff_l
         /* Report 0x25 */ rpt_LSM303DLHC_getErrors,
         /* Report 0x26 */ rpt_LSM303DLHC_setGainAdjustFlag,
         /* Report 0x27 */ rpt_err,
-        /* Report 0x28 */ rpt_err,
-        /* Report 0x29 */ rpt_err,
-        /* Report 0x2a */ rpt_err,
+        /* Report 0x28 */ rpt_orient_getPenselOrientation,
+        /* Report 0x29 */ rpt_orient_getMagOrientation,
+        /* Report 0x2a */ rpt_orient_getAccelOrientation,
         /* Report 0x2b */ rpt_err,
         /* Report 0x2c */ rpt_err,
         /* Report 0x2d */ rpt_err,
