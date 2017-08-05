@@ -8,11 +8,7 @@
 #pragma once
 
 #include <stdint.h>
-
-//! Direction Cosine Matrix type
-typedef struct {
-    float vector[3][3];
-} dcs_t;
+#include "matrixmath.h"
 
 
 typedef union {
@@ -39,7 +35,7 @@ typedef union {
 
 
 quanternion_vect_t quanternion_create(cartesian_vect_t eigen_axis, float rotation_angle);
-dcs_t quanternion_calcDCS(quanternion_vect_t vector);
+matrix_3x3_t quanternion_calcDCS(quanternion_vect_t vector);
 
 // conversion methods
 cartesian_vect_t quanternion_toCartesian(quanternion_vect_t vector);
