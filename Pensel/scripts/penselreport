@@ -1,0 +1,94 @@
+#! /usr/bin/python
+import os
+
+import pensel_utils as pu
+
+
+if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser(description='Process data from the Pensel.')
+    parser.add_argument("--reportID", type=str, help="The report ID to query")
+    parser.add_argument("--payload", nargs='*', type=str, help="An optional payload of bytes")
+    parser.add_argument('--baudrate', "-b", dest='baudrate', default=115200,
+                        help='Baudrate of the serial data to recieve')
+    parser.add_argument('--parsed', default=False, action="store_true",
+                        help='Whether or not we should print a parsed version of the report')
+    parser.add_argument('--verbose', default=False, action="store_true",
+                        help='Whether or not we should print extra debug information')
+    parser.add_argument('--interact', default=False, action="store_true",
+                        help='Allows for an interactive multi-report session')
+
+    args = parser.parse_args()
+
+    def find_ports():
+        ports = []
+        dev_dir = os.listdir("/dev/")
+        for thing in dev_dir:
+            if "cu." in thing:
+                ports.append(thing)
+
+        return ports
+
+    def choose_port(list_of_ports):
+        print("\nPorts:")
+        for ind, port in enumerate(list_of_ports):
+            print("\t{}: {}".format(ind, port))
+        while True:
+            try:
+                choice = int(raw_input("Which port do you choose? "))
+            except Exception:
+                print("Invalid choice.")
+                continue
+
+            if choice < len(list_of_ports):
+                return list_of_ports[choice]
+            else:
+                print("Invalid index.")
+
+    def get_input(prompt, num_args_expected=-1):
+        while True:
+            user_input = raw_input(prompt)
+            try:
+                data = [int(b, 16) for b in user_input.split(" ")]
+            except:
+                print("Input error! Try again.")
+            else:
+                if (num_args_expected != -1 and num_args_expected == len(data)) or num_args_expected == -1:
+                    return data
+                else:
+                    print("Incorrect number of arguments! Try again")
+
+    # port = "/dev/" + choose_port(find_ports())
+    port = "/dev/cu.SLAB_USBtoUART"
+
+    with pu.Pensel(port, args.baudrate, args.verbose) as pensel:
+        while True:
+            if not args.interact:
+                payload = []
+                if args.payload is not None:
+                    payload = []
+                    for s in args.payload:
+                        payload.append(int(s, 16))
+
+                reportID = int(args.reportID, 16)
+            else:
+                reportID = get_input("Report ID > ", 1)[0]
+                payload = get_input("  Payload > ", -1)
+            if args.verbose:
+                print("Report ID: {}".format(reportID))
+                print("Payload: {}".format(payload))
+
+            retval, output = pensel.send_report(reportID, payload)
+            if retval is not None and retval == 0:
+                print("Report {:0>2X}:".format(reportID))
+                print("")
+                if args.parsed is False:
+                    print("    {}".format(" ".join(["{:0>2X}".format(b) for b in output])))
+                else:
+                    pu.parse_report(reportID, output)
+            else:
+                print("Report {:0>2X} FAILED. Error Code: {}".format(reportID, retval))
+
+            # check if we should loop forever
+            if args.interact is False:
+                break

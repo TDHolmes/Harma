@@ -12,7 +12,7 @@ import pensel_utils as pu
 Axes3D.__name__  # dummy call so avoid unused import error...
 
 
-plots_supported = {"accel": 0x81, "mag": 0x82}
+plots_supported = {"accel": [0x81, 0x83], "mag": [0x82, 0x84]}
 
 mag_offsets = [1111.877197265625, 1219.1551513671875, -951.0]
 # mag_offsets = [1304.7655029296875, 1176.2099609375, -940.0]
@@ -23,7 +23,7 @@ def plot_accel_or_mag(packet, axis, plot_type):
     Plotting accel and mag packets are identical..
     """
     report, retval, payload = packet
-    if report == plots_supported[plot_type] and retval == 0:
+    if report in plots_supported[plot_type] and retval == 0:
         axis.clear()
         # Parse it...
         frame_num, timestamp, x, y, z = pu.parse_accel_packet(payload)
@@ -36,6 +36,8 @@ def plot_accel_or_mag(packet, axis, plot_type):
         print("Plotting packet# {} ({} ms)\t\t({}, {}, {})".format(frame_num, timestamp, x, y, z))
         # plot it
         axis.quiver(0.5, 0.5, 0.5, x, y, z, length=(0.5 / math.sqrt(x**2 + y**2 + z**2)))
+    else:
+        print("ERROR: incorrect or invalid packet")
 
 
 def main(port, plot_type):
@@ -44,9 +46,10 @@ def main(port, plot_type):
         fig = plt.figure()
         ax = fig.gca(projection='3d')
         # turn on accel & mag streaming
-        retval, response = pi.send_report(0x20, payload=[3])
+        retval, response = pi.send_report(0x20, payload=[0x0C])  # 3 for raw, 0x0C for filtered
         while True:
             packet = pi.get_packet()
+            pi.clear_queue()
             if packet:
                 pi.clear_queue()   # clear it so we don't lag...
                 pi._clear_serial = True

@@ -1,7 +1,7 @@
 #! /usr/bin/python
 import os
 
-import penselreport as pr
+import pensel_utils as pu
 
 
 if __name__ == '__main__':
@@ -46,11 +46,12 @@ if __name__ == '__main__':
     # port = "/dev/" + choose_port(find_ports())
     port = "/dev/cu.SLAB_USBtoUART"
 
-    reports_to_stream = [int(r, 16) for r in args.reports]
+    if args.reports is None:
+        reports_to_stream = []
+    else:
+        reports_to_stream = [int(r, 16) for r in args.reports]
 
-    with pr.Pensel(port, args.baudrate, args.verbose) as pi:
-        # turn on accel & mag streaming
-        retval, response = pi.send_report(0x20, payload=[3])
+    with pu.Pensel(port, args.baudrate, args.verbose) as pi:
         while True:
             try:
                 pkt = pi.get_packet()
@@ -59,7 +60,7 @@ if __name__ == '__main__':
                     if len(reports_to_stream) == 0 or report in reports_to_stream:
                         if retval == 0:
                             if args.parsed:
-                                pr.parse_inputreport(report, payload)
+                                pu.parse_inputreport(report, payload)
                             else:
                                 print(pkt)
                         else:

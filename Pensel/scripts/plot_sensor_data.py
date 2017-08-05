@@ -1,5 +1,6 @@
 #! /usr/bin/python
 import matplotlib.pyplot as plt
+import time
 
 from penselreport import Pensel
 import pensel_utils as pu
@@ -8,6 +9,8 @@ mag_offsets = [1111.877197265625, 1219.1551513671875, -951.0]
 
 
 class LSM303DLHC_Parser(object):
+    SAMPLES_PER_SECOND = 100  # conservative
+
     def __init__(self, port, verbose=0):
         self.verbose = verbose
         self.port = port
@@ -22,26 +25,28 @@ class LSM303DLHC_Parser(object):
         accel_done = False if plot_accel else True
         mag_done = False if plot_mag else True
 
+        end_time = (num_samples / self.SAMPLES_PER_SECOND) * 1.2 + time.time()
+
         with Pensel(self.port, self.baudrate, self.verbose) as pi:
 
             # turn on accel & mag streaming
-            print("Turning on input streaming...")
-            retval, response = pi.send_report(0x20, payload=[3])
-            print("Gathering packets...")
-            while True:
+            pi.log("Turning on input streaming...")
+            retval, response = pi.send_report(0x20, payload=[0xc])
+            pi.log("Gathering packets...")
+            while time.time() < end_time:
                 packet = pi.get_packet()
                 if packet:
                     report, retval, payload = packet
-                    if report == 0x81 and retval == 0 and plot_accel:  # accel
+                    if report == 0x83 and retval == 0 and plot_accel:  # accel
                         frame_num, timestamp, x, y, z = pu.parse_accel_packet(payload)
                         accel_packets.append([x, y, z])
                         if self.verbose:
-                            print("Got Accel packet# {}".format(frame_num))
-                    elif report == 0x82 and retval == 0 and plot_mag:  # mag
+                            pi.log("Got Accel packet# {}".format(frame_num))
+                    elif report == 0x84 and retval == 0 and plot_mag:  # mag
                         frame_num, timestamp, x, y, z = pu.parse_mag_packet(payload)
                         mag_packets.append([x - mag_offsets[0], y - mag_offsets[1], z - mag_offsets[2]])
                         if self.verbose:
-                            print("Got Mag packet# {}".format(frame_num))
+                            pi.log("Got Mag packet# {}".format(frame_num))
 
                 if len(accel_packets) >= num_samples:
                     accel_done = True
@@ -50,8 +55,11 @@ class LSM303DLHC_Parser(object):
 
                 # check if we're done!
                 if accel_done and mag_done:
-                    print("Done collecting data!")
+                    pi.log("Done collecting data!")
                     break
+
+        if accel_done is False or mag_done is False:
+            print("ERROR: Timed out before getting enough packets.")
 
         # Markers: S, 8, >, <, ^, v, o, X, P, d
         fig, ax = plt.subplots()
