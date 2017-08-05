@@ -80,6 +80,12 @@ Mag sensor address behavior:
 #define MAG_TEMP_OUT_L_M  (0x32)
 
 
+extern bool gEnableRawMagStream;
+extern bool gEnableRawAccelStream;
+extern bool gEnableFilteredMagStream;
+extern bool gEnableFilteredAccelStream;
+
+
 // Private functions to get I2C data (raw packets)
 static inline ret_t LSM303DLHC_accel_getData(accel_raw_t * pkt);
 static inline ret_t LSM303DLHC_mag_getData(mag_raw_t * pkt);
@@ -591,16 +597,27 @@ ret_t rpt_LSM303DLHC_enableStreams(uint8_t * in_p, uint8_t in_len,
     if (in_len != 1) {
         return RET_INVALID_ARGS_ERR;
     }
-    if (*in_p & LSM303DLHC_ENABLE_ACCEL_STREAM) {
-        gEnableAccelStream = true;
+    if (*in_p & LSM303DLHC_ENABLE_RACCEL_STREAM) {
+        gEnableRawAccelStream = true;
     } else {
-        gEnableAccelStream = false;
+        gEnableRawAccelStream = false;
     }
-    if (*in_p & LSM303DLHC_ENABLE_MAG_STREAM) {
-        gEnableMagStream = true;
+    if (*in_p & LSM303DLHC_ENABLE_RMAG_STREAM) {
+        gEnableRawMagStream = true;
     } else {
-        gEnableMagStream = false;
+        gEnableRawMagStream = false;
     }
+    if (*in_p & LSM303DLHC_ENABLE_FACCEL_STREAM) {
+        gEnableFilteredAccelStream = true;
+    } else {
+        gEnableFilteredAccelStream = false;
+    }
+    if (*in_p & LSM303DLHC_ENABLE_FMAG_STREAM) {
+        gEnableFilteredMagStream = true;
+    } else {
+        gEnableFilteredMagStream = false;
+    }
+
     return RET_OK;
 }
 

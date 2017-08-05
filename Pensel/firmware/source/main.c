@@ -32,6 +32,19 @@
 
 //! HAL millisecond tick
 extern __IO uint32_t uwTick;
+// Global variables to influence state
+
+//! Global toggle to enable/disable streaming mag data
+bool gEnableRawMagStream = false;
+//! Global toggle to enable/disable streaming accel data
+bool gEnableRawAccelStream = false;
+//! Global toggle to enable/disable streaming filtered mag data
+bool gEnableFilteredMagStream = false;
+//! Global toggle to enable/disable streaming filtered accel data
+bool gEnableFilteredAccelStream = false;
+
+critical_errors_t gCriticalErrors;
+
 
 #ifdef WATCHDOG_ENABLE
     //! Global indicating whether or not to pet the watchdog
@@ -147,21 +160,41 @@ int main(void)
         if( LSM303DLHC_accel_dataAvailable() ) {
             if ( LSM303DLHC_accel_getPacket(&accel_pkt, false) == RET_OK ) {
                 // Transmit the packet if we're streaming it
-                if (gEnableAccelStream == true) {
-                    rpt_sendStreamReport(ACCEL_STREAM_REPORT_ID, sizeof(accel_norm_t),
+                if (gEnableRawAccelStream == true) {
+                    rpt_sendStreamReport(RACCEL_STREAM_REPORT_ID, sizeof(accel_norm_t),
                                          (uint8_t *)&accel_pkt);
                 }
                 // ingest it into the interested parties
+                orient_calcAccelOrientation(accel_pkt);
+                if (gEnableFilteredAccelStream == true) {
+                    cartesian_vect_t vect;
+                    accel_pkt.x = vect.x;
+                    accel_pkt.y = vect.y;
+                    accel_pkt.z = vect.z;
+                    vect = orient_getAccelOrientation();
+                    rpt_sendStreamReport(FACCEL_STREAM_REPORT_ID, sizeof(accel_norm_t),
+                                         (uint8_t *)&accel_pkt);
+                }
             }
         }
         if( LSM303DLHC_mag_dataAvailable() ) {
             if ( LSM303DLHC_mag_getPacket(&mag_pkt, false) == RET_OK ) {
                 // Transmit the packet if we're streaming it
-                if (gEnableMagStream == true) {
-                    rpt_sendStreamReport(MAG_STREAM_REPORT_ID, sizeof(mag_norm_t),
+                if (gEnableRawMagStream == true) {
+                    rpt_sendStreamReport(RMAG_STREAM_REPORT_ID, sizeof(mag_norm_t),
                                          (uint8_t *)&mag_pkt);
                 }
                 // ingest it into the interested parties
+                orient_calcMagOrientation(mag_pkt);
+                if (gEnableFilteredMagStream == true) {
+                    cartesian_vect_t vect;
+                    vect = orient_getMagOrientation();
+                    mag_pkt.x = vect.x;
+                    mag_pkt.y = vect.y;
+                    mag_pkt.z = vect.z;
+                    rpt_sendStreamReport(FMAG_STREAM_REPORT_ID, sizeof(mag_norm_t),
+                                         (uint8_t *)&mag_pkt);
+                }
             }
         }
 

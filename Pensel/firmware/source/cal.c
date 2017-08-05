@@ -20,6 +20,8 @@
 static uint8_t cal_calcChecksum(uint32_t length, uint8_t * data_ptr);
 static ret_t cal_writeToFlash(uint32_t * dataToWrite_ptr);
 
+extern critical_errors_t gCriticalErrors;
+
 
 /*! Function to calculate the checksum of a block of memory. Simple twos complement addition
  *

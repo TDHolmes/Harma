@@ -22,11 +22,15 @@
 #define PENSEL_VERSION_MAJOR (0)
 #define PENSEL_VERSION_MINOR (5)
 
-#define LSM303DLHC_ENABLE_ACCEL_STREAM (0x01)
-#define LSM303DLHC_ENABLE_MAG_STREAM (0x02)
+#define LSM303DLHC_ENABLE_RACCEL_STREAM (0x01)
+#define LSM303DLHC_ENABLE_RMAG_STREAM (0x02)
+#define LSM303DLHC_ENABLE_FACCEL_STREAM (0x04)
+#define LSM303DLHC_ENABLE_FMAG_STREAM (0x08)
 
-#define ACCEL_STREAM_REPORT_ID (0x01)
-#define MAG_STREAM_REPORT_ID (0x02)
+#define RACCEL_STREAM_REPORT_ID (0x01)
+#define RMAG_STREAM_REPORT_ID (0x02)
+#define FACCEL_STREAM_REPORT_ID (0x03)
+#define FMAG_STREAM_REPORT_ID (0x04)
 
 #if !defined(max)
     #define max(v1, v2) (v1 >= v2 ? v1 : v2)
@@ -51,7 +55,8 @@ typedef enum {
     RET_INVALID_ARGS_ERR,  //!< Incorrect arguments to the function called
     RET_MAX_LEN_ERR,       //!< Maximum length was violated
     RET_WDG_SET,           //!< Return code if the watchdog flag was set on reset
-    RET_CAL_ERR,    //!< General error relating to calibration
+    RET_CAL_ERR,           //!< General error relating to calibration
+    RET_BAD_CHECKSUM,      //!< General checksum related error (didn't match)
 } ret_t;
 
 //! Structure to keep track of our critical errors
@@ -64,12 +69,5 @@ typedef struct {
     uint32_t cal_checksum_err : 1;
 } critical_errors_t;
 
-#ifndef UNIT_TEST
-    // Global variables to influence state
-    bool gEnableMagStream = false;   //!< Global toggle to enable/disable streaming mag data
-    bool gEnableAccelStream = false; //!< Global toggle to enable/disable streaming accel data
-
-    critical_errors_t gCriticalErrors;
-#endif
 
 void fatal_error_handler(char file[], uint32_t line, int8_t err_code);
