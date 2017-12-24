@@ -3,13 +3,19 @@
 import sys
 import time
 import struct
+from datetime import datetime
 
 import subprocess
 import threading
 import serial
-from threading import Thread
-from Queue import Queue as queue
-from Queue import Empty
+from threading import Thread, Event
+
+if sys.version_info.major == 2:
+    from Queue import Queue as queue
+    from Queue import Empty
+else:
+    from queue import Queue as queue
+    from queue import Empty
 
 
 class bcolors:
@@ -77,15 +83,16 @@ class Pensel(object):
         self.close()
 
     def log(self, string):
-        with self.log_lock:
-            print(string)
+        # with self.log_lock:
+        prepend = datetime.now().strftime("%H:%M:%S.%f ")
+        print(prepend + string)
 
     def serial_write(self, values_to_write):
         """
         Writes `values_to_write` to the serial port.
         """
         if self.verbose:
-            print("Writting 0x{:x} to serial port...".format(values_to_write))
+            self.log("Writting 0x{:x} to serial port...".format(values_to_write))
         if type(values_to_write) is not list:
             self.serial.write(bytearray([values_to_write]))
         else:
@@ -100,7 +107,7 @@ class Pensel(object):
             self.log("WARNING: Didn't get the expected number of bytes")
             self.log("    Received {}, expected {}. Serial port dead?".format(len(out), num_bytes))
 
-        out_list = [ord(c) for c in out]
+        out_list = [int(v) for v in bytearray(out)]
         if self.verbose:
             self.log("Read in: {}".format(" ".join(["{:0>2X}".format(b) for b in out_list])))
 
@@ -117,7 +124,8 @@ class Pensel(object):
         return self.serial.in_waiting
 
     def start_listener(self):
-        self.thread_run = True
+        self.thread_run = Event()
+        self.thread_run.set()
         self.queue = queue()
         self.thread = threading.Thread(target=self.listener)  # , args=(self,)
         self.thread.start()  # start it off
@@ -127,18 +135,23 @@ class Pensel(object):
 
     def listener(self):
         """ The threaded listener that looks for packets from Pensel. """
-        while self.thread_run is True:
-            if self.num_bytes_available() != 0 and self.check_for_start():
+        while self.thread_run.is_set():
+            if self.num_bytes_available() >= 2 and self.check_for_start():
                 report, retval, payload = self.receive_packet()
                 if report >= 0:
                     self.queue.put((report, retval, payload))
+                    if self.verbose:
+                        self.log("Put report {} on queue".format(report))
 
     def get_packet(self):
         if self.thread.is_alive() is False:
             raise RuntimeError("Thread is dead!!")
 
-        if not self.queue.empty():
-            return self.queue.get_nowait()
+        # if not self.queue.empty():
+        try:
+            return self.queue.get(timeout=0.01)
+        except Empty:
+            pass
 
         return None
 
@@ -160,7 +173,10 @@ class Pensel(object):
                     correct_pkt = pkt
                     break
                 else:
+                    self.log("Incorrect packet type: {}".format(report))
                     incorrect_packets.append(pkt)
+            else:
+                time.sleep(0.001)
 
         # put back incorrect packets onto the queue
         for pkt in incorrect_packets:
@@ -171,7 +187,7 @@ class Pensel(object):
     def clear_queue(self):
         while True:
             try:
-                self.queue.get_nowait()
+                self.queue.get(timeout=0.001)
             except queue.Empty:
                 if self.verbose:
                     self.log("Queue cleared!")
@@ -201,16 +217,17 @@ class Pensel(object):
         retval = None
         payload = None
         start_time = time.time()
-        while True:
+        while time.time() - start_time < TIMEOUT:
             pkt = self.get_packet_withreportID(report_ID)
             if pkt:
                 report, retval, payload = pkt
-            else:
-                time.sleep(0.001)
-
-            # check for timeout
-            if time.time() - start_time > TIMEOUT:
                 break
+            else:
+                self.log("Failed to get report with ID {}".format(report_ID))
+                time.sleep(0.001)
+        else:
+            # check for timeout
+            self.log("WARNING: Timed out waiting for response")
 
         return retval, payload
 
@@ -276,12 +293,14 @@ class Pensel(object):
         return report, retval, return_payload
 
     def close(self):
-        self.log("Killing thread")
-        self.thread_run = False
+        if self.verbose:
+            self.log("Killing thread")
+        self.thread_run.clear()
         # wait for it to stop
         while self.thread.is_alive():
-            pass
-        self.log("\n\tClosing serial port...\n")
+            time.sleep(0.01)
+        if self.verbose:
+            self.log("\n\tClosing serial port...\n")
         self.serial.close()
 
 
@@ -442,7 +461,7 @@ def run_command(cmd, print_output=True):
         try:
             line_stdout = ""
             while True:
-                line_stdout += q_stdout.get_nowait()  # or q.get(timeout=.1)
+                line_stdout += q_stdout.get(timeout=0.01)
         except Empty:
             pass
         # accumilate stdout and print if we should
@@ -457,7 +476,7 @@ def run_command(cmd, print_output=True):
         try:
             line_stderr = ""
             while True:
-                line_stderr += q_stderr.get_nowait()  # or q.get(timeout=.1)
+                line_stderr += q_stderr.get(timeout=0.01)
         except Empty:
             pass
         # accumilate stderr and print if we should

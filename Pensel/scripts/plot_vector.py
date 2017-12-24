@@ -1,6 +1,7 @@
 #! /usr/bin/python
 import os
 import math
+import time
 import matplotlib.pyplot as plt
 
 # required import, but unused :( stupid matplotlib
@@ -37,7 +38,7 @@ def plot_accel_or_mag(packet, axis, plot_type):
         # plot it
         axis.quiver(0.5, 0.5, 0.5, x, y, z, length=(0.5 / math.sqrt(x**2 + y**2 + z**2)))
     else:
-        print("ERROR: incorrect or invalid packet")
+        print("ERROR: bad packet (reportID:{} retval:{})".format(report, retval))
 
 
 def main(port, plot_type):
@@ -49,7 +50,6 @@ def main(port, plot_type):
         retval, response = pi.send_report(0x20, payload=[0x0C])  # 3 for raw, 0x0C for filtered
         while True:
             packet = pi.get_packet()
-            pi.clear_queue()
             if packet:
                 pi.clear_queue()   # clear it so we don't lag...
                 pi._clear_serial = True
@@ -63,6 +63,8 @@ def main(port, plot_type):
                 ax.set_zlabel('Z axis')
                 plt.show()
                 plt.pause(0.0001)
+            else:
+                time.sleep(0.0001)
 
 
 if __name__ == '__main__':

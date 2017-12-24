@@ -46,17 +46,24 @@ if __name__ == '__main__':
                 print("Invalid index.")
 
     def get_input(prompt, num_args_expected=-1):
-        while True:
-            user_input = raw_input(prompt)
-            try:
-                data = [int(b, 16) for b in user_input.split(" ")]
-            except:
-                print("Input error! Try again.")
-            else:
-                if (num_args_expected != -1 and num_args_expected == len(data)) or num_args_expected == -1:
-                    return data
+        try:
+            data = None
+            while True:
+                user_input = raw_input(prompt)
+                try:
+                    if user_input.strip():
+                        data = [int(b, 16) for b in user_input.split(" ")]
+                    else:
+                        data = []
+                except Exception as e:
+                    print("Input error! Try again. ({})".format(e))
                 else:
-                    print("Incorrect number of arguments! Try again")
+                    if (num_args_expected == -1) or (num_args_expected == len(data)):
+                        return data
+                    else:
+                        print("Incorrect number of arguments! Try again")
+        except KeyboardInterrupt:
+            pass
 
     # port = "/dev/" + choose_port(find_ports())
     port = "/dev/cu.SLAB_USBtoUART"
@@ -75,19 +82,19 @@ if __name__ == '__main__':
                 reportID = get_input("Report ID > ", 1)[0]
                 payload = get_input("  Payload > ", -1)
             if args.verbose:
-                print("Report ID: {}".format(reportID))
-                print("Payload: {}".format(payload))
+                pensel.log("Report ID: {}".format(reportID))
+                pensel.log("Payload: {}".format(payload))
 
             retval, output = pensel.send_report(reportID, payload)
             if retval is not None and retval == 0:
-                print("Report {:0>2X}:".format(reportID))
-                print("")
+                pensel.log("Report {:0>2X}:".format(reportID))
+                pensel.log("")
                 if args.parsed is False:
-                    print("    {}".format(" ".join(["{:0>2X}".format(b) for b in output])))
+                    pensel.log("    {}".format(" ".join(["{:0>2X}".format(b) for b in output])))
                 else:
                     pu.parse_report(reportID, output)
             else:
-                print("Report {:0>2X} FAILED. Error Code: {}".format(reportID, retval))
+                pensel.log("Report {:0>2X} FAILED. Error Code: {}".format(reportID, retval))
 
             # check if we should loop forever
             if args.interact is False:
