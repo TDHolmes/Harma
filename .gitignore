@@ -8,6 +8,7 @@
 
 # Python Files
 *.pyc
+__pycache__/*
 
 # Project Folders
 Pensel/firmware/compiler/build/*
