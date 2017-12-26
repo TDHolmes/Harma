@@ -59,11 +59,12 @@ class Pensel(object):
         self.TIMEOUT = timeout
         self.baudrate = baudrate
         self.verbose = verbose
-        self.MAGIC_NUM_0 = 0xBE
-        self.MAGIC_NUM_1 = 0xEF
-        self.MAGIC_REPLY_0_EXPECTED = 0xDE
-        self.MAGIC_REPLY_1_EXPECTED = 0xAD
+        self.MAGIC_NUM_0 = 0xDE
+        self.MAGIC_NUM_1 = 0xAD
+        self.MAGIC_NUM_2 = 0xBE
+        self.MAGIC_NUM_3 = 0xEF
         self.log_lock = threading.Lock()
+        self._check_for_start_bytes = []
 
         # open serial port
         if self.verbose:
@@ -85,9 +86,9 @@ class Pensel(object):
         self.close()
 
     def log(self, string):
-        # with self.log_lock:
-        prepend = datetime.now().strftime("%H:%M:%S.%f ")
-        print(prepend + string)
+        with self.log_lock:
+            prepend = datetime.now().strftime("%H:%M:%S.%f ")
+            print(prepend + string)
 
     def serial_write(self, values_to_write):
         """
@@ -118,6 +119,9 @@ class Pensel(object):
     def serial_clear(self):
         """ Clears the serial buffer of anything received. """
         self.serial.reset_input_buffer()
+
+    def serial_bytes_available(self):
+        return self.serial.in_waiting
 
     def num_bytes_available(self):
         """
@@ -204,6 +208,8 @@ class Pensel(object):
 
         self.serial_write(self.MAGIC_NUM_0)
         self.serial_write(self.MAGIC_NUM_1)
+        self.serial_write(self.MAGIC_NUM_2)
+        self.serial_write(self.MAGIC_NUM_3)
         self.serial_write(report_ID)
         _bytes = [self.MAGIC_NUM_0, self.MAGIC_NUM_1, report_ID]
         if payload is None:
@@ -242,25 +248,18 @@ class Pensel(object):
         """
         Checks for the start of a reply from Pensel.
         """
-        data = self.serial_read(2)
-        if len(data) == 2:
-            if data[0] == self.MAGIC_REPLY_0_EXPECTED:
-                if data[1] == self.MAGIC_REPLY_1_EXPECTED:
-                    # Both bytes are what we expect!
-                    if self.verbose:
-                        self.log("Detected start!")
-                    return True
-                else:
-                    # first byte correct, but second isn't. False activation
+        while self.serial_bytes_available():
+            data = self.serial_read(1)
+            if len(data) == 1:
+                self._check_for_start_bytes.append(data[0])
+                try:
+                    if self._check_for_start_bytes[-1] == self.MAGIC_NUM_3 and \
+                            self._check_for_start_bytes[-2] == self.MAGIC_NUM_2 and \
+                            self._check_for_start_bytes[-3] == self.MAGIC_NUM_1 and \
+                            self._check_for_start_bytes[-4] == self.MAGIC_NUM_0:
+                        return True
+                except IndexError:
                     pass
-            elif data[1] == self.MAGIC_REPLY_0_EXPECTED:
-                # maybe we were just off by 1
-                data = self.serial_read(1)
-                if len(data) == 1 and data[0] == self.MAGIC_REPLY_1_EXPECTED:
-                    # We've got a start!
-                    if self.verbose:
-                        self.log("Detected start!")
-                    return True
 
         # default, no start :(
         if self.verbose:

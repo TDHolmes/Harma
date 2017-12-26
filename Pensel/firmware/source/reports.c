@@ -24,17 +24,17 @@ extern critical_errors_t gCriticalErrors;
 
 
 //! The number of bytes in our report header
-#define RPT_HEADER_SIZE (4)
+#define RPT_HEADER_SIZE (6)
 //! Maximum data we can read in (plus our TX header)
 #define READ_BUFF_SIZE (255 + RPT_HEADER_SIZE)
-//! First magic number to specify start of report from host
-#define RPT_RESPONSE_MAGIC_NUMBER_0 (0xDE)
-//! Second magic number to specify start of report from host
-#define RPT_RESPONSE_MAGIC_NUMBER_1 (0xAD)
-//! First magic number to specify start of report from host
-#define RPT_START_MAGIC_NUMBER_0 (0xBE)
-//! Second magic number to specify start of report from host
-#define RPT_START_MAGIC_NUMBER_1 (0xEF)
+//! First magic number to specify start of report
+#define RPT_MAGIC_NUMBER_0 (0xDE)
+//! Second magic number to specify start of report
+#define RPT_MAGIC_NUMBER_1 (0xAD)
+//! Third magic number to specify start of report
+#define RPT_MAGIC_NUMBER_2 (0xBE)
+//! Fourth magic number to specify start of report
+#define RPT_MAGIC_NUMBER_3 (0xEF)
 
 #define RPT_TIMEOUT (100)  //!< Report timeout time (in ms)
 
@@ -52,6 +52,10 @@ typedef enum {
     kRpt_ReadMagic_0,
     //!< Read in the second magic value to signify the start of a report transaction
     kRpt_ReadMagic_1,
+    //!< Read in the third magic value to signify the start of a report transaction
+    kRpt_ReadMagic_2,
+    //!< Read in the fourth magic value to signify the start of a report transaction
+    kRpt_ReadMagic_3,
     kRpt_ReadRpt,      //!< Read the report ID (the first byte of the transaction)
     kRpt_ReadLen,      //!< Read the length of the report payload (2nd byte)
     kRpt_ReadPayload,  //!< Read the report payload (N bytes...)
@@ -186,7 +190,7 @@ void priv_controlReport_run(void)
         case kRpt_ReadMagic_0:
             retval = UART_getChar(&chr);
             if (retval == RET_OK) {
-                if (chr == RPT_START_MAGIC_NUMBER_0) {
+                if (chr == RPT_MAGIC_NUMBER_0) {
                     rpt.read_buff[0] = chr;
                     rpt.start_time = HAL_GetTick();
                     rpt.state = kRpt_ReadMagic_1;
@@ -200,8 +204,40 @@ void priv_controlReport_run(void)
         case kRpt_ReadMagic_1:
             retval = UART_getChar(&chr);
             if (retval == RET_OK) {
-                if (chr == RPT_START_MAGIC_NUMBER_1) {
+                if (chr == RPT_MAGIC_NUMBER_1) {
                     rpt.read_buff[1] = chr;
+                    rpt.state = kRpt_ReadMagic_2;
+                } else {
+                    // invalid character!
+                    rpt.invalid_chrs += 1;
+                }
+            }
+
+            // Check for timeout
+            rpt_checkForTimeout();
+            break;
+
+        case kRpt_ReadMagic_2:
+            retval = UART_getChar(&chr);
+            if (retval == RET_OK) {
+                if (chr == RPT_MAGIC_NUMBER_2) {
+                    rpt.read_buff[2] = chr;
+                    rpt.state = kRpt_ReadMagic_3;
+                } else {
+                    // invalid character!
+                    rpt.invalid_chrs += 1;
+                }
+            }
+
+            // Check for timeout
+            rpt_checkForTimeout();
+            break;
+
+        case kRpt_ReadMagic_3:
+            retval = UART_getChar(&chr);
+            if (retval == RET_OK) {
+                if (chr == RPT_MAGIC_NUMBER_3) {
+                    rpt.read_buff[3] = chr;
                     rpt.state = kRpt_ReadRpt;
                 } else {
                     // invalid character!
@@ -271,20 +307,25 @@ void priv_controlReport_run(void)
                     rpt.read_buff, payload_readin_ind + RPT_HEADER_SIZE + 1);
                 if (checksum) {
                     // print out the results (checksum error)
-                    reply_buffer[0] = RPT_RESPONSE_MAGIC_NUMBER_0;
-                    reply_buffer[1] = RPT_RESPONSE_MAGIC_NUMBER_1;
-                    reply_buffer[2] = (rpt_type | RPT_REPORT_MASK);
-                    reply_buffer[3] = RET_BAD_CHECKSUM;
-                    reply_buffer[4] = 1;
+                    output_buffer[0] = RPT_MAGIC_NUMBER_0;
+                    output_buffer[1] = RPT_MAGIC_NUMBER_1;
+                    output_buffer[2] = RPT_MAGIC_NUMBER_2;
+                    output_buffer[3] = RPT_MAGIC_NUMBER_3;
+                    output_buffer[4] = (rpt_type | RPT_REPORT_MASK);
+                    output_buffer[5] = RET_BAD_CHECKSUM;
+                    output_buffer[6] = 1;
+                    output_buffer[7] = checksum;
 
-                    output_buffer[0] = checksum;
+                    // add checksum of this transaction
+                    checksum = calcChecksum(output_buffer, 8);
+                    output_buffer[8] = checksum;
 
-                    // TODO: add checksum on this transaction
+                    rpt_out_buff_len = 9;
+                    rpt_out_sent_ind = 9;
 
-                    rpt_out_buff_len = 1;
                     // wait for UART to finish whatever it's up to...
                     while (UART_TXisReady() == false);
-                    UART_sendData(reply_buffer, 5);
+                    UART_sendData(output_buffer, 9);
                     rpt.state = kRpt_Printing;
                 }
                 else {
@@ -301,17 +342,19 @@ void priv_controlReport_run(void)
         case kRpt_Evaluate:
             // Fetch and execute the requested function
             retval = rpt_lookup(rpt_type, rpt.read_buff, rpt_in_buff_len,
-                                output_buffer + 5, &rpt_out_buff_len);
+                                output_buffer + 7, &rpt_out_buff_len);
 
             // print out the results
-            output_buffer[0] = RPT_RESPONSE_MAGIC_NUMBER_0;
-            output_buffer[1] = RPT_RESPONSE_MAGIC_NUMBER_1;
-            output_buffer[2] = rpt_type | RPT_REPORT_MASK;
-            output_buffer[3] = retval;
-            output_buffer[4] = rpt_out_buff_len;
+            output_buffer[0] = RPT_MAGIC_NUMBER_0;
+            output_buffer[1] = RPT_MAGIC_NUMBER_1;
+            output_buffer[2] = RPT_MAGIC_NUMBER_2;
+            output_buffer[3] = RPT_MAGIC_NUMBER_3;
+            output_buffer[4] = rpt_type | RPT_REPORT_MASK;
+            output_buffer[5] = retval;
+            output_buffer[6] = rpt_out_buff_len;
 
-            rpt_out_buff_len += 5;
-            rpt_out_sent_ind = 5;
+            rpt_out_buff_len += 7;
+            rpt_out_sent_ind = 7;
 
             // Add checksum to the end of the reply output_buffer
             uint8_t checksum = calcChecksum(
@@ -321,7 +364,7 @@ void priv_controlReport_run(void)
 
             // Send the initial reply out, non-blocking
             while (UART_TXisReady() == false);  // wait for UART to be ready if it isn't
-            UART_sendData(output_buffer, 5);
+            UART_sendData(output_buffer, 7);
             // finish the rest in the next stage
             rpt.state = kRpt_Printing;
             break;
@@ -368,18 +411,20 @@ ret_t rpt_sendStreamReport(uint8_t reportID, uint8_t payload_len, uint8_t * payl
 
     // No report is running! Time to run this suckerrr
     input_report_running = true;
-    output_buffer[0] = RPT_RESPONSE_MAGIC_NUMBER_0;
-    output_buffer[1] = RPT_RESPONSE_MAGIC_NUMBER_1;
-    output_buffer[2] = reportID | RPT_STREAM_MASK;
-    output_buffer[3] = 0;  // currently no sense of retval in stream mode
-    output_buffer[4] = payload_len;
-    UART_sendData(output_buffer, 5);
+    output_buffer[0] = RPT_MAGIC_NUMBER_0;
+    output_buffer[1] = RPT_MAGIC_NUMBER_1;
+    output_buffer[2] = RPT_MAGIC_NUMBER_2;
+    output_buffer[3] = RPT_MAGIC_NUMBER_3;
+    output_buffer[4] = reportID | RPT_STREAM_MASK;
+    output_buffer[5] = 0;  // currently no sense of retval in stream mode
+    output_buffer[6] = payload_len;
+    UART_sendData(output_buffer, 7);
 
     // Start the rest of the input report to be handled by the runner
-    rpt_out_sent_ind = 5;
+    rpt_out_sent_ind = 7;
     rpt_out_buff_len = payload_len + 1;
-    memcpy(output_buffer + 5, payload_ptr, payload_len);
-    output_buffer[payload_len + 6] = calcChecksum(output_buffer, payload_len + 5);
+    memcpy(output_buffer + 7, payload_ptr, payload_len);
+    output_buffer[payload_len + 8] = calcChecksum(output_buffer, payload_len + 7);
     return RET_OK;
 }
 
