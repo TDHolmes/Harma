@@ -11,7 +11,7 @@
 #include "common.h"
 #include "LSM303DLHC.h"
 
-#define OUTPUT_BUFF_LEN (255)
+#define OUTPUT_BUFF_LEN (255 + RPT_HEADER_SIZE)
 
 
 ret_t rpt_init(ret_t (*putchr)(uint8_t), ret_t (*getchr)(uint8_t *));

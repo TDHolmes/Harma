@@ -7,6 +7,8 @@
  *
  */
 #include <stdint.h>
+#include <string.h>
+
 #include "common.h"
 #include "reports.h"
 #include "LSM303DLHC.h"
@@ -21,11 +23,18 @@ extern uint32_t HAL_GetTick(void);
 extern critical_errors_t gCriticalErrors;
 
 
-#define READ_BUFF_SIZE (255)      //!< Maximum data we can read in
-#define RPT_RESPONSE_MAGIC_NUMBER_0 (0xDE)  //!< First magic number to specify start of report from host
-#define RPT_RESPONSE_MAGIC_NUMBER_1 (0xAD)  //!< Second magic number to specify start of report from host
-#define RPT_START_MAGIC_NUMBER_0 (0xBE)     //!< First magic number to specify start of report from host
-#define RPT_START_MAGIC_NUMBER_1 (0xEF)     //!< Second magic number to specify start of report from host
+//! The number of bytes in our report header
+#define RPT_HEADER_SIZE (4)
+//! Maximum data we can read in (plus our TX header)
+#define READ_BUFF_SIZE (255 + RPT_HEADER_SIZE)
+//! First magic number to specify start of report from host
+#define RPT_RESPONSE_MAGIC_NUMBER_0 (0xDE)
+//! Second magic number to specify start of report from host
+#define RPT_RESPONSE_MAGIC_NUMBER_1 (0xAD)
+//! First magic number to specify start of report from host
+#define RPT_START_MAGIC_NUMBER_0 (0xBE)
+//! Second magic number to specify start of report from host
+#define RPT_START_MAGIC_NUMBER_1 (0xEF)
 
 #define RPT_TIMEOUT (100)  //!< Report timeout time (in ms)
 
@@ -69,13 +78,21 @@ typedef struct {
 uint8_t output_buffer[OUTPUT_BUFF_LEN];
 //! Buffer to hold the basic reply info
 uint8_t reply_buffer[5];  // magic bytes (2), reportID, retval, reply_length
-
 static rpt_t rpt;
+bool input_report_running = false;  //!< private flag to indicate if an input report is pending
+
+uint8_t rpt_out_buff_len = 0;
+// Keeps track of how many bytes of `rpt_out_buff_len` we've sent in state kRpt_Printing
+uint8_t rpt_out_sent_ind = 0;
 
 // private function declarations
 ret_t rpt_lookup(uint8_t rpt_type, uint8_t *input_buff_ptr, uint8_t input_buff_len,
                  uint8_t * output_buff_len_ptr);
 uint8_t calcChecksum(uint8_t * data, uint32_t num_bytes);
+static void priv_controlReport_run(void);
+static void priv_inputReport_run(void);
+static bool priv_controlReport_isRunning(void);
+static bool priv_inputReport_isRunning(void);
 
 /* -------------- Initializer and runner ------------------------ */
 
@@ -85,6 +102,7 @@ uint8_t calcChecksum(uint8_t * data, uint32_t num_bytes)
     while (num_bytes) {
         checksum += *data;
         data += 1;
+        num_bytes -= 1;
     }
     return checksum;
 }
@@ -132,16 +150,34 @@ static inline void rpt_checkForTimeout(void) {
  */
 void rpt_run(void)
 {
+    if ( priv_inputReport_isRunning() ) {
+        priv_inputReport_run();
+    } else {
+        priv_controlReport_run();
+    }
+}
+
+
+static bool priv_controlReport_isRunning(void)
+{
+    return !(rpt.state == kRpt_ReadMagic_0);
+}
+
+
+static bool priv_inputReport_isRunning(void)
+{
+    return input_report_running;
+}
+
+
+void priv_controlReport_run(void)
+{
     uint8_t chr;
     ret_t retval = RET_GEN_ERR;
 
     // report buffers and variables
     static uint8_t rpt_type = 0;
     static uint8_t rpt_in_buff_len = 0;
-
-    static uint8_t rpt_out_buff_len = 0;
-    // Keeps track of how many bytes of `rpt_out_buff_len` we've sent in state kRpt_Printing
-    static uint8_t rpt_out_sent_ind = 0;
 
     // Keeps track of how many bytes of the payload we've read in
     static uint8_t payload_readin_ind = 0;
@@ -151,6 +187,7 @@ void rpt_run(void)
             retval = UART_getChar(&chr);
             if (retval == RET_OK) {
                 if (chr == RPT_START_MAGIC_NUMBER_0) {
+                    rpt.read_buff[0] = chr;
                     rpt.start_time = HAL_GetTick();
                     rpt.state = kRpt_ReadMagic_1;
                 } else {
@@ -164,6 +201,7 @@ void rpt_run(void)
             retval = UART_getChar(&chr);
             if (retval == RET_OK) {
                 if (chr == RPT_START_MAGIC_NUMBER_1) {
+                    rpt.read_buff[1] = chr;
                     rpt.state = kRpt_ReadRpt;
                 } else {
                     // invalid character!
@@ -180,6 +218,7 @@ void rpt_run(void)
             if (retval == RET_OK) {
                 // 0-255 value is valid.
                 rpt_type = chr;
+                rpt.read_buff[2] = chr;
                 rpt.state = kRpt_ReadLen;
             }
 
@@ -191,7 +230,8 @@ void rpt_run(void)
             retval = UART_getChar(&chr);
             if (retval == RET_OK) {
                 rpt_in_buff_len = chr;
-                payload_readin_ind = 0;
+                rpt.read_buff[3] = chr;
+                payload_readin_ind = RPT_HEADER_SIZE;  // Account for the header data
 
                 if (rpt_in_buff_len != 0) {
                     // This report does have a payload. Read it in.
@@ -212,7 +252,7 @@ void rpt_run(void)
                 rpt.read_buff[payload_readin_ind] = chr;
                 payload_readin_ind += 1;
 
-                if (payload_readin_ind == rpt_in_buff_len) {
+                if (payload_readin_ind == rpt_in_buff_len + RPT_HEADER_SIZE) {
                     rpt.state = kRpt_Checksum;
                     break;
                 }
@@ -225,8 +265,10 @@ void rpt_run(void)
         case kRpt_Checksum:
             retval = UART_getChar(&chr);
             if (retval == RET_OK) {
+                rpt_out_sent_ind = 0;
                 rpt.read_buff[payload_readin_ind] = chr;
-                uint8_t checksum = calcChecksum(rpt.read_buff, payload_readin_ind + 1);
+                uint8_t checksum = calcChecksum(
+                    rpt.read_buff, payload_readin_ind + RPT_HEADER_SIZE + 1);
                 if (checksum) {
                     // print out the results (checksum error)
                     reply_buffer[0] = RPT_RESPONSE_MAGIC_NUMBER_0;
@@ -236,15 +278,20 @@ void rpt_run(void)
                     reply_buffer[4] = 1;
 
                     output_buffer[0] = checksum;
+
+                    // TODO: add checksum on this transaction
+
                     rpt_out_buff_len = 1;
                     // wait for UART to finish whatever it's up to...
                     while (UART_TXisReady() == false);
                     UART_sendData(reply_buffer, 5);
                     rpt.state = kRpt_Printing;
                 }
-                // No checksum error! let's finish out the report
-                rpt.state = kRpt_Evaluate;
-                payload_readin_ind = 0;
+                else {
+                    // No checksum error! let's finish out the report
+                    rpt.state = kRpt_Evaluate;
+                    payload_readin_ind = 0;
+                }
             }
 
             // Check for timeout
@@ -263,10 +310,11 @@ void rpt_run(void)
             reply_buffer[3] = retval;
             reply_buffer[4] = rpt_out_buff_len;
 
+            // TODO: add checksum on this transaction
+
             // Send the initial reply out, non-blocking
             while (UART_TXisReady() == false);  // wait for UART to be ready if it isn't
             UART_sendData(reply_buffer, 5);
-            rpt_out_sent_ind = 0;
             // finish the rest in the next stage
             rpt.state = kRpt_Printing;
             break;
@@ -275,23 +323,23 @@ void rpt_run(void)
             // check if UART is available
             if ( UART_TXisReady() ) {
                 // check if we're done and can go back
-                if (rpt_out_sent_ind == rpt_out_buff_len - 1) {
+                if (rpt_out_sent_ind == rpt_out_buff_len) {
                     rpt.state = kRpt_ReadMagic_0;
                 } else {
                     // finish sending out the data
-                    if (rpt_out_buff_len - rpt_out_sent_ind - 1 >= UART_TX_BUFFER_SIZE) {
+                    if (rpt_out_buff_len - rpt_out_sent_ind >= UART_TX_BUFFER_SIZE) {
                         // max possible amount of bytes to send out
                         UART_sendData(output_buffer + rpt_out_sent_ind, UART_TX_BUFFER_SIZE);
                         rpt_out_sent_ind += UART_TX_BUFFER_SIZE;
                     } else {
                         // finishing up the last bit
-                        uint8_t num_bytes = rpt_out_buff_len - rpt_out_sent_ind - 1;
+                        uint8_t num_bytes = rpt_out_buff_len - rpt_out_sent_ind;
                         UART_sendData(output_buffer + rpt_out_sent_ind, num_bytes);
                         rpt_out_sent_ind += num_bytes;
                     }
                 }
             }
-            break
+            break;
 
 
         default:
@@ -306,17 +354,53 @@ void rpt_run(void)
  */
 ret_t rpt_sendStreamReport(uint8_t reportID, uint8_t payload_len, uint8_t * payload_ptr)
 {
-    UART_sendChar(RPT_RESPONSE_MAGIC_NUMBER_0);
-    UART_sendChar(RPT_RESPONSE_MAGIC_NUMBER_1);
-    UART_sendChar(reportID | RPT_STREAM_MASK);
-    UART_sendChar(0);  // currently no sense of retval in stream mode
-    UART_sendChar(payload_len);
-    while (payload_len > 0) {
-        UART_sendChar(*payload_ptr);
-        payload_len--;
-        payload_ptr++;
+    if ( priv_controlReport_isRunning() || priv_inputReport_isRunning() ) {
+        // TODO: queue up one or two input reports
+        return RET_BUSY_ERR;
     }
+
+    // No report is running! Time to run this suckerrr
+    input_report_running = true;
+    output_buffer[0] = RPT_RESPONSE_MAGIC_NUMBER_0;
+    output_buffer[1] = RPT_RESPONSE_MAGIC_NUMBER_1;
+    output_buffer[2] = reportID | RPT_STREAM_MASK;
+    output_buffer[3] = 0;  // currently no sense of retval in stream mode
+    output_buffer[4] = payload_len;
+    UART_sendData(output_buffer, 5);
+
+    // Start the rest of the input report to be handled by the runner
+    rpt_out_sent_ind = 5;
+    rpt_out_buff_len = payload_len + 1;
+    memcpy(output_buffer + 5, payload_ptr, payload_len);
+    output_buffer[payload_len + 6] = calcChecksum(output_buffer, payload_len + 5);
     return RET_OK;
+}
+
+void priv_inputReport_run(void)
+{
+    if ( UART_TXisReady() ) {
+        // check if we're done and can go back
+        if (rpt_out_sent_ind != rpt_out_buff_len) {
+            // finish sending out the data
+            if (rpt_out_buff_len - rpt_out_sent_ind >= UART_TX_BUFFER_SIZE) {
+                // max possible amount of bytes to send out
+                UART_sendData(output_buffer + rpt_out_sent_ind, UART_TX_BUFFER_SIZE);
+                rpt_out_sent_ind += UART_TX_BUFFER_SIZE;
+            } else {
+                // finishing up the last bit
+                uint8_t num_bytes = rpt_out_buff_len - rpt_out_sent_ind;
+                UART_sendData(output_buffer + rpt_out_sent_ind, num_bytes);
+                rpt_out_sent_ind += num_bytes;
+            }
+        }
+    }
+    if (rpt_out_sent_ind == rpt_out_buff_len) {
+        // We're done here. Data might still be transmitting but we  can handle some
+        //   control reports.
+        input_report_running = false;
+        rpt_out_sent_ind = 0;
+        rpt_out_buff_len = 0;
+    }
 }
 
 
