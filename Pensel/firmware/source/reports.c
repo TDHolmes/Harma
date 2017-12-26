@@ -87,7 +87,7 @@ uint8_t rpt_out_sent_ind = 0;
 
 // private function declarations
 ret_t rpt_lookup(uint8_t rpt_type, uint8_t *input_buff_ptr, uint8_t input_buff_len,
-                 uint8_t * output_buff_len_ptr);
+                 uint8_t * output_buffer_ptr, uint8_t * output_buff_len_ptr);
 uint8_t calcChecksum(uint8_t * data, uint32_t num_bytes);
 static void priv_controlReport_run(void);
 static void priv_inputReport_run(void);
@@ -104,7 +104,7 @@ uint8_t calcChecksum(uint8_t * data, uint32_t num_bytes)
         data += 1;
         num_bytes -= 1;
     }
-    return checksum;
+    return -checksum;
 }
 
 /*! Initializes the reporting interface by storing the get and put char functions and
@@ -301,20 +301,27 @@ void priv_controlReport_run(void)
         case kRpt_Evaluate:
             // Fetch and execute the requested function
             retval = rpt_lookup(rpt_type, rpt.read_buff, rpt_in_buff_len,
-                                &rpt_out_buff_len);
+                                output_buffer + 5, &rpt_out_buff_len);
 
             // print out the results
-            reply_buffer[0] = RPT_RESPONSE_MAGIC_NUMBER_0;
-            reply_buffer[1] = RPT_RESPONSE_MAGIC_NUMBER_1;
-            reply_buffer[2] = rpt_type | RPT_REPORT_MASK;
-            reply_buffer[3] = retval;
-            reply_buffer[4] = rpt_out_buff_len;
+            output_buffer[0] = RPT_RESPONSE_MAGIC_NUMBER_0;
+            output_buffer[1] = RPT_RESPONSE_MAGIC_NUMBER_1;
+            output_buffer[2] = rpt_type | RPT_REPORT_MASK;
+            output_buffer[3] = retval;
+            output_buffer[4] = rpt_out_buff_len;
 
-            // TODO: add checksum on this transaction
+            rpt_out_buff_len += 5;
+            rpt_out_sent_ind = 5;
+
+            // Add checksum to the end of the reply output_buffer
+            uint8_t checksum = calcChecksum(
+                output_buffer, rpt_out_buff_len);
+            output_buffer[rpt_out_buff_len] = checksum;
+            rpt_out_buff_len += 1;  // account for the checksum
 
             // Send the initial reply out, non-blocking
             while (UART_TXisReady() == false);  // wait for UART to be ready if it isn't
-            UART_sendData(reply_buffer, 5);
+            UART_sendData(output_buffer, 5);
             // finish the rest in the next stage
             rpt.state = kRpt_Printing;
             break;
@@ -504,7 +511,7 @@ ret_t rpt_pensel_getCriticalErrors(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_
 
 
 ret_t rpt_lookup(uint8_t rpt_type, uint8_t *input_buff_ptr, uint8_t input_buff_len,
-                 uint8_t * output_buff_len_ptr)
+                 uint8_t * output_buffer_ptr, uint8_t * output_buff_len_ptr)
 {
     // define the report lookup table
     static ret_t (*report_function_lookup[])(uint8_t *input_buff_ptr, uint8_t input_buff_len,
@@ -644,7 +651,7 @@ ret_t rpt_lookup(uint8_t rpt_type, uint8_t *input_buff_ptr, uint8_t input_buff_l
     if (rpt_type > MAX_REPORT_ID) {
         return RET_NORPT_ERR;
     }
-    // output_buff_ptr = output_buffer;
-    return report_function_lookup[rpt_type](input_buff_ptr, input_buff_len,
-                                            output_buffer, output_buff_len_ptr);
+
+    return report_function_lookup[rpt_type](
+        input_buff_ptr, input_buff_len, output_buffer_ptr, output_buff_len_ptr);
 }

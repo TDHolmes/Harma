@@ -297,9 +297,20 @@ class Pensel(object):
         else:
             return_payload = []
         checksum = self.serial_read(1)
+        if len(checksum) != 1:
+            self.log("ERROR: Didn't read back a checksum!")
+            checksum = -1
+        else:
+            checksum = checksum[0]
 
         # TODO: verify the checksum
-        print(checksum)
+        data = [0xde, 0xad, report, return_payload_len] + return_payload
+        data.append(checksum)
+        self.log("Checksum received: {}".format(checksum))
+        our_checksum = generate_checksum(data)
+        if our_checksum:
+            self.log("ERROR: Our checksum didn't calculate properly! "
+                     "(Calculated {}, expected zero)".format(our_checksum))
 
         return report, retval, return_payload
 
@@ -321,7 +332,7 @@ def generate_checksum(list_of_data):
     checksum = 0
     for b in list_of_data:
         checksum = (checksum + b) & 0xFF
-    checksum = 256 - checksum  # twos complement of a byte
+    checksum = (256 - checksum) & 0xff  # twos complement of a byte
     return checksum
 
 
