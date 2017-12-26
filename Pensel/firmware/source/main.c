@@ -161,19 +161,27 @@ int main(void)
             if ( LSM303DLHC_accel_getPacket(&accel_pkt, false) == RET_OK ) {
                 // Transmit the packet if we're streaming it
                 if (gEnableRawAccelStream == true) {
-                    rpt_sendStreamReport(RACCEL_STREAM_REPORT_ID, sizeof(accel_norm_t),
-                                         (uint8_t *)&accel_pkt);
+                    retval = rpt_sendStreamReport(RACCEL_STREAM_REPORT_ID,
+                        sizeof(accel_norm_t), (uint8_t *)&accel_pkt);
+                    if (retval != RET_OK) {
+                        // Dropped input report
+                        gCriticalErrors.rpt_dropped_inputs += 1;
+                    }
                 }
                 // ingest it into the interested parties
                 orient_calcAccelOrientation(accel_pkt);
                 if (gEnableFilteredAccelStream == true) {
                     cartesian_vect_t vect;
+                    vect = orient_getAccelOrientation();
                     accel_pkt.x = vect.x;
                     accel_pkt.y = vect.y;
                     accel_pkt.z = vect.z;
-                    vect = orient_getAccelOrientation();
-                    rpt_sendStreamReport(FACCEL_STREAM_REPORT_ID, sizeof(accel_norm_t),
-                                         (uint8_t *)&accel_pkt);
+                    retval = rpt_sendStreamReport(FACCEL_STREAM_REPORT_ID,
+                        sizeof(accel_norm_t), (uint8_t *)&accel_pkt);
+                    if (retval != RET_OK) {
+                        // Dropped input report
+                        gCriticalErrors.rpt_dropped_inputs += 1;
+                    }
                 }
             }
         }
@@ -181,8 +189,12 @@ int main(void)
             if ( LSM303DLHC_mag_getPacket(&mag_pkt, false) == RET_OK ) {
                 // Transmit the packet if we're streaming it
                 if (gEnableRawMagStream == true) {
-                    rpt_sendStreamReport(RMAG_STREAM_REPORT_ID, sizeof(mag_norm_t),
-                                         (uint8_t *)&mag_pkt);
+                    retval = rpt_sendStreamReport(RMAG_STREAM_REPORT_ID,
+                        sizeof(mag_norm_t), (uint8_t *)&mag_pkt);
+                    if (retval != RET_OK) {
+                        // Dropped input report
+                        gCriticalErrors.rpt_dropped_inputs += 1;
+                    }
                 }
                 // ingest it into the interested parties
                 orient_calcMagOrientation(mag_pkt);
@@ -192,8 +204,12 @@ int main(void)
                     mag_pkt.x = vect.x;
                     mag_pkt.y = vect.y;
                     mag_pkt.z = vect.z;
-                    rpt_sendStreamReport(FMAG_STREAM_REPORT_ID, sizeof(mag_norm_t),
-                                         (uint8_t *)&mag_pkt);
+                    retval = rpt_sendStreamReport(FMAG_STREAM_REPORT_ID,
+                        sizeof(mag_norm_t), (uint8_t *)&mag_pkt);
+                    if (retval != RET_OK) {
+                        // Dropped input report
+                        gCriticalErrors.rpt_dropped_inputs += 1;
+                    }
                 }
             }
         }
