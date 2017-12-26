@@ -17,9 +17,9 @@
 #include "FIR_coefficients.h"
 
 
-#define X_IND (0) //!< When dealing with a 3 element array for cartesian coords, this is the X index
-#define Y_IND (1) //!< When dealing with a 3 element array for cartesian coords, this is the Y index
-#define Z_IND (2) //!< When dealing with a 3 element array for cartesian coords, this is the Z index
+#define X_IND (0) //!< For 3 element arrays in cartesian cords, this is X index
+#define Y_IND (1) //!< For 3 element arrays in cartesian cords, this is Y index
+#define Z_IND (2) //!< For 3 element arrays in cartesian cords, this is Z index
 
 
 typedef struct {
@@ -138,6 +138,8 @@ cartesian_vect_t orient_getAccelOrientation(void)
 {
     return orient.gravity_vector;
 }
+
+/* ------------------------ REPORTS ---------------------- */
 
 /*! Report 0x28 returns the pensel's orientation vector
  */
