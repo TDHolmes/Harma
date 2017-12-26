@@ -1,7 +1,11 @@
 #! /usr/bin/python
 import os
+import sys
 
 import pensel_utils as pu
+
+if sys.version_info.major == 2:
+    input = raw_input  # noqa
 
 
 if __name__ == '__main__':
@@ -17,6 +21,8 @@ if __name__ == '__main__':
                         help='Whether or not we should print extra debug information')
     parser.add_argument('--interact', default=False, action="store_true",
                         help='Allows for an interactive multi-report session')
+    parser.add_argument('--timeout', type=int, default=1,
+                        help='The amount of time to wait for conditions [Default: 1s]')
 
     args = parser.parse_args()
 
@@ -35,7 +41,7 @@ if __name__ == '__main__':
             print("\t{}: {}".format(ind, port))
         while True:
             try:
-                choice = int(raw_input("Which port do you choose? "))
+                choice = int(input("Which port do you choose? "))
             except Exception:
                 print("Invalid choice.")
                 continue
@@ -49,7 +55,7 @@ if __name__ == '__main__':
         try:
             data = None
             while True:
-                user_input = raw_input(prompt)
+                user_input = input(prompt)
                 try:
                     if user_input.strip():
                         data = [int(b, 16) for b in user_input.split(" ")]
@@ -68,7 +74,7 @@ if __name__ == '__main__':
     # port = "/dev/" + choose_port(find_ports())
     port = "/dev/cu.SLAB_USBtoUART"
 
-    with pu.Pensel(port, args.baudrate, args.verbose) as pensel:
+    with pu.Pensel(port, args.baudrate, args.verbose, args.timeout) as pensel:
         while True:
             if not args.interact:
                 payload = []

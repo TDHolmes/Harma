@@ -1,7 +1,11 @@
 #! /usr/bin/python
 import os
+import sys
 
 import pensel_utils as pu
+
+if sys.version_info.major == 2:
+    input = raw_input  # noqa
 
 
 if __name__ == '__main__':
@@ -33,7 +37,7 @@ if __name__ == '__main__':
             print("\t{}: {}".format(ind, port))
         while True:
             try:
-                choice = int(raw_input("Which port do you choose? "))
+                choice = int(input("Which port do you choose? "))
             except Exception:
                 print("Invalid choice.")
                 continue

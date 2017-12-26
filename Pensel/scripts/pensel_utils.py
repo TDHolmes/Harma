@@ -53,8 +53,10 @@ class PenselError(RuntimeError):
 
 
 class Pensel(object):
-    def __init__(self, serialport, baudrate, verbose=False):
+
+    def __init__(self, serialport, baudrate, verbose=False, timeout=1):
         self.serialport = serialport
+        self.TIMEOUT = timeout
         self.baudrate = baudrate
         self.verbose = verbose
         self.MAGIC_NUM_0 = 0xBE
@@ -203,28 +205,33 @@ class Pensel(object):
         self.serial_write(self.MAGIC_NUM_0)
         self.serial_write(self.MAGIC_NUM_1)
         self.serial_write(report_ID)
+        _bytes = [self.MAGIC_NUM_0, self.MAGIC_NUM_1, report_ID]
         if payload is None:
+            _bytes.append(0)
             self.serial_write(0)
         else:
+            _bytes.append(len(payload))
             self.serial_write(len(payload))
             for b in payload:
                 if b < 0 or b > 255:
                     raise ValueError("Value in payload out of valid range!")
+                _bytes.append(b)
                 self.serial_write(b)
+        # Checksum time!
+        self.serial_write(generate_checksum(_bytes))
 
         # Try to get the response
-        TIMEOUT = 1  # seconds
         retval = None
         payload = None
         start_time = time.time()
-        while time.time() - start_time < TIMEOUT:
+        while time.time() - start_time < self.TIMEOUT:
             pkt = self.get_packet_withreportID(report_ID)
             if pkt:
                 report, retval, payload = pkt
                 break
             else:
-                self.log("Failed to get report with ID {}".format(report_ID))
-                time.sleep(0.001)
+                pass
+                # self.log("Failed to get report with ID {}".format(report_ID))
         else:
             # check for timeout
             self.log("WARNING: Timed out waiting for response")
@@ -289,19 +296,33 @@ class Pensel(object):
             return_payload = self.serial_read(return_payload_len)
         else:
             return_payload = []
+        checksum = self.serial_read(1)
+
+        # TODO: verify the checksum
+        print(checksum)
 
         return report, retval, return_payload
 
     def close(self):
-        if self.verbose:
-            self.log("Killing thread")
-        self.thread_run.clear()
-        # wait for it to stop
-        while self.thread.is_alive():
-            time.sleep(0.01)
-        if self.verbose:
-            self.log("\n\tClosing serial port...\n")
-        self.serial.close()
+        try:
+            if self.verbose:
+                self.log("Killing thread")
+            self.thread_run.clear()
+            # wait for it to stop
+            while self.thread.is_alive():
+                time.sleep(0.01)
+        finally:
+            if self.verbose:
+                self.log("\n\tClosing serial port...\n")
+            self.serial.close()
+
+
+def generate_checksum(list_of_data):
+    checksum = 0
+    for b in list_of_data:
+        checksum = (checksum + b) & 0xFF
+    checksum = 256 - checksum  # twos complement of a byte
+    return checksum
 
 
 def parse_report(reportID, payload):

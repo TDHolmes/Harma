@@ -45,7 +45,8 @@ class LSM303DLHC_Parser(object):
                                 pi.log("Got Accel packet# {}".format(frame_num))
                         elif report == 0x84 and retval == 0 and plot_mag:  # mag
                             frame_num, timestamp, x, y, z = pu.parse_mag_packet(payload)
-                            mag_packets.append([x - mag_offsets[0], y - mag_offsets[1], z - mag_offsets[2]])
+                            # mag_packets.append([x - mag_offsets[0], y - mag_offsets[1], z - mag_offsets[2]])
+                            mag_packets.append([x, y, z])
                             if self.verbose:
                                 pi.log("Got Mag packet# {}".format(frame_num))
 
@@ -106,6 +107,10 @@ if __name__ == '__main__':
                         help='number of samples to aquire before plotting')
 
     args = parser.parse_args()
+
+    if not args.accel and not args.mag:
+        print("Error: Must specify at least one of mag or accel")
+        raise SystemExit(-1)
 
     lsm = LSM303DLHC_Parser("/dev/tty.SLAB_USBtoUART", verbose=args.verbose)
     lsm.post_plot(plot_mag=args.mag, plot_accel=args.accel, num_samples=args.samples)
