@@ -59,14 +59,6 @@ def crunch_accel(accel_pkts):
     return offsets, gains
 
 
-def generate_checksum(list_of_data):
-    checksum = 0
-    for b in list_of_data:
-        checksum = (checksum + b) & 0xFF
-    checksum = 256 - checksum - 1  # twos complement of a byte
-    return checksum
-
-
 def generate_calBlob(mag_offsets, mag_gains, accel_offsets, accel_gains):
     PENSEL_CAL_HEADER = 0x9f5366f1   # cal header
     PENSEL_CAL_VERSION = 0x0001      # Cal version: v00.01
@@ -75,7 +67,7 @@ def generate_calBlob(mag_offsets, mag_gains, accel_offsets, accel_gains):
     blob = struct.pack("<IHffffffffffffB", PENSEL_CAL_HEADER, PENSEL_CAL_VERSION, *args)
     blob = list(blob)
     blob = [ord(v) for v in blob]
-    checksum = generate_checksum(blob)
+    checksum = pu.generate_checksum(blob)
     print("calculated checksum: {}".format(checksum))
     blob.append(checksum)
     return blob
@@ -120,7 +112,7 @@ if __name__ == '__main__':
 
     accel_packets = []
     mag_packets = []
-    with pi.PenselInputs(port, 115200, args.verbose) as pi:
+    with pu.Pensel(port, 115200, args.verbose) as pi:
         # turn on accel & mag streaming
         retval, response = pi.send_report(0x20, payload=[3])
         while True:
