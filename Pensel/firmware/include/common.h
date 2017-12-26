@@ -20,7 +20,7 @@
 
 
 #define PENSEL_VERSION_MAJOR (0)
-#define PENSEL_VERSION_MINOR (5)
+#define PENSEL_VERSION_MINOR (6)
 
 #define LSM303DLHC_ENABLE_RACCEL_STREAM (0x01)
 #define LSM303DLHC_ENABLE_RMAG_STREAM (0x02)
@@ -67,6 +67,7 @@ typedef struct {
     uint32_t cal_header_err : 1;
     uint32_t cal_version_err : 1;
     uint32_t cal_checksum_err : 1;
+    uint8_t rpt_dropped_inputs;
 } critical_errors_t;
 
 

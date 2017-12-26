@@ -53,6 +53,9 @@ ret_t UART_init(uint32_t baudrate)
     HAL_UART_handle.Init.Mode       = UART_MODE_TX_RX;
     HAL_UART_handle.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
 
+    // configure our own admin
+    // UART_admin.sending_data = 0;
+
     if(HAL_UART_Init(&HAL_UART_handle) != HAL_OK) {
         return RET_COM_ERR;
     }
@@ -229,7 +232,7 @@ ret_t UART_sendfloat(float data, uint8_t percision)
 
     significand = (int32_t)data;
     fractional = (int32_t)((data - (int32_t)data) * (10.0f * (float)percision));
-    sprintf(char_buff, "%ld.%ld", significand, fractional);
+    sprintf(char_buff, "%d.%d", significand, fractional);
 
     UART_sendString(char_buff);
     return RET_OK;

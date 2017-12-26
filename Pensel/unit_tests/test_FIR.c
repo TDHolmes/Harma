@@ -5,6 +5,8 @@
 
 #define QUEUE_SIZE (20)
 
+extern float sine[1000];
+
 FIR_admin_t FIR_admin;
 
 
