@@ -260,6 +260,8 @@ class Pensel(object):
                         return True
                 except IndexError:
                     pass
+            else:
+                break
 
         # default, no start :(
         if self.verbose:
