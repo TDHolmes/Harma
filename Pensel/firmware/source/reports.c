@@ -92,7 +92,7 @@ uint8_t rpt_out_sent_ind = 0;
 // private function declarations
 ret_t rpt_lookup(uint8_t rpt_type, uint8_t *input_buff_ptr, uint8_t input_buff_len,
                  uint8_t * output_buffer_ptr, uint8_t * output_buff_len_ptr);
-uint8_t calcChecksum(uint8_t * data, uint32_t num_bytes);
+static uint8_t priv_calcChecksum(uint8_t * data, uint32_t num_bytes);
 static void priv_controlReport_run(void);
 static void priv_inputReport_run(void);
 static bool priv_controlReport_isRunning(void);
@@ -100,7 +100,7 @@ static bool priv_inputReport_isRunning(void);
 
 /* -------------- Initializer and runner ------------------------ */
 
-uint8_t calcChecksum(uint8_t * data, uint32_t num_bytes)
+static uint8_t priv_calcChecksum(uint8_t * data, uint32_t num_bytes)
 {
     uint8_t checksum = 0;
     while (num_bytes) {
@@ -254,7 +254,7 @@ void priv_controlReport_run(void)
             if (retval == RET_OK) {
                 // 0-255 value is valid.
                 rpt_type = chr;
-                rpt.read_buff[2] = chr;
+                rpt.read_buff[4] = chr;
                 rpt.state = kRpt_ReadLen;
             }
 
@@ -266,7 +266,7 @@ void priv_controlReport_run(void)
             retval = UART_getChar(&chr);
             if (retval == RET_OK) {
                 rpt_in_buff_len = chr;
-                rpt.read_buff[3] = chr;
+                rpt.read_buff[5] = chr;
                 payload_readin_ind = RPT_HEADER_SIZE;  // Account for the header data
 
                 if (rpt_in_buff_len != 0) {
@@ -303,8 +303,8 @@ void priv_controlReport_run(void)
             if (retval == RET_OK) {
                 rpt_out_sent_ind = 0;
                 rpt.read_buff[payload_readin_ind] = chr;
-                uint8_t checksum = calcChecksum(
-                    rpt.read_buff, payload_readin_ind + RPT_HEADER_SIZE + 1);
+                uint8_t checksum = priv_calcChecksum(
+                    rpt.read_buff, payload_readin_ind + 1);
                 if (checksum) {
                     // print out the results (checksum error)
                     output_buffer[0] = RPT_MAGIC_NUMBER_0;
@@ -317,7 +317,7 @@ void priv_controlReport_run(void)
                     output_buffer[7] = checksum;
 
                     // add checksum of this transaction
-                    checksum = calcChecksum(output_buffer, 8);
+                    checksum = priv_calcChecksum(output_buffer, 8);
                     output_buffer[8] = checksum;
 
                     rpt_out_buff_len = 9;
@@ -357,7 +357,7 @@ void priv_controlReport_run(void)
             rpt_out_sent_ind = 7;
 
             // Add checksum to the end of the reply output_buffer
-            uint8_t checksum = calcChecksum(
+            uint8_t checksum = priv_calcChecksum(
                 output_buffer, rpt_out_buff_len);
             output_buffer[rpt_out_buff_len] = checksum;
             rpt_out_buff_len += 1;  // account for the checksum
@@ -422,9 +422,9 @@ ret_t rpt_sendStreamReport(uint8_t reportID, uint8_t payload_len, uint8_t * payl
 
     // Start the rest of the input report to be handled by the runner
     rpt_out_sent_ind = 7;
-    rpt_out_buff_len = payload_len + 1;
+    rpt_out_buff_len = payload_len + 8;
     memcpy(output_buffer + 7, payload_ptr, payload_len);
-    output_buffer[payload_len + 8] = calcChecksum(output_buffer, payload_len + 7);
+    output_buffer[payload_len + 7] = priv_calcChecksum(output_buffer, payload_len + 7);
     return RET_OK;
 }
 

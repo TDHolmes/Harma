@@ -3,17 +3,18 @@
 import sys
 import time
 import struct
-from datetime import datetime
-
-import subprocess
-import threading
 import serial
+import threading
+
+from datetime import datetime
 from threading import Thread, Event
 
 if sys.version_info.major == 2:
+    import subprocess32 as subprocess
     from Queue import Queue as queue
     from Queue import Empty
 else:
+    import subprocess
     from queue import Queue as queue
     from queue import Empty
 
@@ -54,15 +55,17 @@ class PenselError(RuntimeError):
 
 class Pensel(object):
 
+    MAGIC_NUM_0 = 0xDE
+    MAGIC_NUM_1 = 0xAD
+    MAGIC_NUM_2 = 0xBE
+    MAGIC_NUM_3 = 0xEF
+    MAGIC_HEADER = [MAGIC_NUM_0, MAGIC_NUM_1, MAGIC_NUM_2, MAGIC_NUM_3]
+
     def __init__(self, serialport, baudrate, verbose=False, timeout=1):
         self.serialport = serialport
         self.TIMEOUT = timeout
         self.baudrate = baudrate
         self.verbose = verbose
-        self.MAGIC_NUM_0 = 0xDE
-        self.MAGIC_NUM_1 = 0xAD
-        self.MAGIC_NUM_2 = 0xBE
-        self.MAGIC_NUM_3 = 0xEF
         self.log_lock = threading.Lock()
         self._check_for_start_bytes = []
 
@@ -95,7 +98,7 @@ class Pensel(object):
         Writes `values_to_write` to the serial port.
         """
         if self.verbose:
-            self.log("Writting 0x{:x} to serial port...".format(values_to_write))
+            self.log("Writing 0x{:x} to serial port...".format(values_to_write))
         if type(values_to_write) is not list:
             self.serial.write(bytearray([values_to_write]))
         else:
@@ -121,9 +124,6 @@ class Pensel(object):
         self.serial.reset_input_buffer()
 
     def serial_bytes_available(self):
-        return self.serial.in_waiting
-
-    def num_bytes_available(self):
         """
         Returns the number of bytes in the input buffer.
         """
@@ -142,7 +142,8 @@ class Pensel(object):
     def listener(self):
         """ The threaded listener that looks for packets from Pensel. """
         while self.thread_run.is_set():
-            if self.num_bytes_available() >= 2 and self.check_for_start():
+            if self.serial_bytes_available() >= len(self.MAGIC_HEADER) and \
+                    self.check_for_start():
                 report, retval, payload = self.receive_packet()
                 if report >= 0:
                     self.queue.put((report, retval, payload))
@@ -179,7 +180,7 @@ class Pensel(object):
                     correct_pkt = pkt
                     break
                 else:
-                    self.log("Incorrect packet type: {}".format(report))
+                    # self.log("Incorrect packet type: {}".format(report))
                     incorrect_packets.append(pkt)
             else:
                 time.sleep(0.001)
@@ -211,7 +212,7 @@ class Pensel(object):
         self.serial_write(self.MAGIC_NUM_2)
         self.serial_write(self.MAGIC_NUM_3)
         self.serial_write(report_ID)
-        _bytes = [self.MAGIC_NUM_0, self.MAGIC_NUM_1, report_ID]
+        _bytes = [self.MAGIC_NUM_0, self.MAGIC_NUM_1, self.MAGIC_NUM_2, self.MAGIC_NUM_3, report_ID]
         if payload is None:
             _bytes.append(0)
             self.serial_write(0)
@@ -257,6 +258,9 @@ class Pensel(object):
                             self._check_for_start_bytes[-2] == self.MAGIC_NUM_2 and \
                             self._check_for_start_bytes[-3] == self.MAGIC_NUM_1 and \
                             self._check_for_start_bytes[-4] == self.MAGIC_NUM_0:
+
+                        if self.verbose:
+                            self.log("Start Detected!")
                         return True
                 except IndexError:
                     pass
@@ -305,13 +309,16 @@ class Pensel(object):
             checksum = checksum[0]
 
         # TODO: verify the checksum
-        data = [0xde, 0xad, report, return_payload_len] + return_payload
+        data = self.MAGIC_HEADER + [report, retval, return_payload_len] + return_payload
         data.append(checksum)
-        self.log("Checksum received: {}".format(checksum))
-        our_checksum = generate_checksum(data)
-        if our_checksum:
+
+        our_checksum = generate_checksum(data[:-1])
+        if our_checksum != checksum:
             self.log("ERROR: Our checksum didn't calculate properly! "
-                     "(Calculated {}, expected zero)".format(our_checksum))
+                     "(Calculated {}, expected {})".format(our_checksum, checksum))
+        else:
+            if self.verbose:
+                self.log("Checksum match! ({} == {})".format(our_checksum, checksum))
 
         return report, retval, return_payload
 
