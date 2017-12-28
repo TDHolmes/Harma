@@ -156,21 +156,21 @@ def build_display_size(build_type, chip_total_flash, chip_total_ram):
         except Exception:
             pass
 
-    # print text size, data size, then percentage full
-    print "\tText:  {: >5} bytes".format(dict_of_vals["text"])
-    print "\tData:  {: >5} bytes".format(dict_of_vals["data"])
-    print "\t bss:  {: >5} bytes".format(dict_of_vals["bss"])
+    # print(text size, data size, then percentage full)
+    print("\tText:  {: >5} bytes".format(dict_of_vals["text"]))
+    print("\tData:  {: >5} bytes".format(dict_of_vals["data"]))
+    print("\t bss:  {: >5} bytes".format(dict_of_vals["bss"]))
     percentage = (float(dict_of_vals["text"]) * 100.0) / float(chip_total_flash)
     sys.stdout.write(pensel_utils.bcolors.COLOR_WHITE)
-    print "\tFlash: {: >5} / {} ({:0.2f} %)".format(dict_of_vals["text"],
+    print("\tFlash: {: >5} / {} ({:0.2f} %)".format(dict_of_vals["text"],
                                                     chip_total_flash,
-                                                    percentage)
+                                                    percentage))
 
     ram_stuff = dict_of_vals["data"] + dict_of_vals["bss"]
     percentage = (float(ram_stuff) * 100.0) / float(chip_total_ram)
-    print "\t  Ram: {: >5} / {} ({:0.2f} %)\n".format(ram_stuff,
+    print("\t  Ram: {: >5} / {} ({:0.2f} %)\n".format(ram_stuff,
                                                       chip_total_ram,
-                                                      percentage)
+                                                      percentage))
     sys.stdout.write(pensel_utils.bcolors.COLOR_NC)
 
 
@@ -255,8 +255,6 @@ if __name__ == '__main__':
     # move to the directory this file is in!
     os.chdir("/".join(os.path.realpath(__file__).split("/")[:-1]))
 
-    build_clean(remove_elf_files=True)
-
     os.chdir("../firmware/compiler")
     # make sure all our folder paths exist
     current_path = os.path.abspath("./")
@@ -271,7 +269,6 @@ if __name__ == '__main__':
 
     if build == "debug" or build == "all":
         retval = build_debug(args.clang, args.gcc_dir, args.verbose)
-        build_clean(remove_elf_files=False)
         if retval == 0:
             build_display_size(build_type="Debug",
                                chip_total_flash=args.flash_size,
@@ -281,10 +278,12 @@ if __name__ == '__main__':
 
     if build == "release" or build == "all":
         retval = build_release(args.clang, args.gcc_dir, args.verbose)
-        build_clean(remove_elf_files=False)
         if retval == 0:
             build_display_size(build_type="Release",
                                chip_total_flash=args.flash_size,
                                chip_total_ram=args.ram_size)
             if args.show_usage:
                 build_get_section_info("Release", args.flash_size, args.ram_size)
+
+    if build == "clean":
+        build_clean(remove_elf_files=True)
