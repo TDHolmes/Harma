@@ -283,12 +283,14 @@ void fatal_error_handler(char file[], uint32_t line, int8_t err_code)
         uint32_t timer_count, i = 0;
         LED_set(LED_0, 0);
         LED_set(LED_1, 1);
-        UART_sendString(file);
-        UART_sendint((int64_t)line);
-        UART_sendint((int64_t)err_code);
 
         // Can't rely on HAL tick as we maybe in the ISR context...
         while (1) {
+            UART_sendString(file);
+            UART_sendint((int64_t)line);
+            UART_sendint((int64_t)err_code);
+            UART_sendString("\r\n");
+
             for (i = 0; i < 25; i++) {
                 while (timer_count < 100000) {
                     timer_count++;
