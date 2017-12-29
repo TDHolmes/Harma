@@ -68,6 +68,8 @@ typedef struct __attribute__((packed)) {
     uint32_t cal_version_err : 1;
     uint32_t cal_checksum_err : 1;
     uint32_t rpt_dropped_inputs;
+    uint32_t rpt_dequeued_inputs;
+    uint32_t rpt_queued_inputs;
 } critical_errors_t;
 
 
