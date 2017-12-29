@@ -100,13 +100,13 @@ int main(void)
     configure_pins();
     clear_critical_errors();
 
-    retval = UART_init(115200);
+    retval = UART_init(1000000); // 1 MBaud
     check_retval_fatal(__FILE__, __LINE__, retval);
 
     #ifdef WATCHDOG_ENABLE
     if ( wdg_isSet() ) {
         // set a report variable in critical errors
-        gCriticalErrors.wdg_reset = 1;  // TODO: add critical errors get report
+        gCriticalErrors.wdg_reset = 1;
         #ifdef WATCHDOG_CAPTURE
             wdg_captureAlert();
         #endif

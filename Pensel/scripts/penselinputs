@@ -11,7 +11,7 @@ if sys.version_info.major == 2:
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description='Receive input data from the Pensel.')
-    parser.add_argument('--baudrate', "-b", dest='baudrate', default=115200,
+    parser.add_argument('--baudrate', "-b", dest='baudrate', default=1000000,
                         help='Baudrate of the serial data to recieve')
     parser.add_argument('--parsed', default=False, action="store_true",
                         help='Whether or not we should print a parsed version of the report')

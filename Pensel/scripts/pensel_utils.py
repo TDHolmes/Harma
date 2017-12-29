@@ -405,6 +405,15 @@ def parse_report(reportID, payload):
         print("     Main Button: {}".format("open" if payload[1] else "pressed"))
         print("      Aux Button: {}".format("open" if payload[2] else "pressed"))
 
+    elif reportID == 0x34:
+        packed_data = struct.pack("BBBBBBBBBBBBB", *payload)
+        bitfields, dropped, dequeued, queued = struct.unpack("<BIII", packed_data)
+
+        print("bitfields: \t{}".format(hex(bitfields)))
+        print("dropped: \t{:,}".format(dropped))
+        print("dequeued: \t{:,}".format(dequeued))
+        print("queued: \t{:,}".format(queued))
+
     else:
         print("    {}".format(" ".join(["{:0>2X}".format(b) for b in payload])))
 
