@@ -16,6 +16,7 @@
 #include "orientation.h"
 #include "UART.h"        // TODO: Remove and switch back to function pointers
 #include "hardware.h"
+#include "newqueue.h"
 
 
 // TODO: Is this extern declaration a good idea? Or should I include the HAL header?
@@ -25,8 +26,12 @@ extern critical_errors_t gCriticalErrors;
 
 //! The number of bytes in our report header
 #define RPT_HEADER_SIZE (6)
+#define MAX_RPT_SIZE (255)
 //! Maximum data we can read in (plus our TX header)
-#define READ_BUFF_SIZE (255 + RPT_HEADER_SIZE)
+#define READ_BUFF_SIZE (MAX_RPT_SIZE + RPT_HEADER_SIZE)
+//! Number of input reports we're able to cache
+#define NUM_INPUTS_TO_CACHE (3)
+
 //! First magic number to specify start of report
 #define RPT_MAGIC_NUMBER_0 (0xDE)
 //! Second magic number to specify start of report
@@ -76,12 +81,18 @@ typedef struct {
     uint16_t invalid_chrs;      //!< Number of invalid bytes we've received
     uint16_t timeouts;          //!< Number of times a command times out
     uint8_t read_buff[READ_BUFF_SIZE];  //!< Buffer to read the reports in
+
+    //! Buffer to hold input report payloads to be sent out when we're able to
+    newqueue_t input_rpt_payload_queue;
+    //! Buffer to hold input report reportIDs to be sent out when we're able to
+    newqueue_t input_rpt_reportID_queue;
+    //! Buffer to hold input report payload lengths to be sent out when we're able to
+    newqueue_t input_rpt_payload_len_queue;
 } rpt_t;
 
 //! Bufer to hold the reply of the report
 uint8_t output_buffer[OUTPUT_BUFF_LEN];
-//! Buffer to hold the basic reply info
-uint8_t reply_buffer[5];  // magic bytes (2), reportID, retval, reply_length
+
 static rpt_t rpt;
 bool input_report_running = false;  //!< private flag to indicate if an input report is pending
 
@@ -96,6 +107,7 @@ static uint8_t priv_calcChecksum(uint8_t * data, uint32_t num_bytes);
 static void priv_controlReport_run(void);
 static void priv_inputReport_run(void);
 static bool priv_controlReport_isRunning(void);
+static bool priv_controlReport_isAvailable(void);
 static bool priv_inputReport_isRunning(void);
 
 /* -------------- Initializer and runner ------------------------ */
@@ -122,11 +134,23 @@ static uint8_t priv_calcChecksum(uint8_t * data, uint32_t num_bytes)
  */
 ret_t rpt_init(ret_t (*putchr)(uint8_t), ret_t (*getchr)(uint8_t *))
 {
+    ret_t retval;
     rpt.putchr = putchr;
     rpt.getchr = getchr;
     rpt.invalid_chrs = 0;
     rpt.timeouts = 0;
     rpt.state = kRpt_ReadMagic_0;
+
+    // Initialize our queue for buffered inputs
+    retval = newqueue_init(&rpt.input_rpt_payload_queue, NUM_INPUTS_TO_CACHE, MAX_RPT_SIZE);
+    retval |= newqueue_init(&rpt.input_rpt_reportID_queue, NUM_INPUTS_TO_CACHE, 1);
+    retval |= newqueue_init(&rpt.input_rpt_payload_len_queue, NUM_INPUTS_TO_CACHE, 1);
+
+    if (retval != RET_OK) {
+        // ERRORRRRRR
+        fatal_error_handler(__FILE__, __LINE__, retval);
+        return retval;
+    }
 
     return RET_OK;
 }
@@ -154,9 +178,34 @@ static inline void rpt_checkForTimeout(void) {
  */
 void rpt_run(void)
 {
+    uint8_t reportID, payload_len;
+    ret_t retval;
+
     if ( priv_inputReport_isRunning() ) {
         priv_inputReport_run();
+    } else if ( priv_controlReport_isRunning() == false ) {
+        if ( priv_controlReport_isAvailable() ) {
+            // We need to handle a control report coming in!
+            priv_controlReport_run();
+        } else if (rpt.input_rpt_reportID_queue.unread_items != 0) {
+            // Check if we're able to send out a buffered input report
+            retval = newqueue_pop(&rpt.input_rpt_reportID_queue, &reportID, false);
+            retval |= newqueue_pop(&rpt.input_rpt_payload_len_queue, &payload_len, false);
+            // copy the payload into what we're going to copy it into anyways.
+            retval |= newqueue_pop(&rpt.input_rpt_payload_queue, output_buffer + 7, false);
+            if ( retval != RET_OK ) {
+                // ERRORRRR.
+                fatal_error_handler(__FILE__, __LINE__, retval);
+            } else {
+                gCriticalErrors.rpt_dequeued_inputs += 1;
+                rpt_sendStreamReport(reportID, payload_len, output_buffer + 7);
+            }
+        } else {
+            // shouldn't really get to this point...
+            priv_controlReport_run();
+        }
     } else {
+        // There is an active control report we need to handle
         priv_controlReport_run();
     }
 }
@@ -165,6 +214,11 @@ void rpt_run(void)
 static bool priv_controlReport_isRunning(void)
 {
     return !(rpt.state == kRpt_ReadMagic_0);
+}
+
+static bool priv_controlReport_isAvailable(void)
+{
+    return UART_dataAvailable();
 }
 
 
@@ -404,9 +458,26 @@ void priv_controlReport_run(void)
  */
 ret_t rpt_sendStreamReport(uint8_t reportID, uint8_t payload_len, uint8_t * payload_ptr)
 {
+    ret_t retval;
+
     if ( priv_controlReport_isRunning() || priv_inputReport_isRunning() ) {
-        // TODO: queue up one or two input reports
-        return RET_BUSY_ERR;
+        // Check if we can queue up a report.
+        if (rpt.input_rpt_reportID_queue.num_items == rpt.input_rpt_reportID_queue.unread_items) {
+            // ERRRRR. We're going to overwrite data
+            return RET_BUSY_ERR;
+        }
+
+        retval = newqueue_push(&rpt.input_rpt_payload_queue, payload_ptr);
+        retval |= newqueue_push(&rpt.input_rpt_reportID_queue, &reportID);
+        retval |= newqueue_push(&rpt.input_rpt_payload_len_queue, &payload_len);
+        if (retval != RET_OK) {
+            // another error! :O
+            return retval;
+        }
+
+        // If we want to tell main we've buffered, maybe return something else
+        gCriticalErrors.rpt_queued_inputs += 1;
+        return RET_OK;
     }
 
     // No report is running! Time to run this suckerrr
@@ -418,10 +489,9 @@ ret_t rpt_sendStreamReport(uint8_t reportID, uint8_t payload_len, uint8_t * payl
     output_buffer[4] = reportID | RPT_STREAM_MASK;
     output_buffer[5] = 0;  // currently no sense of retval in stream mode
     output_buffer[6] = payload_len;
-    UART_sendData(output_buffer, 7);
 
-    // Start the rest of the input report to be handled by the runner
-    rpt_out_sent_ind = 7;
+    // Start the input report to be handled by the runner
+    rpt_out_sent_ind = 0;
     rpt_out_buff_len = payload_len + 8;
     memcpy(output_buffer + 7, payload_ptr, payload_len);
     output_buffer[payload_len + 7] = priv_calcChecksum(output_buffer, payload_len + 7);
