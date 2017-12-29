@@ -21,14 +21,15 @@ void newqueue_increment_head(volatile newqueue_t * queue_ptr);
 /*!
  *
  */
-ret_t newqueue_init(newqueue_t * newqueue, uint8_t num_elements, uint8_t item_size)
+ret_t newqueue_init(newqueue_t * newqueue, uint32_t num_elements, uint32_t item_size)
 {
-    uint8_t size = (num_elements * item_size);
+    uint32_t size = (num_elements * item_size);
     newqueue->head_ind = 0;
     newqueue->tail_ind = 0;
     newqueue->unread_items = 0;
     newqueue->overwrite_count = 0;
     newqueue->item_size = item_size;
+    newqueue->num_items = num_elements;
     newqueue->buffer_size = size;
     newqueue->buff_ptr = malloc(size);
     if (newqueue->buff_ptr == NULL) {
@@ -54,7 +55,7 @@ ret_t newqueue_deinit(newqueue_t * newqueue)
 ret_t newqueue_pop(newqueue_t * queue, void * data_ptr, bool peak)
 {
     // "memcpy" the data to `data_ptr` while incrementing the tail
-    for (uint8_t i = queue->item_size; i != 0; i -= 1) {
+    for (uint32_t i = queue->item_size; i != 0; i -= 1) {
         *(uint8_t *)data_ptr = ((uint8_t *)queue->buff_ptr)[queue->tail_ind];
         if (peak == false) {
             newqueue_increment_tail(queue);
@@ -71,7 +72,7 @@ ret_t newqueue_push(newqueue_t * queue, void * data_ptr)
 {
     // Cast the data as bytes and push it on byte by byte
     // while incrementing the head
-    for (uint8_t i = queue->item_size; i != 0; i -= 1) {
+    for (uint32_t i = queue->item_size; i != 0; i -= 1) {
         ((uint8_t *)queue->buff_ptr)[queue->head_ind] = *(uint8_t *)data_ptr;
         newqueue_increment_head(queue);
     }
