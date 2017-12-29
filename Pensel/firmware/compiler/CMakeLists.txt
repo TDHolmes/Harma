@@ -120,6 +120,7 @@ add_executable(pensel.elf
 	"${ProjDirPath}/source/cal.c"
 	"${ProjDirPath}/source/FIR.c"
 	"${ProjDirPath}/source/queue.c"
+	"${ProjDirPath}/source/newqueue.c"
 	"${ProjDirPath}/source/UART.c"
 	"${ProjDirPath}/source/I2C.c"
 	"${ProjDirPath}/source/ADC.c"
