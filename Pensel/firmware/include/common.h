@@ -60,14 +60,14 @@ typedef enum {
 } ret_t;
 
 //! Structure to keep track of our critical errors
-typedef struct {
+typedef struct __attribute__((packed)) {
     #ifdef WATCHDOG_ENABLE
         uint32_t wdg_reset : 1;
     #endif
     uint32_t cal_header_err : 1;
     uint32_t cal_version_err : 1;
     uint32_t cal_checksum_err : 1;
-    uint8_t rpt_dropped_inputs;
+    uint32_t rpt_dropped_inputs;
 } critical_errors_t;
 
 
