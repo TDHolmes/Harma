@@ -14,8 +14,8 @@
 
 //! Timeout time for UART
 #define UART_TIMEOUT_MS (50)  // can send 1150/2 chars in 50 miliseconds
-#define UART_RX_BUFFER_SIZE (40)  //!< The max size of the recieve buffer
-#define UART_TX_BUFFER_SIZE (10)  //!< The max size of the transmit buffer
+#define UART_RX_BUFFER_SIZE (64)  //!< The max size of the recieve buffer
+#define UART_TX_BUFFER_SIZE (128)  //!< The max size of the transmit buffer
 
 
 ret_t UART_init(uint32_t baudrate);
