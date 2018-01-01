@@ -189,10 +189,10 @@ void rpt_run(void)
             priv_controlReport_run();
         } else if (rpt.input_rpt_reportID_queue.unread_items != 0) {
             // Check if we're able to send out a buffered input report
-            retval = newqueue_pop(&rpt.input_rpt_reportID_queue, &reportID, false);
-            retval |= newqueue_pop(&rpt.input_rpt_payload_len_queue, &payload_len, false);
+            retval = newqueue_pop(&rpt.input_rpt_reportID_queue, &reportID, 1, eNoPeak);
+            retval |= newqueue_pop(&rpt.input_rpt_payload_len_queue, &payload_len, 1, eNoPeak);
             // copy the payload into what we're going to copy it into anyways.
-            retval |= newqueue_pop(&rpt.input_rpt_payload_queue, output_buffer + 7, false);
+            retval |= newqueue_pop(&rpt.input_rpt_payload_queue, output_buffer + 7, 1, eNoPeak);
             if ( retval != RET_OK ) {
                 // ERRORRRR.
                 fatal_error_handler(__FILE__, __LINE__, retval);
@@ -467,9 +467,9 @@ ret_t rpt_sendStreamReport(uint8_t reportID, uint8_t payload_len, uint8_t * payl
             return RET_BUSY_ERR;
         }
 
-        retval = newqueue_push(&rpt.input_rpt_payload_queue, payload_ptr);
-        retval |= newqueue_push(&rpt.input_rpt_reportID_queue, &reportID);
-        retval |= newqueue_push(&rpt.input_rpt_payload_len_queue, &payload_len);
+        retval = newqueue_push(&rpt.input_rpt_payload_queue, payload_ptr, 1);
+        retval |= newqueue_push(&rpt.input_rpt_reportID_queue, &reportID, 1);
+        retval |= newqueue_push(&rpt.input_rpt_payload_len_queue, &payload_len, 1);
         if (retval != RET_OK) {
             // another error! :O
             return retval;
