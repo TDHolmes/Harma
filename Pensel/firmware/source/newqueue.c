@@ -15,6 +15,7 @@
 
 // Some private functions for use by push/pop functions
 void newqueue_increment_tail(volatile newqueue_t * queue_ptr);
+void newqueue_decrement_tail(volatile newqueue_t * queue_ptr);
 void newqueue_increment_head(volatile newqueue_t * queue_ptr);
 
 
@@ -52,13 +53,16 @@ ret_t newqueue_deinit(newqueue_t * newqueue)
 /*!
  *
  */
-ret_t newqueue_pop(newqueue_t * queue, void * data_ptr, bool peak)
+ret_t newqueue_pop(newqueue_t * queue, void * data_ptr, uint32_t num_items, peak_t peak)
 {
     // "memcpy" the data to `data_ptr` while incrementing the tail
-    for (uint32_t i = queue->item_size; i != 0; i -= 1) {
-        *(uint8_t *)data_ptr = ((uint8_t *)queue->buff_ptr)[queue->tail_ind];
-        if (peak == false) {
-            newqueue_increment_tail(queue);
+    for (uint32_t i = 0; i < queue->item_size * num_items; i += 1) {
+        ((uint8_t *)data_ptr)[i] = ((uint8_t *)queue->buff_ptr)[queue->tail_ind];
+        newqueue_increment_tail(queue);
+    }
+    if (peak == ePeak) {
+        for (uint32_t i = num_items; i != 0; i -= 1) {
+            newqueue_decrement_tail(queue);
         }
     }
     return RET_OK;
@@ -68,12 +72,12 @@ ret_t newqueue_pop(newqueue_t * queue, void * data_ptr, bool peak)
 /*!
  *
  */
-ret_t newqueue_push(newqueue_t * queue, void * data_ptr)
+ret_t newqueue_push(newqueue_t * queue, void * data_ptr, uint32_t num_items)
 {
     // Cast the data as bytes and push it on byte by byte
     // while incrementing the head
-    for (uint32_t i = queue->item_size; i != 0; i -= 1) {
-        ((uint8_t *)queue->buff_ptr)[queue->head_ind] = *(uint8_t *)data_ptr;
+    for (uint32_t i = 0; i < queue->item_size * num_items; i += 1) {
+        ((uint8_t *)queue->buff_ptr)[queue->head_ind] = ((uint8_t *)data_ptr)[i];
         newqueue_increment_head(queue);
     }
     return RET_OK;
@@ -91,6 +95,21 @@ void newqueue_increment_tail(volatile newqueue_t * queue_ptr)
         queue_ptr->tail_ind += 1;
     } else {
         queue_ptr->tail_ind = 0;
+    }
+}
+
+
+/*!
+ *
+ */
+void newqueue_decrement_tail(volatile newqueue_t * queue_ptr)
+{
+    queue_ptr->unread_items += 1;
+
+    if (queue_ptr->tail_ind > 0) {
+        queue_ptr->tail_ind -= 1;
+    } else {
+        queue_ptr->tail_ind = queue_ptr->buffer_size - 1;
     }
 }
 

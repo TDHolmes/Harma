@@ -26,7 +26,13 @@ typedef struct {
 } newqueue_t;
 
 
+typedef enum {
+    eNoPeak,
+    ePeak
+} peak_t;
+
+
 ret_t newqueue_init(newqueue_t * newqueue, uint32_t num_elements, uint32_t item_size);
 ret_t newqueue_deinit(newqueue_t * newqueue);
-ret_t newqueue_pop(newqueue_t * queue, void * data_ptr, bool peak);
-ret_t newqueue_push(newqueue_t * queue, void * data_ptr);
+ret_t newqueue_pop(newqueue_t * queue, void * data_ptr, uint32_t num_items, peak_t peak);
+ret_t newqueue_push(newqueue_t * queue, void * data_ptr, uint32_t num_items);
