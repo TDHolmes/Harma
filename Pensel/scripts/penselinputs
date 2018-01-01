@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/env python3
 import os
 import sys
 
@@ -15,6 +15,9 @@ if __name__ == '__main__':
                         help='Baudrate of the serial data to recieve')
     parser.add_argument('--parsed', default=False, action="store_true",
                         help='Whether or not we should print a parsed version of the report')
+    parser.add_argument('--raw', default=False, action="store_true",
+                        help='Whether or not we should print a raw version of the report. '
+                        'If --parsed isn\'t specified, this is True by default.')
     parser.add_argument("--reports", nargs='*', type=str,
                         help="reports to stream (filter out ones we don't care about)")
     parser.add_argument('--verbose', default=False, action="store_true",
@@ -65,7 +68,7 @@ if __name__ == '__main__':
                         if retval == 0:
                             if args.parsed:
                                 pu.parse_inputreport(report, payload)
-                            else:
+                            if not args.parsed or args.raw:
                                 print(pkt)
                         else:
                             print("ERROR: report {} returned retval {}".format(report, retval))

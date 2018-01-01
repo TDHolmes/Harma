@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 import sys
 import time
@@ -308,7 +308,6 @@ class Pensel(object):
         else:
             checksum = checksum[0]
 
-        # TODO: verify the checksum
         data = self.MAGIC_HEADER + [report, retval, return_payload_len] + return_payload
         data.append(checksum)
 
@@ -316,6 +315,7 @@ class Pensel(object):
         if our_checksum != checksum:
             self.log("ERROR: Our checksum didn't calculate properly! "
                      "(Calculated {}, expected {})".format(our_checksum, checksum))
+            return -1, checksum, []
         else:
             if self.verbose:
                 self.log("Checksum match! ({} == {})".format(our_checksum, checksum))
@@ -452,6 +452,7 @@ def parse_inputreport(reportID, payload):
         print("       Z Axis: {}".format(z))
 
     elif reportID == 0x83:
+        frame_num, timestamp, x, y, z = parse_accel_packet(payload)
         print("Filtered Accel Packet:")
         print("      Frame #: {}".format(frame_num))
         print("    Timestamp: {} ms".format(timestamp))
@@ -460,6 +461,7 @@ def parse_inputreport(reportID, payload):
         print("       Z Axis: {}".format(z))
 
     elif reportID == 0x84:
+        frame_num, timestamp, x, y, z = parse_mag_packet(payload)
         print("Filtered Mag Packet:")
         print("      Frame #: {}".format(frame_num))
         print("    Timestamp: {} ms".format(timestamp))
