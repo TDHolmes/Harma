@@ -21,6 +21,8 @@
 
 #define PENSEL_VERSION_MAJOR (0)
 #define PENSEL_VERSION_MINOR (6)
+#define PENSEL_VERSION_GITTAG (GIT_TAG_SHORT)
+// Defined by compiler: GIT_TAG_SHORT  (value of `git rev-parse --short HEAD`)
 
 #define LSM303DLHC_ENABLE_RACCEL_STREAM (0x01)
 #define LSM303DLHC_ENABLE_RMAG_STREAM (0x02)

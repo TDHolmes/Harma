@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
-import sys
 import os
+import sys
+import subprocess
 
 import pensel_utils
 
@@ -48,18 +49,21 @@ def build_debug(use_clang=False, armgcc_dir="", verbose=False):
     if armgcc_dir == "":
         cmd = 'cmake -DCMAKE_TOOLCHAIN_FILE="{}.cmake" -G ' + \
             '"Unix Makefiles" -Wno-deprecated --no-warn-unused-cli ' + \
-            '-DCMAKE_BUILD_TYPE=Debug  .'
+            '-DCMAKE_BUILD_TYPE=Debug '
     else:
         cmd = 'cmake -DCMAKE_TOOLCHAIN_FILE="{}.cmake" -G ' + \
             '"Unix Makefiles" -Wno-deprecated --no-warn-unused-cli ' + \
             '-DCMAKE_BUILD_TYPE=Debug -DTOOLCHAIN_DIR:STRING="' + \
-            armgcc_dir + '"  .'
+            armgcc_dir + '" '
 
     if use_clang:
         cmd = cmd.format("clang")
     else:
         cmd = cmd.format("armgcc")
 
+    git_tag_short = subprocess.check_output("git rev-parse --short HEAD", shell=True).strip()
+    cmd += "-DGIT_TAG_SHORT=0x{} ".format(git_tag_short)
+    cmd += "."  # current directory
     print("executing {}".format(cmd))
     os.system(cmd)
 
@@ -88,18 +92,21 @@ def build_release(use_clang=False, armgcc_dir="", verbose=False):
     if armgcc_dir == "":
         cmd = 'cmake -DCMAKE_TOOLCHAIN_FILE="{}.cmake" -G ' + \
             '"Unix Makefiles" -Wno-deprecated --no-warn-unused-cli ' + \
-            '-DCMAKE_BUILD_TYPE=Release  .'
+            '-DCMAKE_BUILD_TYPE=Release '
     else:
         cmd = 'cmake -DCMAKE_TOOLCHAIN_FILE="{}.cmake" -G ' + \
             '"Unix Makefiles" -Wno-deprecated --no-warn-unused-cli ' + \
             '-DCMAKE_BUILD_TYPE=Release -DTOOLCHAIN_DIR:STRING="' + \
-            armgcc_dir + '"  .'
+            armgcc_dir + '" '
 
     if use_clang:
         cmd = cmd.format("clang")
     else:
         cmd = cmd.format("armgcc")
 
+    git_tag_short = subprocess.check_output("git rev-parse --short HEAD", shell=True).strip()
+    cmd += "-DGIT_TAG_SHORT=0x{} ".format(git_tag_short)
+    cmd += "."  # current directory
     print("executing {}".format(cmd))
     os.system(cmd)
 
