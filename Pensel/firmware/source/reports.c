@@ -82,12 +82,6 @@ typedef struct {
     uint16_t timeouts;          //!< Number of times a command times out
     uint8_t read_buff[READ_BUFF_SIZE];  //!< Buffer to read the reports in
 
-    //! Buffer to hold input report payloads to be sent out when we're able to
-    newqueue_t input_rpt_payload_queue;
-    //! Buffer to hold input report reportIDs to be sent out when we're able to
-    newqueue_t input_rpt_reportID_queue;
-    //! Buffer to hold input report payload lengths to be sent out when we're able to
-    newqueue_t input_rpt_payload_len_queue;
 } rpt_t;
 
 //! Bufer to hold the reply of the report
@@ -101,14 +95,10 @@ uint8_t rpt_out_buff_len = 0;
 uint8_t rpt_out_sent_ind = 0;
 
 // private function declarations
-ret_t rpt_lookup(uint8_t rpt_type, uint8_t *input_buff_ptr, uint8_t input_buff_len,
-                 uint8_t * output_buffer_ptr, uint8_t * output_buff_len_ptr);
 static uint8_t priv_calcChecksum(uint8_t * data, uint32_t num_bytes);
-static void priv_controlReport_run(void);
-static void priv_inputReport_run(void);
-static bool priv_controlReport_isRunning(void);
-static bool priv_controlReport_isAvailable(void);
-static bool priv_inputReport_isRunning(void);
+static ret_t priv_reportLookup(
+    uint8_t rpt_type, uint8_t *input_buff_ptr, uint8_t input_buff_len,
+    uint8_t * output_buffer_ptr, uint8_t * output_buff_len_ptr);
 
 /* -------------- Initializer and runner ------------------------ */
 
@@ -134,23 +124,11 @@ static uint8_t priv_calcChecksum(uint8_t * data, uint32_t num_bytes)
  */
 ret_t rpt_init(ret_t (*putchr)(uint8_t), ret_t (*getchr)(uint8_t *))
 {
-    ret_t retval;
     rpt.putchr = putchr;
     rpt.getchr = getchr;
     rpt.invalid_chrs = 0;
     rpt.timeouts = 0;
     rpt.state = kRpt_ReadMagic_0;
-
-    // Initialize our queue for buffered inputs
-    retval = newqueue_init(&rpt.input_rpt_payload_queue, NUM_INPUTS_TO_CACHE, MAX_RPT_SIZE);
-    retval |= newqueue_init(&rpt.input_rpt_reportID_queue, NUM_INPUTS_TO_CACHE, 1);
-    retval |= newqueue_init(&rpt.input_rpt_payload_len_queue, NUM_INPUTS_TO_CACHE, 1);
-
-    if (retval != RET_OK) {
-        // ERRORRRRRR
-        fatal_error_handler(__FILE__, __LINE__, retval);
-        return retval;
-    }
 
     return RET_OK;
 }
@@ -167,68 +145,8 @@ static inline void rpt_checkForTimeout(void) {
     }
 }
 
-/*! Initializes the reporting interface by storing the get and put char functions and
- *    initializing the admin structure.
- *
- * @param putchr: Function pointer used to write out a character. Returns ret_t and
- *      takes a uint8_t in as a parameter.
- * @param getchr: Function pointer used to read in a character. Returns ret_t and
- *      takes a uint8_t pointer in as a parameter.
- * @return success / failure of initializing.
- */
+
 void rpt_run(void)
-{
-    uint8_t reportID, payload_len;
-    ret_t retval;
-
-    if ( priv_inputReport_isRunning() ) {
-        priv_inputReport_run();
-    } else if ( priv_controlReport_isRunning() == false ) {
-        if ( priv_controlReport_isAvailable() ) {
-            // We need to handle a control report coming in!
-            priv_controlReport_run();
-        } else if (rpt.input_rpt_reportID_queue.unread_items != 0) {
-            // Check if we're able to send out a buffered input report
-            retval = newqueue_pop(&rpt.input_rpt_reportID_queue, &reportID, 1, eNoPeak);
-            retval |= newqueue_pop(&rpt.input_rpt_payload_len_queue, &payload_len, 1, eNoPeak);
-            // copy the payload into what we're going to copy it into anyways.
-            retval |= newqueue_pop(&rpt.input_rpt_payload_queue, output_buffer + 7, 1, eNoPeak);
-            if ( retval != RET_OK ) {
-                // ERRORRRR.
-                fatal_error_handler(__FILE__, __LINE__, retval);
-            } else {
-                gCriticalErrors.rpt_dequeued_inputs += 1;
-                rpt_sendStreamReport(reportID, payload_len, output_buffer + 7);
-            }
-        } else {
-            // shouldn't really get to this point...
-            priv_controlReport_run();
-        }
-    } else {
-        // There is an active control report we need to handle
-        priv_controlReport_run();
-    }
-}
-
-
-static bool priv_controlReport_isRunning(void)
-{
-    return !(rpt.state == kRpt_ReadMagic_0);
-}
-
-static bool priv_controlReport_isAvailable(void)
-{
-    return UART_dataAvailable();
-}
-
-
-static bool priv_inputReport_isRunning(void)
-{
-    return input_report_running;
-}
-
-
-void priv_controlReport_run(void)
 {
     uint8_t chr;
     ret_t retval = RET_GEN_ERR;
@@ -377,10 +295,10 @@ void priv_controlReport_run(void)
                     rpt_out_buff_len = 9;
                     rpt_out_sent_ind = 9;
 
-                    // wait for UART to finish whatever it's up to...
-                    while (UART_TXisReady() == false);
+                    // Send the control report off
+                    //   TODO: check if this fails
                     UART_sendData(output_buffer, 9);
-                    rpt.state = kRpt_Printing;
+                    rpt.state = kRpt_ReadMagic_0;
                 }
                 else {
                     // No checksum error! let's finish out the report
@@ -395,8 +313,9 @@ void priv_controlReport_run(void)
 
         case kRpt_Evaluate:
             // Fetch and execute the requested function
-            retval = rpt_lookup(rpt_type, rpt.read_buff, rpt_in_buff_len,
-                                output_buffer + 7, &rpt_out_buff_len);
+            retval = priv_reportLookup(
+                rpt_type, rpt.read_buff, rpt_in_buff_len,
+                output_buffer + 7, &rpt_out_buff_len);
 
             // print out the results
             output_buffer[0] = RPT_MAGIC_NUMBER_0;
@@ -418,33 +337,10 @@ void priv_controlReport_run(void)
 
             // Send the initial reply out, non-blocking
             while (UART_TXisReady() == false);  // wait for UART to be ready if it isn't
-            UART_sendData(output_buffer, 7);
+            UART_sendData(output_buffer, rpt_out_buff_len);
             // finish the rest in the next stage
-            rpt.state = kRpt_Printing;
+            rpt.state = kRpt_ReadMagic_0;
             break;
-
-        case kRpt_Printing:
-            // check if UART is available
-            if ( UART_TXisReady() ) {
-                // check if we're done and can go back
-                if (rpt_out_sent_ind == rpt_out_buff_len) {
-                    rpt.state = kRpt_ReadMagic_0;
-                } else {
-                    // finish sending out the data
-                    if (rpt_out_buff_len - rpt_out_sent_ind >= UART_TX_BUFFER_SIZE) {
-                        // max possible amount of bytes to send out
-                        UART_sendData(output_buffer + rpt_out_sent_ind, UART_TX_BUFFER_SIZE);
-                        rpt_out_sent_ind += UART_TX_BUFFER_SIZE;
-                    } else {
-                        // finishing up the last bit
-                        uint8_t num_bytes = rpt_out_buff_len - rpt_out_sent_ind;
-                        UART_sendData(output_buffer + rpt_out_sent_ind, num_bytes);
-                        rpt_out_sent_ind += num_bytes;
-                    }
-                }
-            }
-            break;
-
 
         default:
             // Should never get here...
@@ -458,30 +354,7 @@ void priv_controlReport_run(void)
  */
 ret_t rpt_sendStreamReport(uint8_t reportID, uint8_t payload_len, uint8_t * payload_ptr)
 {
-    ret_t retval;
-
-    if ( priv_controlReport_isRunning() || priv_inputReport_isRunning() ) {
-        // Check if we can queue up a report.
-        if (rpt.input_rpt_reportID_queue.num_items == rpt.input_rpt_reportID_queue.unread_items) {
-            // ERRRRR. We're going to overwrite data
-            return RET_BUSY_ERR;
-        }
-
-        retval = newqueue_push(&rpt.input_rpt_payload_queue, payload_ptr, 1);
-        retval |= newqueue_push(&rpt.input_rpt_reportID_queue, &reportID, 1);
-        retval |= newqueue_push(&rpt.input_rpt_payload_len_queue, &payload_len, 1);
-        if (retval != RET_OK) {
-            // another error! :O
-            return retval;
-        }
-
-        // If we want to tell main we've buffered, maybe return something else
-        gCriticalErrors.rpt_queued_inputs += 1;
-        return RET_OK;
-    }
-
-    // No report is running! Time to run this suckerrr
-    input_report_running = true;
+    // Build up the report and send it off
     output_buffer[0] = RPT_MAGIC_NUMBER_0;
     output_buffer[1] = RPT_MAGIC_NUMBER_1;
     output_buffer[2] = RPT_MAGIC_NUMBER_2;
@@ -495,34 +368,10 @@ ret_t rpt_sendStreamReport(uint8_t reportID, uint8_t payload_len, uint8_t * payl
     rpt_out_buff_len = payload_len + 8;
     memcpy(output_buffer + 7, payload_ptr, payload_len);
     output_buffer[payload_len + 7] = priv_calcChecksum(output_buffer, payload_len + 7);
-    return RET_OK;
-}
 
-void priv_inputReport_run(void)
-{
-    if ( UART_TXisReady() ) {
-        // check if we're done and can go back
-        if (rpt_out_sent_ind != rpt_out_buff_len) {
-            // finish sending out the data
-            if (rpt_out_buff_len - rpt_out_sent_ind >= UART_TX_BUFFER_SIZE) {
-                // max possible amount of bytes to send out
-                UART_sendData(output_buffer + rpt_out_sent_ind, UART_TX_BUFFER_SIZE);
-                rpt_out_sent_ind += UART_TX_BUFFER_SIZE;
-            } else {
-                // finishing up the last bit
-                uint8_t num_bytes = rpt_out_buff_len - rpt_out_sent_ind;
-                UART_sendData(output_buffer + rpt_out_sent_ind, num_bytes);
-                rpt_out_sent_ind += num_bytes;
-            }
-        }
-    }
-    if (rpt_out_sent_ind == rpt_out_buff_len) {
-        // We're done here. Data might still be transmitting but we  can handle some
-        //   control reports.
-        input_report_running = false;
-        rpt_out_sent_ind = 0;
-        rpt_out_buff_len = 0;
-    }
+    // Send it offff
+    UART_sendData(output_buffer, payload_len + 8);
+    return RET_OK;
 }
 
 
@@ -572,9 +421,10 @@ ret_t rpt_report_getInvalidCharsCount(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUS
 ret_t rpt_pensel_getVersion(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len),
                             uint8_t * out_p, uint8_t * out_len_ptr)
 {
-    *out_len_ptr = 2;
+    *out_len_ptr = 6;
     out_p[0] = (uint8_t)PENSEL_VERSION_MAJOR;
     out_p[1] = (uint8_t)PENSEL_VERSION_MINOR;
+    *(uint32_t *)(out_p + 3) = (uint32_t)PENSEL_VERSION_GITTAG;
     return RET_OK;
 }
 
@@ -625,8 +475,8 @@ ret_t rpt_pensel_getCriticalErrors(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_
 /* ------------------------- MASTER LOOKUP FUNCTION ------------------------- */
 
 
-ret_t rpt_lookup(uint8_t rpt_type, uint8_t *input_buff_ptr, uint8_t input_buff_len,
-                 uint8_t * output_buffer_ptr, uint8_t * output_buff_len_ptr)
+static ret_t priv_reportLookup(uint8_t rpt_type, uint8_t *input_buff_ptr, uint8_t input_buff_len,
+                  uint8_t * output_buffer_ptr, uint8_t * output_buff_len_ptr)
 {
     // define the report lookup table
     static ret_t (*report_function_lookup[])(uint8_t *input_buff_ptr, uint8_t input_buff_len,
