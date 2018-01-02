@@ -100,7 +100,7 @@ int main(void)
     configure_pins();
     clear_critical_errors();
 
-    retval = UART_init(1000000); // 1 MBaud
+    retval = UART_init(250000);
     check_retval_fatal(__FILE__, __LINE__, retval);
 
     #ifdef WATCHDOG_ENABLE
@@ -157,34 +157,8 @@ int main(void)
             subcount++;
         }
 
-        if( LSM303DLHC_accel_dataAvailable() ) {
-            if ( LSM303DLHC_accel_getPacket(&accel_pkt, false) == RET_OK ) {
-                // Transmit the packet if we're streaming it
-                if (gEnableRawAccelStream == true) {
-                    retval = rpt_sendStreamReport(RACCEL_STREAM_REPORT_ID,
-                        sizeof(accel_norm_t), (uint8_t *)&accel_pkt);
-                    if (retval != RET_OK) {
-                        // Dropped input report
-                        gCriticalErrors.rpt_dropped_inputs += 1;
-                    }
-                }
-                // ingest it into the interested parties
-                orient_calcAccelOrientation(accel_pkt);
-                if (gEnableFilteredAccelStream == true) {
-                    cartesian_vect_t vect;
-                    vect = orient_getAccelOrientation();
-                    accel_pkt.x = vect.x;
-                    accel_pkt.y = vect.y;
-                    accel_pkt.z = vect.z;
-                    retval = rpt_sendStreamReport(FACCEL_STREAM_REPORT_ID,
-                        sizeof(accel_norm_t), (uint8_t *)&accel_pkt);
-                    if (retval != RET_OK) {
-                        // Dropped input report
-                        gCriticalErrors.rpt_dropped_inputs += 1;
-                    }
-                }
-            }
-        }
+        // --- Check Mag Data ----
+
         if( LSM303DLHC_mag_dataAvailable() ) {
             if ( LSM303DLHC_mag_getPacket(&mag_pkt, false) == RET_OK ) {
                 // Transmit the packet if we're streaming it
@@ -193,7 +167,6 @@ int main(void)
                         sizeof(mag_norm_t), (uint8_t *)&mag_pkt);
                     if (retval != RET_OK) {
                         // Dropped input report
-                        gCriticalErrors.rpt_dropped_inputs += 1;
                     }
                 }
                 // ingest it into the interested parties
@@ -208,7 +181,35 @@ int main(void)
                         sizeof(mag_norm_t), (uint8_t *)&mag_pkt);
                     if (retval != RET_OK) {
                         // Dropped input report
-                        gCriticalErrors.rpt_dropped_inputs += 1;
+                    }
+                }
+            }
+        }
+
+        // --- Check Accel Data ----
+
+        if( LSM303DLHC_accel_dataAvailable() ) {
+            if ( LSM303DLHC_accel_getPacket(&accel_pkt, false) == RET_OK ) {
+                // Transmit the packet if we're streaming it
+                if (gEnableRawAccelStream == true) {
+                    retval = rpt_sendStreamReport(RACCEL_STREAM_REPORT_ID,
+                        sizeof(accel_norm_t), (uint8_t *)&accel_pkt);
+                    if (retval != RET_OK) {
+                        // Dropped input report
+                    }
+                }
+                // ingest it into the interested parties
+                orient_calcAccelOrientation(accel_pkt);
+                if (gEnableFilteredAccelStream == true) {
+                    cartesian_vect_t vect;
+                    vect = orient_getAccelOrientation();
+                    accel_pkt.x = vect.x;
+                    accel_pkt.y = vect.y;
+                    accel_pkt.z = vect.z;
+                    retval = rpt_sendStreamReport(FACCEL_STREAM_REPORT_ID,
+                        sizeof(accel_norm_t), (uint8_t *)&accel_pkt);
+                    if (retval != RET_OK) {
+                        // Dropped input report
                     }
                 }
             }
