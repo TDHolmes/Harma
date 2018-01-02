@@ -12,6 +12,7 @@
 #include "common.h"
 #include "UART.h"
 #include "queue.h"
+#include "newqueue.h"
 
 // STM driver includes
 #include "stm32f3xx.h"
@@ -19,6 +20,10 @@
 #include "Drivers/stm32f3xx_hal.h"
 #include "Drivers/stm32f3xx_hal_uart.h"
 
+extern critical_errors_t gCriticalErrors;
+
+//! We will have 3x UART TX buffers in a circular buffer
+#define UART_NUM_TX_BUFFER (3)
 
 // HAL UART handler declaration
 UART_HandleTypeDef HAL_UART_handle;
@@ -29,6 +34,8 @@ typedef struct {
     uint8_t tx_buffer[UART_TX_BUFFER_SIZE];  //!< transmit buffer
     uint8_t rx_buffer[UART_RX_BUFFER_SIZE];  //!< receive buffer
     volatile queue_t rx_buffer_admin;   //!< queue_t admin to track RX circular buffer
+    volatile newqueue_t tx_buffer_admin;   //!< queue_t admin to track RX circular buffer
+
 } UART_admin_t;
 
 //! UART admin
@@ -61,6 +68,8 @@ ret_t UART_init(uint32_t baudrate)
     }
 
     // Start receiving data!
+    queue_init(&UART_admin.rx_buffer_admin);
+    newqueue_init(&UART_admin.tx_buffer_admin, UART_TX_BUFFER_SIZE * UART_NUM_TX_BUFFER, 1);
     HAL_UART_Receive_IT(&HAL_UART_handle, UART_admin.rx_buffer, 1);
 
     // yay we're done!
@@ -111,25 +120,48 @@ ret_t UART_waitForReady_withTimeout(void)
  */
 ret_t UART_sendData(uint8_t * data_ptr, uint8_t num_bytes)
 {
-    // first, make sure we have enough room!
-    if (num_bytes > UART_TX_BUFFER_SIZE) {
-        return RET_LEN_ERR;
-    }
-
     // next, transmit the data if we aren't already busy
     if ( UART_TXisReady() ) {
 
-        memcpy(UART_admin.tx_buffer, data_ptr, num_bytes);
-        if (HAL_UART_Transmit_IT(&HAL_UART_handle, UART_admin.tx_buffer, num_bytes) != HAL_OK) {
-            return RET_COM_ERR;
+        // first, make sure we have enough room!
+        if (num_bytes > UART_TX_BUFFER_SIZE) {
+            // Transmit the bit we can, queue up the rest.
+            memcpy(UART_admin.tx_buffer, data_ptr, UART_TX_BUFFER_SIZE);
+            if (HAL_UART_Transmit_IT(&HAL_UART_handle, UART_admin.tx_buffer, UART_TX_BUFFER_SIZE) != HAL_OK) {
+                return RET_COM_ERR;
+            }
+
+            // queue the rest
+            gCriticalErrors.UART_queuedBytes += num_bytes - UART_TX_BUFFER_SIZE;
+            return newqueue_push(
+                &UART_admin.tx_buffer_admin,
+                data_ptr + UART_TX_BUFFER_SIZE,
+                num_bytes - UART_TX_BUFFER_SIZE);
+        } else {
+            // We can transmit all of it in one go
+            memcpy(UART_admin.tx_buffer, data_ptr, num_bytes);
+            if (HAL_UART_Transmit_IT(&HAL_UART_handle, UART_admin.tx_buffer, num_bytes) != HAL_OK) {
+                return RET_COM_ERR;
+            }
         }
     } else {
-        return RET_BUSY_ERR;
+
+        // queue it up for later transmission
+        if (UART_admin.tx_buffer_admin.num_items - UART_admin.tx_buffer_admin.unread_items >= num_bytes) {
+            // We have enough space to queue this data up.
+            gCriticalErrors.UART_queuedBytes += num_bytes;
+            return newqueue_push(&UART_admin.tx_buffer_admin, data_ptr, num_bytes);
+        } else {
+            // No room. Try again later.
+            gCriticalErrors.UART_droppedBytes += num_bytes;
+            return RET_BUSY_ERR;
+
+        }
     }
     return RET_OK;
 }
 
-/*! Sends a single byte of data over UART
+/*! Sends a single byte of data over UART (Blocking)
  *
  * @param data (uint8_t): Byte to send
  * @retval Return code indicating success / failure of the start of the transmit
@@ -159,7 +191,7 @@ ret_t UART_sendString(char string_ptr[])
     uint8_t max_len = 255;
     while (*string_ptr != 0) {
         // send the character
-        retval = UART_sendChar(*string_ptr);
+        retval = UART_sendData((uint8_t *)string_ptr, 1);
         if (retval != RET_OK) { return retval; }
         string_ptr += 1;
         max_len -= 1;
@@ -310,6 +342,33 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *HAL_UART_handle)
 
     // start recieving data again @ the head index
     HAL_UART_Receive_IT(HAL_UART_handle, &UART_admin.rx_buffer[UART_admin.rx_buffer_admin.head_ind], 1);
+}
+
+
+/*! Tx Transfer completed callback. Pop from the tx buffer if available!
+ *
+ * @param  HAL_UART_handle: UART handle
+ */
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *HAL_UART_handle)
+{
+    if (UART_admin.tx_buffer_admin.unread_items != 0) {
+        uint32_t num_bytes;
+        HAL_StatusTypeDef hal_retval;
+
+        if (UART_admin.tx_buffer_admin.unread_items <= UART_TX_BUFFER_SIZE) {
+            num_bytes = UART_admin.tx_buffer_admin.unread_items;
+        } else {
+            num_bytes = UART_TX_BUFFER_SIZE;
+        }
+
+        gCriticalErrors.UART_dequeuedBytes += num_bytes;
+        newqueue_pop(&UART_admin.tx_buffer_admin, UART_admin.tx_buffer, num_bytes, eNoPeak);
+
+        hal_retval = HAL_UART_Transmit_IT(HAL_UART_handle, UART_admin.tx_buffer, num_bytes);
+        if (hal_retval != HAL_OK) {
+            fatal_error_handler(__FILE__, __LINE__, hal_retval);
+        }
+    }
 }
 
 /*! UART error callback. Call `fatal_error_handler` and go into infinite loop
