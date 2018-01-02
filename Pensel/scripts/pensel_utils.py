@@ -61,10 +61,12 @@ class Pensel(object):
     MAGIC_NUM_3 = 0xEF
     MAGIC_HEADER = [MAGIC_NUM_0, MAGIC_NUM_1, MAGIC_NUM_2, MAGIC_NUM_3]
 
+    _default_baud = 250000
+
     def __init__(self, serialport, baudrate, verbose=False, timeout=1):
         self.serialport = serialport
         self.TIMEOUT = timeout
-        self.baudrate = baudrate
+        self.baudrate = baudrate or self._default_baud
         self.verbose = verbose
         self.log_lock = threading.Lock()
         self._check_for_start_bytes = []

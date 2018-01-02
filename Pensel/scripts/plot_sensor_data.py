@@ -11,10 +11,10 @@ mag_offsets = [1111.877197265625, 1219.1551513671875, -951.0]
 class LSM303DLHC_Parser(object):
     SAMPLES_PER_SECOND = 100  # conservative
 
-    def __init__(self, port, verbose=0):
+    def __init__(self, port, baudrate, verbose=0):
         self.verbose = verbose
         self.port = port
-        self.baudrate = 115200
+        self.baudrate = baudrate
 
     def post_plot(self, num_samples=100, plot_mag=True, plot_accel=True):
         """
@@ -27,7 +27,7 @@ class LSM303DLHC_Parser(object):
 
         end_time = (num_samples / self.SAMPLES_PER_SECOND) * 1.2 + time.time()
 
-        with pu.Pensel(self.port, self.baudrate, self.verbose) as pi:
+        with pu.Pensel(self.port, None, self.verbose) as pi:
 
             # turn on accel & mag streaming
             pi.log("Turning on input streaming...")
@@ -105,6 +105,8 @@ if __name__ == '__main__':
                         help='Verbose output toggle.')
     parser.add_argument('--samples', type=int, default=100,
                         help='number of samples to aquire before plotting')
+    parser.add_argument('--baudrate', type=int, default=None,
+                        help='baudrate of coms')
 
     args = parser.parse_args()
 
@@ -112,5 +114,5 @@ if __name__ == '__main__':
         print("Error: Must specify at least one of mag or accel")
         raise SystemExit(-1)
 
-    lsm = LSM303DLHC_Parser("/dev/tty.SLAB_USBtoUART", verbose=args.verbose)
+    lsm = LSM303DLHC_Parser("/dev/tty.SLAB_USBtoUART", args.baudrate, verbose=args.verbose)
     lsm.post_plot(plot_mag=args.mag, plot_accel=args.accel, num_samples=args.samples)
