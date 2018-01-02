@@ -60,8 +60,8 @@ void test_basicSetGet_peak(void)
 
 void test_basicSetIncrementsUnreadCount(void)
 {
-    uint8_t val;
-    queue_init(QUEUE_SIZE, 1);
+    uint32_t val;
+    queue_init(QUEUE_SIZE, 4);
     val = 42;
     newqueue_push(&queue, (void *)&val, 1);
     // do some output if we've defined verbose output
@@ -78,6 +78,33 @@ void test_basicSetIncrementsUnreadCount(void)
 
 
 void test_basicGetDecrementsUnreadCount(void)
+{
+    uint8_t val;
+    queue_init(QUEUE_SIZE, 1);
+
+    // push some vals onto the queue
+    val = 42; newqueue_push(&queue, (void *)&val, 1);
+    val = 24; newqueue_push(&queue, (void *)&val, 1);
+    val = 84; newqueue_push(&queue, (void *)&val, 1);
+
+    // pop one off
+    newqueue_pop(&queue, (void *)&val, 1, false);
+    // do some output if we've defined verbose output
+    #ifdef VERBOSE_OUTPUT
+        printf("\nFunction: %s\n", __func__);
+        printf("\tPut 3 values onto buffer and popped off 1\n");
+        printf("\t%d unread values\n", queue.unread_items);
+        printf("\tPushed %d on first, got %d back\n",42, val);
+        printf("\n");
+    #endif
+
+    TEST_ASSERT_EQUAL_HEX8(2, queue.unread_items);
+    TEST_ASSERT_EQUAL_HEX8(42, val);
+    newqueue_deinit(&queue);
+}
+
+
+void test_uint32GetDecrementsUnreadCount(void)
 {
     uint8_t val;
     queue_init(QUEUE_SIZE, 1);

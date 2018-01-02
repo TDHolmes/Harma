@@ -14,15 +14,15 @@
 
 
 // Some private functions for use by push/pop functions
-void newqueue_increment_tail(volatile newqueue_t * queue_ptr);
-void newqueue_decrement_tail(volatile newqueue_t * queue_ptr);
-void newqueue_increment_head(volatile newqueue_t * queue_ptr);
+void priv_increment_tail(volatile newqueue_t * queue_ptr);
+void priv_decrement_tail(volatile newqueue_t * queue_ptr);
+void priv_increment_head(volatile newqueue_t * queue_ptr);
 
 
 /*!
  *
  */
-ret_t newqueue_init(newqueue_t * newqueue, uint32_t num_elements, uint32_t item_size)
+ret_t newqueue_init(volatile newqueue_t * newqueue, uint32_t num_elements, uint32_t item_size)
 {
     uint32_t size = (num_elements * item_size);
     newqueue->head_ind = 0;
@@ -42,7 +42,7 @@ ret_t newqueue_init(newqueue_t * newqueue, uint32_t num_elements, uint32_t item_
 /*!
  *
  */
-ret_t newqueue_deinit(newqueue_t * newqueue)
+ret_t newqueue_deinit(volatile newqueue_t * newqueue)
 {
     free(newqueue->buff_ptr);
 
@@ -53,17 +53,23 @@ ret_t newqueue_deinit(newqueue_t * newqueue)
 /*!
  *
  */
-ret_t newqueue_pop(newqueue_t * queue, void * data_ptr, uint32_t num_items, peak_t peak)
+ret_t newqueue_pop(volatile newqueue_t * queue, void * data_ptr, uint32_t num_items, peak_t peak)
 {
     // "memcpy" the data to `data_ptr` while incrementing the tail
-    for (uint32_t i = 0; i < queue->item_size * num_items; i += 1) {
-        ((uint8_t *)data_ptr)[i] = ((uint8_t *)queue->buff_ptr)[queue->tail_ind];
-        newqueue_increment_tail(queue);
+    uint32_t original_tail = queue->tail_ind;
+    uint32_t i = 0;
+    for (uint32_t item = 0; item < num_items; item += 1) {
+        for (uint32_t sub_i = 0; sub_i < queue->item_size; sub_i += 1) {
+            ((uint8_t *)data_ptr)[i] = ((uint8_t *)queue->buff_ptr)[queue->tail_ind];
+            priv_increment_tail(queue);
+            i += 1;
+        }
     }
     if (peak == ePeak) {
-        for (uint32_t i = num_items; i != 0; i -= 1) {
-            newqueue_decrement_tail(queue);
-        }
+        // reset the tail, don't mess with unread count.
+        queue->tail_ind = original_tail;
+    } else {
+        queue->unread_items -= num_items;
     }
     return RET_OK;
 }
@@ -72,13 +78,18 @@ ret_t newqueue_pop(newqueue_t * queue, void * data_ptr, uint32_t num_items, peak
 /*!
  *
  */
-ret_t newqueue_push(newqueue_t * queue, void * data_ptr, uint32_t num_items)
+ret_t newqueue_push(volatile newqueue_t * queue, void * data_ptr, uint32_t num_items)
 {
     // Cast the data as bytes and push it on byte by byte
     // while incrementing the head
-    for (uint32_t i = 0; i < queue->item_size * num_items; i += 1) {
-        ((uint8_t *)queue->buff_ptr)[queue->head_ind] = ((uint8_t *)data_ptr)[i];
-        newqueue_increment_head(queue);
+    uint32_t i = 0;
+    for (uint32_t item = 0; item < num_items; item += 1) {
+        for (uint32_t sub_i = 0; sub_i < queue->item_size; sub_i += 1) {
+            ((uint8_t *)queue->buff_ptr)[queue->head_ind] = ((uint8_t *)data_ptr)[i];
+            priv_increment_head(queue);
+            i += 1;
+        }
+        queue->unread_items += 1;
     }
     return RET_OK;
 }
@@ -87,10 +98,8 @@ ret_t newqueue_push(newqueue_t * queue, void * data_ptr, uint32_t num_items)
 /*!
  *
  */
-void newqueue_increment_tail(volatile newqueue_t * queue_ptr)
+void priv_increment_tail(volatile newqueue_t * queue_ptr)
 {
-    queue_ptr->unread_items -= 1;
-
     if (queue_ptr->tail_ind < queue_ptr->buffer_size - 1) {
         queue_ptr->tail_ind += 1;
     } else {
@@ -102,10 +111,8 @@ void newqueue_increment_tail(volatile newqueue_t * queue_ptr)
 /*!
  *
  */
-void newqueue_decrement_tail(volatile newqueue_t * queue_ptr)
+void priv_decrement_tail(volatile newqueue_t * queue_ptr)
 {
-    queue_ptr->unread_items += 1;
-
     if (queue_ptr->tail_ind > 0) {
         queue_ptr->tail_ind -= 1;
     } else {
@@ -117,7 +124,7 @@ void newqueue_decrement_tail(volatile newqueue_t * queue_ptr)
 /*!
  *
  */
-void newqueue_increment_head(volatile newqueue_t * queue_ptr)
+void priv_increment_head(volatile newqueue_t * queue_ptr)
 {
     if (queue_ptr->head_ind < queue_ptr->buffer_size - 1) {
         queue_ptr->head_ind += 1;
@@ -126,9 +133,7 @@ void newqueue_increment_head(volatile newqueue_t * queue_ptr)
     }
 
     // check if we're overwriting data...
-    if (queue_ptr->unread_items < queue_ptr->buffer_size) {
-        queue_ptr->unread_items += 1;
-    } else {
+    if ( !(queue_ptr->unread_items < queue_ptr->buffer_size) ) {
         // Oh no! we don't have any space. packet gets dropped :'(
         queue_ptr->overwrite_count += 1;
         // move tail ahead too since we've overwritten data

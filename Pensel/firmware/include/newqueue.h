@@ -32,7 +32,7 @@ typedef enum {
 } peak_t;
 
 
-ret_t newqueue_init(newqueue_t * newqueue, uint32_t num_elements, uint32_t item_size);
-ret_t newqueue_deinit(newqueue_t * newqueue);
-ret_t newqueue_pop(newqueue_t * queue, void * data_ptr, uint32_t num_items, peak_t peak);
-ret_t newqueue_push(newqueue_t * queue, void * data_ptr, uint32_t num_items);
+ret_t newqueue_init(volatile newqueue_t * newqueue, uint32_t num_elements, uint32_t item_size);
+ret_t newqueue_deinit(volatile newqueue_t * newqueue);
+ret_t newqueue_pop(volatile newqueue_t * queue, void * data_ptr, uint32_t num_items, peak_t peak);
+ret_t newqueue_push(volatile newqueue_t * queue, void * data_ptr, uint32_t num_items);
