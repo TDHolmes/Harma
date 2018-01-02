@@ -95,8 +95,8 @@ static inline ret_t LSM303DLHC_accel_putPacket(accel_raw_t pkt);
 static inline ret_t LSM303DLHC_mag_putPacket(mag_raw_t pkt);
 
 // Private functions to normalize raw packets before sending to the user
-static void LSM303DLHC_accel_normalize(accel_raw_t * raw_pkt, accel_norm_t * norm_pkt_ptr, bool adjust_gain);
-static void LSM303DLHC_mag_normalize(mag_raw_t * raw_pkt, mag_norm_t * norm_pkt_ptr, bool adjust_gain);
+static void priv_accel_normalize(accel_raw_t * raw_pkt, accel_norm_t * norm_pkt_ptr, bool adjust_gain);
+static void priv_mag_normalize(mag_raw_t * raw_pkt, mag_norm_t * norm_pkt_ptr, bool adjust_gain);
 
 
 //! LSM303DLHC structure to store packets, overwrite stats, and LSM303DLHC settings
@@ -334,7 +334,7 @@ void LSM303DLHC_drdy_ISR(void) {
  */
 ret_t LSM303DLHC_run(void)
 {
-    ret_t retval;
+    ret_t retval = RET_OK;
     accel_raw_t a_pkt;
     mag_raw_t m_pkt;
 
@@ -416,7 +416,7 @@ static inline ret_t LSM303DLHC_mag_putPacket(mag_raw_t pkt)
 }
 
 
-static void LSM303DLHC_accel_normalize(accel_raw_t * raw_pkt, accel_norm_t * norm_pkt_ptr, bool adjust_gain)
+static void priv_accel_normalize(accel_raw_t * raw_pkt, accel_norm_t * norm_pkt_ptr, bool adjust_gain)
 {
     norm_pkt_ptr->frame_num = raw_pkt->frame_num;
     norm_pkt_ptr->timestamp = raw_pkt->timestamp;
@@ -432,7 +432,7 @@ static void LSM303DLHC_accel_normalize(accel_raw_t * raw_pkt, accel_norm_t * nor
     }
 }
 
-static void LSM303DLHC_mag_normalize(mag_raw_t * raw_pkt, mag_norm_t * norm_pkt_ptr, bool adjust_gain)
+static void priv_mag_normalize(mag_raw_t * raw_pkt, mag_norm_t * norm_pkt_ptr, bool adjust_gain)
 {
     norm_pkt_ptr->frame_num = raw_pkt->frame_num;
     norm_pkt_ptr->timestamp = raw_pkt->timestamp;
@@ -468,7 +468,7 @@ ret_t LSM303DLHC_accel_getPacket(accel_norm_t * pkt_ptr, bool peak)
 
         // Get the data from the queue and normalize...
         raw_pkt = LSM303DLHC.accel_pkts[queue_ind];
-        LSM303DLHC_accel_normalize(&raw_pkt, pkt_ptr, LSM303DLHC.adjust_gain);
+        priv_accel_normalize(&raw_pkt, pkt_ptr, LSM303DLHC.adjust_gain);
 
         if (peak == false) {
             // the queue didn't change while we were getting it and we aren't just peaking
@@ -501,7 +501,7 @@ ret_t LSM303DLHC_mag_getPacket(mag_norm_t * pkt_ptr, bool peak)
 
         // Get the data from the queue and normalize...
         raw_pkt = LSM303DLHC.mag_pkts[queue_ind];
-        LSM303DLHC_mag_normalize(&raw_pkt, pkt_ptr, LSM303DLHC.adjust_gain);
+        priv_mag_normalize(&raw_pkt, pkt_ptr, LSM303DLHC.adjust_gain);
 
         if (peak == false) {
             // the queue didn't change while we were getting it and we aren't just peaking
