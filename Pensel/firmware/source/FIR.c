@@ -44,16 +44,16 @@ ret_t FIR_init(FIR_admin_t * FIR_ptr, uint16_t FIR_len, const float * coefficent
 float FIR_run(FIR_admin_t * FIR_ptr, float new_val)
 {
     float out_val = 0.0f;
-    // Shift values through buffer. TODO: inefficient. circular buffer?
-    for (uint16_t i = FIR_ptr->order - 1; i > 0; i--) {
-        FIR_ptr->buffer[i] = FIR_ptr->buffer[i - 1];
-    }
+
     // input new item into filter
     FIR_ptr->buffer[0] = new_val;
-    // calculate output value from filter!
+
+    // Shift values through buffer while calculating output value from filter!
     for (int16_t i = FIR_ptr->order - 1; i >= 0; i--) {
+        if (i != 0) {
+            FIR_ptr->buffer[i] = FIR_ptr->buffer[i - 1];
+        }
         out_val += FIR_ptr->coefficents_ptr[i] * FIR_ptr->buffer[i];
     }
-    // TODO: combine for loops into single one
     return out_val;
 }
