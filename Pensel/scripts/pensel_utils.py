@@ -1,22 +1,23 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
+import os
 import sys
 import time
 import struct
 import serial
 import threading
+import collections as col
+from types import SimpleNamespace
 
 from datetime import datetime
 from threading import Thread, Event
 
 if sys.version_info.major == 2:
     import subprocess32 as subprocess
-    from Queue import Queue as queue
-    from Queue import Empty
+    from Queue import Queue, Empty
 else:
     import subprocess
-    from queue import Queue as queue
-    from queue import Empty
+    from queue import Queue, Empty
 
 
 class bcolors:
@@ -134,7 +135,7 @@ class Pensel(object):
     def start_listener(self):
         self.thread_run = Event()
         self.thread_run.set()
-        self.queue = queue()
+        self.queue = Queue()
         self.thread = threading.Thread(target=self.listener)  # , args=(self,)
         self.thread.start()  # start it off
 
@@ -197,7 +198,7 @@ class Pensel(object):
         while True:
             try:
                 self.queue.get(timeout=0.001)
-            except queue.Empty:
+            except Empty:
                 if self.verbose:
                     self.log("Queue cleared!")
                 break
@@ -346,142 +347,168 @@ def generate_checksum(list_of_data):
     return checksum
 
 
-def parse_report(reportID, payload):
+def parse_report(reportID, payload, verbose=True):
+    # Pack the data to be used in some of the parsing functions
+    packed_data = struct.pack("B" * len(payload), *payload)
+
     if reportID == 0x22:
-        # typedef struct __attribute__((packed)) {
-        #     uint32_t frame_num;   //!< Frame number
-        #     uint32_t timestamp;  //!< Timestamp when the packet was received
-        #     float x;             //!< Accel X value
-        #     float y;             //!< Accel Y value
-        #     float z;             //!< Accel Z value
-        # } accel_norm_t;
-        frame_num, timestamp, x, y, z = parse_accel_packet(payload)
-        print("   Accel Packet:")
-        print("       Frame #: {}".format(frame_num))
-        print("     Timestamp: {} ms".format(timestamp))
-        print("        X Axis: {}".format(x))
-        print("        Y Axis: {}".format(y))
-        print("        Z Axis: {}".format(z))
+        pkt = parse_accel_packet(payload)
+        if verbose:
+            print("   Accel Packet:")
+            print("       Frame #: {}".format(pkt.frame_num))
+            print("     Timestamp: {} ms".format(pkt.timestamp))
+            print("        X Axis: {}".format(pkt.x))
+            print("        Y Axis: {}".format(pkt.y))
+            print("        Z Axis: {}".format(pkt.z))
+        return pkt
 
     elif reportID == 0x23:
-        # typedef struct __attribute__((packed)) {
-        #     uint32_t frame_num;   //!< Frame number
-        #     uint32_t timestamp;  //!< Timestamp when the packet was received
-        #     float x;             //!< Mag X value
-        #     float y;             //!< Mag Y value
-        #     float z;             //!< Mag Z value
-        # } mag_norm_t;
-        frame_num, timestamp, x, y, z = parse_mag_packet(payload)
-        print("   Mag Packet:")
-        print("      Frame #: {}".format(frame_num))
-        print("    Timestamp: {} ms".format(timestamp))
-        print("       X Axis: {}".format(x))
-        print("       Y Axis: {}".format(y))
-        print("       Z Axis: {}".format(z))
+        pkt = parse_mag_packet(payload)
+        if verbose:
+            print("   Mag Packet:")
+            print("      Frame #: {}".format(pkt.frame_num))
+            print("    Timestamp: {} ms".format(pkt.timestamp))
+            print("       X Axis: {}".format(pkt.x))
+            print("       Y Axis: {}".format(pkt.y))
+            print("       Z Axis: {}".format(pkt.z))
+        return pkt
 
     elif reportID == 0x24:
-        packed_data = struct.pack("BBBBBBBBBBBBBBBB", *payload)
-        accel_pkt_ovrwt, mag_pkt_ovrwt, accel_hw_ovrwt, mag_hw_ovrwt = struct.unpack("=IIII", packed_data)
-        print("   LSM303DLHC errors:")
-        print("     Accel Packet Overwrites: {}".format(accel_pkt_ovrwt))
-        print("       Mag Packet Overwrites: {}".format(mag_pkt_ovrwt))
-        print("   Accel Hardware Overwrites: {}".format(accel_hw_ovrwt))
-        print("     Mag Hardware Overwrites: {}".format(mag_hw_ovrwt))
+        data = struct.unpack("=IIII", packed_data)
+        p = SimpleNamespace(
+            accel_pkt_ovrwt=data[0], mag_pkt_ovrwt=data[1],
+            accel_hw_ovrwt=data[2], mag_hw_ovrwt=data[3])
+        if verbose:
+            print("   LSM303DLHC errors:")
+            print("     Accel Packet Overwrites: {}".format(p.accel_pkt_ovrwt))
+            print("       Mag Packet Overwrites: {}".format(p.mag_pkt_ovrwt))
+            print("   Accel Hardware Overwrites: {}".format(p.accel_hw_ovrwt))
+            print("     Mag Hardware Overwrites: {}".format(p.mag_hw_ovrwt))
+        return p
 
     elif reportID == 0x28 or reportID == 0x29 or reportID == 0x2A:
-        packed_data = struct.pack("BBBBBBBBBBBB", *payload)
-        x, y, z = struct.unpack("fff", packed_data)
-        print("<{}, {}, {}>".format(x, y, z))
+        data = struct.unpack("fff", packed_data)
+        p = SimpleNamespace(x=data[0], y=data[1], z=data[2])
+        if verbose:
+            print("<{}, {}, {}>".format(p.x, p.y, p.z))
+        return p
 
     elif reportID == 0x30:
         # Pensel Version
-        print("    Pensel v{}.{}".format(payload[0], payload[1]))
+        pkt = col.namedtuple("Version", ["major", "minor", "git_hash"])
+        p = pkt(*struct.unpack("=BBI", packed_data))
+        if verbose:
+            print("    Pensel v{}.{}-{}".format(p.major, p.minor, p.git_hash))
+        return p
 
     elif reportID == 0x31:
-        packed_data = struct.pack("BBBB", *payload)
-        timestamp = struct.unpack("I", packed_data)[0]
-        print("    Timestamp: {} ms".format(timestamp))
+        # current timestamp
+        p = struct.unpack("I", packed_data)[0]
+        if verbose:
+            print("    Timestamp: {} ms".format(p))
+        return p
 
     elif reportID == 0x33:
-        print("    Switch State: {}".format(payload[0]))
-        print("     Main Button: {}".format("open" if payload[1] else "pressed"))
-        print("      Aux Button: {}".format("open" if payload[2] else "pressed"))
+        # Switch/button states
+        pkt = col.namedtuple("ButtonState", ["switch", "main", "aux"])
+        p = pkt(*struct.unpack("=BBB", packed_data))
+        if verbose:
+            print("    Switch State: {}".format(p.switch))
+            print("     Main Button: {}".format("open" if p.main else "pressed"))
+            print("      Aux Button: {}".format("open" if p.aux else "pressed"))
+        return p
 
     elif reportID == 0x34:
-        packed_data = struct.pack("BBBBBBBBBBBBB", *payload)
-        bitfields, dropped, dequeued, queued = struct.unpack("<BIII", packed_data)
+        #
+        pkt = col.namedtuple("ButtonState", ["bitfields", "dropped", "dequeued", "queued"])
+        p = pkt(*struct.unpack("<BIII", packed_data))
+        if verbose:
+            print("bitfields: \t{}".format(hex(p.bitfields)))
+            print("dropped: \t{:,}".format(p.dropped))
+            print("dequeued: \t{:,}".format(p.dequeued))
+            print("queued: \t{:,}".format(p.queued))
+        return p
 
-        print("bitfields: \t{}".format(hex(bitfields)))
-        print("dropped: \t{:,}".format(dropped))
-        print("dequeued: \t{:,}".format(dequeued))
-        print("queued: \t{:,}".format(queued))
-
-    else:
-        print("    {}".format(" ".join(["{:0>2X}".format(b) for b in payload])))
-
-
-def parse_inputreport(reportID, payload):
-    if reportID == 0x81:
-        # typedef struct __attribute__((packed)) {
-        #     uint32_t frame_num;   //!< Frame number
-        #     uint32_t timestamp;  //!< Timestamp when the packet was received
-        #     float x;             //!< Accel X value
-        #     float y;             //!< Accel Y value
-        #     float z;             //!< Accel Z value
-        # } accel_norm_t;
-        frame_num, timestamp, x, y, z = parse_accel_packet(payload)
-        print("   Accel Packet:")
-        print("       Frame #: {}".format(frame_num))
-        print("     Timestamp: {} ms".format(timestamp))
-        print("        X Axis: {}".format(x))
-        print("        Y Axis: {}".format(y))
-        print("        Z Axis: {}".format(z))
+    elif reportID == 0x81:
+        pkt = parse_accel_packet(packed_data)
+        if verbose:
+            print("   Accel Packet:")
+            print("       Frame #: {}".format(pkt.frame_num))
+            print("     Timestamp: {} ms".format(pkt.timestamp))
+            print("        X Axis: {}".format(pkt.x))
+            print("        Y Axis: {}".format(pkt.y))
+            print("        Z Axis: {}".format(pkt.z))
+        return pkt
 
     elif reportID == 0x82:
-        # typedef struct __attribute__((packed)) {
-        #     uint32_t frame_num;   //!< Frame number
-        #     uint32_t timestamp;  //!< Timestamp when the packet was received
-        #     float x;             //!< Mag X value
-        #     float y;             //!< Mag Y value
-        #     float z;             //!< Mag Z value
-        # } mag_norm_t;
-        frame_num, timestamp, x, y, z = parse_mag_packet(payload)
-        print("   Mag Packet:")
-        print("      Frame #: {}".format(frame_num))
-        print("    Timestamp: {} ms".format(timestamp))
-        print("       X Axis: {}".format(x))
-        print("       Y Axis: {}".format(y))
-        print("       Z Axis: {}".format(z))
+        pkt = parse_mag_packet(packed_data)
+        if verbose:
+            print("   Mag Packet:")
+            print("      Frame #: {}".format(pkt.frame_num))
+            print("    Timestamp: {} ms".format(pkt.timestamp))
+            print("       X Axis: {}".format(pkt.x))
+            print("       Y Axis: {}".format(pkt.y))
+            print("       Z Axis: {}".format(pkt.z))
+        return pkt
 
     elif reportID == 0x83:
-        frame_num, timestamp, x, y, z = parse_accel_packet(payload)
-        print("Filtered Accel Packet:")
-        print("      Frame #: {}".format(frame_num))
-        print("    Timestamp: {} ms".format(timestamp))
-        print("       X Axis: {}".format(x))
-        print("       Y Axis: {}".format(y))
-        print("       Z Axis: {}".format(z))
+        pkt = parse_accel_packet(packed_data)
+        if verbose:
+            print("Filtered Accel Packet:")
+            print("      Frame #: {}".format(pkt.frame_num))
+            print("    Timestamp: {} ms".format(pkt.timestamp))
+            print("       X Axis: {}".format(pkt.x))
+            print("       Y Axis: {}".format(pkt.y))
+            print("       Z Axis: {}".format(pkt.z))
+        return pkt
 
     elif reportID == 0x84:
-        frame_num, timestamp, x, y, z = parse_mag_packet(payload)
-        print("Filtered Mag Packet:")
-        print("      Frame #: {}".format(frame_num))
-        print("    Timestamp: {} ms".format(timestamp))
-        print("       X Axis: {}".format(x))
-        print("       Y Axis: {}".format(y))
-        print("       Z Axis: {}".format(z))
+        pkt = parse_mag_packet(packed_data)
+        if verbose:
+            print("Filtered Mag Packet:")
+            print("      Frame #: {}".format(pkt.frame_num))
+            print("    Timestamp: {} ms".format(pkt.timestamp))
+            print("       X Axis: {}".format(pkt.x))
+            print("       Y Axis: {}".format(pkt.y))
+            print("       Z Axis: {}".format(pkt.z))
+        return pkt
 
 
-def parse_accel_packet(payload):
-    packed_data = struct.pack("BBBBBBBBBBBBBBBBBBBB", *payload)
+def parse_accel_packet(packed_data):
     frame_num, timestamp, x, y, z = struct.unpack("IIfff", packed_data)
-    return frame_num, timestamp, x, y, z
+    return SimpleNamespace(x=x, y=y, z=z, frame_num=frame_num, timestamp=timestamp)
 
 
-def parse_mag_packet(payload):
-    packed_data = struct.pack("BBBBBBBBBBBBBBBBBBBB", *payload)
+def parse_mag_packet(packed_data):
     frame_num, timestamp, x, y, z = struct.unpack("IIfff", packed_data)
-    return frame_num, timestamp, x, y, z
+    return SimpleNamespace(x=x, y=y, z=z, frame_num=frame_num, timestamp=timestamp)
+
+
+def find_ports():
+    ports = []
+    dev_dir = os.listdir("/dev/")
+    for thing in dev_dir:
+        if "cu." in thing:
+            ports.append(thing)
+
+    return ports
+
+
+def choose_port(list_of_ports):
+    print("\nPorts:")
+    for ind, port in enumerate(list_of_ports):
+        print("\t{}: {}".format(ind, port))
+    while True:
+        try:
+            choice = int(input("Which port do you choose? "))
+        except Exception:
+            print("Invalid choice.")
+            continue
+
+        if choice < len(list_of_ports):
+            return list_of_ports[choice]
+        else:
+            print("Invalid index.")
 
 
 def run_command(cmd, print_output=True):
@@ -496,8 +523,8 @@ def run_command(cmd, print_output=True):
     print(" -> {}".format(cmd))
     proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE)
-    q_stdout = queue()
-    q_stderr = queue()
+    q_stdout = Queue()
+    q_stderr = Queue()
     t_stdout = Thread(target=enqueue_output, args=(proc.stdout, q_stdout))
     t_stderr = Thread(target=enqueue_output, args=(proc.stderr, q_stderr))
     t_stderr.daemon = True  # thread dies with the program
