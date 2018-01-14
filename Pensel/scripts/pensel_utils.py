@@ -2,6 +2,7 @@
 # -*- coding: UTF-8 -*-
 import os
 import sys
+import abc
 import time
 import struct
 import serial
@@ -54,34 +55,12 @@ class PenselError(RuntimeError):
     pass
 
 
-class Pensel(object):
+class BasePensel(object, metaclass=abc.ABCMeta):
 
-    MAGIC_NUM_0 = 0xDE
-    MAGIC_NUM_1 = 0xAD
-    MAGIC_NUM_2 = 0xBE
-    MAGIC_NUM_3 = 0xEF
-    MAGIC_HEADER = [MAGIC_NUM_0, MAGIC_NUM_1, MAGIC_NUM_2, MAGIC_NUM_3]
-
-    _default_baud = 250000
-
-    def __init__(self, serialport, baudrate, verbose=False, timeout=1):
-        self.serialport = serialport
-        self.TIMEOUT = timeout
-        self.baudrate = baudrate or self._default_baud
+    def __init__(self, *args, verbose=False, **kwargs):
         self.verbose = verbose
-        self.log_lock = threading.Lock()
-        self._check_for_start_bytes = []
 
-        # open serial port
-        if self.verbose:
-            self.log("Opening serial port...")
-        self.serial = serial.Serial(self.serialport, self.baudrate, timeout=0.5)
-        if self.verbose:
-            self.log("Opened!")
-
-        # start listening for reports from Pensel
-        self.start_listener()
-        self._clear_serial = False
+    # ------ Common Methods ----- #
 
     def __enter__(self):
         return self
@@ -89,69 +68,162 @@ class Pensel(object):
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.verbose:
             self.log("Cleaning up...")
-        self.close()
+        self.close(exc_type, exc_val, exc_tb)
 
     def log(self, string):
         with self.log_lock:
             prepend = datetime.now().strftime("%H:%M:%S.%f ")
             print(prepend + string)
 
-    def serial_write(self, values_to_write):
-        """
-        Writes `values_to_write` to the serial port.
-        """
-        if self.verbose:
-            self.log("Writing 0x{:x} to serial port...".format(values_to_write))
-        if type(values_to_write) is not list:
-            self.serial.write(bytearray([values_to_write]))
-        else:
-            self.serial.write(bytearray(values_to_write))
+    @staticmethod
+    def generate_checksum(list_of_data):
+        checksum = 0
+        for b in list_of_data:
+            checksum = (checksum + b) & 0xFF
+        checksum = (256 - checksum) & 0xff  # twos complement of a byte
+        return checksum
 
-    def serial_read(self, num_bytes):
-        """
-        reads `num_bytes` from the serial port.
-        """
-        out = self.serial.read(num_bytes)
-        if len(out) != num_bytes:
-            self.log("WARNING: Didn't get the expected number of bytes")
-            self.log("    Received {}, expected {}. Serial port dead?".format(len(out), num_bytes))
+    def parse_report(self, reportID, payload, verbose=True):
+        # Pack the data to be used in some of the parsing functions
+        packed_data = struct.pack("B" * len(payload), *payload)
 
-        out_list = [int(v) for v in bytearray(out)]
-        if self.verbose:
-            self.log("Read in: {}".format(" ".join(["{:0>2X}".format(b) for b in out_list])))
+        if reportID == 0x22:
+            pkt = self.parse_accel_packet(payload)
+            if verbose:
+                print("   Accel Packet:")
+                print("       Frame #: {}".format(pkt.frame_num))
+                print("     Timestamp: {} ms".format(pkt.timestamp))
+                print("        X Axis: {}".format(pkt.x))
+                print("        Y Axis: {}".format(pkt.y))
+                print("        Z Axis: {}".format(pkt.z))
+                print("")
+            return pkt
 
-        return out_list
+        elif reportID == 0x23:
+            pkt = self.parse_mag_packet(payload)
+            if verbose:
+                print("   Mag Packet:")
+                print("      Frame #: {}".format(pkt.frame_num))
+                print("    Timestamp: {} ms".format(pkt.timestamp))
+                print("       X Axis: {}".format(pkt.x))
+                print("       Y Axis: {}".format(pkt.y))
+                print("       Z Axis: {}".format(pkt.z))
+                print("")
+            return pkt
 
-    def serial_clear(self):
-        """ Clears the serial buffer of anything received. """
-        self.serial.reset_input_buffer()
+        elif reportID == 0x24:
+            data = struct.unpack("=IIII", packed_data)
+            p = SimpleNamespace(
+                accel_pkt_ovrwt=data[0], mag_pkt_ovrwt=data[1],
+                accel_hw_ovrwt=data[2], mag_hw_ovrwt=data[3])
+            if verbose:
+                print("   LSM303DLHC errors:")
+                print("     Accel Packet Overwrites: {}".format(p.accel_pkt_ovrwt))
+                print("       Mag Packet Overwrites: {}".format(p.mag_pkt_ovrwt))
+                print("   Accel Hardware Overwrites: {}".format(p.accel_hw_ovrwt))
+                print("     Mag Hardware Overwrites: {}".format(p.mag_hw_ovrwt))
+            return p
 
-    def serial_bytes_available(self):
-        """
-        Returns the number of bytes in the input buffer.
-        """
-        return self.serial.in_waiting
+        elif reportID == 0x28 or reportID == 0x29 or reportID == 0x2A:
+            data = struct.unpack("fff", packed_data)
+            p = SimpleNamespace(x=data[0], y=data[1], z=data[2])
+            if verbose:
+                print("<{}, {}, {}>".format(p.x, p.y, p.z))
+            return p
 
-    def start_listener(self):
-        self.thread_run = Event()
-        self.thread_run.set()
-        self.queue = Queue()
-        self.thread = threading.Thread(target=self.listener)  # , args=(self,)
-        self.thread.start()  # start it off
+        elif reportID == 0x30:
+            # Pensel Version
+            pkt = col.namedtuple("Version", ["major", "minor", "git_hash"])
+            p = pkt(*struct.unpack("=BBI", packed_data))
+            if verbose:
+                print("    Pensel v{}.{}-{}".format(p.major, p.minor, p.git_hash))
+            return p
 
-    def packets_available(self):
-        return not self.queue.empty()
+        elif reportID == 0x31:
+            # current timestamp
+            p = struct.unpack("I", packed_data)[0]
+            if verbose:
+                print("    Timestamp: {} ms".format(p))
+            return p
 
-    def listener(self):
-        """ The threaded listener that looks for packets from Pensel. """
-        while self.thread_run.is_set():
-            if self.serial_bytes_available() >= len(self.MAGIC_HEADER) and \
-                    self.check_for_start():
-                report, retval, payload = self.receive_packet()
-                if report >= 0:
-                    self.queue.put((report, retval, payload))
-                    if self.verbose:
-                        self.log("Put report {} on queue".format(report))
+        elif reportID == 0x33:
+            # Switch/button states
+            pkt = col.namedtuple("ButtonState", ["switch", "main", "aux"])
+            p = pkt(*struct.unpack("=BBB", packed_data))
+            if verbose:
+                print("    Switch State: {}".format(p.switch))
+                print("     Main Button: {}".format("open" if p.main else "pressed"))
+                print("      Aux Button: {}".format("open" if p.aux else "pressed"))
+            return p
+
+        elif reportID == 0x34:
+            #
+            pkt = col.namedtuple("ButtonState", ["bitfields", "dropped", "dequeued", "queued"])
+            p = pkt(*struct.unpack("<BIII", packed_data))
+            if verbose:
+                print("bitfields: \t{}".format(hex(p.bitfields)))
+                print("dropped: \t{:,}".format(p.dropped))
+                print("dequeued: \t{:,}".format(p.dequeued))
+                print("queued: \t{:,}".format(p.queued))
+            return p
+
+        elif reportID == 0x81:
+            pkt = self.parse_accel_packet(packed_data)
+            if verbose:
+                print("   Accel Packet:")
+                print("       Frame #: {}".format(pkt.frame_num))
+                print("     Timestamp: {} ms".format(pkt.timestamp))
+                print("        X Axis: {}".format(pkt.x))
+                print("        Y Axis: {}".format(pkt.y))
+                print("        Z Axis: {}".format(pkt.z))
+                print("")
+            return pkt
+
+        elif reportID == 0x82:
+            pkt = self.parse_mag_packet(packed_data)
+            if verbose:
+                print("   Mag Packet:")
+                print("      Frame #: {}".format(pkt.frame_num))
+                print("    Timestamp: {} ms".format(pkt.timestamp))
+                print("       X Axis: {}".format(pkt.x))
+                print("       Y Axis: {}".format(pkt.y))
+                print("       Z Axis: {}".format(pkt.z))
+                print("")
+            return pkt
+
+        elif reportID == 0x83:
+            pkt = self.parse_accel_packet(packed_data)
+            if verbose:
+                print("Filtered Accel Packet:")
+                print("      Frame #: {}".format(pkt.frame_num))
+                print("    Timestamp: {} ms".format(pkt.timestamp))
+                print("       X Axis: {}".format(pkt.x))
+                print("       Y Axis: {}".format(pkt.y))
+                print("       Z Axis: {}".format(pkt.z))
+                print("")
+            return pkt
+
+        elif reportID == 0x84:
+            pkt = self.parse_mag_packet(packed_data)
+            if verbose:
+                print("Filtered Mag Packet:")
+                print("      Frame #: {}".format(pkt.frame_num))
+                print("    Timestamp: {} ms".format(pkt.timestamp))
+                print("       X Axis: {}".format(pkt.x))
+                print("       Y Axis: {}".format(pkt.y))
+                print("       Z Axis: {}".format(pkt.z))
+                print("")
+            return pkt
+
+    @staticmethod
+    def parse_accel_packet(packed_data):
+        frame_num, timestamp, x, y, z = struct.unpack("IIfff", packed_data)
+        return SimpleNamespace(x=x, y=y, z=z, frame_num=frame_num, timestamp=timestamp)
+
+    @staticmethod
+    def parse_mag_packet(packed_data):
+        frame_num, timestamp, x, y, z = struct.unpack("IIfff", packed_data)
+        return SimpleNamespace(x=x, y=y, z=z, frame_num=frame_num, timestamp=timestamp)
 
     def get_packet(self):
         if self.thread.is_alive() is False:
@@ -203,6 +275,54 @@ class Pensel(object):
                     self.log("Queue cleared!")
                 break
 
+    def packets_available(self):
+        return not self.queue.empty()
+
+    # ----- Required Methods ------
+
+    @abc.abstractmethod
+    def send_report(self, report_ID, payload=None):
+        """
+        Sends a report to the pensel and reads back the result
+        """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def close(self, exc_type=None, exc_val=None, exc_tb=None):
+        raise NotImplementedError
+
+
+class Pensel(BasePensel):
+
+    MAGIC_NUM_0 = 0xDE
+    MAGIC_NUM_1 = 0xAD
+    MAGIC_NUM_2 = 0xBE
+    MAGIC_NUM_3 = 0xEF
+    MAGIC_HEADER = [MAGIC_NUM_0, MAGIC_NUM_1, MAGIC_NUM_2, MAGIC_NUM_3]
+
+    _default_baud = 250000
+
+    def __init__(self, serialport, baudrate, *args, timeout=1, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.serialport = serialport
+        self.TIMEOUT = timeout
+        self.baudrate = baudrate or self._default_baud
+        self.log_lock = threading.Lock()
+        self._check_for_start_bytes = []
+
+        # open serial port
+        if self.verbose:
+            self.log("Opening serial port...")
+        self.serial = serial.Serial(self.serialport, self.baudrate, timeout=0.5)
+        if self.verbose:
+            self.log("Opened!")
+
+        # start listening for reports from Pensel
+        self._start_listener()
+        self._clear_serial = False
+
+    # ----- Public Methods ----- #
+
     def send_report(self, report_ID, payload=None):
         """
         Sends a report to the pensel and reads back the result
@@ -210,25 +330,25 @@ class Pensel(object):
         if report_ID < 0 or report_ID > 127:
             raise ValueError("Report ID {} is out of the valid range!".format(report_ID))
 
-        self.serial_write(self.MAGIC_NUM_0)
-        self.serial_write(self.MAGIC_NUM_1)
-        self.serial_write(self.MAGIC_NUM_2)
-        self.serial_write(self.MAGIC_NUM_3)
-        self.serial_write(report_ID)
+        self._serial_write(self.MAGIC_NUM_0)
+        self._serial_write(self.MAGIC_NUM_1)
+        self._serial_write(self.MAGIC_NUM_2)
+        self._serial_write(self.MAGIC_NUM_3)
+        self._serial_write(report_ID)
         _bytes = [self.MAGIC_NUM_0, self.MAGIC_NUM_1, self.MAGIC_NUM_2, self.MAGIC_NUM_3, report_ID]
         if payload is None:
             _bytes.append(0)
-            self.serial_write(0)
+            self._serial_write(0)
         else:
             _bytes.append(len(payload))
-            self.serial_write(len(payload))
+            self._serial_write(len(payload))
             for b in payload:
                 if b < 0 or b > 255:
                     raise ValueError("Value in payload out of valid range!")
                 _bytes.append(b)
-                self.serial_write(b)
+                self._serial_write(b)
         # Checksum time!
-        self.serial_write(generate_checksum(_bytes))
+        self._serial_write(self.generate_checksum(_bytes))
 
         # Try to get the response
         retval = None
@@ -248,12 +368,81 @@ class Pensel(object):
 
         return retval, payload
 
-    def check_for_start(self):
+    def close(self, exc_type=None, exc_val=None, exc_tb=None):
+        try:
+            if self.verbose:
+                self.log("Killing thread")
+            self.thread_run.clear()
+            # wait for it to stop
+            while self.thread.is_alive():
+                time.sleep(0.01)
+        finally:
+            if self.verbose:
+                self.log("\n\tClosing serial port...\n")
+            self.serial.close()
+
+    # ----- Private Methods ----- #
+
+    def _serial_write(self, values_to_write):
+        """
+        Writes `values_to_write` to the serial port.
+        """
+        if self.verbose:
+            self.log("Writing 0x{:x} to serial port...".format(values_to_write))
+        if type(values_to_write) is not list:
+            self.serial.write(bytearray([values_to_write]))
+        else:
+            self.serial.write(bytearray(values_to_write))
+
+    def _serial_read(self, num_bytes):
+        """
+        reads `num_bytes` from the serial port.
+        """
+        out = self.serial.read(num_bytes)
+        if len(out) != num_bytes:
+            self.log("WARNING: Didn't get the expected number of bytes")
+            self.log("    Received {}, expected {}. Serial port dead?".format(len(out), num_bytes))
+
+        out_list = [int(v) for v in bytearray(out)]
+        if self.verbose:
+            self.log("Read in: {}".format(" ".join(["{:0>2X}".format(b) for b in out_list])))
+
+        return out_list
+
+    def _serial_clear(self):
+        """ Clears the serial buffer of anything received. """
+        self.serial.reset_input_buffer()
+
+    def _serial_bytes_available(self):
+        """
+        Returns the number of bytes in the input buffer.
+        """
+        return self.serial.in_waiting
+
+    def _start_listener(self):
+        self.thread_run = Event()
+        self.thread_run.set()
+        self.queue = Queue()
+        self.thread = threading.Thread(target=self._listener)  # , args=(self,)
+        self.thread.start()  # start it off
+
+    def _listener(self):
+        """ The threaded listener that looks for packets from Pensel. """
+        while self.thread_run.is_set():
+            if self._serial_bytes_available() >= len(self.MAGIC_HEADER) and \
+                    self._check_for_start():
+                report, retval, payload = self._receive_packet()
+                if report >= 0:
+                    self.queue.put((report, retval, payload))
+                    if self.verbose:
+                        self.log("Put report {} on queue".format(report))
+
+    def _check_for_start(self):
         """
         Checks for the start of a reply from Pensel.
         """
-        while self.serial_bytes_available():
-            data = self.serial_read(1)
+        while self._serial_bytes_available():
+            data = self._serial_read(1)
             if len(data) == 1:
                 self._check_for_start_bytes.append(data[0])
                 try:
@@ -275,25 +464,25 @@ class Pensel(object):
             self.log("Failed to detect start...")
         return False
 
-    def receive_packet(self):
+    def _receive_packet(self):
         """
         Receives a packet, whether from a report reply or an input report,
         from Pensel. Doesn't check for start of packet. That's `check_for_start`
         """
-        report = self.serial_read(1)
+        report = self._serial_read(1)
         if len(report) != 1:
             self.log("ERROR: Didn't read back a report!")
             report = -1
         else:
             report = report[0]
-        retval = self.serial_read(1)
+        retval = self._serial_read(1)
         if len(retval) != 1:
             self.log("ERROR: Didn't read back a return value!")
             retval = -1
         else:
             retval = retval[0]
 
-        return_payload_len = self.serial_read(1)
+        return_payload_len = self._serial_read(1)
         if len(return_payload_len) != 1:
             self.log("ERROR: Didn't read back a return payload length!")
             return_payload_len = 0
@@ -301,10 +490,10 @@ class Pensel(object):
             return_payload_len = return_payload_len[0]
 
         if return_payload_len != 0:
-            return_payload = self.serial_read(return_payload_len)
+            return_payload = self._serial_read(return_payload_len)
         else:
             return_payload = []
-        checksum = self.serial_read(1)
+        checksum = self._serial_read(1)
         if len(checksum) != 1:
             self.log("ERROR: Didn't read back a checksum!")
             checksum = -1
@@ -314,7 +503,7 @@ class Pensel(object):
         data = self.MAGIC_HEADER + [report, retval, return_payload_len] + return_payload
         data.append(checksum)
 
-        our_checksum = generate_checksum(data[:-1])
+        our_checksum = self.generate_checksum(data[:-1])
         if our_checksum != checksum:
             self.log("ERROR: Our checksum didn't calculate properly! "
                      "(Calculated {}, expected {})".format(our_checksum, checksum))
@@ -325,163 +514,57 @@ class Pensel(object):
 
         return report, retval, return_payload
 
-    def close(self):
-        try:
-            if self.verbose:
-                self.log("Killing thread")
-            self.thread_run.clear()
-            # wait for it to stop
-            while self.thread.is_alive():
-                time.sleep(0.01)
-        finally:
-            if self.verbose:
-                self.log("\n\tClosing serial port...\n")
-            self.serial.close()
+
+class PenselPlayback(BasePensel):
+
+    def __init__(self, playback_file, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.playback_file = playback_file
+        self._start_listener()
+
+    def send_report(self, report_ID, payload=None):
+        raise RuntimeError("Cannot send a report to a playback file!")
+
+    def close(self, exc_type=None, exc_val=None, exc_tb=None):
+        self.thread_run.clear()
+
+    def _start_listener(self):
+        self.thread_run = Event()
+        self.thread_run.set()
+        self.queue = Queue()
+        self.thread = threading.Thread(target=self._listener)  # , args=(self,)
+        self.thread.start()  # start it off
+
+    def _listener(self):
+        """ The threaded listener that looks for packets from Pensel. """
+        with open(self.playback_file, "rb") as f:
+            while self.thread_run.is_set():
+                length = f.read(1)
+                if len(length) == 0:
+                    # out of data
+                    break
+                length = length[0]
+                data = f.read(length)
+                if len(data) != length:
+                    raise RuntimeError("Didn't receive the expected amount of bytes!")
+
+                # itterating over bytes gives us ints
+                report = data[0]
+                retval = data[1]
+                payload = [d for d in data[2:]]
+                if report >= 0:
+                    self.queue.put((report, retval, payload))
+                    if self.verbose:
+                        self.log("Put report {} on queue".format(report))
+
+        if self.verbose:
+            self.log("Waiting for queue to empty...")
+
+        while self.packets_available():
+            time.sleep(0.01)
 
 
-def generate_checksum(list_of_data):
-    checksum = 0
-    for b in list_of_data:
-        checksum = (checksum + b) & 0xFF
-    checksum = (256 - checksum) & 0xff  # twos complement of a byte
-    return checksum
-
-
-def parse_report(reportID, payload, verbose=True):
-    # Pack the data to be used in some of the parsing functions
-    packed_data = struct.pack("B" * len(payload), *payload)
-
-    if reportID == 0x22:
-        pkt = parse_accel_packet(payload)
-        if verbose:
-            print("   Accel Packet:")
-            print("       Frame #: {}".format(pkt.frame_num))
-            print("     Timestamp: {} ms".format(pkt.timestamp))
-            print("        X Axis: {}".format(pkt.x))
-            print("        Y Axis: {}".format(pkt.y))
-            print("        Z Axis: {}".format(pkt.z))
-        return pkt
-
-    elif reportID == 0x23:
-        pkt = parse_mag_packet(payload)
-        if verbose:
-            print("   Mag Packet:")
-            print("      Frame #: {}".format(pkt.frame_num))
-            print("    Timestamp: {} ms".format(pkt.timestamp))
-            print("       X Axis: {}".format(pkt.x))
-            print("       Y Axis: {}".format(pkt.y))
-            print("       Z Axis: {}".format(pkt.z))
-        return pkt
-
-    elif reportID == 0x24:
-        data = struct.unpack("=IIII", packed_data)
-        p = SimpleNamespace(
-            accel_pkt_ovrwt=data[0], mag_pkt_ovrwt=data[1],
-            accel_hw_ovrwt=data[2], mag_hw_ovrwt=data[3])
-        if verbose:
-            print("   LSM303DLHC errors:")
-            print("     Accel Packet Overwrites: {}".format(p.accel_pkt_ovrwt))
-            print("       Mag Packet Overwrites: {}".format(p.mag_pkt_ovrwt))
-            print("   Accel Hardware Overwrites: {}".format(p.accel_hw_ovrwt))
-            print("     Mag Hardware Overwrites: {}".format(p.mag_hw_ovrwt))
-        return p
-
-    elif reportID == 0x28 or reportID == 0x29 or reportID == 0x2A:
-        data = struct.unpack("fff", packed_data)
-        p = SimpleNamespace(x=data[0], y=data[1], z=data[2])
-        if verbose:
-            print("<{}, {}, {}>".format(p.x, p.y, p.z))
-        return p
-
-    elif reportID == 0x30:
-        # Pensel Version
-        pkt = col.namedtuple("Version", ["major", "minor", "git_hash"])
-        p = pkt(*struct.unpack("=BBI", packed_data))
-        if verbose:
-            print("    Pensel v{}.{}-{}".format(p.major, p.minor, p.git_hash))
-        return p
-
-    elif reportID == 0x31:
-        # current timestamp
-        p = struct.unpack("I", packed_data)[0]
-        if verbose:
-            print("    Timestamp: {} ms".format(p))
-        return p
-
-    elif reportID == 0x33:
-        # Switch/button states
-        pkt = col.namedtuple("ButtonState", ["switch", "main", "aux"])
-        p = pkt(*struct.unpack("=BBB", packed_data))
-        if verbose:
-            print("    Switch State: {}".format(p.switch))
-            print("     Main Button: {}".format("open" if p.main else "pressed"))
-            print("      Aux Button: {}".format("open" if p.aux else "pressed"))
-        return p
-
-    elif reportID == 0x34:
-        #
-        pkt = col.namedtuple("ButtonState", ["bitfields", "dropped", "dequeued", "queued"])
-        p = pkt(*struct.unpack("<BIII", packed_data))
-        if verbose:
-            print("bitfields: \t{}".format(hex(p.bitfields)))
-            print("dropped: \t{:,}".format(p.dropped))
-            print("dequeued: \t{:,}".format(p.dequeued))
-            print("queued: \t{:,}".format(p.queued))
-        return p
-
-    elif reportID == 0x81:
-        pkt = parse_accel_packet(packed_data)
-        if verbose:
-            print("   Accel Packet:")
-            print("       Frame #: {}".format(pkt.frame_num))
-            print("     Timestamp: {} ms".format(pkt.timestamp))
-            print("        X Axis: {}".format(pkt.x))
-            print("        Y Axis: {}".format(pkt.y))
-            print("        Z Axis: {}".format(pkt.z))
-        return pkt
-
-    elif reportID == 0x82:
-        pkt = parse_mag_packet(packed_data)
-        if verbose:
-            print("   Mag Packet:")
-            print("      Frame #: {}".format(pkt.frame_num))
-            print("    Timestamp: {} ms".format(pkt.timestamp))
-            print("       X Axis: {}".format(pkt.x))
-            print("       Y Axis: {}".format(pkt.y))
-            print("       Z Axis: {}".format(pkt.z))
-        return pkt
-
-    elif reportID == 0x83:
-        pkt = parse_accel_packet(packed_data)
-        if verbose:
-            print("Filtered Accel Packet:")
-            print("      Frame #: {}".format(pkt.frame_num))
-            print("    Timestamp: {} ms".format(pkt.timestamp))
-            print("       X Axis: {}".format(pkt.x))
-            print("       Y Axis: {}".format(pkt.y))
-            print("       Z Axis: {}".format(pkt.z))
-        return pkt
-
-    elif reportID == 0x84:
-        pkt = parse_mag_packet(packed_data)
-        if verbose:
-            print("Filtered Mag Packet:")
-            print("      Frame #: {}".format(pkt.frame_num))
-            print("    Timestamp: {} ms".format(pkt.timestamp))
-            print("       X Axis: {}".format(pkt.x))
-            print("       Y Axis: {}".format(pkt.y))
-            print("       Z Axis: {}".format(pkt.z))
-        return pkt
-
-
-def parse_accel_packet(packed_data):
-    frame_num, timestamp, x, y, z = struct.unpack("IIfff", packed_data)
-    return SimpleNamespace(x=x, y=y, z=z, frame_num=frame_num, timestamp=timestamp)
-
-
-def parse_mag_packet(packed_data):
-    frame_num, timestamp, x, y, z = struct.unpack("IIfff", packed_data)
-    return SimpleNamespace(x=x, y=y, z=z, frame_num=frame_num, timestamp=timestamp)
+# ----- Helpful standalone methods
 
 
 def find_ports():

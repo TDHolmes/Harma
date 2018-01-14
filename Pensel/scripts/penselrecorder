@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 import os
 import sys
+import time
 
 import pensel_utils as pu
 
@@ -10,14 +11,12 @@ if sys.version_info.major == 2:
 
 if __name__ == '__main__':
     import argparse
-    parser = argparse.ArgumentParser(description='Receive input data from the Pensel.')
+    parser = argparse.ArgumentParser(description='Record input data from the Pensel.')
+    parser.add_argument('filename', type=str, help="The name and path of the playback file to create")
     parser.add_argument('--baudrate', "-b", dest='baudrate', default=None,
                         help='Baudrate of the serial data to recieve')
     parser.add_argument('--parsed', default=False, action="store_true",
                         help='Whether or not we should print a parsed version of the report')
-    parser.add_argument('--raw', default=False, action="store_true",
-                        help='Whether or not we should print a raw version of the report. '
-                        'If --parsed isn\'t specified, this is True by default.')
     parser.add_argument("--reports", nargs='*', type=str,
                         help="reports to stream (filter out ones we don't care about)")
     parser.add_argument('--verbose', default=False, action="store_true",
@@ -58,21 +57,31 @@ if __name__ == '__main__':
     else:
         reports_to_stream = [int(r, 16) for r in args.reports]
 
-    with pu.Pensel(port, args.baudrate, args.verbose) as pi:
-        while True:
-            try:
+    with pu.Pensel(port, args.baudrate, args.verbose) as pi, \
+            open(args.filename, "wb") as f:
+        try:
+            while True:
                 pkt = pi.get_packet()
-                if pkt:
-                    report, retval, payload = pkt
-                    if len(reports_to_stream) == 0 or report in reports_to_stream:
+                if not pkt:
+                    time.sleep(0.001)
+                    continue
+
+                report, retval, payload = pkt
+                if len(reports_to_stream) == 0 or report in reports_to_stream:
+                    try:
                         if retval == 0:
                             if args.parsed:
-                                pu.parse_report(report, payload)
-                            if not args.parsed or args.raw:
+                                print(pi.parse_report(report, payload))
+                            if not args.parsed:
                                 print(pkt)
                         else:
-                            print("ERROR: report {} returned retval {}".format(report, retval))
-                    elif args.verbose:
-                        print("Ignoring report ID {}".format(report))
-            except KeyboardInterrupt:
-                break
+                            print("ERROR: report {} returned retval {} (still recording)".format(report, retval))
+                    finally:
+                        # make sure we don't corrupt the file with a keyboard interrupt
+                        f.write(bytes([len(payload) + 2]))            # length
+                        f.write(bytes([report, retval] + payload))    # data
+
+                elif args.verbose:
+                    print("Ignoring report ID {}".format(report))
+        except KeyboardInterrupt:
+            print("Finishing up the file...")

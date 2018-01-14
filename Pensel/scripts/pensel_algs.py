@@ -74,15 +74,19 @@ class AccelGravityVectorDetection(VectorDetector):
 class MovementDetection(VectorDetector):
     """
     """
-    def __init__(self, data_rate, lower_freq, upper_freq, order=16, window='parzen'):
+    def __init__(self, data_rate, lower_freq_reject, lower_freq_pass,
+                 upper_freq_pass, upper_freq_reject, order=16, window='parzen'):
         self.data_rate = data_rate
         nyquist = 0.5 * data_rate
-        lower_norm = lower_freq / nyquist
-        upper_norm = upper_freq / nyquist
+        lower_norm_reject = lower_freq_reject / nyquist
+        lower_norm_pass = lower_freq_pass / nyquist
+        upper_norm_reject = upper_freq_reject / nyquist
+        upper_norm_pass = upper_freq_pass / nyquist
 
         # get the coefficients and make da filters
         coeffs = sig.firwin2(
-            order, [0, lower_norm, upper_norm, 1], [0, 1, 1, 0], window=window)
+            order, [0, lower_norm_reject, lower_norm_pass, upper_norm_pass, upper_norm_reject, 1],
+            [0, 0, 1, 1, 0, 0], window=window)
 
         super().__init__(coeffs)
 

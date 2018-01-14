@@ -1,7 +1,6 @@
 #! /usr/bin/env python3
-import os
 import sys
-
+import time
 import pensel_utils as pu
 
 if sys.version_info.major == 2:
@@ -10,9 +9,9 @@ if sys.version_info.major == 2:
 
 if __name__ == '__main__':
     import argparse
-    parser = argparse.ArgumentParser(description='Receive input data from the Pensel.')
-    parser.add_argument('--baudrate', "-b", dest='baudrate', default=None,
-                        help='Baudrate of the serial data to recieve')
+    parser = argparse.ArgumentParser(description='Print recorded input data from pensel recordings.')
+    parser.add_argument('playback_file', type=str,
+                        help='File to play back.')
     parser.add_argument('--parsed', default=False, action="store_true",
                         help='Whether or not we should print a parsed version of the report')
     parser.add_argument('--raw', default=False, action="store_true",
@@ -25,41 +24,14 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    def find_ports():
-        ports = []
-        dev_dir = os.listdir("/dev/")
-        for thing in dev_dir:
-            if "cu." in thing:
-                ports.append(thing)
-
-        return ports
-
-    def choose_port(list_of_ports):
-        print("\nPorts:")
-        for ind, port in enumerate(list_of_ports):
-            print("\t{}: {}".format(ind, port))
-        while True:
-            try:
-                choice = int(input("Which port do you choose? "))
-            except Exception:
-                print("Invalid choice.")
-                continue
-
-            if choice < len(list_of_ports):
-                return list_of_ports[choice]
-            else:
-                print("Invalid index.")
-
-    # port = "/dev/" + choose_port(find_ports())
-    port = "/dev/cu.SLAB_USBtoUART"
-
     if args.reports is None:
         reports_to_stream = []
     else:
         reports_to_stream = [int(r, 16) for r in args.reports]
 
-    with pu.Pensel(port, args.baudrate, args.verbose) as pi:
-        while True:
+    with pu.PenselPlayback(args.playback_file, args.verbose) as pi:
+        time.sleep(0.1)  # let queue fill up a bit
+        while pi.packets_available():
             try:
                 pkt = pi.get_packet()
                 if pkt:
@@ -67,7 +39,7 @@ if __name__ == '__main__':
                     if len(reports_to_stream) == 0 or report in reports_to_stream:
                         if retval == 0:
                             if args.parsed:
-                                pu.parse_report(report, payload)
+                                pi.parse_report(report, payload)
                             if not args.parsed or args.raw:
                                 print(pkt)
                         else:
@@ -76,3 +48,5 @@ if __name__ == '__main__':
                         print("Ignoring report ID {}".format(report))
             except KeyboardInterrupt:
                 break
+        else:
+            print("Out of packets!")

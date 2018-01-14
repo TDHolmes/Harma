@@ -85,7 +85,8 @@ class GravityDetectWindow(FilteringWindow):
     """
     Handles displaying the raw accel stats
     """
-    def __init__(self, x, y, width, height, filter_order=32, output_rate=220, cutoff_freq=5):
+    def __init__(self, x, y, width, height, filter_order=32, output_rate=220,
+                 cutoff_freq_start=15, cutoff_freq_stop=20):
         super().__init__()
         self.x = x
         self.y = y
@@ -95,7 +96,7 @@ class GravityDetectWindow(FilteringWindow):
         self.window.timeout(0)
 
         self.detector = algs.AccelGravityVectorDetection(
-            output_rate, cutoff_freq, stop_freq=cutoff_freq*2, order=filter_order)
+            output_rate, cutoff_freq_start, stop_freq=cutoff_freq_stop, order=filter_order)
 
     def run(self, pkt, new_chr=None):
         vect = self.detector.consume_packet(pkt)
@@ -122,7 +123,7 @@ class MovementDetectWindow(FilteringWindow):
     Handles displaying the raw accel stats
     """
     def __init__(self, x, y, width, height, filter_order=64, output_rate=220,
-                 lower_freq=20, upper_freq=100):
+                 lower_freq_reject=30, lower_freq_pass=40, upper_freq_pass=100, upper_freq_reject=110):
         super().__init__()
         self.x = x
         self.y = y
@@ -132,7 +133,8 @@ class MovementDetectWindow(FilteringWindow):
         self.window.timeout(0)
 
         self.detector = algs.MovementDetection(
-            output_rate, lower_freq, upper_freq, order=filter_order)
+            output_rate, lower_freq_reject, lower_freq_pass,
+            upper_freq_pass, upper_freq_reject, order=filter_order)
 
     def run(self, pkt, new_chr=None):
         vect = self.detector.consume_packet(pkt)
@@ -191,7 +193,7 @@ def main(stdscr, port, baud, verbose, enable_moving_ave=True, num_averages=16):
                     continue
 
                 packed_data = struct.pack("B" * len(payload), *payload)
-                pkt = pu.parse_accel_packet(packed_data)
+                pkt = pi.parse_accel_packet(packed_data)
 
                 if enable_moving_ave:
                     pkt.x = moving_ave_x.run(pkt.x)
