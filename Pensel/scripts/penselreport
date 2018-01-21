@@ -98,7 +98,7 @@ if __name__ == '__main__':
                 if args.parsed is False:
                     pensel.log("    {}".format(" ".join(["{:0>2X}".format(b) for b in output])))
                 else:
-                    pu.parse_report(reportID, output)
+                    pensel.parse_report(reportID, output)
             else:
                 pensel.log("Report {:0>2X} FAILED. Error Code: {}".format(reportID, retval))
 
