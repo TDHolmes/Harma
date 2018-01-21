@@ -123,7 +123,7 @@ class MovementDetectWindow(FilteringWindow):
     Handles displaying the raw accel stats
     """
     def __init__(self, x, y, width, height, filter_order=64, output_rate=220,
-                 lower_freq_reject=30, lower_freq_pass=40, upper_freq_pass=100, upper_freq_reject=110):
+                 lower_freq_reject=19, lower_freq_pass=20, upper_freq_pass=50, upper_freq_reject=80):
         super().__init__()
         self.x = x
         self.y = y
@@ -137,20 +137,29 @@ class MovementDetectWindow(FilteringWindow):
             upper_freq_pass, upper_freq_reject, order=filter_order)
 
     def run(self, pkt, new_chr=None):
-        vect = self.detector.consume_packet(pkt)
+        accel_vect = self.detector.consume_packet(pkt)
+        vel_vect = self.detector.calc_velocity(accel_vect)
+        dist_vect = self.detector.calc_distance(vel_vect)  # noqa
 
-        super().run(vect, new_chr)
+        super().run(accel_vect, new_chr)
 
         self.window.erase()
         self.window.box()
-        self.window.addstr(0, 4, "Movement:")
-        self.window.addstr(2, 2, " X:  {:>8.3f}".format(vect.x))
-        self.window.addstr(3, 2, " Y:  {:>8.3f}".format(vect.y))
-        self.window.addstr(4, 2, " Z:  {:>8.3f}".format(vect.z))
-        self.window.addstr(6, 2, "ΔX:  {:>8.3f}".format(self.max_x - self.min_x))
-        self.window.addstr(7, 2, "ΔY:  {:>8.3f}".format(self.max_y - self.min_y))
-        self.window.addstr(8, 2, "ΔZ:  {:>8.3f}".format(self.max_z - self.min_z))
-        # self.window.addstr(5, 2, "vect: {}".format(vect))
+        self.window.addstr(0, self.width // 2 - 5, " Movement ")
+        self.window.addstr(1, 4, "    Accel        Velocity         Position")
+        self.window.addstr(2, 2, " X:  {:>8.3f} mg    {:>8.3f} m/s    {:>8.3f} m".format(
+            accel_vect.x, vel_vect.x, dist_vect.x))
+
+        self.window.addstr(3, 2, " Y:  {:>8.3f} mg    {:>8.3f} m/s    {:>8.3f} m".format(
+            accel_vect.y, vel_vect.y, dist_vect.y))
+
+        self.window.addstr(4, 2, " Z:  {:>8.3f} mg    {:>8.3f} m/s    {:>8.3f} m".format(
+            accel_vect.z, vel_vect.z, dist_vect.z))
+
+        self.window.addstr(6, 2, "ΔX:  {:>8.3f} mg".format(self.max_x - self.min_x))
+        self.window.addstr(7, 2, "ΔY:  {:>8.3f} mg".format(self.max_y - self.min_y))
+        self.window.addstr(8, 2, "ΔZ:  {:>8.3f} mg".format(self.max_z - self.min_z))
+        # self.window.addstr(5, 2, "accel_vect: {}".format(accel_vect))
 
         self.window.redrawwin()  # complete redraw
         self.window.noutrefresh()
@@ -177,11 +186,13 @@ def main(stdscr, port, baud, verbose, enable_moving_ave=True, num_averages=16):
     begin_x = 60
     begin_y = 3
     height = 10
-    width = 18
+    width = 50
     move_detect = MovementDetectWindow(begin_x, begin_y, width, height)
-    moving_ave_x = algs.MovingAverage(num_averages=num_averages)
-    moving_ave_y = algs.MovingAverage(num_averages=num_averages)
-    moving_ave_z = algs.MovingAverage(num_averages=num_averages)
+
+    if enable_moving_ave:
+        moving_ave_x = algs.MovingAverage(num_averages=num_averages)
+        moving_ave_y = algs.MovingAverage(num_averages=num_averages)
+        moving_ave_z = algs.MovingAverage(num_averages=num_averages)
 
     with pu.Pensel(port, baud, verbose) as pi:
         while True:
