@@ -1,4 +1,4 @@
-update=Sunday, February 18, 2018 'PMt' 05:44:33 PM
+update=Thursday, February 22, 2018 'PMt' 03:10:18 PM
 version=1
 last_client=kicad
 [pcbnew]
@@ -37,7 +37,7 @@ LabSize=60
 ERC_TestSimilarLabels=1
 [eeschema]
 version=1
-LibDir=../board;/Library/Application Support/kicad/kicad-library/library;/Users/tholmes/projects/KiCadCustomFootprints
+LibDir=../board;/Library/Application Support/kicad/kicad-library/library;/Users/tholmes/projects/KiCadCustomFootprints;/Users/tholmes/projects/macrofab_parts/KiCad/Schematics
 [eeschema/libraries]
 LibName1=pensel_components
 LibName2=74xgxx
@@ -127,3 +127,15 @@ LibName85=xilinx
 LibName86=zetex
 LibName87=Zilog
 LibName88=LSM9DS1/LSM9DS1
+LibName89=MF_Aesthetics
+LibName90=MF_Connectors
+LibName91=MF_Discrete_Semiconductor
+LibName92=MF_Displays
+LibName93=MF_Frequency_Control
+LibName94=MF_IC_Analog
+LibName95=MF_IC_Digital
+LibName96=MF_IC_Power
+LibName97=MF_LEDs
+LibName98=MF_Passives
+LibName99=MF_Sensors
+LibName100=MF_Switches
