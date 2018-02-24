@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source /Users/tholmes/projects/Harma/Pensel/board/Pensel.sch)
-    (date "Thursday, February 22, 2018 'PMt' 03:13:35 PM")
+    (date "Friday, February 23, 2018 'PMt' 10:51:11 PM")
     (tool "Eeschema (2016-12-18 revision 3ffa37c)-master")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
@@ -223,7 +223,7 @@
       (tstamp 5A7FEF7A))
     (comp (ref C1)
       (value "10 uF")
-      (footprint Capacitors_SMD:c_elec_3x5.3)
+      (footprint Capacitors_SMD:C_0603)
       (libsource (lib device) (part C))
       (sheetpath (names /) (tstamps /))
       (tstamp 5A7FF315))
@@ -533,14 +533,14 @@
         (pin (num 5) (name GND) (type power_in))
         (pin (num 6) (name Shield) (type passive)))))
   (libraries
-    (library (logical MF_Switches)
-      (uri /Users/tholmes/projects/macrofab_parts/KiCad/Schematics/MF_Switches.lib))
     (library (logical conn)
       (uri "/Library/Application Support/kicad/kicad-library/library/conn.lib"))
     (library (logical device)
       (uri "/Library/Application Support/kicad/kicad-library/library/device.lib"))
     (library (logical switches)
       (uri "/Library/Application Support/kicad/kicad-library/library/switches.lib"))
+    (library (logical MF_Switches)
+      (uri /Users/tholmes/projects/macrofab_parts/KiCad/Schematics/MF_Switches.lib))
     (library (logical pensel_components)
       (uri /Users/tholmes/projects/Harma/Pensel/board/pensel_components.lib)))
   (nets

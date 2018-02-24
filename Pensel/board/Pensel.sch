@@ -949,7 +949,7 @@ U 1 1 5A7FF315
 P 8100 1400
 F 0 "C1" H 7950 1500 50  0000 L CNN
 F 1 "10 uF" V 8050 1150 39  0000 L CNN
-F 2 "Capacitors_SMD:c_elec_3x5.3" H 8138 1250 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0603" H 8138 1250 50  0001 C CNN
 F 3 "" H 8100 1400 50  0001 C CNN
 	1    8100 1400
 	1    0    0    -1  
@@ -1098,8 +1098,6 @@ Text GLabel 3250 1050 2    51   Input ~ 0
 AG_INT2
 Text GLabel 2050 2950 3    51   Output ~ 0
 M_DRDY
-Text Notes 7000 1500 0    60   Italic 12
-TODO: Spec 10 uF \ncap footprint
 Text Notes 3800 3500 0    39   ~ 0
 place one 0.1 uF cap near each VDD pin\nplace 4.7 uF near STM\nplace 1 uF cap near VDDA
 $Comp
