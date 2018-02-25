@@ -1,3 +1,5 @@
 (fp_lib_table
-  (lib (name LSM9DS1)(type KiCad)(uri "$(KIPRJMOD)/LSM9DS1/LSM9DS1.pretty")(options "")(descr ""))
+  (lib (name LSM9DS1)(type KiCad)(uri "$(KIPRJMOD)/pensel_components/LSM9DS1.pretty")(options "")(descr ""))
+  (lib (name pensel_components)(type KiCad)(uri "$(KIPRJMOD)/pensel_components/pensel_components.pretty")(options "")(descr ""))
+  (lib (name 416F32022CKR)(type KiCad)(uri "$(KIPRJMOD)/pensel_components/416F32022CKR.pretty")(options "")(descr ""))
 )
