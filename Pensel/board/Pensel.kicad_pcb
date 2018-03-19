@@ -1,9 +1,9 @@
 (kicad_pcb (version 20160815) (host pcbnew "(2016-12-18 revision 3ffa37c)-master")
 
   (general
-    (links 151)
-    (no_connects 8)
-    (area 49.899999 138.399999 110.100001 151.600001)
+    (links 149)
+    (no_connects 0)
+    (area 48.8 135.832533 112.3125 153.240624)
     (thickness 1.6)
     (drawings 34)
     (tracks 698)
@@ -1905,7 +1905,7 @@
     (at 91.78 140.86 225)
     (path /5A9201CB)
     (attr smd)
-    (fp_text reference Y1 (at 0.657609 -1.138442 405) (layer F.SilkS)
+    (fp_text reference Y1 (at 0.657609 -1.138442 45) (layer F.SilkS)
       (effects (font (size 0.481626 0.481626) (thickness 0.05)))
     )
     (fp_text value "24 MHz" (at 2.807214 -2.326381 315) (layer F.SilkS) hide
