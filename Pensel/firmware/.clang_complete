@@ -1,9 +1,10 @@
 -I/usr/local/resources/
 -I/usr/local/resources/tools/Unity/
--ICMSIS/Include/
--ICMSIS/Device/ST/STM32F3xx/Include/
--Iinclude/
--IDriverConf/inc/
+-Iperipherals/CMSIS/Include/
+-Iperipherals/CMSIS/Device/ST/STM32F3xx/Include/
+-Iperipherals/stm32f3/
+-Iperipherals/stm32f3-configuration/
+
 -DSTM32F302x8
 -DDEBUG
 -DWATCHDOG_ENABLE

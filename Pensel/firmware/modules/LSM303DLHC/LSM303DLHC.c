@@ -9,11 +9,13 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "common.h"
-#include "queue.c"
-#include "hardware.h"
-#include "I2C.h"
+
+#include "modules/utilities/queue.c"
+#include "peripherals/hardware/hardware.h"
+#include "peripherals/I2C/I2C.h"
+#include "peripherals/stm32f3/stm32f3xx_hal.h"
+
 #include "LSM303DLHC.h"
-#include "Drivers/stm32f3xx_hal.h"
 
 
 #define ACCEL_ADDRESS (0b00110010)

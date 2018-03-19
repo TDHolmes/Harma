@@ -11,23 +11,23 @@
 #include "common.h"
 
 // Sensors
-#include "LSM303DLHC.h"
-#include "ADC.h"        // for thumbwheel
-#include "hardware.h"   // HW support and button / switch functions
+#include "modules/LSM303DLHC/LSM303DLHC.h"
+#include "peripherals/ADC/ADC.h"        // for thumbwheel
+#include "peripherals/hardware/hardware.h"   // HW support and button / switch functions
 
 // Communications and such
-#include "I2C.h"
-#include "UART.h"
-#include "reports.h"
+#include "peripherals/I2C/I2C.h"
+#include "peripherals/UART/UART.h"
+#include "infrastructure/UART-reports/reports.h"
 
 // Algssss
-#include "orientation.h"
-#include "cal.h"
+#include "modules/orientation/orientation.h"
+#include "modules/calibration/cal.h"
 
 // STM Drivers
-#include "Drivers/stm32f3xx_hal_def.h"
-#include "Drivers/stm32f3xx_hal.h"
-#include "stm32f3xx_hal_conf.h"
+#include "peripherals/stm32f3/stm32f3xx_hal_def.h"
+#include "peripherals/stm32f3/stm32f3xx_hal.h"
+#include "peripherals/stm32f3-configuration/stm32f3xx_hal_conf.h"
 
 
 //! HAL millisecond tick

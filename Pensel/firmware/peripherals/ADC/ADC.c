@@ -11,14 +11,15 @@
  #include <stdint.h>
  #include <stdbool.h>
  #include "common.h"
- #include "ADC.h"
 
  // STM drivers
- #include "stm32f3xx.h"
- #include "Drivers/stm32f3xx_hal_def.h"
- #include "Drivers/stm32f3xx_hal.h"
- #include "Drivers/stm32f3xx_hal_adc.h"
- #include "Drivers/stm32f3xx_hal_adc_ex.h"
+ #include "peripherals/stm32f3-configuration/stm32f3xx.h"
+ #include "peripherals/stm32f3/stm32f3xx_hal_def.h"
+ #include "peripherals/stm32f3/stm32f3xx_hal.h"
+ #include "peripherals/stm32f3/stm32f3xx_hal_adc.h"
+ #include "peripherals/stm32f3/stm32f3xx_hal_adc_ex.h"
+
+ #include "ADC.h"
 
 
 /* Definitions of data related to this example */

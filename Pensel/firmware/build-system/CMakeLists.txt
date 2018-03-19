@@ -111,96 +111,105 @@ include_directories(${ProjDirPath}/CMSIS/Device/ST/STM32F3xx/Include/)
 
 # ------------------------------- SOURCE FILES ------------------------------- #
 
-add_executable(pensel.elf
+add_executable(pensel_v1.elf
 	# user code
-	"${ProjDirPath}/source/LSM303DLHC.c"
-	"${ProjDirPath}/source/main.c"
-	"${ProjDirPath}/source/reports.c"
-	"${ProjDirPath}/source/orientation.c"
-	"${ProjDirPath}/source/movement.c"
-	"${ProjDirPath}/source/cal.c"
-	"${ProjDirPath}/source/FIR.c"
-	"${ProjDirPath}/source/queue.c"
-	"${ProjDirPath}/source/newqueue.c"
-	"${ProjDirPath}/source/UART.c"
-	"${ProjDirPath}/source/I2C.c"
-	"${ProjDirPath}/source/ADC.c"
-	"${ProjDirPath}/source/hardware.c"
-	"${ProjDirPath}/source/startup_stm32f302x8.s"
 
-	# --- Driver configuration files ----
-	"${ProjDirPath}/DriverConf/src/stm32f3xx_hal_msp.c"
-	"${ProjDirPath}/DriverConf/src/system_stm32f3xx.c"
-	"${ProjDirPath}/DriverConf/src/stm32f3xx_it.c"
+	"${ProjDirPath}/applications/pensel_v1.c"
 
-	# --- CMSIS Stuff ----
+	"${ProjDirPath}/infrastructure/UART-reports/reports.c"
 
-	# --- Drivers from vender -----
-	# some basic definitions and startup code
-	"${ProjDirPath}/Drivers/stm32f3xx_hal.c"
-	"${ProjDirPath}/Drivers/stm32f3xx_hal_cortex.c"
+	"${ProjDirPath}/modules/LSM303DLHC/LSM303DLHC.c"
+	"${ProjDirPath}/modules/orientation/movement.c"
+	"${ProjDirPath}/modules/orientation/quanternions.c"
+	"${ProjDirPath}/modules/orientation/orientation.c"
+	"${ProjDirPath}/modules/orientation/matrixmath.c"
+	"${ProjDirPath}/modules/calibration/cal.c"
+	"${ProjDirPath}/modules/utilities/FIR.c"
+	"${ProjDirPath}/modules/utilities/queue.c"
+	"${ProjDirPath}/modules/utilities/newqueue.c"
 
-	# peripheral drivers
-	"${ProjDirPath}/Drivers/stm32f3xx_hal_gpio.c"
-	"${ProjDirPath}/Drivers/stm32f3xx_hal_hrtim.c"
-	"${ProjDirPath}/Drivers/stm32f3xx_hal_i2c.c"
-	"${ProjDirPath}/Drivers/stm32f3xx_hal_i2c_ex.c"
-	"${ProjDirPath}/Drivers/stm32f3xx_hal_uart.c"
-	"${ProjDirPath}/Drivers/stm32f3xx_hal_uart_ex.c"
-	"${ProjDirPath}/Drivers/stm32f3xx_hal_dma.c"
-	"${ProjDirPath}/Drivers/stm32f3xx_hal_rcc.c"
-	"${ProjDirPath}/Drivers/stm32f3xx_hal_rcc_ex.c"
-	"${ProjDirPath}/Drivers/stm32f3xx_hal_adc.c"
-	"${ProjDirPath}/Drivers/stm32f3xx_hal_adc_ex.c"
-	"${ProjDirPath}/Drivers/stm32f3xx_hal_iwdg.c"
-	"${ProjDirPath}/Drivers/stm32f3xx_hal_flash.c"
-	"${ProjDirPath}/Drivers/stm32f3xx_hal_flash_ex.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_wwdg.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_usart.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_can.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_cec.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_comp.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_crc.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_crc_ex.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_dac.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_dac_ex.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_i2s.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_i2s_ex.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_irda.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_msp_template.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_nand.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_nor.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_opamp.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_opamp_ex.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_pccard.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_pcd.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_pcd_ex.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_pwr.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_pwr_ex.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_rtc.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_rtc_ex.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_sdadc.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_smartcard.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_smartcard_ex.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_smbus.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_spi.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_spi_ex.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_sram.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_tim.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_tim_ex.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_timebase_rtc_alarm_template.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_timebase_rtc_wakeup_template.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_timebase_tim_template.c"
-	# "${ProjDirPath}/Drivers/stm32f3xx_hal_tsc.c"
+	"${ProjDirPath}/peripherals/hardware/hardware.c"
+	"${ProjDirPath}/peripherals/I2C/I2C.c"
+	"${ProjDirPath}/peripherals/UART/UART.c"
+	"${ProjDirPath}/peripherals/ADC/ADC.c"
 
+	"${ProjDirPath}/peripherals/stm32f3-configuration/stm32f3xx_it.c"
+	"${ProjDirPath}/peripherals/stm32f3-configuration/stm32f3xx_hal_msp.c"
+	"${ProjDirPath}/peripherals/stm32f3-configuration/system_stm32f3xx.c"
+
+	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal.c"
+	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_rcc.c"
+	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_spi_ex.c"
+	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_rcc_ex.c"
+	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_i2c.c"
+	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_i2c_ex.c"
+	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_uart.c"
+	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_uart_ex.c"
+	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_usart.c"
+	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_spi.c"
+	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_gpio.c"
+	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_adc_ex.c"
+	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_iwdg.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_msp_template.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_flash.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_can.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_tsc.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_crc.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_i2s.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_wwdg.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_adc.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_opamp_ex.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_dac.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_dma.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_nand.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_pccard.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_rtc_ex.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_cec.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_smbus.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_pwr.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_i2s_ex.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_pwr_ex.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_cortex.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_hrtim.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_flash_ex.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_crc_ex.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_dac_ex.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_pcd.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_comp.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_sram.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_tim_ex.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_pcd_ex.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_opamp.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_sdadc.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_rtc.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_tim.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_nor.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_irda.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_smartcard.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_smartcard_ex.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_timebase_tim_template.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_timebase_rtc_alarm_template.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_timebase_rtc_wakeup_template.c"
+
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_ll_tim.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_ll_gpio.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_ll_spi.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_ll_rtc.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_ll_hrtim.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_ll_usart.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_ll_utils.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_ll_comp.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_ll_fmc.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_ll_i2c.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_ll_opamp.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_ll_rcc.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_ll_pwr.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_ll_dac.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_ll_dma.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_ll_adc.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_ll_exti.c"
+	# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_ll_crc.c"
 )
-
-
-# ------------------------------- LINKER FILES ------------------------------- #
-set(LINKER_LOCATION "${ProjDirPath}/compiler")
-set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} -T${LINKER_LOCATION}/pensel.ld -static")
-set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -T${LINKER_LOCATION}/pensel.ld -static")
-
 
 # ---------------------- RESOLVING CIRCULAR DEPENDENCIES --------------------- #
 # http://stackoverflow.com/questions/5651869/gcc-what-are-the-start-group-and-end-group-command-line-options
@@ -217,3 +226,8 @@ target_link_libraries(pensel.elf optimized gcc)
 target_link_libraries(pensel.elf optimized nosys)
 
 TARGET_LINK_LIBRARIES(pensel.elf -Wl,--end-group)
+
+# ------------------------------- LINKER FILES ------------------------------- #
+set(LINKER_LOCATION "${ProjDirPath}/compiler")
+set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} -T${LINKER_LOCATION}/pensel.ld -static")
+set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -T${LINKER_LOCATION}/pensel.ld -static")
