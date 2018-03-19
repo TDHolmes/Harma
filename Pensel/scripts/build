@@ -68,7 +68,7 @@ def build_debug(use_clang=False, armgcc_dir="", verbose=False):
     os.system(cmd)
 
     # make the code
-    cmd = "make -j4"
+    cmd = "make pensel_v1.elf -j4"
     if verbose:
         cmd += " VERBOSE=1"
 
@@ -139,7 +139,7 @@ def build_display_size(build_type, chip_total_flash, chip_total_ram):
     """
     Expected output from the arm toolchain size function:
     text    data     bss     dec     hex filename
-    6772     112     664    7548    1d7c debug/pensel.elf
+    6772     112     664    7548    1d7c debug/pensel_v1.elf
 
     Adds in a percentage measurement.
     """
@@ -150,7 +150,7 @@ def build_display_size(build_type, chip_total_flash, chip_total_ram):
     print("\n———————————— {} BUILD SIZE ———————————————\n".format(b))
     sys.stdout.write(pensel_utils.bcolors.COLOR_NC)
     sys.stdout.flush()
-    file_location = "build/{}/pensel.elf".format(build_type)
+    file_location = "build/{}/pensel_v1.elf".format(build_type)
     cmd = "arm-none-eabi-size {} --radix=10".format(file_location)
     stdout, stderr, retval = pensel_utils.run_command(cmd, print_output=False)
     fields = stdout.splitlines()[0].split()
@@ -194,7 +194,7 @@ def build_get_section_info(build_type, chip_total_flash, chip_total_ram):
     sys.stdout.write(pensel_utils.bcolors.COLOR_NC)
     sys.stdout.flush()
     cmd = "arm-none-eabi-nm --print-size --size-sort --radix=d --demangle " + \
-        "--defined-only build/{}/pensel.elf".format(build_type.lower())
+        "--defined-only build/{}/pensel_v1.elf".format(build_type.lower())
 
     stdout, stderr, retval = pensel_utils.run_command(cmd, print_output=False)
 

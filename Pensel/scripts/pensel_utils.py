@@ -600,7 +600,7 @@ def run_command(cmd, print_output=True):
     """
     def enqueue_output(out, queue):
         for line in iter(out.readline, b''):
-            queue.put(line)
+            queue.put(line.decode("utf-8"))
         out.close()
 
     print(" -> {}".format(cmd))
