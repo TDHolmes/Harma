@@ -9,7 +9,7 @@
 
 #include <stdint.h>
 #include "common.h"
-#include "LSM303DLHC.h"
+#include "modules/LSM303DLHC/LSM303DLHC.h"
 
 #define OUTPUT_BUFF_LEN (255 + RPT_HEADER_SIZE)
 

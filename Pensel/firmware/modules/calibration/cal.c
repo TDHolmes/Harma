@@ -10,9 +10,10 @@
 #include <string.h>
 
 #include "stm32f3xx.h"
-#include "Drivers/stm32f3xx_hal_flash.h"
-#include "Drivers/stm32f3xx_hal_flash_ex.h"
+#include "peripherals/stm32f3/stm32f3xx_hal_flash.h"
+#include "peripherals/stm32f3/stm32f3xx_hal_flash_ex.h"
 #include "common.h"
+
 #include "cal.h"
 #include "default_cal.h"
 

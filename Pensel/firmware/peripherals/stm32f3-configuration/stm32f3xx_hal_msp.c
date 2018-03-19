@@ -37,14 +37,14 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f3xx.h"
-#include "Drivers/stm32f3xx_hal_def.h"
-#include "Drivers/stm32f3xx_hal.h"
-#include "Drivers/stm32f3xx_hal_uart.h"
-#include "Drivers/stm32f3xx_hal_i2c.h"
-#include "Drivers/stm32f3xx_hal_rcc.h"
-#include "Drivers/stm32f3xx_hal_rcc_ex.h"
-#include "Drivers/stm32f3xx_hal_adc.h"
-#include "Drivers/stm32f3xx_hal_adc_ex.h"
+#include "peripherals/stm32f3/stm32f3xx_hal_def.h"
+#include "peripherals/stm32f3/stm32f3xx_hal.h"
+#include "peripherals/stm32f3/stm32f3xx_hal_uart.h"
+#include "peripherals/stm32f3/stm32f3xx_hal_i2c.h"
+#include "peripherals/stm32f3/stm32f3xx_hal_rcc.h"
+#include "peripherals/stm32f3/stm32f3xx_hal_rcc_ex.h"
+#include "peripherals/stm32f3/stm32f3xx_hal_adc.h"
+#include "peripherals/stm32f3/stm32f3xx_hal_adc_ex.h"
 
 // I2C definitions!!!
 #define I2Cx                            I2C2

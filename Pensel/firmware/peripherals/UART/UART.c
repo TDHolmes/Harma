@@ -11,14 +11,15 @@
 #include <string.h>
 #include "common.h"
 #include "UART.h"
-#include "queue.h"
-#include "newqueue.h"
+
+#include "modules/utilities/queue.h"
+#include "modules/utilities/newqueue.h"
 
 // STM driver includes
-#include "stm32f3xx.h"
-#include "Drivers/stm32f3xx_hal_def.h"
-#include "Drivers/stm32f3xx_hal.h"
-#include "Drivers/stm32f3xx_hal_uart.h"
+#include "peripherals/stm32f3-configuration/stm32f3xx.h"
+#include "peripherals/stm32f3/stm32f3xx_hal_def.h"
+#include "peripherals/stm32f3/stm32f3xx_hal.h"
+#include "peripherals/stm32f3/stm32f3xx_hal_uart.h"
 
 extern critical_errors_t gCriticalErrors;
 

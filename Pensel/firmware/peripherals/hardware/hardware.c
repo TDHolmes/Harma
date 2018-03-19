@@ -9,20 +9,22 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+
 // User includes
 #include "common.h"
-#include "hardware.h"
-#include "LSM303DLHC.h"
+#include "modules/LSM303DLHC/LSM303DLHC.h"
 
 // STM drivers
-#include "stm32f3xx.h"
-#include "Drivers/stm32f3xx_hal_def.h"
-#include "Drivers/stm32f3xx_hal.h"
-#include "Drivers/stm32f3xx_hal_rcc.h"
-#include "Drivers/stm32f3xx_hal_flash.h"
-#include "Drivers/stm32f3xx_hal_gpio.h"
-#include "Drivers/stm32f3xx_hal_iwdg.h"
-#include "Drivers/stm32f3xx_ll_bus.h"
+#include "peripherals/stm32f3-configuration/stm32f3xx.h"
+#include "peripherals/stm32f3/stm32f3xx_hal.h"
+#include "peripherals/stm32f3/stm32f3xx_hal_def.h"
+#include "peripherals/stm32f3/stm32f3xx_hal_rcc.h"
+#include "peripherals/stm32f3/stm32f3xx_hal_flash.h"
+#include "peripherals/stm32f3/stm32f3xx_hal_gpio.h"
+#include "peripherals/stm32f3/stm32f3xx_hal_iwdg.h"
+#include "peripherals/stm32f3/stm32f3xx_ll_bus.h"
+
+#include "hardware.h"
 
 
 //! The amount of time, in ms, that must ellapse before changing button / switch state

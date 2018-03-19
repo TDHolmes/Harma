@@ -37,15 +37,16 @@
   ******************************************************************************
   */
 
-#include "hardware.h"
 #include "stm32f3xx.h"
 #include "stm32f3xx_it.h"
-#include "Drivers/stm32f3xx_hal_def.h"
-#include "Drivers/stm32f3xx_hal.h"
+
+#include "peripherals/hardware/hardware.h"
+#include "peripherals/stm32f3/stm32f3xx_hal_def.h"
+#include "peripherals/stm32f3/stm32f3xx_hal.h"
 
 // Peripherals used
-#include "Drivers/stm32f3xx_hal_i2c.h"
-#include "Drivers/stm32f3xx_hal_uart.h"
+#include "peripherals/stm32f3/stm32f3xx_hal_i2c.h"
+#include "peripherals/stm32f3/stm32f3xx_hal_uart.h"
 
 
 /* I2C handler declared in "main.c" file */

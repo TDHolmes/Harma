@@ -15,9 +15,9 @@
 
 // STM HAL libraries
 #include "stm32f3xx.h"
-#include "Drivers/stm32f3xx_hal_def.h"
-#include "Drivers/stm32f3xx_hal.h"
-#include "Drivers/stm32f3xx_hal_i2c.h"
+#include "peripherals/stm32f3/stm32f3xx_hal_def.h"
+#include "peripherals/stm32f3/stm32f3xx_hal.h"
+#include "peripherals/stm32f3/stm32f3xx_hal_i2c.h"
 
 
 

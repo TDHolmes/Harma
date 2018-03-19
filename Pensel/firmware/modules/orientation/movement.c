@@ -7,7 +7,7 @@
  */
 #include <stdint.h>
 
-#include "LSM303DLHC.h"
+#include "modules/LSM303DLHC/LSM303DLHC.h"
 #include "quanternions.h"
 #include "FIR_coefficients.h"
 

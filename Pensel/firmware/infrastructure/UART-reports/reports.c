@@ -11,12 +11,12 @@
 
 #include "common.h"
 #include "reports.h"
-#include "LSM303DLHC.h"
-#include "cal.h"
-#include "orientation.h"
-#include "UART.h"        // TODO: Remove and switch back to function pointers
-#include "hardware.h"
-#include "newqueue.h"
+#include "modules/LSM303DLHC/LSM303DLHC.h"
+#include "modules/calibration/cal.h"
+#include "modules/orientation/orientation.h"
+#include "peripherals/UART/UART.h"        // TODO: Remove and switch back to function pointers
+#include "peripherals/hardware/hardware.h"
+#include "modules/utilities/newqueue.h"
 
 
 // TODO: Is this extern declaration a good idea? Or should I include the HAL header?
