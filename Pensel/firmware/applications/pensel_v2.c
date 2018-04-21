@@ -95,44 +95,30 @@ int main(void)
     configure_pins();
     clear_critical_errors();
 
-    retval = UART_init(250000);
-    check_retval_fatal(__FILE__, __LINE__, retval);
+    // retval = UART_init(250000);
+    // check_retval_fatal(__FILE__, __LINE__, retval);
 
     #ifdef WATCHDOG_ENABLE
-    if ( wdg_isSet() ) {
-        // set a report variable in critical errors
-        gCriticalErrors.wdg_reset = 1;
-        #ifdef WATCHDOG_CAPTURE
-            wdg_captureAlert();
-        #endif
-    }
-    retval = wdg_init();
-    check_retval_fatal(__FILE__, __LINE__, retval);
-    gPetWdg = true;
+        if ( wdg_isSet() ) {
+            // set a report variable in critical errors
+            gCriticalErrors.wdg_reset = 1;
+            #ifdef WATCHDOG_CAPTURE
+                wdg_captureAlert();
+            #endif
+        }
+        retval = wdg_init();
+        check_retval_fatal(__FILE__, __LINE__, retval);
+        gPetWdg = true;
     #endif
 
     // peripheral configuration
-    retval = I2C_init();
-    check_retval_fatal(__FILE__, __LINE__, retval);
-
-    retval = orient_init();
-    check_retval_fatal(__FILE__, __LINE__, retval);
-
-    // Load Calibration
-    cal_loadFromFlash();
-    if (cal_checkValidity() != RET_OK) {
-        cal_loadDefaults();
-    }
+    // retval = I2C_init();
+    // check_retval_fatal(__FILE__, __LINE__, retval);
 
     LED_set(LED_0, 0);
     LED_set(LED_1, 0);
 
     while (true) {
-        // Parse reports and such
-        // rpt_run();
-
-        // get packets and such
-        LSM303DLHC_run();
 
         // let the user know roughly how many workloops are ocurring
         if (subcount == 100000) {
