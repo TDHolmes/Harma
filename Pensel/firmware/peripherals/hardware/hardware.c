@@ -489,7 +489,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
             switch_ISR(GPIO_Pin);
             break;
         case SENSOR_DRDY:
-            LSM303DLHC_drdy_ISR();
+            #ifdef PENSEL_V1
+                LSM303DLHC_drdy_ISR();
+            #endif
             break;
         // case SENSOR_INT:
         //     LSM303DLHC_int_handler();
