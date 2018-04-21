@@ -110,33 +110,7 @@ include_directories(${ProjDirPath}/peripherals/CMSIS/Device/ST/STM32F3xx/Include
 
 # ------------------------------- SOURCE FILES ------------------------------- #
 
-add_executable(pensel_v1.elf
-	# user code
-
-	"${ProjDirPath}/applications/pensel_v1.c"
-
-	"${ProjDirPath}/infrastructure/UART-reports/reports.c"
-
-	"${ProjDirPath}/modules/LSM303DLHC/LSM303DLHC.c"
-	"${ProjDirPath}/modules/orientation/movement.c"
-	"${ProjDirPath}/modules/orientation/quanternions.c"
-	"${ProjDirPath}/modules/orientation/orientation.c"
-	"${ProjDirPath}/modules/orientation/matrixmath.c"
-	"${ProjDirPath}/modules/calibration/cal.c"
-	"${ProjDirPath}/modules/utilities/FIR.c"
-	"${ProjDirPath}/modules/utilities/queue.c"
-	"${ProjDirPath}/modules/utilities/newqueue.c"
-
-	"${ProjDirPath}/peripherals/CMSIS/Device/ST/STM32F3xx/Source/Templates/gcc/startup_stm32f302x8.s"
-
-	"${ProjDirPath}/peripherals/hardware/hardware.c"
-	"${ProjDirPath}/peripherals/I2C/I2C.c"
-	"${ProjDirPath}/peripherals/UART/UART.c"
-	"${ProjDirPath}/peripherals/ADC/ADC.c"
-
-	"${ProjDirPath}/peripherals/stm32f3-configuration/stm32f3xx_it.c"
-	"${ProjDirPath}/peripherals/stm32f3-configuration/stm32f3xx_hal_msp.c"
-	"${ProjDirPath}/peripherals/stm32f3-configuration/system_stm32f3xx.c"
+list(APPEND STM32_HAL_sources
 
 	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal.c"
 	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_rcc.c"
@@ -213,6 +187,51 @@ add_executable(pensel_v1.elf
 		# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_ll_crc.c"
 )
 
+list(APPEND common_peripherals
+
+	"${ProjDirPath}/peripherals/hardware/hardware.c"
+	"${ProjDirPath}/peripherals/I2C/I2C.c"
+	"${ProjDirPath}/peripherals/UART/UART.c"
+	"${ProjDirPath}/peripherals/ADC/ADC.c"
+	"${ProjDirPath}/peripherals/CMSIS/Device/ST/STM32F3xx/Source/Templates/gcc/startup_stm32f302x8.s"
+	"${ProjDirPath}/peripherals/stm32f3-configuration/stm32f3xx_it.c"
+	"${ProjDirPath}/peripherals/stm32f3-configuration/stm32f3xx_hal_msp.c"
+	"${ProjDirPath}/peripherals/stm32f3-configuration/system_stm32f3xx.c"
+)
+
+list(APPEND stm32_usb_lib
+
+	# USB library
+	"${ProjDirPath}/peripherals/stm32-usb/usb_sil.c"
+	"${ProjDirPath}/peripherals/stm32-usb/usb_init.c"
+	"${ProjDirPath}/peripherals/stm32-usb/usb_int.c"
+	"${ProjDirPath}/peripherals/stm32-usb/usb_regs.c"
+	"${ProjDirPath}/peripherals/stm32-usb/usb_mem.c"
+	"${ProjDirPath}/peripherals/stm32-usb/usb_core.c"
+)
+
+add_executable(pensel_v1.elf
+	# user code
+
+	"${ProjDirPath}/applications/pensel_v1.c"
+
+	"${ProjDirPath}/infrastructure/UART-reports/reports.c"
+
+	"${ProjDirPath}/modules/LSM303DLHC/LSM303DLHC.c"
+	"${ProjDirPath}/modules/orientation/movement.c"
+	"${ProjDirPath}/modules/orientation/quanternions.c"
+	"${ProjDirPath}/modules/orientation/orientation.c"
+	"${ProjDirPath}/modules/orientation/matrixmath.c"
+	"${ProjDirPath}/modules/calibration/cal.c"
+	"${ProjDirPath}/modules/utilities/FIR.c"
+	"${ProjDirPath}/modules/utilities/queue.c"
+	"${ProjDirPath}/modules/utilities/newqueue.c"
+
+	"${common_peripherals}"
+	"${STM32_HAL_sources}"
+
+)
+
 add_executable(pensel_v2.elf
 
 	"${ProjDirPath}/applications/pensel_v2.c"
@@ -226,37 +245,28 @@ add_executable(pensel_v2.elf
 	"${ProjDirPath}/modules/utilities/queue.c"
 	"${ProjDirPath}/modules/utilities/newqueue.c"
 
-	"${ProjDirPath}/peripherals/hardware/hardware.c"
-	"${ProjDirPath}/peripherals/I2C/I2C.c"
-	"${ProjDirPath}/peripherals/UART/UART.c"
-	"${ProjDirPath}/peripherals/ADC/ADC.c"
-
-	"${ProjDirPath}/peripherals/stm32f3-configuration/stm32f3xx_it.c"
-	"${ProjDirPath}/peripherals/stm32f3-configuration/stm32f3xx_hal_msp.c"
-	"${ProjDirPath}/peripherals/stm32f3-configuration/system_stm32f3xx.c"
-
-	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal.c"
-	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_rcc.c"
-	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_spi_ex.c"
-	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_rcc_ex.c"
-	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_i2c.c"
-	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_i2c_ex.c"
-	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_uart.c"
-	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_uart_ex.c"
-	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_usart.c"
-	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_spi.c"
-	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_gpio.c"
-	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_adc_ex.c"
-	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_iwdg.c"
-
-	# USB library
-	"${ProjDirPath}/peripherals/stm32-usb/usb_sil.c"
-	"${ProjDirPath}/peripherals/stm32-usb/usb_init.c"
-	"${ProjDirPath}/peripherals/stm32-usb/usb_int.c"
-	"${ProjDirPath}/peripherals/stm32-usb/usb_regs.c"
-	"${ProjDirPath}/peripherals/stm32-usb/usb_mem.c"
-	"${ProjDirPath}/peripherals/stm32-usb/usb_core.c"
+	"${common_peripherals}"
+	"${STM32_HAL_sources}"
+	# "${stm32_usb_lib}"
 )
+
+add_executable(pensel_unittests.elf
+
+	"${ProjDirPath}/applications/pensel_unittests.c"
+
+	"${ProjDirPath}/modules/utilities/queue.c"
+	"${ProjDirPath}/modules/utilities/newqueue.c"
+
+	"${common_peripherals}"
+	"${STM32_HAL_sources}"
+	# "${stm32_usb_lib}"
+)
+
+# ----- target specific defines
+target_compile_definitions(pensel_v1.elf PUBLIC PENSEL_V1)
+target_compile_definitions(pensel_v2.elf PUBLIC PENSEL_V2)
+target_compile_definitions(pensel_unittests.elf PUBLIC PENSEL_UNITTESTS)
+
 
 # ---------------------- RESOLVING CIRCULAR DEPENDENCIES --------------------- #
 # http://stackoverflow.com/questions/5651869/gcc-what-are-the-start-group-and-end-group-command-line-options
@@ -288,6 +298,21 @@ target_link_libraries(pensel_v2.elf optimized gcc)
 target_link_libraries(pensel_v2.elf optimized nosys)
 
 TARGET_LINK_LIBRARIES(pensel_v2.elf -Wl,--end-group)
+
+# --- unittests
+
+TARGET_LINK_LIBRARIES(pensel_unittests.elf -Wl,--start-group)
+
+target_link_libraries(pensel_unittests.elf debug m)
+target_link_libraries(pensel_unittests.elf debug c)
+target_link_libraries(pensel_unittests.elf debug gcc)
+target_link_libraries(pensel_unittests.elf debug nosys)
+target_link_libraries(pensel_unittests.elf optimized m)
+target_link_libraries(pensel_unittests.elf optimized c)
+target_link_libraries(pensel_unittests.elf optimized gcc)
+target_link_libraries(pensel_unittests.elf optimized nosys)
+
+TARGET_LINK_LIBRARIES(pensel_unittests.elf -Wl,--end-group)
 
 # ------------------------------- LINKER FILES ------------------------------- #
 set(LINKER_LOCATION "${ProjDirPath}/build-system")

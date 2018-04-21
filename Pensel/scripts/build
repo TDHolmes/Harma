@@ -38,8 +38,8 @@ SECTION_NAME_EXPLAINATIONS = {
     '?': "The symbol type is unknown, or object file format specific"}
 
 VALID_BUILD_TARGETS = [
-    "pensel_v1",
-    "pensel_v2",
+    "v1",
+    "v2",
     "unittests"
 ]
 
@@ -74,7 +74,7 @@ def build_debug(build_target, use_clang=False, armgcc_dir="", verbose=False):
     os.system(cmd)
 
     # make the code
-    cmd = f"make {build_target}.elf -j4"
+    cmd = f"make {build_target} -j4"
     if verbose:
         cmd += " VERBOSE=1"
 
@@ -117,7 +117,7 @@ def build_release(build_target, use_clang=False, armgcc_dir="", verbose=False):
     os.system(cmd)
 
     # make the code
-    cmd = f"make {build_target}.elf -j4"
+    cmd = f"make {build_target} -j4"
     if verbose:
         cmd += " VERBOSE=1"
 
@@ -282,8 +282,9 @@ if __name__ == '__main__':
     if not os.path.exists(os.path.join(current_path, "build/Debug")):
         os.mkdir(os.path.join(current_path, "build/Debug"))
 
+    build_target = f"pensel_{args.type}.elf"
     if build == "debug" or build == "all":
-        retval = build_debug(args.type, args.clang, args.gcc_dir, args.verbose)
+        retval = build_debug(build_target, args.clang, args.gcc_dir, args.verbose)
         if retval == 0:
             build_display_size(build_type="Debug",
                                chip_total_flash=args.flash_size,
@@ -292,7 +293,7 @@ if __name__ == '__main__':
                 build_get_section_info("Debug", args.flash_size, args.ram_size)
 
     if build == "release" or build == "all":
-        retval = build_release(args.type, args.clang, args.gcc_dir, args.verbose)
+        retval = build_release(build_target, args.clang, args.gcc_dir, args.verbose)
         if retval == 0:
             build_display_size(build_type="Release",
                                chip_total_flash=args.flash_size,
