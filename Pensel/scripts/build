@@ -7,7 +7,7 @@ import subprocess
 import pensel_utils
 
 
-section_name_explainations = {
+SECTION_NAME_EXPLAINATIONS = {
     'a': "The symbol's value is absolute, and will not be changed by further linking",
     'b': "The symbol is in the uninitialized data section (known as BSS)",
     'c': "The symbol is common. Common symbols are uninitialized data. When linking, multiple common symbols may "
@@ -37,8 +37,14 @@ section_name_explainations = {
     "other field, the stabs desc field, and the stab type. Stabs symbols are used to hold debugging information",
     '?': "The symbol type is unknown, or object file format specific"}
 
+VALID_BUILD_TARGETS = [
+    "pensel_v1",
+    "pensel_v2",
+    "unittests"
+]
 
-def build_debug(use_clang=False, armgcc_dir="", verbose=False):
+
+def build_debug(build_target, use_clang=False, armgcc_dir="", verbose=False):
     """Builds a debug version of the source code."""
     sys.stdout.write(pensel_utils.bcolors.COLOR_YELLOW)
     print("\n————————————————————— DEBUG BUILD ————————————————————————\n")
@@ -68,7 +74,7 @@ def build_debug(use_clang=False, armgcc_dir="", verbose=False):
     os.system(cmd)
 
     # make the code
-    cmd = "make pensel_v1.elf -j4"
+    cmd = f"make {build_target}.elf -j4"
     if verbose:
         cmd += " VERBOSE=1"
 
@@ -81,7 +87,7 @@ def build_debug(use_clang=False, armgcc_dir="", verbose=False):
     return retval
 
 
-def build_release(use_clang=False, armgcc_dir="", verbose=False):
+def build_release(build_target, use_clang=False, armgcc_dir="", verbose=False):
     """Builds a release version of the source code."""
     sys.stdout.write(pensel_utils.bcolors.COLOR_YELLOW)
     print("\n————————————————————— RELEASE BUILD ————————————————————————\n")
@@ -111,7 +117,7 @@ def build_release(use_clang=False, armgcc_dir="", verbose=False):
     os.system(cmd)
 
     # make the code
-    cmd = "make -j4"
+    cmd = f"make {build_target}.elf -j4"
     if verbose:
         cmd += " VERBOSE=1"
 
@@ -216,7 +222,7 @@ def build_get_section_info(build_type, chip_total_flash, chip_total_ram):
         data_sorted = sorted(data, key=lambda d: d[1], reverse=True)
 
         print("\nSection {}:".format(key))
-        print("{}".format(section_name_explainations[key]))
+        print("{}".format(SECTION_NAME_EXPLAINATIONS[key]))
         for d in data_sorted:
             name, size = d
             sys.stdout.write(pensel_utils.bcolors.COLOR_WHITE)
@@ -241,6 +247,8 @@ if __name__ == '__main__':
     parser.add_argument("build", type=str,
                         help="Type of build to run. Options are: "
                              "'debug', 'release', 'all', and 'clean'.")
+    parser.add_argument("-t", "--type", dest='type', action='store', default="pensel_v1",
+                        choices=VALID_BUILD_TARGETS, help="target of the build you want")
     parser.add_argument("-f", "--flash-size", type=int, default=64,
                         help="total flash size available on the "
                              "chip in Kibibytes. Defaults to 64k.")
@@ -275,7 +283,7 @@ if __name__ == '__main__':
         os.mkdir(os.path.join(current_path, "build/Debug"))
 
     if build == "debug" or build == "all":
-        retval = build_debug(args.clang, args.gcc_dir, args.verbose)
+        retval = build_debug(args.type, args.clang, args.gcc_dir, args.verbose)
         if retval == 0:
             build_display_size(build_type="Debug",
                                chip_total_flash=args.flash_size,
@@ -284,7 +292,7 @@ if __name__ == '__main__':
                 build_get_section_info("Debug", args.flash_size, args.ram_size)
 
     if build == "release" or build == "all":
-        retval = build_release(args.clang, args.gcc_dir, args.verbose)
+        retval = build_release(args.type, args.clang, args.gcc_dir, args.verbose)
         if retval == 0:
             build_display_size(build_type="Release",
                                chip_total_flash=args.flash_size,
