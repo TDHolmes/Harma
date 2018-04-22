@@ -141,11 +141,11 @@ def build_clean(remove_elf_files=True):
     pensel_utils.run_command(cmd)
 
 
-def build_display_size(build_type, chip_total_flash, chip_total_ram):
+def build_display_size(build_target, build_type, chip_total_flash, chip_total_ram):
     """
     Expected output from the arm toolchain size function:
     text    data     bss     dec     hex filename
-    6772     112     664    7548    1d7c debug/pensel_v1.elf
+    6772     112     664    7548    1d7c debug/{build_target}
 
     Adds in a percentage measurement.
     """
@@ -156,7 +156,7 @@ def build_display_size(build_type, chip_total_flash, chip_total_ram):
     print("\n———————————— {} BUILD SIZE ———————————————\n".format(b))
     sys.stdout.write(pensel_utils.bcolors.COLOR_NC)
     sys.stdout.flush()
-    file_location = "build/{}/pensel_v1.elf".format(build_type)
+    file_location = f"build/{build_type}/{build_target}"
     cmd = "arm-none-eabi-size {} --radix=10".format(file_location)
     stdout, stderr, retval = pensel_utils.run_command(cmd, print_output=False)
     fields = stdout.splitlines()[0].split()
@@ -187,7 +187,7 @@ def build_display_size(build_type, chip_total_flash, chip_total_ram):
     sys.stdout.write(pensel_utils.bcolors.COLOR_NC)
 
 
-def build_get_section_info(build_type, chip_total_flash, chip_total_ram):
+def build_get_section_info(build_target, build_type, chip_total_flash, chip_total_ram):
 
     def section_is_ram(key):
         return (key == "r" or key == "b" or key == "d" or key == "g" or key == "c")
@@ -200,7 +200,7 @@ def build_get_section_info(build_type, chip_total_flash, chip_total_ram):
     sys.stdout.write(pensel_utils.bcolors.COLOR_NC)
     sys.stdout.flush()
     cmd = "arm-none-eabi-nm --print-size --size-sort --radix=d --demangle " + \
-        "--defined-only build/{}/pensel_v1.elf".format(build_type.lower())
+        f"--defined-only build/{build_type.lower()}/{build_target}"
 
     stdout, stderr, retval = pensel_utils.run_command(cmd, print_output=False)
 
@@ -286,20 +286,20 @@ if __name__ == '__main__':
     if build == "debug" or build == "all":
         retval = build_debug(build_target, args.clang, args.gcc_dir, args.verbose)
         if retval == 0:
-            build_display_size(build_type="Debug",
+            build_display_size(build_target, build_type="Debug",
                                chip_total_flash=args.flash_size,
                                chip_total_ram=args.ram_size)
             if args.show_usage:
-                build_get_section_info("Debug", args.flash_size, args.ram_size)
+                build_get_section_info(build_target, "Debug", args.flash_size, args.ram_size)
 
     if build == "release" or build == "all":
         retval = build_release(build_target, args.clang, args.gcc_dir, args.verbose)
         if retval == 0:
-            build_display_size(build_type="Release",
+            build_display_size(build_target, build_type="Release",
                                chip_total_flash=args.flash_size,
                                chip_total_ram=args.ram_size)
             if args.show_usage:
-                build_get_section_info("Release", args.flash_size, args.ram_size)
+                build_get_section_info(build_target, "Release", args.flash_size, args.ram_size)
 
     if build == "clean":
         build_clean(remove_elf_files=True)
