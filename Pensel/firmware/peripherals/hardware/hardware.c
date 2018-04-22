@@ -112,39 +112,104 @@ uint8_t auxbutton_getval(void)     { return auxbutton_admin.state; }
   * @param  None
   * @retval None
   */
-void SystemClock_Config(void)
-{
-    RCC_ClkInitTypeDef RCC_ClkInitStruct;
-    RCC_OscInitTypeDef RCC_OscInitStruct;
-    HAL_StatusTypeDef retval;
 
-    /* HSI Oscillator already ON after system reset, activate PLL with HSI as source */
-    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_NONE;
-    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-    RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-    RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL16;
-    retval = HAL_RCC_OscConfig(&RCC_OscInitStruct);
-    if (retval != HAL_OK)
+#ifdef PENSEL_V1
+    void SystemClock_Config(void)
     {
-        /* Initialization Error */
-        fatal_error_handler(__FILE__, __LINE__, retval);
-    }
+        RCC_ClkInitTypeDef RCC_ClkInitStruct;
+        RCC_OscInitTypeDef RCC_OscInitStruct;
+        HAL_StatusTypeDef retval;
 
-    /* Select PLL as system clock source and configure the HCLK, PCLK1 and PCLK2
-     clocks dividers */
-    RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK |
-                                   RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2);
-    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-    RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-    RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
-    RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
-    retval = HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2);
-    if (retval != HAL_OK)
-    {
-        /* Initialization Error */
-        fatal_error_handler(__FILE__, __LINE__, retval);
+        /* HSI Oscillator already ON after system reset, activate PLL with HSI as source */
+        RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_NONE;
+        RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+        RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+        RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL16;
+        retval = HAL_RCC_OscConfig(&RCC_OscInitStruct);
+        if (retval != HAL_OK)
+        {
+            /* Initialization Error */
+            fatal_error_handler(__FILE__, __LINE__, retval);
+        }
+
+        /* Select PLL as system clock source and configure the HCLK, PCLK1 and PCLK2
+         clocks dividers */
+        RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK |
+                                       RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2);
+        RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+        RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+        RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
+        RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+        retval = HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2);
+        if (retval != HAL_OK)
+        {
+            /* Initialization Error */
+            fatal_error_handler(__FILE__, __LINE__, retval);
+        }
     }
-}
+#elif PENSEL_V2 || PENSEL_UNITTESTS
+    void SystemClock_Config(void)
+    {
+        RCC_OscInitTypeDef RCC_OscInitStruct;
+        RCC_ClkInitTypeDef RCC_ClkInitStruct;
+        RCC_PeriphCLKInitTypeDef PeriphClkInit;
+        HAL_StatusTypeDef retval;
+
+        /* Initializes the CPU, AHB and APB busses clock */
+        RCC_OscInitStruct.OscillatorType =
+            RCC_OSCILLATORTYPE_HSI | RCC_OSCILLATORTYPE_LSI | RCC_OSCILLATORTYPE_HSE;
+        RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+        RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV4;
+        RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+        RCC_OscInitStruct.HSICalibrationValue = 16;
+        RCC_OscInitStruct.LSIState = RCC_LSI_ON;
+        RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+        RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+        RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
+        retval = HAL_RCC_OscConfig(&RCC_OscInitStruct);
+        if (retval != HAL_OK)
+        {
+              fatal_error_handler(__FILE__, __LINE__, retval);
+        }
+
+        /* Initializes the CPU, AHB and APB busses clocks */
+        RCC_ClkInitStruct.ClockType =
+            RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK |
+            RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+        RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+        RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+        RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
+        RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+
+        retval = HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2);
+        if (retval != HAL_OK)
+        {
+              fatal_error_handler(__FILE__, __LINE__, retval);
+        }
+
+        PeriphClkInit.PeriphClockSelection =
+            RCC_PERIPHCLK_USB | RCC_PERIPHCLK_USART1 | RCC_PERIPHCLK_I2C1;
+        PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK1;
+        PeriphClkInit.I2c1ClockSelection = RCC_I2C1CLKSOURCE_HSI;
+        PeriphClkInit.USBClockSelection = RCC_USBCLKSOURCE_PLL_DIV1_5;
+        retval = HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit);
+        if (retval != HAL_OK)
+        {
+            fatal_error_handler(__FILE__, __LINE__, retval);
+        }
+
+          /**Configure the Systick interrupt time
+          */
+        HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq() / 1000);
+
+          /**Configure the Systick
+          */
+        HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
+
+        /* SysTick_IRQn interrupt configuration */
+        HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
+    }
+#endif
 
 /*! Configures all of the pins (& interrupt priority if applicable) in the project
  *  to what they need to be. (i.e. input, output, falling interrupt, etc)
