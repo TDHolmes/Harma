@@ -235,22 +235,8 @@ void configure_pins(void)
     HAL_NVIC_SetPriority((IRQn_Type)(EXTI4_IRQn), 4, 1);     // Aux button
 
     // enable interrupts
-    switch_irq_enable();
     mainbtn_irq_enable();
     auxbtn_irq_enable();
-    sensorDRDY_irq_enable();
-}
-
-/*! Enables the interrupt corrisponding to the LSM303DLHC DRDY pin. */
-static inline void sensorDRDY_irq_enable(void)
-{
-    HAL_NVIC_EnableIRQ((IRQn_Type)(EXTI15_10_IRQn));
-}
-
-/*! Disables the interrupt corrisponding to the LSM303DLHC DRDY pin. */
-static inline void sensorDRDY_irq_disable(void)
-{
-    HAL_NVIC_DisableIRQ((IRQn_Type)(EXTI15_10_IRQn));
 }
 
 /*! Enables the interrupt corrisponding to the main button pin. */
