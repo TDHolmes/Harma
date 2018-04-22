@@ -16,8 +16,9 @@
 
 // Sensor stuff
 #define SENSOR_PORT (GPIOA)
-#define SENSOR_DRDY (GPIO_PIN_11)
-#define SENSOR_INT  (GPIO_PIN_12)
+#define SENSOR_DRDY (GPIO_PIN_2)
+#define SENSOR_INT1 (GPIO_PIN_0)
+#define SENSOR_INT2 (GPIO_PIN_1)
 
 // LED / exposed pad stuff
 #define LED_PORT   (GPIOA)
@@ -26,49 +27,41 @@
 #define EXTRA_GPIO (GPIO_PIN_8)
 
 // Button & switch stuff
-#define SWITCH_BUTTON_PORT (GPIOA)
-#define SWITCH_0           (GPIO_PIN_1)
-#define SWITCH_1           (GPIO_PIN_2)
-#define SWITCH_2           (GPIO_PIN_3)
-#define BUTTON_AUX         (GPIO_PIN_4)
-#define BUTTON_MAIN        (GPIO_PIN_5)
-
-// Thumbwheel
-#define THUMBWHEEL_PORT (GPIOA)
-#define THUMBWHEEL      (GPIO_PIN_0)
+#define BUTTON_PORT  (GPIOA)
+#define BUTTON_AUX   (GPIO_PIN_4)
+#define BUTTON_MAIN  (GPIO_PIN_3)
 
 // I2C
-#define I2C_PORT    (GPIOF)
-#define I2C_SDA     (GPIO_PIN_0)
-#define I2C_SCL     (GPIO_PIN_1)
+#define I2C_PORT    (GPIOB)
+#define I2C_SDA     (GPIO_PIN_7)
+#define I2C_SCL     (GPIO_PIN_6)
 
 // UART
 #define UART_PORT   (GPIOA)
 #define UART_RX     (GPIO_PIN_10)
 #define UART_TX     (GPIO_PIN_9)
 
+// USB
+#define USB_PORT   (GPIOA)
+#define USB_DM     (GPIO_PIN_11)
+#define USB_DP     (GPIO_PIN_12)
 
-//! Keeps track of the state of the 3 position switch.
-typedef enum {
-    kSwitch_0,
-    kSwitch_1,
-    kSwitch_2
-} switch_state_t;
-
+// Board rev
+#define BREV_PORT (GPIOB)
+#define BREV_0    (GPIO_PIN_4)
+#define BREV_1    (GPIO_PIN_5)
 
 // Public function definitions
 void SystemClock_Config(void);
 void configure_pins(void);
 
 #ifdef WATCHDOG_ENABLE
-ret_t wdg_init(void);
-ret_t wdg_pet(void);
-bool wdg_isSet(void);
+    ret_t wdg_init(void);
+    ret_t wdg_pet(void);
+    bool wdg_isSet(void);
 #endif
 
 void button_periodic_handler(uint32_t current_tick);
-void switch_periodic_handler(uint32_t current_tick);
-switch_state_t switch_getval(void);
 uint8_t mainbutton_getval(void);
 uint8_t auxbutton_getval(void);
 
