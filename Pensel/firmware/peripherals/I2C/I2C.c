@@ -59,7 +59,7 @@ uint8_t RX_buffer[RX_BUFFER_SIZE];
 ret_t I2C_init(void)
 {
     // Configure the I2C HAL
-    I2cHandle.Instance             = I2C2;
+    I2cHandle.Instance             = I2C1;
     I2cHandle.Init.Timing          = I2C_TIMING;
     I2cHandle.Init.OwnAddress1     = I2C_ADDRESS;
     I2cHandle.Init.AddressingMode  = I2C_ADDRESSINGMODE_7BIT;
