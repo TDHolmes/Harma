@@ -127,12 +127,12 @@ typedef struct {
 
 
 //! Mag gain offsets for the X & Y axis to normalize to miligauss
-const float MagGainOffsets_XY[] = {0.9091f, 1.1696f, 1.4925f, 2.2222f, 2.5000f, 3.0303f, 4.3478f};
+static const float MagGainOffsets_XY[] = {0.9091f, 1.1696f, 1.4925f, 2.2222f, 2.5000f, 3.0303f, 4.3478f};
 //! Mag gain offsets for the Z axis to normalize to miligauss
-const float MagGainOffsets_Z[] = {1.0204f, 1.3158f, 1.6667f, 2.5000f, 2.8169f, 3.3898f, 4.8780f};
+static const float MagGainOffsets_Z[] = {1.0204f, 1.3158f, 1.6667f, 2.5000f, 2.8169f, 3.3898f, 4.8780f};
 
 //! Accel gain offsets to normalize to mili-g (g = 9.8 m/s^2)
-const float AccelGainOffsets[] = {1.0f, 2.0f, 4.0f, 12.0f};
+static const float AccelGainOffsets[] = {1.0f, 2.0f, 4.0f, 12.0f};
 
 /*! Master struct for this module. Marked as volatile as we update it in
  *   the I2C & DRDY pin interrupt context */

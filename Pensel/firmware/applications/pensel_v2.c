@@ -95,8 +95,8 @@ int main(void)
     configure_pins();
     clear_critical_errors();
 
-    // retval = UART_init(250000);
-    // check_retval_fatal(__FILE__, __LINE__, retval);
+    retval = UART_init(250000);
+    check_retval_fatal(__FILE__, __LINE__, retval);
 
     #ifdef WATCHDOG_ENABLE
         if ( wdg_isSet() ) {
