@@ -48,12 +48,6 @@ static inline void mainbtn_irq_disable(void);
 static inline void auxbtn_irq_enable(void);
 static inline void auxbtn_irq_disable(void);
 
-static inline void sensorDRDY_irq_enable(void);
-/* TODO: I don't think I'll ever need this function as DRDY pin interrupt has no possible
-    race conditions due to how I queue packets. _I THINK_. Haven't thouroughly looked at
-    the code. */
-static inline void sensorDRDY_irq_disable(void);
-
 
 //! Tracks a button's state and manages a button's hysteresis
 typedef struct {
@@ -197,7 +191,7 @@ void configure_pins(void)
     // configure all pins for the Pensel project
     // Turn on the clocks to the GPIO peripherals
     LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
-    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOF);
+    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOB);
 
     // Push-Pull outputs for the LEDs and timing pin!
     GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
