@@ -17,9 +17,10 @@
 #include "peripherals/I2C/I2C.h"
 #include "peripherals/UART/UART.h"
 
-// Algssss
+// Algs and utilities
 #include "modules/orientation/orientation.h"
 #include "modules/calibration/cal.h"
+#include "modules/utilities/scheduler.h"
 
 // STM Drivers
 #include "peripherals/stm32f3/stm32f3xx_hal_def.h"
@@ -31,22 +32,18 @@
 extern __IO uint32_t uwTick;
 // Global variables to influence state
 
-//! Global toggle to enable/disable streaming mag data
-bool gEnableRawMagStream = false;
-//! Global toggle to enable/disable streaming accel data
-bool gEnableRawAccelStream = false;
-//! Global toggle to enable/disable streaming filtered mag data
-bool gEnableFilteredMagStream = false;
-//! Global toggle to enable/disable streaming filtered accel data
-bool gEnableFilteredAccelStream = false;
-
 critical_errors_t gCriticalErrors;
+static schedule_t main_schedule;
+
+// Local functions
+ret_t heartbeat(int32_t * new_callback_time_ms);
+ret_t workloop_flash(int32_t * new_callback_time_ms);
+ret_t button_handler(int32_t * new_callback_time_ms);
 
 
 #ifdef WATCHDOG_ENABLE
     //! Global indicating whether or not to pet the watchdog
     static bool gPetWdg = false;
-
 
     void wdg_captureAlert(void) {
         // If we want, we can catch if a watchdog has ocurred
@@ -62,6 +59,18 @@ critical_errors_t gCriticalErrors;
                 LED_toggle(LED_1);
             }
         }
+    }
+
+    ret_t watchdog_pet(int32_t * new_callback_time_ms) {
+        *new_callback_time_ms = 500;
+        UART_sendString("w");
+        // every 500 ms, pet the watchdog. Need to pet the watchdog every ~1 s!
+        #ifdef WATCHDOG_ENABLE
+            if (gPetWdg) {
+                wdg_pet();
+            }
+        #endif
+        return RET_OK;
     }
 #endif
 
@@ -86,8 +95,8 @@ void clear_critical_errors(void) {
  */
 int main(void)
 {
-    ret_t retval;
-    uint32_t subcount = 0;
+    uint8_t i;
+    int32_t time_until_next_cb_ms;
 
     // system configuration...
     HAL_Init();
@@ -95,8 +104,8 @@ int main(void)
     configure_pins();
     clear_critical_errors();
 
-    retval = UART_init(250000);
-    check_retval_fatal(__FILE__, __LINE__, retval);
+    // Initialize UART
+    check_retval_fatal(__FILE__, __LINE__, UART_init(115200) );
 
     #ifdef WATCHDOG_ENABLE
         if ( wdg_isSet() ) {
@@ -106,8 +115,8 @@ int main(void)
                 wdg_captureAlert();
             #endif
         }
-        retval = wdg_init();
-        check_retval_fatal(__FILE__, __LINE__, retval);
+        // Initialize the watchdog
+        check_retval_fatal(__FILE__, __LINE__, wdg_init() );
         gPetWdg = true;
     #endif
 
@@ -118,62 +127,69 @@ int main(void)
     LED_set(LED_0, 0);
     LED_set(LED_1, 0);
 
+    // initalize the scheduler and add some periodic tasks
+    scheduler_init(&main_schedule);
+    scheduler_add(&main_schedule, 0, heartbeat, &i);
+    scheduler_add(&main_schedule, 0, workloop_flash, &i);
+    // scheduler_add(&main_schedule, 0, button_handler, &i);
+    #ifdef WATCHDOG_ENABLE
+        scheduler_add(&main_schedule, 0, watchdog_pet, &i);
+    #endif
+
+    UART_sendString("Initialized\r\n");
+
+    uint32_t sleep_until = 0;
     while (true) {
+        sleep_until = HAL_GetTick();  // grab start of loop time
+        time_until_next_cb_ms = scheduler_run(&main_schedule, sleep_until);
+        sleep_until += time_until_next_cb_ms;
 
-        // let the user know roughly how many workloops are ocurring
-        if (subcount == 100000) {
-            LED_toggle(LED_1);
-            subcount = 0;
-        } else {
-            subcount++;
+        if (time_until_next_cb_ms > 0) {
+            UART_sendString("Sleeping for "); UART_sendint(time_until_next_cb_ms); UART_sendString(" ms\r\n");
+            // TODO: sleep instead of dumb delay
+            if (HAL_GetTick() < sleep_until ) {
+                HAL_Delay( sleep_until - HAL_GetTick() );
+            }
         }
-
-        // --- TODO: Check Mag Data ----
-
-
     } /* while (true) */
 } /* main() */
 
-/*! millisecond ISR that increments the global time as well as calls some functions
- *  that need to be periodically serviced. We do a few things:
- *
- *     1. Take care of button and switch debouncing every 10 ms
- *        - If we've changed states in interrupt context and enough time has elapsed (``)
- *          we will change the button / switch state
- *     2. Pet the watchdog every 5 ms. Must be pet within 10 ms!
- *     3. Toggle the heartbeat LED every 1 second
- */
-void HAL_IncTick(void)
-{
-    // sub counter to take care of some tasks every N ms
-    static uint8_t sub_count = 0;
-    static uint16_t second_count = 0;
 
-    // increment the ms timer
-    uwTick++;
+/* --- Some common callbacks to be run --- */
 
-    // take care of some things that need to be called periodically every ~10 ms
-    if (sub_count >= 9) {
-        sub_count = 0;
-        button_periodic_handler(uwTick);
-    } else {
-        sub_count++;
+ret_t heartbeat(int32_t * new_callback_time_ms) {
+    static uint8_t tick = 0;
+    *new_callback_time_ms = 1000;
+    LED_toggle(LED_0);
+    TimingPin_toggle();
+
+    if (tick % 2 == 0) {
+        UART_sendString("\tTick\r\n");
+    } else if (tick % 2 == 1) {
+        UART_sendString("\tTock\r\n");
     }
+    tick += 1;
+    return RET_OK;
+}
 
-    // every 5 ms, pet the watchdog. Need to pet the watchdog every 10 ms!
-    #ifdef WATCHDOG_ENABLE
-    if (sub_count == 5 && gPetWdg) {
-        wdg_pet();
-    }
-    #endif
+ret_t workloop_flash(int32_t * new_callback_time_ms) {
+    static uint32_t i = 0;
+    *new_callback_time_ms = 0;
 
-    // Heartbeat LED flash
-    if (second_count >= 1000) {
-        second_count = 0;
-        LED_toggle(LED_0);
-    } else {
-        second_count++;
+    // toggle LED every 10,000 itterations over the workloop
+    if (i++ >= 10000) {
+        LED_toggle(LED_1);
+        i = 0;
     }
+    return RET_OK;
+}
+
+
+ret_t button_handler(int32_t * new_callback_time_ms) {
+    UART_sendString("b");
+    *new_callback_time_ms = 10;
+    button_periodic_handler( HAL_GetTick() );
+    return RET_OK;
 }
 
 
