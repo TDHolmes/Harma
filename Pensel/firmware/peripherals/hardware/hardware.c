@@ -34,7 +34,7 @@ static GPIO_InitTypeDef  GPIO_InitStruct;
 
 #ifdef WATCHDOG_ENABLE
 
-    #define WDG_COUNT (410u)
+    #define WDG_COUNT (161u)
     IWDG_HandleTypeDef hiwdg;
     void wdg_clearFlags(void);
 
@@ -343,10 +343,10 @@ void button_ISR(uint16_t GPIO_Pin)
 ret_t wdg_init(void)
 {
     // the LSI counter used for wdg timer is @41KHz.
-    // 10 ms counter window count: counter_val = (10 ms) * (41 kHz) ~= 410
+    // shooting for a 1 second window. 1 / ((1 / 41 kHz) * 256) ~= 160.15 = 161
     hiwdg.Instance = IWDG;
     //! Select the prescaler of the IWDG. This parameter can be a value of @ref IWDG_Prescaler
-    hiwdg.Init.Prescaler = IWDG_PRESCALER_4;
+    hiwdg.Init.Prescaler = IWDG_PRESCALER_256;
     /*! Specifies the IWDG down-counter reload value. This parameter must
       be a number between Min_Data = 0 and Max_Data = 0x0FFFU */
     hiwdg.Init.Reload = WDG_COUNT;
