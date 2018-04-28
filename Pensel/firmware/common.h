@@ -42,6 +42,10 @@
     #define min(v1, v2) (v1 < v2 ? v1 : v2)
 #endif
 
+#if !defined(NULL)
+    #define NULL ((void *) 0)
+#endif
+
 
 //! Common return type for the entire project
 typedef enum {

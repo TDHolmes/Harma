@@ -28,7 +28,7 @@ SET(TOOLCHAIN_DIR "" CACHE STRING "Directory to use for ARM GCC")
 
 # clang doesn't support link time optimizations with existing ARM GCC tools...
 if (COMPILER_TYPE MATCHES GCC)
-	SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -flto")
+	SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -flto")  # link time optimization
 ELSE()
 	SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -fshort-enums")
 	# SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -flto=thin") #  -fuse-ld=gold
@@ -236,14 +236,15 @@ add_executable(pensel_v2.elf
 
 	"${ProjDirPath}/applications/pensel_v2.c"
 
-	"${ProjDirPath}/modules/orientation/movement.c"
-	"${ProjDirPath}/modules/orientation/quanternions.c"
-	"${ProjDirPath}/modules/orientation/orientation.c"
-	"${ProjDirPath}/modules/orientation/matrixmath.c"
-	"${ProjDirPath}/modules/calibration/cal.c"
-	"${ProjDirPath}/modules/utilities/FIR.c"
+	# "${ProjDirPath}/modules/orientation/movement.c"
+	# "${ProjDirPath}/modules/orientation/quanternions.c"
+	# "${ProjDirPath}/modules/orientation/orientation.c"
+	# "${ProjDirPath}/modules/orientation/matrixmath.c"
+	# "${ProjDirPath}/modules/calibration/cal.c"
+	# "${ProjDirPath}/modules/utilities/FIR.c"
 	"${ProjDirPath}/modules/utilities/queue.c"
 	"${ProjDirPath}/modules/utilities/newqueue.c"
+	"${ProjDirPath}/modules/utilities/scheduler.c"
 
 	"${common_peripherals}"
 	"${STM32_HAL_sources}"
