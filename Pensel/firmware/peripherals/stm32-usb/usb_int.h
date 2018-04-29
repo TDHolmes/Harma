@@ -34,11 +34,7 @@
   *
   ******************************************************************************
   */
-
-
-/* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __USB_INT_H
-#define __USB_INT_H
+#pragma once
 
 /* Includes ------------------------------------------------------------------*/
 /* Exported types ------------------------------------------------------------*/
@@ -49,7 +45,5 @@ void CTR_LP(void);
 void CTR_HP(void);
 
 /* External variables --------------------------------------------------------*/
-
-#endif /* __USB_INT_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

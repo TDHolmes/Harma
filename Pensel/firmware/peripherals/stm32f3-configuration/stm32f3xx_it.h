@@ -63,6 +63,7 @@ void SysTick_Handler(void);
 void I2Cx_EV_IRQHandler(void);
 void I2Cx_ER_IRQHandler(void);
 void USARTx_IRQHandler(void);
+void USB_LP_CAN1_RX0_IRQHandler(void);
 
 #ifdef __cplusplus
 }

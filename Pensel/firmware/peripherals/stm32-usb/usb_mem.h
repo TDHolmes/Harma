@@ -35,10 +35,10 @@
   ******************************************************************************
   */
 
+#pragma once
 
-/* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __USB_MEM_H
-#define __USB_MEM_H
+#include <stdint.h>
+
 
 /* Includes ------------------------------------------------------------------*/
 /* Exported types ------------------------------------------------------------*/
@@ -49,6 +49,5 @@ void UserToPMABufferCopy(uint8_t *pbUsrBuf, uint16_t wPMABufAddr, uint16_t wNByt
 void PMAToUserBufferCopy(uint8_t *pbUsrBuf, uint16_t wPMABufAddr, uint16_t wNBytes);
 /* External variables --------------------------------------------------------*/
 
-#endif  /*__USB_MEM_H*/
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

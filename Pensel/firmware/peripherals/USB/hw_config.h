@@ -1,10 +1,10 @@
 /**
   ******************************************************************************
-  * @file    usb_lib.h
+  * @file    hw_config.h
   * @author  MCD Application Team
   * @version V4.1.0
   * @date    26-May-2017
-  * @brief   USB library include files
+  * @brief   Hardware Configuration & Setup
   ******************************************************************************
   * @attention
   *
@@ -35,19 +35,27 @@
   ******************************************************************************
   */
 
-#pragma once
 
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __HW_CONFIG_H
+#define __HW_CONFIG_H
 
 /* Includes ------------------------------------------------------------------*/
-#include "hw_config.h"
-#include "usb_type.h"
-#include "usb_regs.h"
-#include "usb_def.h"
-#include "usb_core.h"
-#include "usb_init.h"
-#include "usb_sil.h"
-#include "usb_mem.h"
-#include "usb_int.h"
+#include <stdint.h>
+#include "peripherals/stm32-usb/usb_type.h"
+#include "peripherals/stm32f3-configuration/stm32f3xx.h"
 
 
+#define MASS_MEMORY_START     0x04002000
+#define BULK_MAX_PACKET_SIZE  0x00000040
+#define LED_ON                0xF0
+#define LED_OFF               0xFF
+
+/* Exported functions ------------------------------------------------------- */
+void Get_SerialNum(void);
+uint32_t CDC_Send_DATA(uint8_t *ptrBuffer, uint8_t Send_length);
+uint32_t CDC_Receive_DATA(void);
+/* External variables --------------------------------------------------------*/
+
+#endif  /*__HW_CONFIG_H*/
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -47,6 +47,7 @@
 // Peripherals used
 #include "peripherals/stm32f3/stm32f3xx_hal_i2c.h"
 #include "peripherals/stm32f3/stm32f3xx_hal_uart.h"
+#include "peripherals/USB/usb_istr.h"
 
 
 /* I2C handler declared in "main.c" file */
@@ -219,5 +220,13 @@ void EXTI15_10_IRQHandler(void)
     HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_11);
 }
 
+
+/**
+  * @brief  This function handles USB Low Priority interrupts requests.
+  */
+void USB_LP_CAN1_RX0_IRQHandler(void)
+{
+    USB_Istr();
+}
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
