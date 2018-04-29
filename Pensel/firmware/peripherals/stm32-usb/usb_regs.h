@@ -35,10 +35,11 @@
   ******************************************************************************
   */
 
+#pragma once
 
-/* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __USB_REGS_H
-#define __USB_REGS_H
+#include <stdint.h>
+#include "peripherals/stm32f3/stm32f3xx_hal.h"
+
 
 /* Includes ------------------------------------------------------------------*/
 /* Exported types ------------------------------------------------------------*/
@@ -76,7 +77,7 @@ enum EP_BUF_NUM
 #define DADDR   ((__IO unsigned *)(RegBase + 0x4C))
 /* Buffer Table address register */
 #define BTABLE  ((__IO unsigned *)(RegBase + 0x50))
-#if defined STM32F303xE || defined STM32F302x8 
+#if defined STM32F303xE || defined STM32F302x8
   /* LPM Control and Status register */
 #define LPMCSR    (( __IO unsigned *)(RegBase + 0x54))
 #endif
@@ -86,21 +87,21 @@ enum EP_BUF_NUM
 #define EP0REG  ((__IO unsigned *)(RegBase)) /* endpoint 0 register address */
 
 /* Endpoint Addresses (w/direction) */
-#define EP0_OUT     ((uint8_t)0x00)  
-#define EP0_IN      ((uint8_t)0x80) 
-#define EP1_OUT     ((uint8_t)0x01)  
-#define EP1_IN      ((uint8_t)0x81)  
-#define EP2_OUT     ((uint8_t)0x02)  
-#define EP2_IN      ((uint8_t)0x82)  
-#define EP3_OUT     ((uint8_t)0x03)  
-#define EP3_IN      ((uint8_t)0x83) 
-#define EP4_OUT     ((uint8_t)0x04)  
+#define EP0_OUT     ((uint8_t)0x00)
+#define EP0_IN      ((uint8_t)0x80)
+#define EP1_OUT     ((uint8_t)0x01)
+#define EP1_IN      ((uint8_t)0x81)
+#define EP2_OUT     ((uint8_t)0x02)
+#define EP2_IN      ((uint8_t)0x82)
+#define EP3_OUT     ((uint8_t)0x03)
+#define EP3_IN      ((uint8_t)0x83)
+#define EP4_OUT     ((uint8_t)0x04)
 #define EP4_IN      ((uint8_t)0x84)
-#define EP5_OUT     ((uint8_t)0x05)  
+#define EP5_OUT     ((uint8_t)0x05)
 #define EP5_IN      ((uint8_t)0x85)
-#define EP6_OUT     ((uint8_t)0x06)  
+#define EP6_OUT     ((uint8_t)0x06)
 #define EP6_IN      ((uint8_t)0x86)
-#define EP7_OUT     ((uint8_t)0x07)  
+#define EP7_OUT     ((uint8_t)0x07)
 #define EP7_IN      ((uint8_t)0x87)
 
 /* endpoints enumeration */
@@ -124,7 +125,7 @@ enum EP_BUF_NUM
 #define ISTR_RESET  (0x0400) /* RESET (clear-only bit) */
 #define ISTR_SOF    (0x0200) /* Start Of Frame (clear-only bit) */
 #define ISTR_ESOF   (0x0100) /* Expected Start Of Frame (clear-only bit) */
-#if defined STM32F303xE || defined STM32F302x8 
+#if defined STM32F303xE || defined STM32F302x8
 #define ISTR_L1REQ  (0x0080)  /* LPM L1 state request  */
 #endif
 #define ISTR_DIR    (0x0010)  /* DIRection of transaction (read-only bit)  */
@@ -138,7 +139,7 @@ enum EP_BUF_NUM
 #define CLR_RESET  (~ISTR_RESET) /* clear RESET bit      */
 #define CLR_SOF    (~ISTR_SOF)   /* clear Start Of Frame bit   */
 #define CLR_ESOF   (~ISTR_ESOF)  /* clear Expected Start Of Frame bit */
-#if defined STM32F303xE || defined STM32F302x8 
+#if defined STM32F303xE || defined STM32F302x8
 #define CLR_L1REQ  (~ISTR_L1REQ)  /* clear LPM L1  bit */
 #endif
 /******************************************************************************/
@@ -152,7 +153,7 @@ enum EP_BUF_NUM
 #define CNTR_RESETM (0x0400) /* RESET Mask   */
 #define CNTR_SOFM   (0x0200) /* Start Of Frame Mask */
 #define CNTR_ESOFM  (0x0100) /* Expected Start Of Frame Mask */
-#if defined STM32F303xE || defined STM32F302x8 
+#if defined STM32F303xE || defined STM32F302x8
 #define CNTR_L1REQM (0x0080)    /* LPM L1 state request interrupt mask */
 #define CNTR_L1RESUME (0x0020) /* LPM L1 Resume request */
 #endif
@@ -162,13 +163,13 @@ enum EP_BUF_NUM
 #define CNTR_PDWN   (0x0002) /* Power DoWN */
 #define CNTR_FRES   (0x0001) /* Force USB RESet */
 
-#if defined STM32F303xE || defined STM32F302x8 
+#if defined STM32F303xE || defined STM32F302x8
 
 /******************************************************************************/
 /*             Bit definition for LPM register                         */
 /******************************************************************************/
-#define  LPMCSR_BESL    ((uint16_t)0x00F0) /* BESL value received with last ACKed LPM Token  */ 
-#define  LPMCSR_REMWAKE ((uint16_t)0x0008) /* bRemoteWake value received with last ACKed LPM Token */ 
+#define  LPMCSR_BESL    ((uint16_t)0x00F0) /* BESL value received with last ACKed LPM Token  */
+#define  LPMCSR_REMWAKE ((uint16_t)0x0008) /* bRemoteWake value received with last ACKed LPM Token */
 #define  LPMCSR_LPMACK  ((uint16_t)0x0002) /* LPM Token acknowledge enable*/
 #define  LPMCSR_LMPEN   ((uint16_t)0x0001) /* LPM support enable  */
 #endif
@@ -277,8 +278,8 @@ enum EP_BUF_NUM
 /*******************************************************************************
 * Macro Name     : SetEPType
 * Description    : sets the type in the endpoint register(bits EP_TYPE[1:0])
-* Input          : bEpNum: Endpoint Number. 
-*                  wType											 
+* Input          : bEpNum: Endpoint Number.
+*                  wType
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
@@ -287,8 +288,8 @@ enum EP_BUF_NUM
 
 /*******************************************************************************
 * Macro Name     : GetEPType
-* Description    : gets the type in the endpoint register(bits EP_TYPE[1:0]) 
-* Input          : bEpNum: Endpoint Number. 
+* Description    : gets the type in the endpoint register(bits EP_TYPE[1:0])
+* Input          : bEpNum: Endpoint Number.
 * Output         : None.
 * Return         : Endpoint Type
 *******************************************************************************/
@@ -297,7 +298,7 @@ enum EP_BUF_NUM
 /*******************************************************************************
 * Macro Name     : SetEPTxStatus
 * Description    : sets the status for tx transfer (bits STAT_TX[1:0]).
-* Input          : bEpNum: Endpoint Number. 
+* Input          : bEpNum: Endpoint Number.
 *                  wState: new state
 * Output         : None.
 * Return         : None.
@@ -317,7 +318,7 @@ enum EP_BUF_NUM
 /*******************************************************************************
 * Macro Name     : SetEPRxStatus
 * Description    : sets the status for rx transfer (bits STAT_TX[1:0])
-* Input          : bEpNum: Endpoint Number. 
+* Input          : bEpNum: Endpoint Number.
 *                  wState: new state.
 * Output         : None.
 * Return         : None.
@@ -338,7 +339,7 @@ enum EP_BUF_NUM
 /*******************************************************************************
 * Macro Name     : SetEPRxTxStatus
 * Description    : sets the status for rx & tx (bits STAT_TX[1:0] & STAT_RX[1:0])
-* Input          : bEpNum: Endpoint Number. 
+* Input          : bEpNum: Endpoint Number.
 *                  wStaterx: new state.
 *                  wStatetx: new state.
 * Output         : None.
@@ -363,10 +364,10 @@ enum EP_BUF_NUM
     _SetENDPOINT(bEpNum, _wRegVal | EP_CTR_RX|EP_CTR_TX);    \
   } /* _SetEPRxTxStatus */
 /*******************************************************************************
-* Macro Name     : GetEPTxStatus / GetEPRxStatus 
+* Macro Name     : GetEPTxStatus / GetEPRxStatus
 * Description    : gets the status for tx/rx transfer (bits STAT_TX[1:0]
 *                  /STAT_RX[1:0])
-* Input          : bEpNum: Endpoint Number. 
+* Input          : bEpNum: Endpoint Number.
 * Output         : None.
 * Return         : status .
 *******************************************************************************/
@@ -375,9 +376,9 @@ enum EP_BUF_NUM
 #define _GetEPRxStatus(bEpNum) ((uint16_t)_GetENDPOINT(bEpNum) & EPRX_STAT)
 
 /*******************************************************************************
-* Macro Name     : SetEPTxValid / SetEPRxValid 
+* Macro Name     : SetEPTxValid / SetEPRxValid
 * Description    : sets directly the VALID tx/rx-status into the enpoint register
-* Input          : bEpNum: Endpoint Number. 
+* Input          : bEpNum: Endpoint Number.
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
@@ -388,7 +389,7 @@ enum EP_BUF_NUM
 /*******************************************************************************
 * Macro Name     : GetTxStallStatus / GetRxStallStatus.
 * Description    : checks stall condition in an endpoint.
-* Input          : bEpNum: Endpoint Number. 
+* Input          : bEpNum: Endpoint Number.
 * Output         : None.
 * Return         : TRUE = endpoint in stall condition.
 *******************************************************************************/
@@ -400,7 +401,7 @@ enum EP_BUF_NUM
 /*******************************************************************************
 * Macro Name     : SetEP_KIND / ClearEP_KIND.
 * Description    : set & clear EP_KIND bit.
-* Input          : bEpNum: Endpoint Number. 
+* Input          : bEpNum: Endpoint Number.
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
@@ -412,7 +413,7 @@ enum EP_BUF_NUM
 /*******************************************************************************
 * Macro Name     : Set_Status_Out / Clear_Status_Out.
 * Description    : Sets/clears directly STATUS_OUT bit in the endpoint register.
-* Input          : bEpNum: Endpoint Number. 
+* Input          : bEpNum: Endpoint Number.
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
@@ -422,7 +423,7 @@ enum EP_BUF_NUM
 /*******************************************************************************
 * Macro Name     : SetEPDoubleBuff / ClearEPDoubleBuff.
 * Description    : Sets/clears directly EP_KIND bit in the endpoint register.
-* Input          : bEpNum: Endpoint Number. 
+* Input          : bEpNum: Endpoint Number.
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
@@ -432,7 +433,7 @@ enum EP_BUF_NUM
 /*******************************************************************************
 * Macro Name     : ClearEP_CTR_RX / ClearEP_CTR_TX.
 * Description    : Clears bit CTR_RX / CTR_TX in the endpoint register.
-* Input          : bEpNum: Endpoint Number. 
+* Input          : bEpNum: Endpoint Number.
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
@@ -444,7 +445,7 @@ enum EP_BUF_NUM
 /*******************************************************************************
 * Macro Name     : ToggleDTOG_RX / ToggleDTOG_TX .
 * Description    : Toggles DTOG_RX / DTOG_TX bit in the endpoint register.
-* Input          : bEpNum: Endpoint Number. 
+* Input          : bEpNum: Endpoint Number.
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
@@ -456,7 +457,7 @@ enum EP_BUF_NUM
 /*******************************************************************************
 * Macro Name     : ClearDTOG_RX / ClearDTOG_TX.
 * Description    : Clears DTOG_RX / DTOG_TX bit in the endpoint register.
-* Input          : bEpNum: Endpoint Number. 
+* Input          : bEpNum: Endpoint Number.
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
@@ -468,7 +469,7 @@ enum EP_BUF_NUM
 * Macro Name     : SetEPAddress.
 * Description    : Sets address in an endpoint register.
 * Input          : bEpNum: Endpoint Number.
-*                  bAddr: Address. 
+*                  bAddr: Address.
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
@@ -483,7 +484,7 @@ enum EP_BUF_NUM
 * Return         : None.
 *******************************************************************************/
 #define _GetEPAddress(bEpNum) ((uint8_t)(_GetENDPOINT(bEpNum) & EPADDR_FIELD))
-#if defined STM32F303xE || defined STM32F302x8 
+#if defined STM32F303xE || defined STM32F302x8
 #define _pEPTxAddr(bEpNum) ((uint16_t *)((_GetBTABLE()+bEpNum*8) + PMAAddr))
 #define _pEPTxCount(bEpNum) ((uint16_t *)((_GetBTABLE()+bEpNum*8+2) + PMAAddr))
 #define _pEPRxAddr(bEpNum) ((uint16_t *)((_GetBTABLE()+bEpNum*8+4) + PMAAddr))
@@ -525,7 +526,7 @@ enum EP_BUF_NUM
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
-#if defined STM32F303xE || defined STM32F302x8 
+#if defined STM32F303xE || defined STM32F302x8
 #define _BlocksOf32(dwReg,wCount,wNBlocks) {\
     wNBlocks = wCount >> 5;\
     if((wCount & 0x1f) == 0)\
@@ -541,7 +542,7 @@ enum EP_BUF_NUM
   }/* _BlocksOf32 */
 #endif
 
-#if defined STM32F303xE || defined STM32F302x8 
+#if defined STM32F303xE || defined STM32F302x8
 #define _BlocksOf2(dwReg,wCount,wNBlocks) {\
     wNBlocks = wCount >> 1;\
     if((wCount & 0x1) != 0)\
@@ -563,7 +564,7 @@ enum EP_BUF_NUM
     else {_BlocksOf2(dwReg,wCount,wNBlocks);}\
   }/* _SetEPCountRxReg */
 
-#if defined STM32F303xE || defined STM32F302x8 
+#if defined STM32F303xE || defined STM32F302x8
 #define _SetEPRxDblBuf0Count(bEpNum,wCount) {\
     uint16_t *pdwReg = _pEPTxCount(bEpNum); \
     _SetEPCountRxReg(pdwReg, wCount);\
@@ -583,7 +584,7 @@ enum EP_BUF_NUM
 * Return         : None.
 *******************************************************************************/
 #define _SetEPTxCount(bEpNum,wCount) (*_pEPTxCount(bEpNum) = wCount)
-#if defined STM32F303xE || defined STM32F302x8 
+#if defined STM32F303xE || defined STM32F302x8
 #define _SetEPRxCount(bEpNum,wCount) {\
     uint16_t *pdwReg = _pEPRxCount(bEpNum); \
     _SetEPCountRxReg(pdwReg, wCount);\
@@ -643,9 +644,9 @@ enum EP_BUF_NUM
 * Macro Name     : SetEPDblBuffCount / SetEPDblBuf0Count / SetEPDblBuf1Count.
 * Description    : Gets buffer 0/1 address of a double buffer endpoint.
 * Input          : bEpNum: endpoint number.
-*                : bDir: endpoint dir  EP_DBUF_OUT = OUT 
-*                                      EP_DBUF_IN  = IN 
-*                : wCount: Counter value    
+*                : bDir: endpoint dir  EP_DBUF_OUT = OUT
+*                                      EP_DBUF_IN  = IN
+*                : wCount: Counter value
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
@@ -728,7 +729,7 @@ void SetEPTxAddr(uint8_t /*bEpNum*/, uint16_t /*wAddr*/);
 void SetEPRxAddr(uint8_t /*bEpNum*/, uint16_t /*wAddr*/);
 uint16_t GetEPTxAddr(uint8_t /*bEpNum*/);
 uint16_t GetEPRxAddr(uint8_t /*bEpNum*/);
-#if defined STM32F303xE || defined STM32F302x8 
+#if defined STM32F303xE || defined STM32F302x8
 void SetEPCountRxReg(uint16_t * /*pdwReg*/, uint16_t /*wCount*/);
 #else
 void SetEPCountRxReg(uint32_t * /*pdwReg*/, uint16_t /*wCount*/);
@@ -752,6 +753,5 @@ void FreeUserBuffer(uint8_t bEpNum/*bEpNum*/, uint8_t bDir);
 uint16_t ToWord(uint8_t, uint8_t);
 uint16_t ByteSwap(uint16_t);
 
-#endif /* __USB_REGS_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

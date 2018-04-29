@@ -34,11 +34,9 @@
   *
   ******************************************************************************
   */
-
-
-/* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __USB_CORE_H
-#define __USB_CORE_H
+#pragma once
+#include <stdint.h>
+#include "peripherals/stm32f3/stm32f3xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
 /* Exported types ------------------------------------------------------------*/
@@ -199,10 +197,10 @@ typedef struct _DEVICE_PROP
   uint8_t* (*GetConfigDescriptor)(uint16_t Length);
   uint8_t* (*GetStringDescriptor)(uint16_t Length);
 
-  /* This field is not used in current library version. It is kept only for 
+  /* This field is not used in current library version. It is kept only for
    compatibility with previous versions */
   void* RxEP_buffer;
-   
+
   uint8_t MaxPacketSize;
 
 }DEVICE_PROP;
@@ -266,7 +264,5 @@ extern DEVICE_INFO Device_Info;
 /* cells saving status during interrupt servicing */
 extern __IO uint16_t SaveRState;
 extern __IO uint16_t SaveTState;
-
-#endif /* __USB_CORE_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

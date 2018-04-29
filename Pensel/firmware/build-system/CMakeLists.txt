@@ -129,6 +129,8 @@ list(APPEND STM32_HAL_sources
 	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_cortex.c"
 	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_flash.c"
 	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_flash_ex.c"
+	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_pcd.c"
+	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_pcd_ex.c"
 
 		# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_msp_template.c"
 		# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_can.c"
@@ -150,11 +152,9 @@ list(APPEND STM32_HAL_sources
 		# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_hrtim.c"
 		# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_crc_ex.c"
 		# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_dac_ex.c"
-		# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_pcd.c"
 		# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_comp.c"
 		# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_sram.c"
 		# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_tim_ex.c"
-		# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_pcd_ex.c"
 		# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_opamp.c"
 		# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_sdadc.c"
 		# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_rtc.c"
@@ -210,6 +210,15 @@ list(APPEND stm32_usb_lib
 	"${ProjDirPath}/peripherals/stm32-usb/usb_core.c"
 )
 
+list(APPEND pensel_usb_files
+	"${ProjDirPath}/peripherals/USB/hw_config.c"
+	"${ProjDirPath}/peripherals/USB/usb_desc.c"
+	"${ProjDirPath}/peripherals/USB/usb_endp.c"
+	"${ProjDirPath}/peripherals/USB/usb_istr.c"
+	"${ProjDirPath}/peripherals/USB/usb_prop.c"
+	"${ProjDirPath}/peripherals/USB/usb_pwr.c"
+)
+
 add_executable(pensel_v1.elf
 	# user code
 
@@ -248,7 +257,8 @@ add_executable(pensel_v2.elf
 
 	"${common_peripherals}"
 	"${STM32_HAL_sources}"
-	# "${stm32_usb_lib}"
+	"${stm32_usb_lib}"
+	"${pensel_usb_files}"
 )
 
 add_executable(pensel_unittests.elf

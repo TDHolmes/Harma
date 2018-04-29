@@ -35,10 +35,10 @@
   ******************************************************************************
   */
 
+#pragma once
 
-/* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __USB_SIL_H
-#define __USB_SIL_H
+#include <stdint.h>
+
 
 /* Includes ------------------------------------------------------------------*/
 /* Exported types ------------------------------------------------------------*/
@@ -52,6 +52,5 @@ uint32_t USB_SIL_Read(uint8_t bEpAddr, uint8_t* pBufferPointer);
 
 /* External variables --------------------------------------------------------*/
 
-#endif /* __USB_SIL_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

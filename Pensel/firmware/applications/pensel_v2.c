@@ -25,8 +25,16 @@
 // STM Drivers
 #include "peripherals/stm32f3/stm32f3xx_hal_def.h"
 #include "peripherals/stm32f3/stm32f3xx_hal.h"
+#include "peripherals/stm32f3/stm32f3xx_hal_pcd.h"
 #include "peripherals/stm32f3-configuration/stm32f3xx_hal_conf.h"
 
+// USB
+#include "peripherals/stm32-usb/usb_lib.h"
+#include "peripherals/USB/hw_config.h"
+#include "peripherals/USB/usb_desc.h"
+#include "peripherals/USB/usb_pwr.h"
+
+PCD_HandleTypeDef hpcd_USB_FS;
 
 //! HAL millisecond tick
 extern __IO uint32_t uwTick;
@@ -86,6 +94,31 @@ void clear_critical_errors(void) {
     #endif
 }
 
+extern __IO uint8_t Receive_Buffer[64];
+extern __IO uint32_t Receive_length;
+extern __IO uint32_t length;
+uint8_t Send_Buffer[64];
+uint32_t packet_sent = 1;
+uint32_t packet_receive = 1;
+
+
+/* USB init function */
+static void MX_USB_PCD_Init(void)
+{
+    hpcd_USB_FS.Instance = USB;
+    hpcd_USB_FS.Init.dev_endpoints = 8;
+    hpcd_USB_FS.Init.speed = PCD_SPEED_FULL;
+    hpcd_USB_FS.Init.ep0_mps = DEP0CTL_MPS_64;
+    hpcd_USB_FS.Init.phy_itface = PCD_PHY_EMBEDDED;
+    hpcd_USB_FS.Init.low_power_enable = DISABLE;
+    hpcd_USB_FS.Init.battery_charging_enable = DISABLE;
+
+    if (HAL_PCD_Init(&hpcd_USB_FS) != HAL_OK) {
+        check_retval_fatal(__FILE__, __LINE__, -1);
+    }
+
+}
+
 
 /*! Main function code. Does the following:
  *      1. Initializes all sub-modules
@@ -127,11 +160,27 @@ int main(void)
     LED_set(LED_0, 0);
     LED_set(LED_1, 0);
 
+    MX_USB_PCD_Init();
+    USB_Init();
+
+    while (1)
+    {
+        if (bDeviceState == CONFIGURED) {
+            CDC_Receive_DATA();
+            /*Check to see if we have data yet */
+            if (Receive_length  != 0) {
+                if (packet_sent == 1)
+                    CDC_Send_DATA ((unsigned char*)Receive_Buffer,Receive_length);
+                Receive_length = 0;
+            }
+        }
+    }
+
     // initalize the scheduler and add some periodic tasks
     scheduler_init(&main_schedule);
     scheduler_add(&main_schedule, 0, heartbeat, &i);
     scheduler_add(&main_schedule, 0, workloop_flash, &i);
-    // scheduler_add(&main_schedule, 0, button_handler, &i);
+    scheduler_add(&main_schedule, 0, button_handler, &i);
     #ifdef WATCHDOG_ENABLE
         scheduler_add(&main_schedule, 0, watchdog_pet, &i);
     #endif

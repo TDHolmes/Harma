@@ -1,10 +1,10 @@
 /**
   ******************************************************************************
-  * @file    usb_init.h
+  * @file    usb_prop.h
   * @author  MCD Application Team
   * @version V4.1.0
   * @date    26-May-2017
-  * @brief   Initialization routines & global variables
+  * @brief   All processing related to Virtual COM Port Demo (Endpoint 0)
   ******************************************************************************
   * @attention
   *
@@ -34,37 +34,63 @@
   *
   ******************************************************************************
   */
+
 #pragma once
 
 #include <stdint.h>
-#include "peripherals/stm32f3/stm32f3xx_hal.h"
+
 #include "peripherals/stm32-usb/usb_core.h"
+
 
 /* Includes ------------------------------------------------------------------*/
 /* Exported types ------------------------------------------------------------*/
+typedef struct
+{
+  uint32_t bitrate;
+  uint8_t format;
+  uint8_t paritytype;
+  uint8_t datatype;
+}LINE_CODING;
+
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
+/* Exported define -----------------------------------------------------------*/
+
+#define Virtual_Com_Port_GetConfiguration          NOP_Process
+//#define Virtual_Com_Port_SetConfiguration          NOP_Process
+#define Virtual_Com_Port_GetInterface              NOP_Process
+#define Virtual_Com_Port_SetInterface              NOP_Process
+#define Virtual_Com_Port_GetStatus                 NOP_Process
+#define Virtual_Com_Port_ClearFeature              NOP_Process
+#define Virtual_Com_Port_SetEndPointFeature        NOP_Process
+#define Virtual_Com_Port_SetDeviceFeature          NOP_Process
+//#define Virtual_Com_Port_SetDeviceAddress          NOP_Process
+
+#define SEND_ENCAPSULATED_COMMAND   0x00
+#define GET_ENCAPSULATED_RESPONSE   0x01
+#define SET_COMM_FEATURE            0x02
+#define GET_COMM_FEATURE            0x03
+#define CLEAR_COMM_FEATURE          0x04
+#define SET_LINE_CODING             0x20
+#define GET_LINE_CODING             0x21
+#define SET_CONTROL_LINE_STATE      0x22
+#define SEND_BREAK                  0x23
+
 /* Exported functions ------------------------------------------------------- */
-void USB_Init(void);
+void Virtual_Com_Port_init(void);
+void Virtual_Com_Port_Reset(void);
+void Virtual_Com_Port_SetConfiguration(void);
+void Virtual_Com_Port_SetDeviceAddress (void);
+void Virtual_Com_Port_Status_In (void);
+void Virtual_Com_Port_Status_Out (void);
+RESULT Virtual_Com_Port_Data_Setup(uint8_t);
+RESULT Virtual_Com_Port_NoData_Setup(uint8_t);
+RESULT Virtual_Com_Port_Get_Interface_Setting(uint8_t Interface, uint8_t AlternateSetting);
+uint8_t *Virtual_Com_Port_GetDeviceDescriptor(uint16_t );
+uint8_t *Virtual_Com_Port_GetConfigDescriptor(uint16_t);
+uint8_t *Virtual_Com_Port_GetStringDescriptor(uint16_t);
 
-/* External variables --------------------------------------------------------*/
-/*  The number of current endpoint, it will be used to specify an endpoint */
-extern uint8_t	EPindex;
-/*  The number of current device, it is an index to the Device_Table */
-/*extern uint8_t	Device_no; */
-/*  Points to the DEVICE_INFO structure of current device */
-/*  The purpose of this register is to speed up the execution */
-extern DEVICE_INFO*	pInformation;
-/*  Points to the DEVICE_PROP structure of current device */
-/*  The purpose of this register is to speed up the execution */
-extern DEVICE_PROP*	pProperty;
-/*  Temporary save the state of Rx & Tx status. */
-/*  Whenever the Rx or Tx state is changed, its value is saved */
-/*  in this variable first and will be set to the EPRB or EPRA */
-/*  at the end of interrupt process */
-extern USER_STANDARD_REQUESTS *pUser_Standard_Requests;
-
-extern uint16_t	SaveState ;
-extern uint16_t wInterrupt_Mask;
+uint8_t *Virtual_Com_Port_GetLineCoding(uint16_t Length);
+uint8_t *Virtual_Com_Port_SetLineCoding(uint16_t Length);
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
