@@ -25,8 +25,8 @@
 // STM Drivers
 #include "peripherals/stm32f3/stm32f3xx_hal_def.h"
 #include "peripherals/stm32f3/stm32f3xx_hal.h"
-#include "peripherals/stm32f3/stm32f3xx_hal_pcd.h"
 #include "peripherals/stm32f3-configuration/stm32f3xx_hal_conf.h"
+#include "peripherals/stm32f3/stm32f3xx_hal_pcd.h"
 
 // USB
 #include "peripherals/stm32-usb/usb_lib.h"
@@ -103,7 +103,7 @@ uint32_t packet_receive = 1;
 
 
 /* USB init function */
-static void MX_USB_PCD_Init(void)
+void MX_USB_PCD_Init(void)
 {
     hpcd_USB_FS.Instance = USB;
     hpcd_USB_FS.Init.dev_endpoints = 8;
@@ -113,8 +113,10 @@ static void MX_USB_PCD_Init(void)
     hpcd_USB_FS.Init.low_power_enable = DISABLE;
     hpcd_USB_FS.Init.battery_charging_enable = DISABLE;
 
-    if (HAL_PCD_Init(&hpcd_USB_FS) != HAL_OK) {
-        check_retval_fatal(__FILE__, __LINE__, -1);
+    HAL_StatusTypeDef ret;
+    ret = HAL_PCD_Init(&hpcd_USB_FS);
+    if (ret != HAL_OK) {
+        check_retval_fatal(__FILE__, __LINE__, (ret_t)ret);
     }
 
 }
@@ -163,8 +165,16 @@ int main(void)
     MX_USB_PCD_Init();
     USB_Init();
 
+    uint32_t ledi = 0;
     while (1)
     {
+
+        // toggle LED every 10,000 itterations over the workloop
+        if (ledi++ >= 10000) {
+            LED_toggle(LED_1);
+            ledi = 0;
+        }
+        // UART_sendint(bDeviceState);
         if (bDeviceState == CONFIGURED) {
             CDC_Receive_DATA();
             /*Check to see if we have data yet */

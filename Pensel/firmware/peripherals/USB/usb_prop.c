@@ -44,6 +44,8 @@
 #include "usb_pwr.h"
 #include "hw_config.h"
 
+#include "peripherals/UART/UART.h"
+
 uint8_t Request = 0;
 
 LINE_CODING linecoding = {
@@ -123,6 +125,7 @@ ONE_DESCRIPTOR String_Descriptor[4] = {
 void Virtual_Com_Port_init(void)
 {
 
+    UART_sendString("VCP init\r\n");
     /* Update the serial number string descriptor with the data from the unique
     ID*/
     Get_SerialNum();
@@ -147,6 +150,7 @@ void Virtual_Com_Port_init(void)
 *******************************************************************************/
 void Virtual_Com_Port_Reset(void)
 {
+    UART_sendString("VCP reset\r\n");
     /* Set Virtual_Com_Port DEVICE as not configured */
     pInformation->Current_Configuration = 0;
 
@@ -201,6 +205,7 @@ void Virtual_Com_Port_Reset(void)
 *******************************************************************************/
 void Virtual_Com_Port_SetConfiguration(void)
 {
+    UART_sendString("VCP set conf\r\n");
     DEVICE_INFO *pInfo = &Device_Info;
 
     if (pInfo->Current_Configuration != 0) {
@@ -218,6 +223,7 @@ void Virtual_Com_Port_SetConfiguration(void)
 *******************************************************************************/
 void Virtual_Com_Port_SetDeviceAddress (void)
 {
+    UART_sendString("VCP set addr\r\n");
     bDeviceState = ADDRESSED;
 }
 
