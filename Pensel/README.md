@@ -18,12 +18,10 @@ operating in (Soldering iron, solder, or wire/component).
 
 ## Hardware Basics
 
-* Processor
-   * STM32F302K8U6
+* STM32F302K8U6
    * ARM® Cortex®-M4
    * 72MHz
-   * CAN, I²C, IrDA, LIN, SPI, UART/USART, USB
-   * DMA, I²S, POR, PWM, WDT
+   * I²C, UART/USART, USB, SPI, DMA, PWM, WDT
 * Sensors
    * One LSM303DLHC with accelerometer and magnetometer for orientation and movement detection
    * A button to trigger "active" mode
