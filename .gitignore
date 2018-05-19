@@ -13,3 +13,8 @@
 Pensel/firmware/compiler/build/*
 Pensel/scripts/recordings/*
 Pensel/documentation/Firmware\ Documentation/output/*
+
+// Ignores specifically for GH-pages
+Pensel/board/*
+Pensel/firmware/*
+Pensel/cubemx_project/*
