@@ -19,17 +19,12 @@ operating in (Soldering iron, solder, or wire/component).
 ## Hardware Basics
 
 * STM32F302K8U6
-   * ARM® Cortex®-M4 (with FPU)
-   * I²C, UART/USART, USB, DMA, PWM, WDT
-   * 72MHz
-* Sensors
-   * Orientation / motion sensor for orientation and movement detection
-     - LSM303DLHC accelerometer and magnetometer for version 1
-     - LSM9DS1 accelerometer, magnetometer and gyroscope for version 2
-   * A button to trigger "active" mode
-   * An auxiliary button to generate an action
-   * A three position switch to indicate the active mode
-   * A thumbwheel potentiometer to control sensitivity
+  * ARM® Cortex®-M4 (with FPU)
+  * I²C, UART/USART, USB, DMA, PWM, WDT
+  * 72MHz
+* Orientation / motion sensor for orientation and movement detection
+  * LSM303DLHC accelerometer and magnetometer for version 1
+  * LSM9DS1 accelerometer, magnetometer and gyroscope for version 2
 
 ### Pensel v1
 
