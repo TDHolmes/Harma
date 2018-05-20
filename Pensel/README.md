@@ -35,6 +35,8 @@ operating in (Soldering iron, solder, or wire/component).
 
 ![alt text][v1 Board Top]
 
+#### Sensors
+
 Pensel v1 utilized the now obsolete LSM303DLHC, an accelerometer/magnetometer
 orientation sensor. I was hoping to achieve absolute orientation sensing with the
 gravity vector and magnetic north vector. This is, however, very difficult with
@@ -46,10 +48,25 @@ The accelerometer data, however, looked very promising.
 
 ![alt text][v1 Accel Plot]
 
+#### Communication
+
 The communication method was also less than ideal in v1. I utilized a USB to serial
 converter chip to provide easy communication to the host, however to accommodate the
 high data-rate sensors and have a general purpose report get/set architecture, I
 basically re-implemented a USB HID device over serial, which doesn't make much sense.
+
+![alt text][v1 comms]
+
+
+### Pensel v2
+
+![alt text][v2 Board Top]
+
+Pensel v2 aims to rectify the issues with v1 by using a more robust, in production
+accelerometer, magnetometer, and gyroscope sensor, the LSM9DS1. It also will
+eliminate the USB to serial converter in favor of a direct USB connection and a
+custom HID USB device. It is also my first adventure into four layer boards, which
+made routing a dream
 
 
 ## Initial Software Design
@@ -71,3 +88,4 @@ Below is an overview of the control and call structure of the system.
 
 [v1 Accel Plot]: https://github.com/TDHolmes/Harma/blob/gh-pages/Pensel/Documentation/pictures/P1_HalfRotation_accel.png?raw=true "Accel plot of a half rotation of the unit"
 [v1 Mag Plot]: https://github.com/TDHolmes/Harma/blob/gh-pages/Pensel/Documentation/pictures/P1_magRotation.png?raw=true "Magnetometer plot of a full Pensel rotation"
+[v1 comms]: https://github.com/TDHolmes/Harma/blob/master/Pensel/Documentation/P1_UART_coms.png?raw=true "Pensel v1 UART packet definition"
