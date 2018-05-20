@@ -66,8 +66,15 @@ Pensel v2 aims to rectify the issues with v1 by using a more robust, in producti
 accelerometer, magnetometer, and gyroscope sensor, the LSM9DS1. It also will
 eliminate the USB to serial converter in favor of a direct USB connection and a
 custom HID USB device. It is also my first adventure into four layer boards, which
-made routing a dream
+made routing a dream.
 
+#### Current Progress
+
+I am currently working on getting the USB stack up and working. I found that I
+forgot the 1.5k pull-up resistor on the D+ pin of the USB connection, which is
+required to indicate device speed and device attachment. I have attached a bodge
+wire to the D+ net (luckily I had pads for filter capacitors in case they were
+needed) and am working on soldering some 0805 resistors to that line.
 
 ## Initial Software Design
 
@@ -89,3 +96,5 @@ Below is an overview of the control and call structure of the system.
 [v1 Accel Plot]: https://github.com/TDHolmes/Harma/blob/gh-pages/Pensel/Documentation/pictures/P1_HalfRotation_accel.png?raw=true "Accel plot of a half rotation of the unit"
 [v1 Mag Plot]: https://github.com/TDHolmes/Harma/blob/gh-pages/Pensel/Documentation/pictures/P1_magRotation.png?raw=true "Magnetometer plot of a full Pensel rotation"
 [v1 comms]: https://github.com/TDHolmes/Harma/blob/master/Pensel/Documentation/P1_UART_coms.png?raw=true "Pensel v1 UART packet definition"
+
+[v2 Board Top]: https://github.com/TDHolmes/Harma/blob/master/Pensel/Documentation/pictures/Pensel_v2_Top.jpg?raw=true "Pensel v2 - Top"
