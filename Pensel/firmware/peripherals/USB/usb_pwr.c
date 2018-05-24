@@ -49,7 +49,7 @@ struct {
   __IO uint8_t bESOFcnt;
 } ResumeS;
 
-__IO uint32_t remotewakeupon=0;
+__IO uint32_t remotewakeupon = 0;
 
 
 /**

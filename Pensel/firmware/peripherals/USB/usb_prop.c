@@ -124,10 +124,8 @@ ONE_DESCRIPTOR String_Descriptor[4] = {
 *******************************************************************************/
 void Virtual_Com_Port_init(void)
 {
-
     UART_sendString("VCP init\r\n");
-    /* Update the serial number string descriptor with the data from the unique
-    ID*/
+    /* Update the serial number string descriptor with the data from the uniqueID */
     Get_SerialNum();
 
     pInformation->Current_Configuration = 0;
@@ -221,7 +219,7 @@ void Virtual_Com_Port_SetConfiguration(void)
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
-void Virtual_Com_Port_SetDeviceAddress (void)
+void Virtual_Com_Port_SetDeviceAddress(void)
 {
     UART_sendString("VCP set addr\r\n");
     bDeviceState = ADDRESSED;

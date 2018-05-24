@@ -53,13 +53,14 @@
 /* Private variables ---------------------------------------------------------*/
 ErrorStatus HSEStartUpStatus;
 extern __IO uint32_t packet_sent;
-extern __IO uint8_t Send_Buffer[VIRTUAL_COM_PORT_DATA_SIZE] ;
+extern __IO uint8_t Send_Buffer[VIRTUAL_COM_PORT_DATA_SIZE];
 extern __IO  uint32_t packet_receive;
 extern __IO uint8_t Receive_length;
 
 uint8_t Receive_Buffer[64];
 uint32_t Send_length;
-static void IntToUnicode (uint32_t value , uint8_t *pbuf , uint8_t len);
+
+static void IntToUnicode(uint32_t value, uint8_t *pbuf, uint8_t len);
 /* Extern variables ----------------------------------------------------------*/
 
 extern LINE_CODING linecoding;
@@ -74,19 +75,18 @@ extern LINE_CODING linecoding;
 *******************************************************************************/
 void Get_SerialNum(void)
 {
-  uint32_t Device_Serial0, Device_Serial1, Device_Serial2;
+    uint32_t Device_Serial0, Device_Serial1, Device_Serial2;
 
-  Device_Serial0 = 0xdeadbeef;  // *(uint32_t*)ID1;
-  Device_Serial1 = 0xdeadbeef;  // *(uint32_t*)ID2;
-  Device_Serial2 = 0xdeadbeef;  // *(uint32_t*)ID3;
+    Device_Serial0 = 0xdeadbeef;  // *(uint32_t*)ID1;
+    Device_Serial1 = 0xdeadbeef;  // *(uint32_t*)ID2;
+    Device_Serial2 = 0xdeadbeef;  // *(uint32_t*)ID3;
 
-  Device_Serial0 += Device_Serial2;
+    Device_Serial0 += Device_Serial2;
 
-  if (Device_Serial0 != 0)
-  {
-    IntToUnicode (Device_Serial0, &Virtual_Com_Port_StringSerial[2] , 8);
-    IntToUnicode (Device_Serial1, &Virtual_Com_Port_StringSerial[18], 4);
-  }
+    if (Device_Serial0 != 0) {
+        IntToUnicode(Device_Serial0, &Virtual_Com_Port_StringSerial[2] , 8);
+        IntToUnicode(Device_Serial1, &Virtual_Com_Port_StringSerial[18], 4);
+    }
 }
 
 /*******************************************************************************
@@ -96,25 +96,20 @@ void Get_SerialNum(void)
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
-static void IntToUnicode (uint32_t value , uint8_t *pbuf , uint8_t len)
+static void IntToUnicode(uint32_t value, uint8_t *pbuf, uint8_t len)
 {
-  uint8_t idx = 0;
+    uint8_t idx = 0;
 
-  for( idx = 0 ; idx < len ; idx ++)
-  {
-    if( ((value >> 28)) < 0xA )
-    {
-      pbuf[ 2* idx] = (value >> 28) + '0';
+    for(idx = 0; idx < len; idx ++) {
+        if( (value >> 28) < 0xA ) {
+            pbuf[ 2* idx] = (value >> 28) + '0';
+        } else {
+            pbuf[2* idx] = (value >> 28) + 'A' - 10;
+        }
+
+        value = value << 4;
+        pbuf[2 * idx + 1] = 0;
     }
-    else
-    {
-      pbuf[2* idx] = (value >> 28) + 'A' - 10;
-    }
-
-    value = value << 4;
-
-    pbuf[ 2* idx + 1] = 0;
-  }
 }
 
 /*******************************************************************************
@@ -124,23 +119,20 @@ static void IntToUnicode (uint32_t value , uint8_t *pbuf , uint8_t len)
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
-uint32_t CDC_Send_DATA (uint8_t *ptrBuffer, uint8_t Send_length)
+uint32_t CDC_Send_DATA(uint8_t *ptrBuffer, uint8_t Send_length)
 {
-  /*if max buffer is Not reached*/
-  if(Send_length < VIRTUAL_COM_PORT_DATA_SIZE)
-  {
-    /*Sent flag*/
-    packet_sent = 0;
-    /* send  packet to PMA*/
-    UserToPMABufferCopy((unsigned char*)ptrBuffer, ENDP1_TXADDR, Send_length);
-    SetEPTxCount(ENDP1, Send_length);
-    SetEPTxValid(ENDP1);
-  }
-  else
-  {
-    return 0;
-  }
-  return 1;
+    /* if max buffer is Not reached */
+    if(Send_length < VIRTUAL_COM_PORT_DATA_SIZE) {
+        /* Sent flag */
+        packet_sent = 0;
+        /* send  packet to PMA*/
+        UserToPMABufferCopy((unsigned char*)ptrBuffer, ENDP1_TXADDR, Send_length);
+        SetEPTxCount(ENDP1, Send_length);
+        SetEPTxValid(ENDP1);
+    } else {
+        return 0;
+    }
+    return 1;
 }
 
 /*******************************************************************************
@@ -152,10 +144,10 @@ uint32_t CDC_Send_DATA (uint8_t *ptrBuffer, uint8_t Send_length)
 *******************************************************************************/
 uint32_t CDC_Receive_DATA(void)
 {
-  /*Receive flag*/
-  packet_receive = 0;
-  SetEPRxValid(ENDP3);
-  return 1 ;
+    /* Receive flag */
+    packet_receive = 0;
+    SetEPRxValid(ENDP3);
+    return 1;
 }
 
 
