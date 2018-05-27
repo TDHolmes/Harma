@@ -35,11 +35,25 @@
 #define FMAG_STREAM_REPORT_ID (0x04)
 
 #if !defined(max)
-    #define max(v1, v2) (v1 >= v2 ? v1 : v2)
+    inline int max(int const p1, int const p2) {
+        if (p1 > p2) {
+            return p1;
+        } else {
+            return p2;
+        }
+    }
+    // #define max(v1, v2) (v1 >= v2 ? v1 : v2)
 #endif
 
 #if !defined(min)
-    #define min(v1, v2) (v1 < v2 ? v1 : v2)
+    inline int min(int const p1, int const p2) {
+        if (p1 < p2) {
+            return p1;
+        } else {
+            return p2;
+        }
+    }
+    // #define min(v1, v2) (v1 < v2 ? v1 : v2)
 #endif
 
 #if !defined(NULL)
