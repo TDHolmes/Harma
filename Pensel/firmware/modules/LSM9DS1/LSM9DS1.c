@@ -17,9 +17,8 @@
 
 #include "LSM9DS1.h"
 
-// TODO: fill out
-#define ACCEL_ADDRESS (0b00000000)
-#define MAG_ADDRESS   (0b00000000)
+#define ACCEL_GYRO_ADDRESS (0b01101011)  // 0x6B (no R/W bit)
+#define MAG_ADDRESS        (0b00011110)  // 0x1E (no R/W bit)
 
 
 /* Accelerometer and gyroscope registers */
@@ -33,8 +32,27 @@
 #define INT_GEN_DUR_XL         (0x0A)
 #define REFERENCE_G            (0x0B)
 #define INT1_CTRL              (0x0C)
+    #define INT1_IG_G              (1 << 0)
+    #define INT1_IG_XL             (1 << 1)
+    #define INT1_FSS5              (1 << 2)
+    #define INT1_OVR               (1 << 3)
+    #define INT1_FTH               (1 << 4)
+    #define INT1_Boot              (1 << 5)
+    #define INT1_DRDY_G            (1 << 6)
+    #define INT1_DRDY_XL           (1 << 7)
+
 #define INT2_CTRL              (0x0D)
+    #define INT2_INACT             (1 << 0)
+    #define INT2_FSS5              (1 << 2)
+    #define INT2_OVR               (1 << 3)
+    #define INT2_FTH               (1 << 4)
+    #define INT2_DRDY_TEMP         (1 << 5)
+    #define INT2_DRDY_G            (1 << 6)
+    #define INT2_DRDY_XL           (1 << 7)
+
 #define WHO_AM_I               (0x0F)
+    #define WHO_AM_I_EXPECTED      (0b01101000)
+
 #define CTRL_REG1_G            (0x10)
 #define CTRL_REG2_G            (0x11)
 #define CTRL_REG3_G            (0x12)
@@ -84,6 +102,7 @@
 #define OFFSET_Z_REG_L_M  (0x09)
 #define OFFSET_Z_REG_H_M  (0x0A)
 #define WHO_AM_I_M        (0x0F)
+    #define WHO_AM_I_M_EXPECTED  (0b00111101)
 #define CTRL_REG1_M       (0x20)
 #define CTRL_REG2_M       (0x21)
 #define CTRL_REG3_M       (0x22)
@@ -106,6 +125,85 @@
 ret_t LSM9DS1_init(void)
 {
     ret_t ret = RET_OK;
+    uint8_t tmp = 0;
+
+    // --- Make sure we can communicate with the chip
+    // Check accel/gyro first
+    ret = I2C_readData(ACCEL_GYRO_ADDRESS, WHO_AM_I, &tmp, 1);
+    if (ret != RET_OK) { return ret; }
+    if (tmp != WHO_AM_I_EXPECTED) {
+        return RET_COM_ERR;
+    }
+
+    // Check mag too
+    ret = I2C_readData(MAG_ADDRESS, WHO_AM_I_M, &tmp, 1);
+    if (ret != RET_OK) { return ret; }
+    if (tmp != WHO_AM_I_M_EXPECTED) {
+        return RET_COM_ERR;
+    }
+
+    // --- Configure the device properly now
+
+    // Setup interrupts
+    ret = I2C_writeByte(ACCEL_GYRO_ADDRESS, INT1_CTRL, INT1_DRDY_G, true);
+    if (ret != RET_OK) { return ret; }
+    ret = I2C_writeByte(ACCEL_GYRO_ADDRESS, INT2_CTRL, INT2_DRDY_XL, true);
+    if (ret != RET_OK) { return ret; }
+
+    return ret;
+}
+
+/*! Function to be ran after DRDY from accel is detected. Should be ran in NON-interrupt context
+ */
+ret_t LSM9DS1_accelDataReadyHandler(void)
+{
+    ret_t ret = RET_OK;
+    int16_t data[3];
+    // Read out the new data
+    ret = I2C_readData(ACCEL_GYRO_ADDRESS, OUT_X_LOW_XL, (uint8_t *)data, 3);
+    if (ret != RET_OK) { return ret; }
+
+    // Queue it up
+
+    // Check status register
+
+    return ret;
+}
+
+
+/*! Function to be ran after DRDY from gyro is detected. Should be ran in NON-interrupt context
+ */
+ret_t LSM9DS1_gyroDataReadyHandler(void)
+{
+    ret_t ret = RET_OK;
+    int16_t data[3];
+    // Read out the new data
+    ret = I2C_readData(ACCEL_GYRO_ADDRESS, OUT_X_LOW_G, (uint8_t *)data, 3);
+    if (ret != RET_OK) { return ret; }
+
+    // Queue it up
+
+    // Check status register
+
+    return ret;
+}
+
+
+/*! Function to be ran after DRDY from mag is detected.
+ *
+ * Note: Should be ran in NON-interrupt context
+ */
+ret_t LSM9DS1_magDataReadyHandler(void)
+{
+    ret_t ret = RET_OK;
+    int16_t data[3];
+    // Read out the new data
+    ret = I2C_readData(MAG_ADDRESS, OUT_X_L_M, (uint8_t *)data, 3);
+    if (ret != RET_OK) { return ret; }
+
+    // Queue it up
+
+    // Check status register
 
     return ret;
 }
