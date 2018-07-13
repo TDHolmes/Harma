@@ -717,7 +717,7 @@ typedef struct
 #define TIM2_BASE             (APB1PERIPH_BASE + 0x00000000U)
 #define TIM6_BASE             (APB1PERIPH_BASE + 0x00001000U)
 #define RTC_BASE              (APB1PERIPH_BASE + 0x00002800U)
-#define WWDG_BASE             (APB1PERIPH_BASE + 0x00002C00U)
+#define WWDG_BASE             (APB1PERIPH_BASE + 0x00002C00U)  //0x40002C00
 #define IWDG_BASE             (APB1PERIPH_BASE + 0x00003000U)
 #define I2S2ext_BASE          (APB1PERIPH_BASE + 0x00003400U)
 #define SPI2_BASE             (APB1PERIPH_BASE + 0x00003800U)

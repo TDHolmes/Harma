@@ -28,7 +28,7 @@
 
 // Button & switch stuff
 #define BUTTON_PORT  (GPIOA)
-#define BUTTON_AUX   (GPIO_PIN_4)
+// #define BUTTON_AUX   (GPIO_PIN_4)
 #define BUTTON_MAIN  (GPIO_PIN_3)
 
 // I2C
@@ -42,9 +42,10 @@
 #define UART_TX     (GPIO_PIN_9)
 
 // USB
-#define USB_PORT   (GPIOA)
-#define USB_DM     (GPIO_PIN_11)
-#define USB_DP     (GPIO_PIN_12)
+#define USB_PORT       (GPIOA)
+#define USB_DM         (GPIO_PIN_11)
+#define USB_DP         (GPIO_PIN_12)
+#define USB_DP_PULLUP  (GPIO_PIN_4)
 
 // Board rev
 #define BREV_PORT (GPIOB)
@@ -63,7 +64,6 @@ void configure_pins(void);
 
 void button_periodic_handler(uint32_t current_tick);
 uint8_t mainbutton_getval(void);
-uint8_t auxbutton_getval(void);
 
 void LED_toggle(uint16_t LED);
 void LED_set(uint16_t LED, uint8_t value);

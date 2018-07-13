@@ -55,7 +55,7 @@
 #define HARMA_INT_SIZE                (8)
 
 #define HARMA_SIZ_DEVICE_DESC         (18)
-#define HARMA_SIZ_CONFIG_DESC         (67)
+#define HARMA_SIZ_CONFIG_DESC         (107)
 #define HARMA_SIZ_STRING_LANGID       (4)
 #define HARMA_SIZ_STRING_VENDOR       (38)
 #define HARMA_SIZ_STRING_PRODUCT      (50)

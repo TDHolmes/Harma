@@ -95,20 +95,20 @@ USER_STANDARD_REQUESTS User_Standard_Requests = {
 
 
 ONE_DESCRIPTOR Device_Descriptor = {
-    (uint8_t *)Virtual_Com_Port_DeviceDescriptor,
-    VIRTUAL_COM_PORT_SIZ_DEVICE_DESC
+    (uint8_t *)harma_DeviceDescriptor,
+    HARMA_SIZ_DEVICE_DESC
 };
 
 ONE_DESCRIPTOR Config_Descriptor = {
-    (uint8_t *)Virtual_Com_Port_ConfigDescriptor,
-    VIRTUAL_COM_PORT_SIZ_CONFIG_DESC
+    (uint8_t *)harma_ConfigDescriptor,
+    HARMA_SIZ_CONFIG_DESC
 };
 
 ONE_DESCRIPTOR String_Descriptor[4] = {
-    {(uint8_t *)Virtual_Com_Port_StringLangID, VIRTUAL_COM_PORT_SIZ_STRING_LANGID},
-    {(uint8_t *)Virtual_Com_Port_StringVendor, VIRTUAL_COM_PORT_SIZ_STRING_VENDOR},
-    {(uint8_t *)Virtual_Com_Port_StringProduct, VIRTUAL_COM_PORT_SIZ_STRING_PRODUCT},
-    {(uint8_t *)Virtual_Com_Port_StringSerial, VIRTUAL_COM_PORT_SIZ_STRING_SERIAL}
+    {(uint8_t *)harma_StringLangID, HARMA_SIZ_STRING_LANGID},
+    {(uint8_t *)harma_StringVendor, HARMA_SIZ_STRING_VENDOR},
+    {(uint8_t *)harma_StringProduct, HARMA_SIZ_STRING_PRODUCT},
+    {(uint8_t *)harma_StringSerial, HARMA_SIZ_STRING_SERIAL}
 };
 
 /* Extern variables ----------------------------------------------------------*/
@@ -153,7 +153,7 @@ void Virtual_Com_Port_Reset(void)
     pInformation->Current_Configuration = 0;
 
     /* Current Feature initialization */
-    pInformation->Current_Feature = Virtual_Com_Port_ConfigDescriptor[7];
+    pInformation->Current_Feature = harma_ConfigDescriptor[7];
 
     /* Set Virtual_Com_Port DEVICE with the default Interface*/
     pInformation->Current_Interface = 0;
@@ -184,7 +184,7 @@ void Virtual_Com_Port_Reset(void)
     /* Initialize Endpoint 3 */
     SetEPType(ENDP3, EP_BULK);
     SetEPRxAddr(ENDP3, ENDP3_RXADDR);
-    SetEPRxCount(ENDP3, VIRTUAL_COM_PORT_DATA_SIZE);
+    SetEPRxCount(ENDP3, HARMA_DATA_SIZE);
     SetEPRxStatus(ENDP3, EP_RX_VALID);
     SetEPTxStatus(ENDP3, EP_TX_DIS);
 

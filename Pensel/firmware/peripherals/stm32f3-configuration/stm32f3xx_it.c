@@ -63,6 +63,7 @@ extern UART_HandleTypeDef HAL_UART_handle;
   */
 void NMI_Handler(void)
 {
+    while (1);
 }
 
 /**
@@ -74,6 +75,7 @@ void HardFault_Handler(void)
     while (1);
 }
 
+
 /**
   * @brief  This function handles Memory Manage exception.
   */
@@ -82,6 +84,7 @@ void MemManage_Handler(void)
     /* Go to infinite loop when Memory Manage exception occurs */
     while (1);
 }
+
 
 /**
   * @brief  This function handles Bus Fault exception.
@@ -92,6 +95,7 @@ void BusFault_Handler(void)
     while (1);
 }
 
+
 /**
   * @brief  This function handles Usage Fault exception.
   */
@@ -101,6 +105,7 @@ void UsageFault_Handler(void)
     while (1);
 }
 
+
 /**
   * @brief  This function handles SVCall exception.
   */
@@ -108,6 +113,7 @@ void SVC_Handler(void)
 {
     while (1);
 }
+
 
 /**
   * @brief  This function handles Debug Monitor exception.
@@ -117,6 +123,7 @@ void DebugMon_Handler(void)
     while (1);
 }
 
+
 /**
   * @brief  This function handles PendSVC exception.
   */
@@ -125,6 +132,7 @@ void PendSV_Handler(void)
     while (1);
 }
 
+
 /**
   * @brief  This function handles SysTick Handler.
   */
@@ -132,6 +140,7 @@ void SysTick_Handler(void)
 {
     HAL_IncTick();
 }
+
 
 /******************************************************************************
  *                 STM32F3xx Peripherals Interrupt Handlers                    *
@@ -220,13 +229,24 @@ void EXTI15_10_IRQHandler(void)
     HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_11);
 }
 
+/* ---- USB Interrupts ---- */
 
 /**
   * @brief  This function handles USB Low Priority interrupts requests.
   */
-void USB_LP_CAN1_RX0_IRQHandler(void)
+void USB_LP_CAN_RX0_IRQHandler(void)
 {
     USB_Istr();
 }
+
+
+/**
+  * @brief  This function handles USB WakeUp interrupt request.
+  */
+void USBWakeUp_IRQHandler(void)
+{
+    return;
+}
+
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -12,7 +12,8 @@
 
 // User includes
 #include "common.h"
-#include "modules/LSM303DLHC/LSM303DLHC.h"
+// #include "modules/LSM303DLHC/LSM303DLHC.h"
+#include "modules/LSM9DS1/LSM9DS1.h"
 
 // STM drivers
 #include "peripherals/stm32f3-configuration/stm32f3xx.h"
@@ -45,8 +46,6 @@ void button_ISR(uint16_t GPIO_Pin);
 // Private IRQ enablers / disablers
 static inline void mainbtn_irq_enable(void);
 static inline void mainbtn_irq_disable(void);
-static inline void auxbtn_irq_enable(void);
-static inline void auxbtn_irq_disable(void);
 
 
 //! Tracks a button's state and manages a button's hysteresis
@@ -64,10 +63,8 @@ typedef struct {
 
 
 button_t mainbutton_admin; //!< button handler for the main button.
-button_t auxbutton_admin;  //!< button handler for the auxilary button.
 
 uint8_t mainbutton_getval(void)    { return mainbutton_admin.state; }
-uint8_t auxbutton_getval(void)     { return auxbutton_admin.state; }
 
 
 /**
@@ -203,8 +200,16 @@ void configure_pins(void)
 
     // Need to see button going low and high!
     GPIO_InitStruct.Mode  = GPIO_MODE_IT_RISING_FALLING;
-    GPIO_InitStruct.Pin   = (BUTTON_MAIN | BUTTON_AUX);
+    GPIO_InitStruct.Pin   = BUTTON_MAIN;
     HAL_GPIO_Init(BUTTON_PORT, &GPIO_InitStruct);
+
+    // Push-Pull outputs for the LEDs and timing pin!
+    GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull  = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+    GPIO_InitStruct.Pin   = USB_DP_PULLUP;
+
+    HAL_GPIO_Init(USB_PORT, &GPIO_InitStruct);
 
     // Sensor input pins
     // TODO: re-enable for sensor
@@ -229,11 +234,6 @@ void configure_pins(void)
     mainbutton_admin.changing_value = 0;
     mainbutton_admin.changing_timestamp = 0;
 
-    auxbutton_admin.state = HAL_GPIO_ReadPin(BUTTON_PORT, BUTTON_AUX);
-    auxbutton_admin.changing = false;
-    auxbutton_admin.changing_value = 0;
-    auxbutton_admin.changing_timestamp = 0;
-
     // configure interrupt priority
     // TODO: fill in interrupt priorities for the sensors
     // HAL_NVIC_SetPriority((IRQn_Type)(EXTI15_10_IRQn), 2, 0); // Sensor DRDY pin
@@ -242,11 +242,11 @@ void configure_pins(void)
     // HAL_NVIC_SetPriority((IRQn_Type)(EXTI2_TSC_IRQn), 3, 1); // Switch pin 1
 
     HAL_NVIC_SetPriority((IRQn_Type)(EXTI3_IRQn), 4, 0);     // Main button
-    HAL_NVIC_SetPriority((IRQn_Type)(EXTI4_IRQn), 4, 1);     // Aux button
+    // HAL_NVIC_SetPriority((IRQn_Type)(EXTI4_IRQn), 4, 1);     // Aux button
 
     // enable interrupts
+    HAL_NVIC_DisableIRQ((IRQn_Type)(EXTI4_IRQn));  // make sure Aux button IRQ is disabled
     mainbtn_irq_enable();
-    auxbtn_irq_enable();
 }
 
 /*! Enables the interrupt corrisponding to the main button pin. */
@@ -259,18 +259,6 @@ static inline void mainbtn_irq_enable(void)
 static inline void mainbtn_irq_disable(void)
 {
     HAL_NVIC_DisableIRQ((IRQn_Type)(EXTI9_5_IRQn));
-}
-
-/*! Enables the interrupt corrisponding to the auxilary button pin. */
-static inline void auxbtn_irq_enable(void)
-{
-    HAL_NVIC_EnableIRQ((IRQn_Type)(EXTI4_IRQn));
-}
-
-/*! Disables the interrupt corrisponding to the auxilary button pin. */
-static inline void auxbtn_irq_disable(void)
-{
-    HAL_NVIC_DisableIRQ((IRQn_Type)(EXTI4_IRQn));
 }
 
 
@@ -290,16 +278,6 @@ void button_periodic_handler(uint32_t current_tick)
         }
     }
     mainbtn_irq_enable();
-
-    // next, aux button
-    auxbtn_irq_disable();
-    if (auxbutton_admin.changing == true) {
-        if (current_tick - auxbutton_admin.changing_timestamp >= IO_DEBOUNCE_TIMEOUT) {
-            auxbutton_admin.state = auxbutton_admin.changing_value;
-            auxbutton_admin.changing = false;
-        }
-    }
-    auxbtn_irq_enable();
 }
 
 
@@ -321,20 +299,14 @@ void button_ISR(uint16_t GPIO_Pin)
         } else {
             mainbutton_admin.changing = false;
         }
-    } else {
-        if (auxbutton_admin.state != pin_val) {
-            auxbutton_admin.changing_value = pin_val;
-            auxbutton_admin.changing_timestamp = HAL_GetTick();
-            auxbutton_admin.changing = true;
-        } else {
-            auxbutton_admin.changing = false;
-        }
     }
 }
 
 
 /* independent watchdog code */
 #ifdef WATCHDOG_ENABLE
+
+#error "No support for watchdogs at this time"
 
 /*! Initializes the independent watchdog module to require a pet every 10 ms
  *
@@ -408,8 +380,19 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
     switch (GPIO_Pin) {
         case BUTTON_MAIN:
-        case BUTTON_AUX:
             button_ISR(GPIO_Pin);
+            break;
+
+        case SENSOR_INT1:
+            LSM9DS1_INT1_ISR();
+            break;
+
+        case SENSOR_INT2:
+            LSM9DS1_INT2_ISR();
+            break;
+
+        case SENSOR_DRDY:
+            LSM9DS1_DRDY_ISR();
             break;
 
         // TODO: fill in ISRs for the sensor

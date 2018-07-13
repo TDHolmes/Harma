@@ -11,6 +11,7 @@
 #include "common.h"
 
 #include "modules/utilities/queue.c"
+#include "modules/utilities/scheduler.h"
 #include "peripherals/hardware/hardware.h"
 #include "peripherals/I2C/I2C.h"
 #include "peripherals/stm32f3/stm32f3xx_hal.h"
@@ -121,8 +122,21 @@
 #define INT_THS_H         (0x33)
 
 
+// --- important data / globals
+extern schedule_t main_schedule;  // TODO: don't like externs. Better way to do this?
+LSM9DS1_critical_errors_t CriticalErrors = {
+    .INT1_IRQs_missed = 0,
+    .INT2_IRQs_missed = 0,
+    .DRDY_IRQs_missed = 0,
+};
 
-ret_t LSM9DS1_init(void)
+// --- Private functions
+ret_t accelDataReadyHandler(int32_t *next_callback_ms);
+ret_t gyroDataReadyHandler(int32_t *next_callback_ms);
+ret_t magDataReadyHandler(int32_t *next_callback_ms);
+
+
+ret_t LSM9DS1_init(gyro_ODR_t gyro_ODR, accel_ODR_t accel_ODR)
 {
     ret_t ret = RET_OK;
     uint8_t tmp = 0;
@@ -150,12 +164,15 @@ ret_t LSM9DS1_init(void)
     ret = I2C_writeByte(ACCEL_GYRO_ADDRESS, INT2_CTRL, INT2_DRDY_XL, true);
     if (ret != RET_OK) { return ret; }
 
+    // Setup ODRs, filtering, etc.
+
     return ret;
 }
 
+
 /*! Function to be ran after DRDY from accel is detected. Should be ran in NON-interrupt context
  */
-ret_t LSM9DS1_accelDataReadyHandler(void)
+ret_t accelDataReadyHandler(int32_t *next_callback_ms)
 {
     ret_t ret = RET_OK;
     int16_t data[3];
@@ -167,13 +184,14 @@ ret_t LSM9DS1_accelDataReadyHandler(void)
 
     // Check status register
 
+    *next_callback_ms = 0;  // We don't need to be called again until next ISR event
     return ret;
 }
 
 
 /*! Function to be ran after DRDY from gyro is detected. Should be ran in NON-interrupt context
  */
-ret_t LSM9DS1_gyroDataReadyHandler(void)
+ret_t gyroDataReadyHandler(int32_t *next_callback_ms)
 {
     ret_t ret = RET_OK;
     int16_t data[3];
@@ -185,6 +203,7 @@ ret_t LSM9DS1_gyroDataReadyHandler(void)
 
     // Check status register
 
+    *next_callback_ms = 0;  // We don't need to be called again until next ISR event
     return ret;
 }
 
@@ -193,7 +212,7 @@ ret_t LSM9DS1_gyroDataReadyHandler(void)
  *
  * Note: Should be ran in NON-interrupt context
  */
-ret_t LSM9DS1_magDataReadyHandler(void)
+ret_t magDataReadyHandler(int32_t *next_callback_ms)
 {
     ret_t ret = RET_OK;
     int16_t data[3];
@@ -205,5 +224,49 @@ ret_t LSM9DS1_magDataReadyHandler(void)
 
     // Check status register
 
+    *next_callback_ms = 0;  // We don't need to be called again until next ISR event
     return ret;
+}
+
+
+// --- ISR handlers that are called by EXTI IRQ handler in hardware.c
+
+void LSM9DS1_INT1_ISR(void)
+{
+    // queue up gyro DRDY handler for main to run
+    ret_t ret = RET_OK;
+    uint8_t sched_id;  // we don't need to know the schedule ID...
+    ret = scheduler_add(&main_schedule, 0, gyroDataReadyHandler, &sched_id);
+    if (ret != RET_OK) {
+        // Critical error! we will miss INT1 ISR
+        CriticalErrors.INT1_IRQs_missed += 1;
+    }
+
+    // TODO: do a quick read of status here if timing critical? or leave in the DRDY non-ISR context handlers?
+}
+
+
+void LSM9DS1_INT2_ISR(void)
+{
+    // queue up accel DRDY handler for main to run
+    ret_t ret = RET_OK;
+    uint8_t sched_id;  // we don't need to know the schedule ID...
+    ret = scheduler_add(&main_schedule, 0, accelDataReadyHandler, &sched_id);
+    if (ret != RET_OK) {
+        // Critical error! we will miss INT1 ISR
+        CriticalErrors.INT2_IRQs_missed += 1;
+    }
+}
+
+
+void LSM9DS1_DRDY_ISR(void)
+{
+    // queue up Mag DRDY handler for main to run
+    ret_t ret = RET_OK;
+    uint8_t sched_id;  // we don't need to know the schedule ID...
+    ret = scheduler_add(&main_schedule, 0, magDataReadyHandler, &sched_id);
+    if (ret != RET_OK) {
+        // Critical error! we will miss INT1 ISR
+        CriticalErrors.DRDY_IRQs_missed += 1;
+    }
 }

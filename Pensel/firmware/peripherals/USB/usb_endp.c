@@ -53,8 +53,8 @@
 /* Private variables ---------------------------------------------------------*/
 extern __IO uint32_t packet_sent;
 extern __IO uint32_t packet_receive;
-extern __IO uint8_t Receive_Buffer[64];
-uint32_t Receive_length;
+extern __IO uint8_t receive_buffer[64];
+uint32_t receive_length;
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
@@ -81,8 +81,8 @@ void EP1_IN_Callback (void)
 void EP3_OUT_Callback(void)
 {
   packet_receive = 1;
-  Receive_length = GetEPRxCount(ENDP3);
-  PMAToUserBufferCopy((unsigned char*)Receive_Buffer, ENDP3_RXADDR, Receive_length);
+  receive_length = GetEPRxCount(ENDP3);
+  PMAToUserBufferCopy((unsigned char*)receive_buffer, ENDP3_RXADDR, receive_length);
 }
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
