@@ -69,6 +69,8 @@ def build_debug(build_target, use_clang=False, armgcc_dir="", verbose=False):
 
     git_tag_short = subprocess.check_output("git rev-parse --short HEAD", shell=True).strip()
     cmd += "-DGIT_TAG_SHORT=0x{} ".format(git_tag_short)
+    if verbose:
+        cmd += "-v "
     cmd += "."  # current directory
     print("executing {}".format(cmd))
     os.system(cmd)
