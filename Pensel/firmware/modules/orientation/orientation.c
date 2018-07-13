@@ -9,7 +9,6 @@
  */
 #include <stdint.h>
 
-#include "modules/LSM303DLHC/LSM303DLHC.h"
 #include "quanternions.h"
 #include "modules/utilities/FIR.h"
 

@@ -41,12 +41,13 @@ extern __IO uint32_t uwTick;
 // Global variables to influence state
 
 critical_errors_t gCriticalErrors;
-static schedule_t main_schedule;
+schedule_t main_schedule;
 
 // Local functions
 ret_t heartbeat(int32_t * new_callback_time_ms);
 ret_t workloop_flash(int32_t * new_callback_time_ms);
 ret_t button_handler(int32_t * new_callback_time_ms);
+void USB_pullup_set(uint8_t value);
 
 
 #ifdef WATCHDOG_ENABLE
@@ -94,10 +95,10 @@ void clear_critical_errors(void) {
     #endif
 }
 
-extern __IO uint8_t Receive_Buffer[64];
-extern __IO uint32_t Receive_length;
+extern __IO uint8_t receive_buffer[64];
+extern __IO uint32_t receive_length;
 extern __IO uint32_t length;
-uint8_t Send_Buffer[64];
+uint8_t send_buffer[64];
 uint32_t packet_sent = 1;
 uint32_t packet_receive = 1;
 
@@ -118,7 +119,16 @@ void MX_USB_PCD_Init(void)
     if (ret != HAL_OK) {
         check_retval_fatal(__FILE__, __LINE__, (ret_t)ret);
     }
+}
 
+
+void USB_pullup_set(uint8_t value)
+{
+    if (value) {
+        HAL_GPIO_WritePin(USB_PORT, USB_DP_PULLUP, GPIO_PIN_SET);
+    } else {
+        HAL_GPIO_WritePin(USB_PORT, USB_DP_PULLUP, GPIO_PIN_RESET);
+    }
 }
 
 
@@ -130,7 +140,7 @@ void MX_USB_PCD_Init(void)
  */
 int main(void)
 {
-    uint8_t i;
+    uint8_t i = 0;
     int32_t time_until_next_cb_ms;
 
     // system configuration...
@@ -159,11 +169,22 @@ int main(void)
     // retval = I2C_init();
     // check_retval_fatal(__FILE__, __LINE__, retval);
 
+    UART_sendString("\r\n");
     LED_set(LED_0, 0);
     LED_set(LED_1, 0);
 
+    // disable WWDG
+    WRITE_REG(WWDG->CR, 0);
+
+    UART_sendString("before USB\r\n");
+    while( !UART_TXisReady() );
     MX_USB_PCD_Init();
     USB_Init();
+    UART_sendString("asserting USB pullup...\r\n");
+    while( !UART_TXisReady() );
+    USB_pullup_set(1);
+    UART_sendString("USB pulled up.\r\n");
+    while( !UART_TXisReady() );
 
     uint32_t ledi = 0;
     while (1)
@@ -171,17 +192,19 @@ int main(void)
 
         // toggle LED every 10,000 itterations over the workloop
         if (ledi++ >= 10000) {
+            UART_sendString("toggle\r\n");
             LED_toggle(LED_1);
             ledi = 0;
         }
         // UART_sendint(bDeviceState);
         if (bDeviceState == CONFIGURED) {
+            UART_sendString("configured\r\n");
             CDC_Receive_DATA();
             /*Check to see if we have data yet */
-            if (Receive_length  != 0) {
+            if (receive_length  != 0) {
                 if (packet_sent == 1)
-                    CDC_Send_DATA ((unsigned char*)Receive_Buffer,Receive_length);
-                Receive_length = 0;
+                    CDC_Send_DATA ((unsigned char*)receive_buffer,receive_length);
+                receive_length = 0;
             }
         }
     }

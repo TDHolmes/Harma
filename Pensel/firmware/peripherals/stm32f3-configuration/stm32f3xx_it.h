@@ -59,11 +59,14 @@ void DebugMon_Handler(void);
 void PendSV_Handler(void);
 void SysTick_Handler(void);
 
+
 /* Peripheral IRQs */
 void I2Cx_EV_IRQHandler(void);
 void I2Cx_ER_IRQHandler(void);
 void USARTx_IRQHandler(void);
-void USB_LP_CAN1_RX0_IRQHandler(void);
+
+void USB_LP_CAN_RX0_IRQHandler(void);
+void USBWakeUp_IRQHandler(void);
 
 #ifdef __cplusplus
 }
