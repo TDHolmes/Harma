@@ -36,8 +36,6 @@
 
 #include "modules/CDC/cdc.h"
 
-PCD_HandleTypeDef hpcd_USB_FS;
-
 //! HAL millisecond tick
 extern __IO uint32_t uwTick;
 // Global variables to influence state
@@ -117,25 +115,6 @@ ret_t print(char * string)
 }
 
 
-/* USB init function */
-void MX_USB_PCD_Init(void)
-{
-    hpcd_USB_FS.Instance = USB;
-    hpcd_USB_FS.Init.dev_endpoints = 8;
-    hpcd_USB_FS.Init.speed = PCD_SPEED_FULL;
-    hpcd_USB_FS.Init.ep0_mps = DEP0CTL_MPS_64;
-    hpcd_USB_FS.Init.phy_itface = PCD_PHY_EMBEDDED;
-    hpcd_USB_FS.Init.low_power_enable = DISABLE;
-    hpcd_USB_FS.Init.battery_charging_enable = DISABLE;
-
-    HAL_StatusTypeDef ret;
-    ret = HAL_PCD_Init(&hpcd_USB_FS);
-    if (ret != HAL_OK) {
-        check_retval_fatal(__FILE__, __LINE__, (ret_t)ret);
-    }
-}
-
-
 /*! Main function code. Does the following:
  *      1. Initializes all sub-modules
  *      2. Loops forever and behaves as such given switch state:
@@ -178,9 +157,8 @@ int main(void)
     LED_set(LED_0, 0);
     LED_set(LED_1, 0);
 
-    // TODO: roll this all up into one
-    MX_USB_PCD_Init();
-    USB_Init();
+    hw_USB_init();
+    USB_init();
 
     // initalize the scheduler and add some periodic tasks
     scheduler_init(&main_schedule);
