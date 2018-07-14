@@ -54,7 +54,8 @@ void USB_pullup_set(uint8_t value);
     //! Global indicating whether or not to pet the watchdog
     static bool gPetWdg = false;
 
-    void wdg_captureAlert(void) {
+    void wdg_captureAlert(void)
+    {
         // If we want, we can catch if a watchdog has ocurred
         uint32_t subcount = 0;
 
@@ -70,7 +71,8 @@ void USB_pullup_set(uint8_t value);
         }
     }
 
-    ret_t watchdog_pet(int32_t * new_callback_time_ms) {
+    ret_t watchdog_pet(int32_t * new_callback_time_ms)
+    {
         *new_callback_time_ms = 500;
         UART_sendString("w");
         // every 500 ms, pet the watchdog. Need to pet the watchdog every ~1 s!
@@ -83,13 +85,16 @@ void USB_pullup_set(uint8_t value);
     }
 #endif
 
-static inline void check_retval_fatal(char * filename, uint32_t lineno, ret_t retval) {
+static inline void check_retval_fatal(char * filename, uint32_t lineno, ret_t retval)
+{
     if (retval != RET_OK) {
         fatal_error_handler(filename, lineno, (int8_t)retval);
     }
 }
 
-void clear_critical_errors(void) {
+
+void clear_critical_errors(void)
+{
     #ifdef WATCHDOG_ENABLE
         gCriticalErrors.wdg_reset = 0;
     #endif
@@ -190,7 +195,8 @@ int main(void)
 
 /* --- Some common callbacks to be run --- */
 
-ret_t heartbeat(int32_t * new_callback_time_ms) {
+ret_t heartbeat(int32_t * new_callback_time_ms)
+{
     static uint8_t tick = 0;
     *new_callback_time_ms = 1000;
     LED_toggle(LED_0);
@@ -205,7 +211,9 @@ ret_t heartbeat(int32_t * new_callback_time_ms) {
     return RET_OK;
 }
 
-ret_t workloop_flash(int32_t * new_callback_time_ms) {
+
+ret_t workloop_flash(int32_t * new_callback_time_ms)
+{
     static uint32_t i = 0;
     *new_callback_time_ms = 0;
 
@@ -218,7 +226,8 @@ ret_t workloop_flash(int32_t * new_callback_time_ms) {
 }
 
 
-ret_t button_handler(int32_t * new_callback_time_ms) {
+ret_t button_handler(int32_t * new_callback_time_ms)
+{
     UART_sendString("b");
     *new_callback_time_ms = 10;
     button_periodic_handler( HAL_GetTick() );
@@ -270,6 +279,7 @@ void fatal_error_handler(char file[], uint32_t line, int8_t err_code)
         while (1);
     #endif
 }
+
 
 // HAL uses this function. Call our error function.
 void assert_failed(uint8_t* file, uint32_t line)
