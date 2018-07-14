@@ -39,6 +39,9 @@
 /* Includes ------------------------------------------------------------------*/
 #include "peripherals/stm32-usb/usb_lib.h"
 #include "peripherals/stm32-usb/usb_mem.h"
+
+#include "modules/CDC/cdc.h"
+
 #include "usb_desc.h"
 #include "hw_config.h"
 #include "usb_istr.h"
@@ -48,14 +51,8 @@
 /* Private define ------------------------------------------------------------*/
 
 /* Interval between sending IN packets in frame number (1 frame = 1ms) */
-#define VCOMPORT_IN_FRAME_INTERVAL             5
-/* Private macro -------------------------------------------------------------*/
-/* Private variables ---------------------------------------------------------*/
-extern __IO uint32_t packet_sent;
-extern __IO uint32_t packet_receive;
-extern __IO uint8_t receive_buffer[64];
-uint32_t receive_length;
-/* Private function prototypes -----------------------------------------------*/
+
+
 /* Private functions ---------------------------------------------------------*/
 
 /*******************************************************************************
@@ -66,9 +63,9 @@ uint32_t receive_length;
 * Return         : None.
 *******************************************************************************/
 
-void EP1_IN_Callback (void)
+void EP1_IN_Callback(void)
 {
-  packet_sent = 1;
+    cdc_inTransfer_completeCB();
 }
 
 /*******************************************************************************
@@ -80,9 +77,9 @@ void EP1_IN_Callback (void)
 *******************************************************************************/
 void EP3_OUT_Callback(void)
 {
-  packet_receive = 1;
-  receive_length = GetEPRxCount(ENDP3);
-  PMAToUserBufferCopy((unsigned char*)receive_buffer, ENDP3_RXADDR, receive_length);
+    uint32_t receive_length = GetEPRxCount(ENDP3);
+    // PMAToUserBufferCopy((unsigned char*)receive_buffer, ENDP3_RXADDR, receive_length);
+    cdc_outTransfer_receive(ENDP3_RXADDR, receive_length);
 }
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

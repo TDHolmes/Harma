@@ -180,6 +180,17 @@ uint8_t mainbutton_getval(void)    { return mainbutton_admin.state; }
     }
 #endif
 
+
+void hw_setUSBpullup(uint8_t value)
+{
+    if (value) {
+        HAL_GPIO_WritePin(USB_PORT, USB_DP_PULLUP, GPIO_PIN_SET);
+    } else {
+        HAL_GPIO_WritePin(USB_PORT, USB_DP_PULLUP, GPIO_PIN_RESET);
+    }
+}
+
+
 /*! Configures all of the pins (& interrupt priority if applicable) in the project
  *  to what they need to be. (i.e. input, output, falling interrupt, etc)
  */

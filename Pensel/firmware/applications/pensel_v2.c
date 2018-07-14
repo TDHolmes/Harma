@@ -34,6 +34,8 @@
 #include "peripherals/USB/usb_desc.h"
 #include "peripherals/USB/usb_pwr.h"
 
+#include "modules/CDC/cdc.h"
+
 PCD_HandleTypeDef hpcd_USB_FS;
 
 //! HAL millisecond tick
@@ -95,12 +97,24 @@ void clear_critical_errors(void) {
     #endif
 }
 
-extern __IO uint8_t receive_buffer[64];
-extern __IO uint32_t receive_length;
-extern __IO uint32_t length;
-uint8_t send_buffer[64];
-uint32_t packet_sent = 1;
-uint32_t packet_receive = 1;
+
+ret_t print(char * string)
+{
+    uint32_t string_len = 0;
+    if (bDeviceState != CONFIGURED) {
+        return RET_BUSY_ERR;
+    }
+
+    // calculate length of string to check if it's too long
+    for (char * c = string; ; c += 1) {
+        if (*c == 0) {
+            break;
+        }
+        string_len += 1;
+    }
+
+    return cdc_inTransfer_start((uint8_t *)string, string_len);
+}
 
 
 /* USB init function */
@@ -118,16 +132,6 @@ void MX_USB_PCD_Init(void)
     ret = HAL_PCD_Init(&hpcd_USB_FS);
     if (ret != HAL_OK) {
         check_retval_fatal(__FILE__, __LINE__, (ret_t)ret);
-    }
-}
-
-
-void USB_pullup_set(uint8_t value)
-{
-    if (value) {
-        HAL_GPIO_WritePin(USB_PORT, USB_DP_PULLUP, GPIO_PIN_SET);
-    } else {
-        HAL_GPIO_WritePin(USB_PORT, USB_DP_PULLUP, GPIO_PIN_RESET);
     }
 }
 
@@ -176,64 +180,48 @@ int main(void)
     // disable WWDG
     WRITE_REG(WWDG->CR, 0);
 
-    UART_sendString("before USB\r\n");
-    while( !UART_TXisReady() );
     MX_USB_PCD_Init();
     USB_Init();
-    UART_sendString("asserting USB pullup...\r\n");
-    while( !UART_TXisReady() );
-    USB_pullup_set(1);
-    UART_sendString("USB pulled up.\r\n");
-    while( !UART_TXisReady() );
 
     uint32_t ledi = 0;
     while (1)
     {
-
         // toggle LED every 10,000 itterations over the workloop
         if (ledi++ >= 10000) {
-            UART_sendString("toggle\r\n");
             LED_toggle(LED_1);
             ledi = 0;
-        }
-        // UART_sendint(bDeviceState);
-        if (bDeviceState == CONFIGURED) {
-            UART_sendString("configured\r\n");
-            CDC_Receive_DATA();
-            /*Check to see if we have data yet */
-            if (receive_length  != 0) {
-                if (packet_sent == 1)
-                    CDC_Send_DATA ((unsigned char*)receive_buffer,receive_length);
-                receive_length = 0;
+
+            if (bDeviceState == CONFIGURED) {
+                print("Configured + toggle\r\n");
             }
         }
     }
 
     // initalize the scheduler and add some periodic tasks
-    scheduler_init(&main_schedule);
-    scheduler_add(&main_schedule, 0, heartbeat, &i);
-    scheduler_add(&main_schedule, 0, workloop_flash, &i);
-    scheduler_add(&main_schedule, 0, button_handler, &i);
-    #ifdef WATCHDOG_ENABLE
-        scheduler_add(&main_schedule, 0, watchdog_pet, &i);
-    #endif
-
-    UART_sendString("Initialized\r\n");
-
-    uint32_t sleep_until = 0;
-    while (true) {
-        sleep_until = HAL_GetTick();  // grab start of loop time
-        time_until_next_cb_ms = scheduler_run(&main_schedule, sleep_until);
-        sleep_until += time_until_next_cb_ms;
-
-        if (time_until_next_cb_ms > 0) {
-            UART_sendString("Sleeping for "); UART_sendint(time_until_next_cb_ms); UART_sendString(" ms\r\n");
-            // TODO: sleep instead of dumb delay
-            if (HAL_GetTick() < sleep_until ) {
-                HAL_Delay( sleep_until - HAL_GetTick() );
-            }
-        }
-    } /* while (true) */
+    // scheduler_init(&main_schedule);
+    // scheduler_add(&main_schedule, 0, heartbeat, &i);
+    // scheduler_add(&main_schedule, 0, workloop_flash, &i);
+    // scheduler_add(&main_schedule, 0, button_handler, &i);
+    // #ifdef WATCHDOG_ENABLE
+    //     scheduler_add(&main_schedule, 0, watchdog_pet, &i);
+    // #endif
+    //
+    // UART_sendString("Initialized\r\n");
+    //
+    // uint32_t sleep_until = 0;
+    // while (true) {
+    //     sleep_until = HAL_GetTick();  // grab start of loop time
+    //     time_until_next_cb_ms = scheduler_run(&main_schedule, sleep_until);
+    //     sleep_until += time_until_next_cb_ms;
+    //
+    //     if (time_until_next_cb_ms > 0) {
+    //         UART_sendString("Sleeping for "); UART_sendint(time_until_next_cb_ms); UART_sendString(" ms\r\n");
+    //         // TODO: sleep instead of dumb delay
+    //         if (HAL_GetTick() < sleep_until ) {
+    //             HAL_Delay( sleep_until - HAL_GetTick() );
+    //         }
+    //     }
+    // } /* while (true) */
 } /* main() */
 
 
