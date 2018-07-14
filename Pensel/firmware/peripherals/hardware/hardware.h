@@ -62,6 +62,7 @@ void configure_pins(void);
     bool wdg_isSet(void);
 #endif
 
+void hw_USB_init(void);
 void hw_setUSBpullup(uint8_t value);
 
 void button_periodic_handler(uint32_t current_tick);

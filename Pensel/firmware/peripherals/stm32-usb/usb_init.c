@@ -80,7 +80,7 @@ USER_STANDARD_REQUESTS  *pUser_Standard_Requests;
   * Output         : None.
   * Return         : None.
   **/
-void USB_Init(void)
+void USB_init(void)
 {
   pInformation = &Device_Info;
   pInformation->ControlState = 2;

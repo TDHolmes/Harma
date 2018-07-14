@@ -317,69 +317,87 @@ void button_ISR(uint16_t GPIO_Pin)
 /* independent watchdog code */
 #ifdef WATCHDOG_ENABLE
 
-#error "No support for watchdogs at this time"
+    /*! Initializes the independent watchdog module to require a pet every 10 ms
+     *
+     * @return success or failure of initializing the watchdog module
+     */
+    ret_t wdg_init(void)
+    {
+        // the LSI counter used for wdg timer is @41KHz.
+        // shooting for a 1 second window. 1 / ((1 / 41 kHz) * 256) ~= 160.15 = 161
+        hiwdg.Instance = IWDG;
+        //! Select the prescaler of the IWDG. This parameter can be a value of @ref IWDG_Prescaler
+        hiwdg.Init.Prescaler = IWDG_PRESCALER_256;
+        /*! Specifies the IWDG down-counter reload value. This parameter must
+          be a number between Min_Data = 0 and Max_Data = 0x0FFFU */
+        hiwdg.Init.Reload = WDG_COUNT;
+        /*!< Specifies the window value to be compared to the down-counter.
+            This parameter must be a number between Min_Data = 0 and Max_Data = 0x0FFFU */
+        hiwdg.Init.Window = WDG_COUNT;
 
-/*! Initializes the independent watchdog module to require a pet every 10 ms
- *
- * @return success or failure of initializing the watchdog module
- */
-ret_t wdg_init(void)
-{
-    // the LSI counter used for wdg timer is @41KHz.
-    // shooting for a 1 second window. 1 / ((1 / 41 kHz) * 256) ~= 160.15 = 161
-    hiwdg.Instance = IWDG;
-    //! Select the prescaler of the IWDG. This parameter can be a value of @ref IWDG_Prescaler
-    hiwdg.Init.Prescaler = IWDG_PRESCALER_256;
-    /*! Specifies the IWDG down-counter reload value. This parameter must
-      be a number between Min_Data = 0 and Max_Data = 0x0FFFU */
-    hiwdg.Init.Reload = WDG_COUNT;
-    /*!< Specifies the window value to be compared to the down-counter.
-        This parameter must be a number between Min_Data = 0 and Max_Data = 0x0FFFU */
-    hiwdg.Init.Window = WDG_COUNT;
-
-    if (HAL_IWDG_Init(&hiwdg) != HAL_OK) {
-        return RET_GEN_ERR;
-    }
-    __HAL_DBGMCU_FREEZE_IWDG();
-    return RET_OK;
-}
-
-/*! Resets the watchdog timer (pets it) so we don't reset
- *
- * @return success or failure of petting the watchdog
- */
-ret_t wdg_pet(void)
-{
-    if (HAL_IWDG_Refresh(&hiwdg) == HAL_OK) {
+        if (HAL_IWDG_Init(&hiwdg) != HAL_OK) {
+            return RET_GEN_ERR;
+        }
+        __HAL_DBGMCU_FREEZE_IWDG();
         return RET_OK;
-    } else {
-        return RET_GEN_ERR;
     }
-}
 
-/*! Checks if the watchdog was the reason for our reset
- *
- * @return true if watchdog was the reason for the reset
- */
-bool wdg_isSet(void)
-{
-    if (__HAL_RCC_GET_FLAG(RCC_FLAG_IWDGRST) == RESET) {
-        wdg_clearFlags();
-        return false;
-    } else {
-        wdg_clearFlags();
-        return true;
+    /*! Resets the watchdog timer (pets it) so we don't reset
+     *
+     * @return success or failure of petting the watchdog
+     */
+    ret_t wdg_pet(void)
+    {
+        if (HAL_IWDG_Refresh(&hiwdg) == HAL_OK) {
+            return RET_OK;
+        } else {
+            return RET_GEN_ERR;
+        }
     }
-}
 
-/*! Private method to reset the reset flags on boot
- */
-void wdg_clearFlags(void)
-{
-    // Clear reset flags
-    __HAL_RCC_CLEAR_RESET_FLAGS();
-}
+    /*! Checks if the watchdog was the reason for our reset
+     *
+     * @return true if watchdog was the reason for the reset
+     */
+    bool wdg_isSet(void)
+    {
+        if (__HAL_RCC_GET_FLAG(RCC_FLAG_IWDGRST) == RESET) {
+            wdg_clearFlags();
+            return false;
+        } else {
+            wdg_clearFlags();
+            return true;
+        }
+    }
+
+    /*! Private method to reset the reset flags on boot
+     */
+    void wdg_clearFlags(void)
+    {
+        // Clear reset flags
+        __HAL_RCC_CLEAR_RESET_FLAGS();
+    }
 #endif
+
+/* USB init function */
+void hw_USB_init(void)
+{
+    PCD_HandleTypeDef hpcd_USB_FS;
+    HAL_StatusTypeDef ret;
+
+    hpcd_USB_FS.Instance = USB;
+    hpcd_USB_FS.Init.dev_endpoints = 8;
+    hpcd_USB_FS.Init.speed = PCD_SPEED_FULL;
+    hpcd_USB_FS.Init.ep0_mps = DEP0CTL_MPS_64;
+    hpcd_USB_FS.Init.phy_itface = PCD_PHY_EMBEDDED;
+    hpcd_USB_FS.Init.low_power_enable = DISABLE;
+    hpcd_USB_FS.Init.battery_charging_enable = DISABLE;
+
+    ret = HAL_PCD_Init(&hpcd_USB_FS);
+    if (ret != HAL_OK) {
+        check_retval_fatal(__FILE__, __LINE__, (ret_t)ret);
+    }
+}
 
 
 /*! Figure out which pin triggered the interrupt and call the corrisponding
