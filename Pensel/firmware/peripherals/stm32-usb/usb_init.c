@@ -47,14 +47,14 @@
 
 
 /* Includes ------------------------------------------------------------------*/
-#include "usb_lib.h"
+#include <stdint.h>
 
-/* Private typedef -----------------------------------------------------------*/
-/* Private define ------------------------------------------------------------*/
-/* Private macro -------------------------------------------------------------*/
-/* Private variables ---------------------------------------------------------*/
+#include "usb_lib.h"
+#include "peripherals/hardware/hardware.h"
+
+
 /*  The number of current endpoint, it will be used to specify an endpoint */
- uint8_t	EPindex;
+uint8_t EPindex;
 /*  The number of current device, it is an index to the Device_Table */
 /* uint8_t	Device_no; */
 /*  Points to the DEVICE_INFO structure of current device */
@@ -72,9 +72,6 @@ uint16_t wInterrupt_Mask;
 DEVICE_INFO	Device_Info;
 USER_STANDARD_REQUESTS  *pUser_Standard_Requests;
 
-/* Extern variables ----------------------------------------------------------*/
-/* Private function prototypes -----------------------------------------------*/
-/* Private functions ---------------------------------------------------------*/
 
 /**
   * Function Name  : USB_Init
@@ -91,6 +88,9 @@ void USB_Init(void)
   pUser_Standard_Requests = &User_Standard_Requests;
   /* Initialize devices one by one */
   pProperty->Init();
+
+  /* Enable the pull-up on Dp to indicate attachment */
+  hw_setUSBpullup(1);
 }
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

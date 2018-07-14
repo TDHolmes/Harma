@@ -45,16 +45,11 @@
 #include "peripherals/stm32-usb/usb_type.h"
 #include "peripherals/stm32f3-configuration/stm32f3xx.h"
 
-
-#define MASS_MEMORY_START     0x04002000
 #define BULK_MAX_PACKET_SIZE  0x00000040
-#define LED_ON                0xF0
-#define LED_OFF               0xFF
 
 /* Exported functions ------------------------------------------------------- */
 void Get_SerialNum(void);
-uint32_t CDC_Send_DATA(uint8_t *ptrBuffer, uint8_t Send_length);
-uint32_t CDC_Receive_DATA(void);
+
 /* External variables --------------------------------------------------------*/
 
 #endif  /*__HW_CONFIG_H*/

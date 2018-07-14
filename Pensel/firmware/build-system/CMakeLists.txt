@@ -217,6 +217,8 @@ list(APPEND pensel_usb_files
 	"${ProjDirPath}/peripherals/USB/usb_istr.c"
 	"${ProjDirPath}/peripherals/USB/usb_prop.c"
 	"${ProjDirPath}/peripherals/USB/usb_pwr.c"
+
+	"${ProjDirPath}/modules/CDC/cdc.c"
 )
 
 add_executable(pensel_v1.elf
@@ -251,6 +253,7 @@ add_executable(pensel_v2.elf
 	# "${ProjDirPath}/modules/orientation/matrixmath.c"
 	# "${ProjDirPath}/modules/calibration/cal.c"
 	# "${ProjDirPath}/modules/utilities/FIR.c"
+	"${ProjDirPath}/modules/LSM9DS1/LSM9DS1.c"
 	"${ProjDirPath}/modules/utilities/queue.c"
 	"${ProjDirPath}/modules/utilities/newqueue.c"
 	"${ProjDirPath}/modules/utilities/scheduler.c"
