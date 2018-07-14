@@ -144,6 +144,7 @@ void MX_USB_PCD_Init(void)
  */
 int main(void)
 {
+    // ret_t retval;
     uint8_t i = 0;
     int32_t time_until_next_cb_ms;
 
@@ -170,58 +171,42 @@ int main(void)
     #endif
 
     // peripheral configuration
+    // TODO: fix I2C driver
     // retval = I2C_init();
     // check_retval_fatal(__FILE__, __LINE__, retval);
 
-    UART_sendString("\r\n");
     LED_set(LED_0, 0);
     LED_set(LED_1, 0);
 
-    // disable WWDG
-    WRITE_REG(WWDG->CR, 0);
-
+    // TODO: roll this all up into one
     MX_USB_PCD_Init();
     USB_Init();
 
-    uint32_t ledi = 0;
-    while (1)
-    {
-        // toggle LED every 10,000 itterations over the workloop
-        if (ledi++ >= 10000) {
-            LED_toggle(LED_1);
-            ledi = 0;
+    // initalize the scheduler and add some periodic tasks
+    scheduler_init(&main_schedule);
+    scheduler_add(&main_schedule, 0, heartbeat, &i);
+    scheduler_add(&main_schedule, 0, workloop_flash, &i);
+    scheduler_add(&main_schedule, 0, button_handler, &i);
 
-            if (bDeviceState == CONFIGURED) {
-                print("Configured + toggle\r\n");
+    #ifdef WATCHDOG_ENABLE
+        scheduler_add(&main_schedule, 0, watchdog_pet, &i);
+    #endif
+
+
+    // --- Main scheduler super loop!
+    uint32_t sleep_until = 0;
+    while (true) {
+        sleep_until = HAL_GetTick();  // grab start of loop time
+        time_until_next_cb_ms = scheduler_run(&main_schedule, sleep_until);
+        sleep_until += time_until_next_cb_ms;
+
+        if (time_until_next_cb_ms > 0) {
+            // TODO: sleep CPU instead of dumb delay
+            if (HAL_GetTick() < sleep_until ) {
+                HAL_Delay( sleep_until - HAL_GetTick() );
             }
         }
-    }
-
-    // initalize the scheduler and add some periodic tasks
-    // scheduler_init(&main_schedule);
-    // scheduler_add(&main_schedule, 0, heartbeat, &i);
-    // scheduler_add(&main_schedule, 0, workloop_flash, &i);
-    // scheduler_add(&main_schedule, 0, button_handler, &i);
-    // #ifdef WATCHDOG_ENABLE
-    //     scheduler_add(&main_schedule, 0, watchdog_pet, &i);
-    // #endif
-    //
-    // UART_sendString("Initialized\r\n");
-    //
-    // uint32_t sleep_until = 0;
-    // while (true) {
-    //     sleep_until = HAL_GetTick();  // grab start of loop time
-    //     time_until_next_cb_ms = scheduler_run(&main_schedule, sleep_until);
-    //     sleep_until += time_until_next_cb_ms;
-    //
-    //     if (time_until_next_cb_ms > 0) {
-    //         UART_sendString("Sleeping for "); UART_sendint(time_until_next_cb_ms); UART_sendString(" ms\r\n");
-    //         // TODO: sleep instead of dumb delay
-    //         if (HAL_GetTick() < sleep_until ) {
-    //             HAL_Delay( sleep_until - HAL_GetTick() );
-    //         }
-    //     }
-    // } /* while (true) */
+    } /* while (true) */
 } /* main() */
 
 
@@ -234,9 +219,9 @@ ret_t heartbeat(int32_t * new_callback_time_ms) {
     TimingPin_toggle();
 
     if (tick % 2 == 0) {
-        UART_sendString("\tTick\r\n");
+        print("\tTick\r\n");
     } else if (tick % 2 == 1) {
-        UART_sendString("\tTock\r\n");
+        print("\tTock\r\n");
     }
     tick += 1;
     return RET_OK;
