@@ -382,10 +382,12 @@ void button_ISR(uint16_t GPIO_Pin)
 /* USB init function */
 void hw_USB_init(void)
 {
+    // TODO: Do we need this global for other PCD functions?
     PCD_HandleTypeDef hpcd_USB_FS;
     HAL_StatusTypeDef ret;
 
     hpcd_USB_FS.Instance = USB;
+    hpcd_USB_FS.State = HAL_PCD_STATE_RESET;
     hpcd_USB_FS.Init.dev_endpoints = 8;
     hpcd_USB_FS.Init.speed = PCD_SPEED_FULL;
     hpcd_USB_FS.Init.ep0_mps = DEP0CTL_MPS_64;
@@ -395,7 +397,7 @@ void hw_USB_init(void)
 
     ret = HAL_PCD_Init(&hpcd_USB_FS);
     if (ret != HAL_OK) {
-        check_retval_fatal(__FILE__, __LINE__, (ret_t)ret);
+        fatal_error_handler(__FILE__, __LINE__, (ret_t)ret);
     }
 }
 
