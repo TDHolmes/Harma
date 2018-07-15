@@ -56,11 +56,11 @@ typedef struct
 /* Exported macro ------------------------------------------------------------*/
 /* Exported define -----------------------------------------------------------*/
 
-#define penselUSB_GetConfiguration          NOP_Process
+#define penselUSB_getConfiguration          NOP_Process
 //#define penselUSB_SetConfiguration          NOP_Process
-#define penselUSB_GetInterface              NOP_Process
+#define penselUSB_getInterface              NOP_Process
 #define penselUSB_SetInterface              NOP_Process
-#define penselUSB_GetStatus                 NOP_Process
+#define penselUSB_getStatus                 NOP_Process
 #define penselUSB_ClearFeature              NOP_Process
 #define penselUSB_SetEndPointFeature        NOP_Process
 #define penselUSB_SetDeviceFeature          NOP_Process
@@ -78,19 +78,19 @@ typedef struct
 
 /* Exported functions ------------------------------------------------------- */
 void penselUSB_init(void);
-void penselUSB_Reset(void);
+void penselUSB_reset(void);
 void penselUSB_SetConfiguration(void);
 void penselUSB_SetDeviceAddress (void);
-void penselUSB_Status_In (void);
-void penselUSB_Status_Out (void);
-RESULT penselUSB_Data_Setup(uint8_t);
-RESULT penselUSB_NoData_Setup(uint8_t);
-RESULT penselUSB_Get_Interface_Setting(uint8_t Interface, uint8_t AlternateSetting);
-uint8_t *penselUSB_GetDeviceDescriptor(uint16_t );
-uint8_t *penselUSB_GetConfigDescriptor(uint16_t);
-uint8_t *penselUSB_GetStringDescriptor(uint16_t);
+void penselUSB_statusIn (void);
+void penselUSB_statusOut (void);
+RESULT penselUSB_dataSetup(uint8_t);
+RESULT penselUSB_noDataSetup(uint8_t);
+RESULT penselUSB_getInterfaceSetting(uint8_t Interface, uint8_t AlternateSetting);
+uint8_t *penselUSB_getDeviceDescriptor(uint16_t );
+uint8_t *penselUSB_getConfigDescriptor(uint16_t);
+uint8_t *penselUSB_getStringDescriptor(uint16_t);
 
-uint8_t *penselUSB_GetLineCoding(uint16_t Length);
+uint8_t *penselUSB_getLineCoding(uint16_t Length);
 uint8_t *penselUSB_SetLineCoding(uint16_t Length);
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
