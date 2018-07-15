@@ -108,7 +108,7 @@ int32_t scheduler_run(schedule_t * schedule, uint32_t current_time_ms)
             }
 
             // Check if this will be the next callback we need to run next time
-            if (time_until_next_run  < next_cb_time_ms) {
+            if (time_until_next_run < next_cb_time_ms) {
                 next_cb_time_ms = time_until_next_run;
             }
         }
