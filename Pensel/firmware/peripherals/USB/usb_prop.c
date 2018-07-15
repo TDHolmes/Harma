@@ -1,42 +1,13 @@
 /**
   ******************************************************************************
   * @file    usb_prop.c
-  * @author  MCD Application Team
+  * @author  MCD Application Team / TDH
   * @version V4.1.0
   * @date    26-May-2017
-  * @brief   All processing related to Virtual Com Port Demo
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; COPYRIGHT(c) 2017 STMicroelectronics</center></h2>
-  *
-  * Redistribution and use in source and binary forms, with or without modification,
-  * are permitted provided that the following conditions are met:
-  *   1. Redistributions of source code must retain the above copyright notice,
-  *      this list of conditions and the following disclaimer.
-  *   2. Redistributions in binary form must reproduce the above copyright notice,
-  *      this list of conditions and the following disclaimer in the documentation
-  *      and/or other materials provided with the distribution.
-  *   3. Neither the name of STMicroelectronics nor the names of its contributors
-  *      may be used to endorse or promote products derived from this software
-  *      without specific prior written permission.
-  *
-  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-  * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-  *
-  ******************************************************************************
-  */
+  * @brief   All processing related to USB properties
+  * Copyright at bottom
+  *****************************************************************************/
 
-
-/* Includes ------------------------------------------------------------------*/
 #include "peripherals/stm32-usb/usb_lib.h"
 #include "usb_conf.h"
 #include "usb_prop.h"
@@ -66,31 +37,31 @@ DEVICE Device_Table = {
 
 
 DEVICE_PROP Device_Property = {
-    Virtual_Com_Port_init,
-    Virtual_Com_Port_Reset,
-    Virtual_Com_Port_Status_In,
-    Virtual_Com_Port_Status_Out,
-    Virtual_Com_Port_Data_Setup,
-    Virtual_Com_Port_NoData_Setup,
-    Virtual_Com_Port_Get_Interface_Setting,
-    Virtual_Com_Port_GetDeviceDescriptor,
-    Virtual_Com_Port_GetConfigDescriptor,
-    Virtual_Com_Port_GetStringDescriptor,
+    penselUSB_init,
+    penselUSB_Reset,
+    penselUSB_Status_In,
+    penselUSB_Status_Out,
+    penselUSB_Data_Setup,
+    penselUSB_NoData_Setup,
+    penselUSB_Get_Interface_Setting,
+    penselUSB_GetDeviceDescriptor,
+    penselUSB_GetConfigDescriptor,
+    penselUSB_GetStringDescriptor,
     0,
     0x40 /*MAX PACKET SIZE*/
 };
 
 
 USER_STANDARD_REQUESTS User_Standard_Requests = {
-    Virtual_Com_Port_GetConfiguration,
-    Virtual_Com_Port_SetConfiguration,
-    Virtual_Com_Port_GetInterface,
-    Virtual_Com_Port_SetInterface,
-    Virtual_Com_Port_GetStatus,
-    Virtual_Com_Port_ClearFeature,
-    Virtual_Com_Port_SetEndPointFeature,
-    Virtual_Com_Port_SetDeviceFeature,
-    Virtual_Com_Port_SetDeviceAddress
+    penselUSB_GetConfiguration,
+    penselUSB_SetConfiguration,
+    penselUSB_GetInterface,
+    penselUSB_SetInterface,
+    penselUSB_GetStatus,
+    penselUSB_ClearFeature,
+    penselUSB_SetEndPointFeature,
+    penselUSB_SetDeviceFeature,
+    penselUSB_SetDeviceAddress
 };
 
 
@@ -111,18 +82,15 @@ ONE_DESCRIPTOR String_Descriptor[4] = {
     {(uint8_t *)harma_StringSerial, HARMA_SIZ_STRING_SERIAL}
 };
 
-/* Extern variables ----------------------------------------------------------*/
-/* Private function prototypes -----------------------------------------------*/
-/* Extern function prototypes ------------------------------------------------*/
-/* Private functions ---------------------------------------------------------*/
+
 /*******************************************************************************
-* Function Name  : Virtual_Com_Port_init.
+* Function Name  : penselUSB_init.
 * Description    : Virtual COM Port Mouse init routine.
 * Input          : None.
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
-void Virtual_Com_Port_init(void)
+void penselUSB_init(void)
 {
     UART_sendString("VCP init\r\n");
     /* Update the serial number string descriptor with the data from the uniqueID */
@@ -140,22 +108,22 @@ void Virtual_Com_Port_init(void)
 }
 
 /*******************************************************************************
-* Function Name  : Virtual_Com_Port_Reset
-* Description    : Virtual_Com_Port Mouse reset routine
+* Function Name  : penselUSB_Reset
+* Description    : penselUSB Mouse reset routine
 * Input          : None.
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
-void Virtual_Com_Port_Reset(void)
+void penselUSB_Reset(void)
 {
     UART_sendString("VCP reset\r\n");
-    /* Set Virtual_Com_Port DEVICE as not configured */
+    /* Set penselUSB DEVICE as not configured */
     pInformation->Current_Configuration = 0;
 
     /* Current Feature initialization */
     pInformation->Current_Feature = harma_ConfigDescriptor[7];
 
-    /* Set Virtual_Com_Port DEVICE with the default Interface*/
+    /* Set penselUSB DEVICE with the default Interface*/
     pInformation->Current_Interface = 0;
 
     SetBTABLE(BTABLE_ADDRESS);
@@ -195,13 +163,13 @@ void Virtual_Com_Port_Reset(void)
 }
 
 /*******************************************************************************
-* Function Name  : Virtual_Com_Port_SetConfiguration.
+* Function Name  : penselUSB_SetConfiguration.
 * Description    : Update the device state to configured.
 * Input          : None.
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
-void Virtual_Com_Port_SetConfiguration(void)
+void penselUSB_SetConfiguration(void)
 {
     UART_sendString("VCP set conf\r\n");
     DEVICE_INFO *pInfo = &Device_Info;
@@ -213,26 +181,26 @@ void Virtual_Com_Port_SetConfiguration(void)
 }
 
 /*******************************************************************************
-* Function Name  : Virtual_Com_Port_SetConfiguration.
+* Function Name  : penselUSB_SetConfiguration.
 * Description    : Update the device state to addressed.
 * Input          : None.
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
-void Virtual_Com_Port_SetDeviceAddress(void)
+void penselUSB_SetDeviceAddress(void)
 {
     UART_sendString("VCP set addr\r\n");
     bDeviceState = ADDRESSED;
 }
 
 /*******************************************************************************
-* Function Name  : Virtual_Com_Port_Status_In.
+* Function Name  : penselUSB_Status_In.
 * Description    : Virtual COM Port Status In Routine.
 * Input          : None.
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
-void Virtual_Com_Port_Status_In(void)
+void penselUSB_Status_In(void)
 {
     if (Request == SET_LINE_CODING) {
         Request = 0;
@@ -240,37 +208,38 @@ void Virtual_Com_Port_Status_In(void)
 }
 
 /*******************************************************************************
-* Function Name  : Virtual_Com_Port_Status_Out
+* Function Name  : penselUSB_Status_Out
 * Description    : Virtual COM Port Status OUT Routine.
 * Input          : None.
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
-void Virtual_Com_Port_Status_Out(void)
+void penselUSB_Status_Out(void)
 {
-
+    // TODO: add something here..?
 }
 
 /*******************************************************************************
-* Function Name  : Virtual_Com_Port_Data_Setup
+* Function Name  : penselUSB_Data_Setup
 * Description    : handle the data class specific requests
 * Input          : Request Nb.
 * Output         : None.
 * Return         : USB_UNSUPPORT or USB_SUCCESS.
 *******************************************************************************/
-RESULT Virtual_Com_Port_Data_Setup(uint8_t RequestNo)
+RESULT penselUSB_Data_Setup(uint8_t RequestNo)
 {
-  uint8_t *(*CopyRoutine)(uint16_t);
+    // TODO: CDC-specific? Move to cdc.c?
+    uint8_t *(*CopyRoutine)(uint16_t);
 
     CopyRoutine = NULL;
 
     if (RequestNo == GET_LINE_CODING) {
         if (Type_Recipient == (CLASS_REQUEST | INTERFACE_RECIPIENT)) {
-            CopyRoutine = Virtual_Com_Port_GetLineCoding;
+            CopyRoutine = penselUSB_GetLineCoding;
         }
     } else if (RequestNo == SET_LINE_CODING) {
         if (Type_Recipient == (CLASS_REQUEST | INTERFACE_RECIPIENT)) {
-            CopyRoutine = Virtual_Com_Port_SetLineCoding;
+            CopyRoutine = penselUSB_SetLineCoding;
         }
         Request = SET_LINE_CODING;
     }
@@ -286,15 +255,16 @@ RESULT Virtual_Com_Port_Data_Setup(uint8_t RequestNo)
 }
 
 /*******************************************************************************
-* Function Name  : Virtual_Com_Port_NoData_Setup.
+* Function Name  : penselUSB_NoData_Setup.
 * Description    : handle the no data class specific requests.
 * Input          : Request Nb.
 * Output         : None.
 * Return         : USB_UNSUPPORT or USB_SUCCESS.
 *******************************************************************************/
-RESULT Virtual_Com_Port_NoData_Setup(uint8_t RequestNo)
+RESULT penselUSB_NoData_Setup(uint8_t RequestNo)
 {
     if (Type_Recipient == (CLASS_REQUEST | INTERFACE_RECIPIENT)) {
+        // TODO: CDC specific? move?
         if (RequestNo == SET_COMM_FEATURE) {
             return USB_SUCCESS;
         } else if (RequestNo == SET_CONTROL_LINE_STATE) {
@@ -306,37 +276,37 @@ RESULT Virtual_Com_Port_NoData_Setup(uint8_t RequestNo)
 }
 
 /*******************************************************************************
-* Function Name  : Virtual_Com_Port_GetDeviceDescriptor.
+* Function Name  : penselUSB_GetDeviceDescriptor.
 * Description    : Gets the device descriptor.
 * Input          : Length.
 * Output         : None.
 * Return         : The address of the device descriptor.
 *******************************************************************************/
-uint8_t *Virtual_Com_Port_GetDeviceDescriptor(uint16_t Length)
+uint8_t *penselUSB_GetDeviceDescriptor(uint16_t Length)
 {
     return Standard_GetDescriptorData(Length, &Device_Descriptor);
 }
 
 /*******************************************************************************
-* Function Name  : Virtual_Com_Port_GetConfigDescriptor.
+* Function Name  : penselUSB_GetConfigDescriptor.
 * Description    : get the configuration descriptor.
 * Input          : Length.
 * Output         : None.
 * Return         : The address of the configuration descriptor.
 *******************************************************************************/
-uint8_t *Virtual_Com_Port_GetConfigDescriptor(uint16_t Length)
+uint8_t *penselUSB_GetConfigDescriptor(uint16_t Length)
 {
     return Standard_GetDescriptorData(Length, &Config_Descriptor);
 }
 
 /*******************************************************************************
-* Function Name  : Virtual_Com_Port_GetStringDescriptor
+* Function Name  : penselUSB_GetStringDescriptor
 * Description    : Gets the string descriptors according to the needed index
 * Input          : Length.
 * Output         : None.
 * Return         : The address of the string descriptors.
 *******************************************************************************/
-uint8_t *Virtual_Com_Port_GetStringDescriptor(uint16_t Length)
+uint8_t *penselUSB_GetStringDescriptor(uint16_t Length)
 {
     uint8_t wValue0 = pInformation->USBwValue0;
     if (wValue0 >= 4) {
@@ -347,7 +317,7 @@ uint8_t *Virtual_Com_Port_GetStringDescriptor(uint16_t Length)
 }
 
 /*******************************************************************************
-* Function Name  : Virtual_Com_Port_Get_Interface_Setting.
+* Function Name  : penselUSB_Get_Interface_Setting.
 * Description    : test the interface and the alternate setting according to the
 *                  supported one.
 * Input1         : uint8_t: Interface : interface number.
@@ -355,7 +325,7 @@ uint8_t *Virtual_Com_Port_GetStringDescriptor(uint16_t Length)
 * Output         : None.
 * Return         : The address of the string descriptors.
 *******************************************************************************/
-RESULT Virtual_Com_Port_Get_Interface_Setting(uint8_t Interface, uint8_t AlternateSetting)
+RESULT penselUSB_Get_Interface_Setting(uint8_t Interface, uint8_t AlternateSetting)
 {
     if (AlternateSetting > 0) {
         return USB_UNSUPPORT;
@@ -366,13 +336,13 @@ RESULT Virtual_Com_Port_Get_Interface_Setting(uint8_t Interface, uint8_t Alterna
 }
 
 /*******************************************************************************
-* Function Name  : Virtual_Com_Port_GetLineCoding.
+* Function Name  : penselUSB_GetLineCoding.
 * Description    : send the linecoding structure to the PC host.
 * Input          : Length.
 * Output         : None.
 * Return         : Linecoding structure base address.
 *******************************************************************************/
-uint8_t *Virtual_Com_Port_GetLineCoding(uint16_t Length)
+uint8_t *penselUSB_GetLineCoding(uint16_t Length)
 {
     if (Length == 0) {
         pInformation->Ctrl_Info.Usb_wLength = sizeof(linecoding);
@@ -382,13 +352,13 @@ uint8_t *Virtual_Com_Port_GetLineCoding(uint16_t Length)
 }
 
 /*******************************************************************************
-* Function Name  : Virtual_Com_Port_SetLineCoding.
+* Function Name  : penselUSB_SetLineCoding.
 * Description    : Set the linecoding structure fields.
 * Input          : Length.
 * Output         : None.
 * Return         : Linecoding structure base address.
 *******************************************************************************/
-uint8_t *Virtual_Com_Port_SetLineCoding(uint16_t Length)
+uint8_t *penselUSB_SetLineCoding(uint16_t Length)
 {
     if (Length == 0) {
         pInformation->Ctrl_Info.Usb_wLength = sizeof(linecoding);
@@ -397,4 +367,31 @@ uint8_t *Virtual_Com_Port_SetLineCoding(uint16_t Length)
     return(uint8_t *)&linecoding;
 }
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****
+* @attention
+*
+* <h2><center>&copy; COPYRIGHT(c) 2017 STMicroelectronics</center></h2>
+*
+* Redistribution and use in source and binary forms, with or without modification,
+* are permitted provided that the following conditions are met:
+*   1. Redistributions of source code must retain the above copyright notice,
+*      this list of conditions and the following disclaimer.
+*   2. Redistributions in binary form must reproduce the above copyright notice,
+*      this list of conditions and the following disclaimer in the documentation
+*      and/or other materials provided with the distribution.
+*   3. Neither the name of STMicroelectronics nor the names of its contributors
+*      may be used to endorse or promote products derived from this software
+*      without specific prior written permission.
+*
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+* DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+* FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+* DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+* CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+* OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+* OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*
+*******************************************************************************/

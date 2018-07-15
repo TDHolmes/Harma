@@ -55,7 +55,7 @@
 const uint8_t harma_DeviceDescriptor[] = {
 
     0x12,                       // bLength              Descriptor size (18 bytes)
-    USB_DEVICE_DESC_TYPE, // bDescriptorType      Descriptor type (Device)
+    USB_DEVICE_DESC_TYPE,       // bDescriptorType      Descriptor type (Device)
     0x00, 0x02,                 // bcdUSB               USB spec 2.0
     USB_DEVICE_CLASS_MISC,      // bDeviceClass         Use interface Association descriptors
     0x02,                       // bDeviceSubClass      to make a composite device
@@ -332,7 +332,7 @@ const uint8_t harma_StringProduct[HARMA_SIZ_STRING_PRODUCT] =
     /* Product name: "STM32 Virtual COM Port" */
     'S', 0, 'T', 0, 'M', 0, '3', 0, '2', 0, ' ', 0, 'V', 0, 'i', 0,
     'r', 0, 't', 0, 'u', 0, 'a', 0, 'l', 0, ' ', 0, 'C', 0, 'O', 0,
-    'M', 0, ' ', 0, 'P', 0, 'o', 0, 'r', 0, 't', 0, ' ', 0, ' ', 0
+    'M', 0, ' ', 0, 'P', 0, 'o', 0, 'r', 0, 't', 0,
   };
 
 uint8_t harma_StringSerial[HARMA_SIZ_STRING_SERIAL] =
