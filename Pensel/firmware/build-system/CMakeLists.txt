@@ -221,27 +221,6 @@ list(APPEND pensel_usb_files
 	"${ProjDirPath}/modules/CDC/cdc.c"
 )
 
-add_executable(pensel_v1.elf
-	# user code
-
-	"${ProjDirPath}/applications/pensel_v1.c"
-
-	"${ProjDirPath}/infrastructure/UART-reports/reports.c"
-
-	"${ProjDirPath}/modules/LSM303DLHC/LSM303DLHC.c"
-	"${ProjDirPath}/modules/orientation/movement.c"
-	"${ProjDirPath}/modules/orientation/quanternions.c"
-	"${ProjDirPath}/modules/orientation/orientation.c"
-	"${ProjDirPath}/modules/orientation/matrixmath.c"
-	"${ProjDirPath}/modules/calibration/cal.c"
-	"${ProjDirPath}/modules/utilities/FIR.c"
-	"${ProjDirPath}/modules/utilities/queue.c"
-	"${ProjDirPath}/modules/utilities/newqueue.c"
-
-	"${common_peripherals}"
-	"${STM32_HAL_sources}"
-
-)
 
 add_executable(pensel_v2.elf
 
@@ -277,26 +256,12 @@ add_executable(pensel_unittests.elf
 )
 
 # ----- target specific defines
-target_compile_definitions(pensel_v1.elf PUBLIC PENSEL_V1)
 target_compile_definitions(pensel_v2.elf PUBLIC PENSEL_V2)
 target_compile_definitions(pensel_unittests.elf PUBLIC PENSEL_UNITTESTS)
 
 
 # ---------------------- RESOLVING CIRCULAR DEPENDENCIES --------------------- #
 # http://stackoverflow.com/questions/5651869/gcc-what-are-the-start-group-and-end-group-command-line-options
-
-TARGET_LINK_LIBRARIES(pensel_v1.elf -Wl,--start-group)
-
-target_link_libraries(pensel_v1.elf debug m)
-target_link_libraries(pensel_v1.elf debug c)
-target_link_libraries(pensel_v1.elf debug gcc)
-target_link_libraries(pensel_v1.elf debug nosys)
-target_link_libraries(pensel_v1.elf optimized m)
-target_link_libraries(pensel_v1.elf optimized c)
-target_link_libraries(pensel_v1.elf optimized gcc)
-target_link_libraries(pensel_v1.elf optimized nosys)
-
-TARGET_LINK_LIBRARIES(pensel_v1.elf -Wl,--end-group)
 
 # ---- V2
 
