@@ -38,7 +38,6 @@ SECTION_NAME_EXPLAINATIONS = {
     '?': "The symbol type is unknown, or object file format specific"}
 
 VALID_BUILD_TARGETS = [
-    "v1",
     "v2",
     "unittests"
 ]
@@ -249,7 +248,7 @@ if __name__ == '__main__':
     parser.add_argument("build", type=str,
                         help="Type of build to run. Options are: "
                              "'debug', 'release', 'all', and 'clean'.")
-    parser.add_argument("-t", "--type", dest='type', action='store', default="pensel_v1",
+    parser.add_argument("-t", "--type", dest='type', action='store', default="pensel_v2",
                         choices=VALID_BUILD_TARGETS, help="target of the build you want")
     parser.add_argument("-f", "--flash-size", type=int, default=64,
                         help="total flash size available on the "
