@@ -56,15 +56,15 @@ typedef struct
 /* Exported macro ------------------------------------------------------------*/
 /* Exported define -----------------------------------------------------------*/
 
-#define Virtual_Com_Port_GetConfiguration          NOP_Process
-//#define Virtual_Com_Port_SetConfiguration          NOP_Process
-#define Virtual_Com_Port_GetInterface              NOP_Process
-#define Virtual_Com_Port_SetInterface              NOP_Process
-#define Virtual_Com_Port_GetStatus                 NOP_Process
-#define Virtual_Com_Port_ClearFeature              NOP_Process
-#define Virtual_Com_Port_SetEndPointFeature        NOP_Process
-#define Virtual_Com_Port_SetDeviceFeature          NOP_Process
-//#define Virtual_Com_Port_SetDeviceAddress          NOP_Process
+#define penselUSB_GetConfiguration          NOP_Process
+//#define penselUSB_SetConfiguration          NOP_Process
+#define penselUSB_GetInterface              NOP_Process
+#define penselUSB_SetInterface              NOP_Process
+#define penselUSB_GetStatus                 NOP_Process
+#define penselUSB_ClearFeature              NOP_Process
+#define penselUSB_SetEndPointFeature        NOP_Process
+#define penselUSB_SetDeviceFeature          NOP_Process
+//#define penselUSB_SetDeviceAddress          NOP_Process
 
 #define SEND_ENCAPSULATED_COMMAND   0x00
 #define GET_ENCAPSULATED_RESPONSE   0x01
@@ -77,20 +77,20 @@ typedef struct
 #define SEND_BREAK                  0x23
 
 /* Exported functions ------------------------------------------------------- */
-void Virtual_Com_Port_init(void);
-void Virtual_Com_Port_Reset(void);
-void Virtual_Com_Port_SetConfiguration(void);
-void Virtual_Com_Port_SetDeviceAddress (void);
-void Virtual_Com_Port_Status_In (void);
-void Virtual_Com_Port_Status_Out (void);
-RESULT Virtual_Com_Port_Data_Setup(uint8_t);
-RESULT Virtual_Com_Port_NoData_Setup(uint8_t);
-RESULT Virtual_Com_Port_Get_Interface_Setting(uint8_t Interface, uint8_t AlternateSetting);
-uint8_t *Virtual_Com_Port_GetDeviceDescriptor(uint16_t );
-uint8_t *Virtual_Com_Port_GetConfigDescriptor(uint16_t);
-uint8_t *Virtual_Com_Port_GetStringDescriptor(uint16_t);
+void penselUSB_init(void);
+void penselUSB_Reset(void);
+void penselUSB_SetConfiguration(void);
+void penselUSB_SetDeviceAddress (void);
+void penselUSB_Status_In (void);
+void penselUSB_Status_Out (void);
+RESULT penselUSB_Data_Setup(uint8_t);
+RESULT penselUSB_NoData_Setup(uint8_t);
+RESULT penselUSB_Get_Interface_Setting(uint8_t Interface, uint8_t AlternateSetting);
+uint8_t *penselUSB_GetDeviceDescriptor(uint16_t );
+uint8_t *penselUSB_GetConfigDescriptor(uint16_t);
+uint8_t *penselUSB_GetStringDescriptor(uint16_t);
 
-uint8_t *Virtual_Com_Port_GetLineCoding(uint16_t Length);
-uint8_t *Virtual_Com_Port_SetLineCoding(uint16_t Length);
+uint8_t *penselUSB_GetLineCoding(uint16_t Length);
+uint8_t *penselUSB_SetLineCoding(uint16_t Length);
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
