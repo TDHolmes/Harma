@@ -38,26 +38,26 @@ DEVICE Device_Table = {
 
 DEVICE_PROP Device_Property = {
     penselUSB_init,
-    penselUSB_Reset,
-    penselUSB_Status_In,
-    penselUSB_Status_Out,
-    penselUSB_Data_Setup,
-    penselUSB_NoData_Setup,
-    penselUSB_Get_Interface_Setting,
-    penselUSB_GetDeviceDescriptor,
-    penselUSB_GetConfigDescriptor,
-    penselUSB_GetStringDescriptor,
+    penselUSB_reset,
+    penselUSB_statusIn,
+    penselUSB_statusOut,
+    penselUSB_dataSetup,
+    penselUSB_noDataSetup,
+    penselUSB_getInterfaceSetting,
+    penselUSB_getDeviceDescriptor,
+    penselUSB_getConfigDescriptor,
+    penselUSB_getStringDescriptor,
     0,
     0x40 /*MAX PACKET SIZE*/
 };
 
 
 USER_STANDARD_REQUESTS User_Standard_Requests = {
-    penselUSB_GetConfiguration,
+    penselUSB_getConfiguration,
     penselUSB_SetConfiguration,
-    penselUSB_GetInterface,
+    penselUSB_getInterface,
     penselUSB_SetInterface,
-    penselUSB_GetStatus,
+    penselUSB_getStatus,
     penselUSB_ClearFeature,
     penselUSB_SetEndPointFeature,
     penselUSB_SetDeviceFeature,
@@ -108,13 +108,13 @@ void penselUSB_init(void)
 }
 
 /*******************************************************************************
-* Function Name  : penselUSB_Reset
+* Function Name  : penselUSB_reset
 * Description    : penselUSB Mouse reset routine
 * Input          : None.
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
-void penselUSB_Reset(void)
+void penselUSB_reset(void)
 {
     UART_sendString("VCP reset\r\n");
     /* Set penselUSB DEVICE as not configured */
@@ -194,13 +194,13 @@ void penselUSB_SetDeviceAddress(void)
 }
 
 /*******************************************************************************
-* Function Name  : penselUSB_Status_In.
+* Function Name  : penselUSB_statusIn.
 * Description    : Virtual COM Port Status In Routine.
 * Input          : None.
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
-void penselUSB_Status_In(void)
+void penselUSB_statusIn(void)
 {
     if (Request == SET_LINE_CODING) {
         Request = 0;
@@ -208,25 +208,25 @@ void penselUSB_Status_In(void)
 }
 
 /*******************************************************************************
-* Function Name  : penselUSB_Status_Out
+* Function Name  : penselUSB_statusOut
 * Description    : Virtual COM Port Status OUT Routine.
 * Input          : None.
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
-void penselUSB_Status_Out(void)
+void penselUSB_statusOut(void)
 {
     // TODO: add something here..?
 }
 
 /*******************************************************************************
-* Function Name  : penselUSB_Data_Setup
+* Function Name  : penselUSB_dataSetup
 * Description    : handle the data class specific requests
 * Input          : Request Nb.
 * Output         : None.
 * Return         : USB_UNSUPPORT or USB_SUCCESS.
 *******************************************************************************/
-RESULT penselUSB_Data_Setup(uint8_t RequestNo)
+RESULT penselUSB_dataSetup(uint8_t RequestNo)
 {
     // TODO: CDC-specific? Move to cdc.c?
     uint8_t *(*CopyRoutine)(uint16_t);
@@ -235,7 +235,7 @@ RESULT penselUSB_Data_Setup(uint8_t RequestNo)
 
     if (RequestNo == GET_LINE_CODING) {
         if (Type_Recipient == (CLASS_REQUEST | INTERFACE_RECIPIENT)) {
-            CopyRoutine = penselUSB_GetLineCoding;
+            CopyRoutine = penselUSB_getLineCoding;
         }
     } else if (RequestNo == SET_LINE_CODING) {
         if (Type_Recipient == (CLASS_REQUEST | INTERFACE_RECIPIENT)) {
@@ -255,13 +255,13 @@ RESULT penselUSB_Data_Setup(uint8_t RequestNo)
 }
 
 /*******************************************************************************
-* Function Name  : penselUSB_NoData_Setup.
+* Function Name  : penselUSB_noDataSetup.
 * Description    : handle the no data class specific requests.
 * Input          : Request Nb.
 * Output         : None.
 * Return         : USB_UNSUPPORT or USB_SUCCESS.
 *******************************************************************************/
-RESULT penselUSB_NoData_Setup(uint8_t RequestNo)
+RESULT penselUSB_noDataSetup(uint8_t RequestNo)
 {
     if (Type_Recipient == (CLASS_REQUEST | INTERFACE_RECIPIENT)) {
         // TODO: CDC specific? move?
@@ -276,37 +276,37 @@ RESULT penselUSB_NoData_Setup(uint8_t RequestNo)
 }
 
 /*******************************************************************************
-* Function Name  : penselUSB_GetDeviceDescriptor.
+* Function Name  : penselUSB_getDeviceDescriptor.
 * Description    : Gets the device descriptor.
 * Input          : Length.
 * Output         : None.
 * Return         : The address of the device descriptor.
 *******************************************************************************/
-uint8_t *penselUSB_GetDeviceDescriptor(uint16_t Length)
+uint8_t *penselUSB_getDeviceDescriptor(uint16_t Length)
 {
     return Standard_GetDescriptorData(Length, &Device_Descriptor);
 }
 
 /*******************************************************************************
-* Function Name  : penselUSB_GetConfigDescriptor.
+* Function Name  : penselUSB_getConfigDescriptor.
 * Description    : get the configuration descriptor.
 * Input          : Length.
 * Output         : None.
 * Return         : The address of the configuration descriptor.
 *******************************************************************************/
-uint8_t *penselUSB_GetConfigDescriptor(uint16_t Length)
+uint8_t *penselUSB_getConfigDescriptor(uint16_t Length)
 {
     return Standard_GetDescriptorData(Length, &Config_Descriptor);
 }
 
 /*******************************************************************************
-* Function Name  : penselUSB_GetStringDescriptor
+* Function Name  : penselUSB_getStringDescriptor
 * Description    : Gets the string descriptors according to the needed index
 * Input          : Length.
 * Output         : None.
 * Return         : The address of the string descriptors.
 *******************************************************************************/
-uint8_t *penselUSB_GetStringDescriptor(uint16_t Length)
+uint8_t *penselUSB_getStringDescriptor(uint16_t Length)
 {
     uint8_t wValue0 = pInformation->USBwValue0;
     if (wValue0 >= 4) {
@@ -317,7 +317,7 @@ uint8_t *penselUSB_GetStringDescriptor(uint16_t Length)
 }
 
 /*******************************************************************************
-* Function Name  : penselUSB_Get_Interface_Setting.
+* Function Name  : penselUSB_getInterfaceSetting.
 * Description    : test the interface and the alternate setting according to the
 *                  supported one.
 * Input1         : uint8_t: Interface : interface number.
@@ -325,7 +325,7 @@ uint8_t *penselUSB_GetStringDescriptor(uint16_t Length)
 * Output         : None.
 * Return         : The address of the string descriptors.
 *******************************************************************************/
-RESULT penselUSB_Get_Interface_Setting(uint8_t Interface, uint8_t AlternateSetting)
+RESULT penselUSB_getInterfaceSetting(uint8_t Interface, uint8_t AlternateSetting)
 {
     if (AlternateSetting > 0) {
         return USB_UNSUPPORT;
@@ -336,13 +336,13 @@ RESULT penselUSB_Get_Interface_Setting(uint8_t Interface, uint8_t AlternateSetti
 }
 
 /*******************************************************************************
-* Function Name  : penselUSB_GetLineCoding.
+* Function Name  : penselUSB_getLineCoding.
 * Description    : send the linecoding structure to the PC host.
 * Input          : Length.
 * Output         : None.
 * Return         : Linecoding structure base address.
 *******************************************************************************/
-uint8_t *penselUSB_GetLineCoding(uint16_t Length)
+uint8_t *penselUSB_getLineCoding(uint16_t Length)
 {
     if (Length == 0) {
         pInformation->Ctrl_Info.Usb_wLength = sizeof(linecoding);
