@@ -18,8 +18,8 @@
 
 #include "LSM9DS1.h"
 
-#define ACCEL_GYRO_ADDRESS (0b01101011)  // 0x6B (no R/W bit)
-#define MAG_ADDRESS        (0b00011110)  // 0x1E (no R/W bit)
+#define ACCEL_GYRO_ADDRESS (0b11010110)  // 0xD6 (no R/W bit)
+#define MAG_ADDRESS        (0b00111100)  // 0x1E (no R/W bit)
 
 
 /* Accelerometer and gyroscope registers */
