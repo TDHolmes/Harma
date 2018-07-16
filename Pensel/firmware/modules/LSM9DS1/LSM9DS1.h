@@ -48,7 +48,7 @@ typedef enum {
     kAccelODR_119_Hz,
     kAccelODR_238_Hz,
     kAccelODR_476_Hz,
-    kAccelODR_952_Hz,
+    kAccelODR_952_Hz
 } accel_ODR_t;
 
 
@@ -70,7 +70,7 @@ typedef struct __attribute__((packed)) {
 
 // --- Public functions
 
-// ret_t LSM9DS1_init(void);
+ret_t LSM9DS1_init(gyro_ODR_t gyro_ODR, accel_ODR_t accel_ODR);
 void LSM9DS1_INT1_ISR(void);
 void LSM9DS1_INT2_ISR(void);
 void LSM9DS1_DRDY_ISR(void);

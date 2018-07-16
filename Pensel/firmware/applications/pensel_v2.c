@@ -18,9 +18,10 @@
 #include "peripherals/UART/UART.h"
 
 // Algs and utilities
-#include "modules/orientation/orientation.h"
+// #include "modules/orientation/orientation.h"
 #include "modules/calibration/cal.h"
 #include "modules/utilities/scheduler.h"
+#include "modules/LSM9DS1/LSM9DS1.h"
 
 // STM Drivers
 #include "peripherals/stm32f3/stm32f3xx_hal_def.h"
@@ -128,9 +129,11 @@ ret_t print(char * string)
  */
 int main(void)
 {
-    // ret_t retval;
+    ret_t retval;
     uint8_t i = 0;
     int32_t time_until_next_cb_ms;
+    gyro_ODR_t gyro_ODR = kGyroODR_OFF;
+    accel_ODR_t accel_ODR = kAccelODR_OFF;
 
     // system configuration...
     HAL_Init();
@@ -155,15 +158,16 @@ int main(void)
     #endif
 
     // peripheral configuration
-    // TODO: fix I2C driver
-    // retval = I2C_init();
-    // check_retval_fatal(__FILE__, __LINE__, retval);
+    retval = I2C_init();
+    check_retval_fatal(__FILE__, __LINE__, retval);
 
     LED_set(LED_0, 0);
     LED_set(LED_1, 0);
 
     hw_USB_init();
     USB_init();
+    retval = LSM9DS1_init(gyro_ODR, accel_ODR);
+    check_retval_fatal(__FILE__, __LINE__, retval);
 
     // initalize the scheduler and add some periodic tasks
     scheduler_init(&main_schedule);
