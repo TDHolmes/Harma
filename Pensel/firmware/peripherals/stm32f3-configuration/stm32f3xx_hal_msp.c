@@ -127,7 +127,7 @@ void HAL_I2C_MspInit(I2C_HandleTypeDef *hi2c)
     {
         /*##-1- Configure the I2C clock source. The clock is derived from the SYSCLK #*/
         RCC_PeriphCLKInitStruct.PeriphClockSelection = RCC_PERIPHCLK_I2Cx;
-        RCC_PeriphCLKInitStruct.I2c2ClockSelection = RCC_I2CxCLKSOURCE_SYSCLK;
+        RCC_PeriphCLKInitStruct.I2c1ClockSelection = RCC_I2CxCLKSOURCE_SYSCLK;
         HAL_RCCEx_PeriphCLKConfig(&RCC_PeriphCLKInitStruct);
 
         /*##-2- Enable peripherals and GPIO Clocks #################################*/

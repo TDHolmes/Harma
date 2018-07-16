@@ -44,8 +44,8 @@ SCLDEL    0x4
 tSCLDEL   5 x 250 ns = 1250 ns
 */
 // PRESC[3:0] Res[3:0] SCLDEL[3:0] SDADEL[3:0] SCLH[7:0] SCLL[7:0]
-// TODO: I2C speed currently 135 kHz with 0xB0420f13. Increase?
-#define I2C_TIMING      0xB0420f13
+// NOTE: I2C speed is 400 kHz with this setting. It was found by trial/error. double check?
+#define I2C_TIMING      0x30420f13
 
 /* I2C handler declaration */
 I2C_HandleTypeDef I2cHandle;
@@ -58,6 +58,8 @@ uint8_t RX_buffer[RX_BUFFER_SIZE];
 
 ret_t I2C_init(void)
 {
+    HAL_StatusTypeDef retval;
+
     // Configure the I2C HAL
     I2cHandle.Instance             = I2C1;
     I2cHandle.Init.Timing          = I2C_TIMING;
@@ -68,12 +70,17 @@ ret_t I2C_init(void)
     I2cHandle.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
     I2cHandle.Init.NoStretchMode   = I2C_NOSTRETCH_DISABLE;
 
-    if(HAL_I2C_Init(&I2cHandle) != HAL_OK)
+    retval = HAL_I2C_Init(&I2cHandle);
+    if(retval != HAL_OK)
     {
         // Initialization error!
-        fatal_error_handler(__FILE__, __LINE__, 0);
+        fatal_error_handler(__FILE__, __LINE__, retval);
     }
-    HAL_I2CEx_ConfigAnalogFilter(&I2cHandle, I2C_ANALOGFILTER_ENABLE);
+
+    retval = HAL_I2CEx_ConfigAnalogFilter(&I2cHandle, I2C_ANALOGFILTER_ENABLE);
+    if (retval != HAL_OK) {
+        fatal_error_handler(__FILE__, __LINE__, retval);
+    }
 
     return RET_OK;
 }

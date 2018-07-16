@@ -191,16 +191,7 @@ void configure_pins(void)
     // GPIO_InitStruct.Pin   = (SENSOR_DRDY);  // | SENSOR_INT);
     // HAL_GPIO_Init(SENSOR_PORT, &GPIO_InitStruct);
 
-    // These are configured in stm32f3xx_hal_msp.c
-    // // I2C time!
-    // GPIO_InitStruct.Mode  = GPIO_MODE_AF_OD; // alternate function - Open Drain
-    // GPIO_InitStruct.Pin   = (I2C_SCL | I2C_SDA);
-    // HAL_GPIO_Init(I2C_PORT, &GPIO_InitStruct);
-    //
-    // // UART time!
-    // GPIO_InitStruct.Mode  = GPIO_MODE_AF_PP; // alternate function - Open Drain
-    // GPIO_InitStruct.Pin   = (UART_RX | UART_TX);
-    // HAL_GPIO_Init(UART_PORT, &GPIO_InitStruct);
+    // NOTE: I2C/UART pins are configured in stm32f3xx_hal_msp.c
 
     // configure some structures
     mainbutton_admin.state = HAL_GPIO_ReadPin(BUTTON_PORT, BUTTON_MAIN);

@@ -152,7 +152,7 @@ void SysTick_Handler(void)
 /**
   * @brief  This function handles I2C event interrupt request.
   */
-void I2C2_EV_IRQHandler(void)
+void I2C1_EV_IRQHandler(void)
 {
     HAL_I2C_EV_IRQHandler(&I2cHandle);
 }
@@ -160,7 +160,7 @@ void I2C2_EV_IRQHandler(void)
 /**
   * @brief  This function handles I2C error interrupt request.
   */
-void I2C2_ER_IRQHandler(void)
+void I2C1_ER_IRQHandler(void)
 {
     HAL_I2C_ER_IRQHandler(&I2cHandle);
 }
