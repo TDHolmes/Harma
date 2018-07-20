@@ -187,9 +187,9 @@ void configure_pins(void)
 
     // Sensor input pins
     // TODO: re-enable for sensor
-    // GPIO_InitStruct.Mode  = GPIO_MODE_IT_FALLING;
-    // GPIO_InitStruct.Pin   = (SENSOR_DRDY);  // | SENSOR_INT);
-    // HAL_GPIO_Init(SENSOR_PORT, &GPIO_InitStruct);
+    GPIO_InitStruct.Mode  = GPIO_MODE_IT_RISING;
+    GPIO_InitStruct.Pin   = (SENSOR_DRDY | SENSOR_INT1 | SENSOR_INT2);
+    HAL_GPIO_Init(SENSOR_PORT, &GPIO_InitStruct);
 
     // NOTE: I2C/UART pins are configured in stm32f3xx_hal_msp.c
 
@@ -199,14 +199,14 @@ void configure_pins(void)
     mainbutton_admin.changing_value = 0;
     mainbutton_admin.changing_timestamp = 0;
 
-    // configure interrupt priority
-    // TODO: fill in interrupt priorities for the sensors
-    // HAL_NVIC_SetPriority((IRQn_Type)(EXTI15_10_IRQn), 2, 0); // Sensor DRDY pin
-    //
-    // HAL_NVIC_SetPriority((IRQn_Type)(EXTI1_IRQn), 3, 0);     // Switch pin 0
-    // HAL_NVIC_SetPriority((IRQn_Type)(EXTI2_TSC_IRQn), 3, 1); // Switch pin 1
+    // configure and enable interrupt priority
+    // TODO: double check interrupt priority
+    HAL_NVIC_SetPriority((IRQn_Type)(EXTI0_IRQn), 2, 0);     // Sensor INT1 pin
+    HAL_NVIC_SetPriority((IRQn_Type)(EXTI1_IRQn), 3, 0);     // Sensor INT1 pin
+    HAL_NVIC_SetPriority((IRQn_Type)(EXTI2_TSC_IRQn), 4, 0); // Sensor INT1 pin
 
-    HAL_NVIC_SetPriority((IRQn_Type)(EXTI3_IRQn), 4, 0);     // Main button
+    HAL_NVIC_SetPriority((IRQn_Type)(EXTI3_IRQn), 5, 0);     // Main button
+    // NOTE: V2 hack has the aux button configured for USB Dp pullup
     // HAL_NVIC_SetPriority((IRQn_Type)(EXTI4_IRQn), 4, 1);     // Aux button
 
     // enable interrupts
@@ -368,24 +368,25 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
             button_ISR(GPIO_Pin);
             break;
 
-        case SENSOR_INT1:
-            LSM9DS1_INT1_ISR();
-            break;
-
         case SENSOR_INT2:
-            LSM9DS1_INT2_ISR();
+            LSM9DS1_AGINT2_ISR();
             break;
 
         case SENSOR_DRDY:
-            LSM9DS1_DRDY_ISR();
+            LSM9DS1_MDRDY_ISR();
             break;
-
-        // TODO: fill in ISRs for the sensor
 
         default:
             // TODO: log error here?
             break;
     }
+}
+
+
+void EXTI0_IRQHandler(void)
+{
+    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_0);
+    LSM9DS1_AGINT1_ISR();
 }
 
 

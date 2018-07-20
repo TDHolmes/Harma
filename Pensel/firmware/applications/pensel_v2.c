@@ -132,8 +132,10 @@ int main(void)
     ret_t retval;
     uint8_t i = 0;
     int32_t time_until_next_cb_ms;
-    gyro_ODR_t gyro_ODR = kGyroODR_OFF;
-    accel_ODR_t accel_ODR = kAccelODR_OFF;
+    gyro_ODR_t gyro_ODR = kGyroODR_14_9_Hz;
+    accel_ODR_t accel_ODR = kAccelODR_10_Hz;
+    gyro_fullscale_t gyro_FS = k2000DPS_fullscale;
+    accel_fullscale_t accel_FS = k16g_fullscale;
 
     // system configuration...
     HAL_Init();
@@ -166,7 +168,7 @@ int main(void)
 
     hw_USB_init();
     USB_init();
-    retval = LSM9DS1_init(gyro_ODR, accel_ODR);
+    retval = LSM9DS1_init(gyro_ODR, gyro_FS, accel_ODR, accel_FS);
     check_retval_fatal(__FILE__, __LINE__, retval);
 
     // initalize the scheduler and add some periodic tasks
@@ -205,6 +207,25 @@ ret_t heartbeat(int32_t * new_callback_time_ms)
     *new_callback_time_ms = 1000;
     LED_toggle(LED_0);
     TimingPin_toggle();
+
+    uint8_t status;
+    if ( LSM9DS1_readStatus(&status) == RET_OK ) {
+        char str_buf[64];
+        sprintf(str_buf, "LSM status: %i\r\n", status);
+        print(str_buf);
+
+        int32_t tmp;
+        if ( status & 0x01) {
+            while ( cdc_inTransferBusy() );
+            print("Acc data avail\r\n");
+            accelDataReadyHandler(&tmp);
+        }
+        if ( status & 0x02) {
+            while ( cdc_inTransferBusy() );
+            print("gyr data avail\r\n");
+            gyroDataReadyHandler(&tmp);
+        }
+    }
 
     if (tick % 2 == 0) {
         print("\tTick\r\n");
@@ -257,7 +278,9 @@ void fatal_error_handler(char file[], uint32_t line, int8_t err_code)
         // Can't rely on HAL tick as we maybe in the ISR context...
         while (1) {
             UART_sendString(file);
+            UART_sendString(", Line:");
             UART_sendint((int64_t)line);
+            UART_sendString(", Err:");
             UART_sendint((int64_t)err_code);
             UART_sendString("\r\n");
 

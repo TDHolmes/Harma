@@ -40,6 +40,12 @@ void cdc_inTransfer_completeCB(void)
 }
 
 
+bool cdc_inTransferBusy(void)
+{
+    return cdc_admin.transfer_active;
+}
+
+
 /*
  * @brief Starts the transfer of `sendLength` bytes to the USB host.
  */

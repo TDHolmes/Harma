@@ -16,11 +16,9 @@
 #include "peripherals/I2C/I2C.h"
 #include "peripherals/stm32f3/stm32f3xx_hal.h"
 
+#include "peripherals/UART/UART.h"
+
 #include "LSM9DS1.h"
-
-#define ACCEL_GYRO_ADDRESS (0b11010110)  // 0xD6 (no R/W bit)
-#define MAG_ADDRESS        (0b00111100)  // 0x1E (no R/W bit)
-
 
 /* Accelerometer and gyroscope registers */
 
@@ -33,35 +31,38 @@
 #define INT_GEN_DUR_XL         (0x0A)
 #define REFERENCE_G            (0x0B)
 #define INT1_CTRL              (0x0C)
-    #define INT1_IG_G              (1 << 0)
-    #define INT1_IG_XL             (1 << 1)
-    #define INT1_FSS5              (1 << 2)
-    #define INT1_OVR               (1 << 3)
-    #define INT1_FTH               (1 << 4)
-    #define INT1_Boot              (1 << 5)
-    #define INT1_DRDY_G            (1 << 6)
-    #define INT1_DRDY_XL           (1 << 7)
+    #define INT1_IG_G              (1 << 7)
+    #define INT1_IG_XL             (1 << 6)
+    #define INT1_FSS5              (1 << 5)
+    #define INT1_OVR               (1 << 4)
+    #define INT1_FTH               (1 << 3)
+    #define INT1_Boot              (1 << 2)
+    #define INT1_DRDY_G            (1 << 1)
+    #define INT1_DRDY_XL           (1 << 0)
 
 #define INT2_CTRL              (0x0D)
-    #define INT2_INACT             (1 << 0)
-    #define INT2_FSS5              (1 << 2)
-    #define INT2_OVR               (1 << 3)
-    #define INT2_FTH               (1 << 4)
-    #define INT2_DRDY_TEMP         (1 << 5)
-    #define INT2_DRDY_G            (1 << 6)
-    #define INT2_DRDY_XL           (1 << 7)
+    #define INT2_INACT             (1 << 7)
+    #define INT2_FSS5              (1 << 5)
+    #define INT2_OVR               (1 << 4)
+    #define INT2_FTH               (1 << 3)
+    #define INT2_DRDY_TEMP         (1 << 2)
+    #define INT2_DRDY_G            (1 << 1)
+    #define INT2_DRDY_XL           (1 << 0)
 
 #define WHO_AM_I               (0x0F)
     #define WHO_AM_I_EXPECTED      (0b01101000)
 
 #define CTRL_REG1_G            (0x10)
+    #define GYRO_ODR_SHIFT         (5)
+    #define GYRO_FS_SHIFT          (3)
+
 #define CTRL_REG2_G            (0x11)
 #define CTRL_REG3_G            (0x12)
 #define ORIENT_CFG_G           (0x13)
 #define INT_GEN_SRC_G          (0x14)
 #define OUT_TEMP_L             (0x15)
 #define OUT_TEMP_H             (0x16)
-// #define STATUS_REG             (0x17)  // TODO: figure out which reg is actually the status reg
+#define STATUS_REG_G           (0x17)
 #define OUT_X_LOW_G            (0x18)
 #define OUT_X_HIGH_G           (0x19)
 #define OUT_Y_LOW_G            (0x1A)
@@ -71,12 +72,16 @@
 #define CTRL_REG4              (0x1E)
 #define CTRL_REG5_XL           (0x1F)
 #define CTRL_REG6_XL           (0x20)
+    #define ACCEL_ODR_SHIFT        (5)
+    #define ACCEL_FS_SHIFT         (3)
+
 #define CTRL_REG7_XL           (0x21)
 #define CTRL_REG8              (0x22)
 #define CTRL_REG9              (0x23)
 #define CTRL_REG10             (0x24)
 #define INT_GEN_SRC_XL         (0x26)
-// #define STATUS_REG             (0x27)
+#define STATUS_REG_XL          (0x27)
+    #define STATUS_BOOT_NOT_FINISHED_MASK  (1 << 4)
 #define OUT_X_LOW_XL           (0x28)
 #define OUT_X_HIGH_XL          (0x29)
 #define OUT_Y_LOW_XL           (0x2A)
@@ -135,11 +140,18 @@ ret_t accelDataReadyHandler(int32_t *next_callback_ms);
 ret_t gyroDataReadyHandler(int32_t *next_callback_ms);
 ret_t magDataReadyHandler(int32_t *next_callback_ms);
 
+void enableSensorInterrupts(void);
+void disableSensorInterrupts(void);
 
-ret_t LSM9DS1_init(gyro_ODR_t gyro_ODR, accel_ODR_t accel_ODR)
+
+ret_t LSM9DS1_init(gyro_ODR_t gyro_ODR, gyro_fullscale_t gyro_FS,
+                   accel_ODR_t accel_ODR, accel_fullscale_t accel_FS)
+                   // mag_ODR_t mag_ODR, mag_fullscale_t mag_FS)
 {
     ret_t ret = RET_OK;
     uint8_t tmp = 0;
+
+    disableSensorInterrupts();
 
     // --- Make sure we can communicate with the chip
     // Check accel/gyro first
@@ -156,17 +168,67 @@ ret_t LSM9DS1_init(gyro_ODR_t gyro_ODR, accel_ODR_t accel_ODR)
         return RET_COM_ERR;
     }
 
-    // --- Configure the device properly now
+    // Reboot
+    ret = I2C_writeByte(ACCEL_GYRO_ADDRESS, CTRL_REG8, 0x01, true);
+    if (ret != RET_OK) { return ret; }
 
+    while (1) {
+        ret = I2C_readData(ACCEL_GYRO_ADDRESS, STATUS_REG_XL, &tmp, 1);
+        if (ret != RET_OK) { return ret; }
+        if ((tmp & !STATUS_BOOT_NOT_FINISHED_MASK) == 0) {
+            // We've booted!
+            break;
+        }
+    }
+
+    // --- Configure the device properly now
     // Setup interrupts
     ret = I2C_writeByte(ACCEL_GYRO_ADDRESS, INT1_CTRL, INT1_DRDY_G, true);
     if (ret != RET_OK) { return ret; }
     ret = I2C_writeByte(ACCEL_GYRO_ADDRESS, INT2_CTRL, INT2_DRDY_XL, true);
     if (ret != RET_OK) { return ret; }
 
-    // Setup ODRs, filtering, etc.
+    // TODO: look into HPF enable - CTRL_REG2_G / CTRL_REG3_G
+    // TODO: add bandwidth selection for anti-alias?
+    ret = I2C_writeByte(ACCEL_GYRO_ADDRESS, CTRL_REG6_XL,
+        (accel_ODR << ACCEL_ODR_SHIFT) | (accel_FS << ACCEL_FS_SHIFT), true);
 
+    // Configure gyro ODR / FS
+    // TODO: bandwidth selection?
+    ret = I2C_writeByte(ACCEL_GYRO_ADDRESS, CTRL_REG1_G,
+        (gyro_ODR << GYRO_ODR_SHIFT) | (gyro_FS << GYRO_FS_SHIFT), true);
+    if (ret != RET_OK) { return ret; }
+
+    // Enable accel output
+    ret = I2C_writeByte(ACCEL_GYRO_ADDRESS, CTRL_REG5_XL, 0b00111000, true);
+    if (ret != RET_OK) { return ret; }
+
+    // TODO: setup mag
+    // ret = I2C_writeByte(MAG_ADDRESS, CTRL_REG3_M, 0b00000011, true);
+    enableSensorInterrupts();
     return ret;
+}
+
+
+void enableSensorInterrupts(void)
+{
+    HAL_NVIC_EnableIRQ((IRQn_Type)(EXTI0_IRQn));
+    HAL_NVIC_EnableIRQ((IRQn_Type)(EXTI1_IRQn));
+    HAL_NVIC_EnableIRQ((IRQn_Type)(EXTI2_TSC_IRQn));
+}
+
+
+void disableSensorInterrupts(void)
+{
+    HAL_NVIC_DisableIRQ((IRQn_Type)(EXTI0_IRQn));
+    HAL_NVIC_DisableIRQ((IRQn_Type)(EXTI1_IRQn));
+    HAL_NVIC_DisableIRQ((IRQn_Type)(EXTI2_TSC_IRQn));
+}
+
+
+ret_t LSM9DS1_readStatus(uint8_t * status_byte_ptr)
+{
+    return I2C_readData(ACCEL_GYRO_ADDRESS, STATUS_REG_XL, status_byte_ptr, 1);
 }
 
 
@@ -176,15 +238,18 @@ ret_t accelDataReadyHandler(int32_t *next_callback_ms)
 {
     ret_t ret = RET_OK;
     int16_t data[3];
+
+    // We don't need to be called again until next ISR event
+    *next_callback_ms = SCHEDULER_FINISHED;
+
     // Read out the new data
-    ret = I2C_readData(ACCEL_GYRO_ADDRESS, OUT_X_LOW_XL, (uint8_t *)data, 3);
+    UART_sendString("a");
+    ret = I2C_readData(ACCEL_GYRO_ADDRESS, OUT_X_LOW_XL, (uint8_t *)data, 6);
     if (ret != RET_OK) { return ret; }
 
     // Queue it up
 
     // Check status register
-
-    *next_callback_ms = 0;  // We don't need to be called again until next ISR event
     return ret;
 }
 
@@ -195,15 +260,18 @@ ret_t gyroDataReadyHandler(int32_t *next_callback_ms)
 {
     ret_t ret = RET_OK;
     int16_t data[3];
+
+    // We don't need to be called again until next ISR event
+    *next_callback_ms = SCHEDULER_FINISHED;
+
     // Read out the new data
-    ret = I2C_readData(ACCEL_GYRO_ADDRESS, OUT_X_LOW_G, (uint8_t *)data, 3);
+    UART_sendString("g");
+    ret = I2C_readData(ACCEL_GYRO_ADDRESS, OUT_X_LOW_G, (uint8_t *)data, 6);
     if (ret != RET_OK) { return ret; }
 
     // Queue it up
 
     // Check status register
-
-    *next_callback_ms = 0;  // We don't need to be called again until next ISR event
     return ret;
 }
 
@@ -216,22 +284,25 @@ ret_t magDataReadyHandler(int32_t *next_callback_ms)
 {
     ret_t ret = RET_OK;
     int16_t data[3];
+
+    // We don't need to be called again until next ISR event
+    *next_callback_ms = SCHEDULER_FINISHED;
+
+    UART_sendString("m");
     // Read out the new data
-    ret = I2C_readData(MAG_ADDRESS, OUT_X_L_M, (uint8_t *)data, 3);
+    ret = I2C_readData(MAG_ADDRESS, OUT_X_L_M, (uint8_t *)data, 6);
     if (ret != RET_OK) { return ret; }
 
     // Queue it up
 
     // Check status register
-
-    *next_callback_ms = 0;  // We don't need to be called again until next ISR event
     return ret;
 }
 
 
 // --- ISR handlers that are called by EXTI IRQ handler in hardware.c
 
-void LSM9DS1_INT1_ISR(void)
+void LSM9DS1_AGINT1_ISR(void)
 {
     // queue up gyro DRDY handler for main to run
     ret_t ret = RET_OK;
@@ -246,7 +317,7 @@ void LSM9DS1_INT1_ISR(void)
 }
 
 
-void LSM9DS1_INT2_ISR(void)
+void LSM9DS1_AGINT2_ISR(void)
 {
     // queue up accel DRDY handler for main to run
     ret_t ret = RET_OK;
@@ -259,11 +330,11 @@ void LSM9DS1_INT2_ISR(void)
 }
 
 
-void LSM9DS1_DRDY_ISR(void)
+void LSM9DS1_MDRDY_ISR(void)
 {
     // queue up Mag DRDY handler for main to run
     ret_t ret = RET_OK;
-    uint8_t sched_id;  // we don't need to know the schedule ID...
+    uint8_t sched_id;  // we don't need to know the schedule ID..
     ret = scheduler_add(&main_schedule, 0, magDataReadyHandler, &sched_id);
     if (ret != RET_OK) {
         // Critical error! we will miss INT1 ISR

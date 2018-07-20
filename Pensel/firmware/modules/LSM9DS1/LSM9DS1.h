@@ -3,6 +3,11 @@
 
 #pragma once
 
+
+#define ACCEL_GYRO_ADDRESS (0b11010110)  // 0xD6 (no R/W bit)
+#define MAG_ADDRESS        (0b00111100)  // 0x1E (no R/W bit)
+
+
 // --- Public datatypes
 
 // CTRL_REG6_XL
@@ -70,7 +75,14 @@ typedef struct __attribute__((packed)) {
 
 // --- Public functions
 
-ret_t LSM9DS1_init(gyro_ODR_t gyro_ODR, accel_ODR_t accel_ODR);
-void LSM9DS1_INT1_ISR(void);
-void LSM9DS1_INT2_ISR(void);
-void LSM9DS1_DRDY_ISR(void);
+ret_t LSM9DS1_readStatus(uint8_t * status_byte_ptr);
+ret_t LSM9DS1_init(gyro_ODR_t gyro_ODR, gyro_fullscale_t gyro_FS,
+                   accel_ODR_t accel_ODR, accel_fullscale_t accel_FS);
+void LSM9DS1_AGINT1_ISR(void);
+void LSM9DS1_AGINT2_ISR(void);
+void LSM9DS1_MDRDY_ISR(void);
+
+
+ret_t accelDataReadyHandler(int32_t *next_callback_ms);
+ret_t gyroDataReadyHandler(int32_t *next_callback_ms);
+ret_t magDataReadyHandler(int32_t *next_callback_ms);
