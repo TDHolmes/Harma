@@ -236,6 +236,7 @@ add_executable(pensel_v2.elf
 	"${ProjDirPath}/modules/utilities/queue.c"
 	"${ProjDirPath}/modules/utilities/newqueue.c"
 	"${ProjDirPath}/modules/utilities/scheduler.c"
+	"${ProjDirPath}/modules/utilities/logging.c"
 
 	"${common_peripherals}"
 	"${STM32_HAL_sources}"
