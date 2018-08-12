@@ -7,16 +7,14 @@
  */
 #pragma once
 
-#include <stdint.h>
 #include "common.h"
-
+#include <stdint.h>
 
 typedef struct {
-    const float * coefficents_ptr;
+    const float *coefficents_ptr;
     uint16_t order;
-    float * buffer;
+    float *buffer;
 } FIR_admin_t;
 
-
-ret_t FIR_init(FIR_admin_t * FIR_ptr, uint16_t FIR_len, const float * coefficents_ptr);
-float FIR_run(FIR_admin_t * FIR_ptr, float new_val);
+ret_t FIR_init(FIR_admin_t *FIR_ptr, uint16_t FIR_len, const float *coefficents_ptr);
+float FIR_run(FIR_admin_t *FIR_ptr, float new_val);

@@ -1,28 +1,22 @@
 /*
  *
  */
+#include "cdc.h"
+#include "common.h"
+#include "peripherals/USB/usb_desc.h"
+#include "peripherals/stm32-usb/usb_lib.h"
 #include <stdbool.h>
 
-#include "common.h"
-#include "peripherals/stm32-usb/usb_lib.h"
-#include "peripherals/USB/usb_desc.h"
-
-#include "cdc.h"
-
-
 /* Interval between sending IN packets in frame number (1 frame = 1ms) */
-#define CDC_SERIAL_IN_FRAME_INTERVAL  (1)
-#define RX_BUFF_SIZE                  (0x40)
-
+#define CDC_SERIAL_IN_FRAME_INTERVAL (1)
+#define RX_BUFF_SIZE (0x40)
 
 typedef struct {
     bool transfer_active;
     uint8_t rx_buffer[RX_BUFF_SIZE];
 } cdc_t;
 
-
 static cdc_t cdc_admin;
-
 
 ret_t cdc_init(void)
 {
@@ -34,17 +28,9 @@ ret_t cdc_init(void)
 /*
  * @brief This should be called by the USB driver after a CDC IN tranfer is finished.
  */
-void cdc_inTransfer_completeCB(void)
-{
-    cdc_admin.transfer_active = false;
-}
+void cdc_inTransfer_completeCB(void) { cdc_admin.transfer_active = false; }
 
-
-bool cdc_inTransferBusy(void)
-{
-    return cdc_admin.transfer_active;
-}
-
+bool cdc_inTransferBusy(void) { return cdc_admin.transfer_active; }
 
 /*
  * @brief Starts the transfer of `sendLength` bytes to the USB host.
@@ -52,7 +38,7 @@ bool cdc_inTransferBusy(void)
 ret_t cdc_inTransfer_start(uint8_t *ptrBuffer, uint8_t sendLength)
 {
     // Check bounds
-    if(sendLength > PENSEL_DATA_SIZE) {
+    if (sendLength > PENSEL_DATA_SIZE) {
         return RET_MAX_LEN_ERR;
     }
 
@@ -64,7 +50,7 @@ ret_t cdc_inTransfer_start(uint8_t *ptrBuffer, uint8_t sendLength)
     // send  packet to PMA
     cdc_admin.transfer_active = true;
     // TODO: decouple from specific endpoint
-    UserToPMABufferCopy((unsigned char*)ptrBuffer, ENDP1_TXADDR, sendLength);
+    UserToPMABufferCopy((unsigned char *)ptrBuffer, ENDP1_TXADDR, sendLength);
 
     // TODO: decouple this function from endpoint nitty-gritty things?
     SetEPTxCount(ENDP1, sendLength);

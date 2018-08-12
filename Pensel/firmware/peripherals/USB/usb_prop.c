@@ -1,31 +1,28 @@
 /**
-  ******************************************************************************
-  * @file    usb_prop.c
-  * @author  MCD Application Team / TDH
-  * @version V4.1.0
-  * @date    26-May-2017
-  * @brief   All processing related to USB properties
-  * Copyright at bottom
-  *****************************************************************************/
+ ******************************************************************************
+ * @file    usb_prop.c
+ * @author  MCD Application Team / TDH
+ * @version V4.1.0
+ * @date    26-May-2017
+ * @brief   All processing related to USB properties
+ * Copyright at bottom
+ *****************************************************************************/
 
-#include "peripherals/stm32-usb/usb_lib.h"
-#include "peripherals/stm32-usb/usb_def.h"
-#include "usb_conf.h"
 #include "usb_prop.h"
-#include "usb_desc.h"
-#include "usb_pwr.h"
 #include "hw_config.h"
-
 #include "modules/HID/hid.h"
 #include "modules/utilities/logging.h"
+#include "peripherals/stm32-usb/usb_def.h"
+#include "peripherals/stm32-usb/usb_lib.h"
+#include "usb_conf.h"
+#include "usb_desc.h"
+#include "usb_pwr.h"
 
+#define MAX_REPORT_LEN (64)
+#define REPORT_DESCRIPTOR (0x22)
 
-#define MAX_REPORT_LEN        (64)
-#define REPORT_DESCRIPTOR     (0x22)
-
-
-uint8_t Request = 0;     // TODO: figure out function
-uint32_t ProtocolValue;  // TODO: figure out function
+uint8_t Request = 0;    // TODO: figure out function
+uint32_t ProtocolValue; // TODO: figure out function
 
 static uint8_t report_buffer[MAX_REPORT_LEN];
 
@@ -36,16 +33,11 @@ LINE_CODING linecoding = {
     0x08    /* no. of bits 8*/
 };
 
-
 /* -------------------------------------------------------------------------- */
 /*  Structures initializations */
 /* -------------------------------------------------------------------------- */
 
-DEVICE Device_Table = {
-    EP_NUM,
-    1
-};
-
+DEVICE Device_Table = {EP_NUM, 1};
 
 DEVICE_PROP Device_Property = {
     penselUSB_init,
@@ -62,59 +54,36 @@ DEVICE_PROP Device_Property = {
     0x40 /*MAX PACKET SIZE*/
 };
 
-
 USER_STANDARD_REQUESTS User_Standard_Requests = {
-    penselUSB_getConfiguration,
-    penselUSB_SetConfiguration,
-    penselUSB_getInterface,
-    penselUSB_SetInterface,
-    penselUSB_getStatus,
-    penselUSB_ClearFeature,
-    penselUSB_SetEndPointFeature,
-    penselUSB_SetDeviceFeature,
-    penselUSB_SetDeviceAddress
-};
+    penselUSB_getConfiguration,   penselUSB_SetConfiguration, penselUSB_getInterface,
+    penselUSB_SetInterface,       penselUSB_getStatus,        penselUSB_ClearFeature,
+    penselUSB_SetEndPointFeature, penselUSB_SetDeviceFeature, penselUSB_SetDeviceAddress};
 
+ONE_DESCRIPTOR Device_Descriptor = {(uint8_t *)pensel_DeviceDescriptor, PENSEL_SIZ_DEVICE_DESC};
 
-ONE_DESCRIPTOR Device_Descriptor = {
-    (uint8_t *)pensel_DeviceDescriptor,
-    PENSEL_SIZ_DEVICE_DESC
-};
-
-ONE_DESCRIPTOR Config_Descriptor = {
-    (uint8_t *)pensel_ConfigDescriptor,
-    PENSEL_SIZ_CONFIG_DESC
-};
+ONE_DESCRIPTOR Config_Descriptor = {(uint8_t *)pensel_ConfigDescriptor, PENSEL_SIZ_CONFIG_DESC};
 
 // HID specific ones
 
-ONE_DESCRIPTOR HID_ReportDescriptor =
-  {
-    (uint8_t *)penselHID_ReportDescriptor,
-    PENSEL_HID_SIZ_REPORT_DESC
-  };
+ONE_DESCRIPTOR HID_ReportDescriptor = {(uint8_t *)penselHID_ReportDescriptor,
+                                       PENSEL_HID_SIZ_REPORT_DESC};
 
-ONE_DESCRIPTOR penselHID_HIDDescriptor =
-  {
-    (uint8_t*)(pensel_ConfigDescriptor + PENSEL_CONFIG_DESC_HID_OFFSET),
-    PENSEL_CONFIG_DESC_HID_SIZE
-  };
+ONE_DESCRIPTOR penselHID_HIDDescriptor = {
+    (uint8_t *)(pensel_ConfigDescriptor + PENSEL_CONFIG_DESC_HID_OFFSET),
+    PENSEL_CONFIG_DESC_HID_SIZE};
 
-ONE_DESCRIPTOR String_Descriptor[4] = {
-    {(uint8_t *)pensel_StringLangID, PENSEL_SIZ_STRING_LANGID},
-    {(uint8_t *)pensel_StringVendor, PENSEL_SIZ_STRING_VENDOR},
-    {(uint8_t *)pensel_StringProduct, PENSEL_SIZ_STRING_PRODUCT},
-    {(uint8_t *)pensel_StringSerial, PENSEL_SIZ_STRING_SERIAL}
-};
-
+ONE_DESCRIPTOR String_Descriptor[4] = {{(uint8_t *)pensel_StringLangID, PENSEL_SIZ_STRING_LANGID},
+                                       {(uint8_t *)pensel_StringVendor, PENSEL_SIZ_STRING_VENDOR},
+                                       {(uint8_t *)pensel_StringProduct, PENSEL_SIZ_STRING_PRODUCT},
+                                       {(uint8_t *)pensel_StringSerial, PENSEL_SIZ_STRING_SERIAL}};
 
 /*******************************************************************************
-* Function Name  : penselUSB_init.
-* Description    : Virtual COM Port Mouse init routine.
-* Input          : None.
-* Output         : None.
-* Return         : None.
-*******************************************************************************/
+ * Function Name  : penselUSB_init.
+ * Description    : Virtual COM Port Mouse init routine.
+ * Input          : None.
+ * Output         : None.
+ * Return         : None.
+ *******************************************************************************/
 void penselUSB_init(void)
 {
     LOG_MSG(kLogLevelDebug, "USB: init");
@@ -133,12 +102,12 @@ void penselUSB_init(void)
 }
 
 /*******************************************************************************
-* Function Name  : penselUSB_reset
-* Description    : penselUSB Mouse reset routine
-* Input          : None.
-* Output         : None.
-* Return         : None.
-*******************************************************************************/
+ * Function Name  : penselUSB_reset
+ * Description    : penselUSB Mouse reset routine
+ * Input          : None.
+ * Output         : None.
+ * Return         : None.
+ *******************************************************************************/
 void penselUSB_reset(void)
 {
     LOG_MSG(kLogLevelDebug, "USB: reset");
@@ -196,12 +165,12 @@ void penselUSB_reset(void)
 }
 
 /*******************************************************************************
-* Function Name  : penselUSB_SetConfiguration.
-* Description    : Update the device state to configured.
-* Input          : None.
-* Output         : None.
-* Return         : None.
-*******************************************************************************/
+ * Function Name  : penselUSB_SetConfiguration.
+ * Description    : Update the device state to configured.
+ * Input          : None.
+ * Output         : None.
+ * Return         : None.
+ *******************************************************************************/
 void penselUSB_SetConfiguration(void)
 {
     LOG_MSG(kLogLevelDebug, "USB: set conn");
@@ -214,12 +183,12 @@ void penselUSB_SetConfiguration(void)
 }
 
 /*******************************************************************************
-* Function Name  : penselUSB_SetConfiguration.
-* Description    : Update the device state to addressed.
-* Input          : None.
-* Output         : None.
-* Return         : None.
-*******************************************************************************/
+ * Function Name  : penselUSB_SetConfiguration.
+ * Description    : Update the device state to addressed.
+ * Input          : None.
+ * Output         : None.
+ * Return         : None.
+ *******************************************************************************/
 void penselUSB_SetDeviceAddress(void)
 {
     LOG_MSG(kLogLevelDebug, "USB: set addn");
@@ -227,12 +196,12 @@ void penselUSB_SetDeviceAddress(void)
 }
 
 /*******************************************************************************
-* Function Name  : penselUSB_statusIn.
-* Description    : Virtual COM Port Status In Routine.
-* Input          : None.
-* Output         : None.
-* Return         : None.
-*******************************************************************************/
+ * Function Name  : penselUSB_statusIn.
+ * Description    : Virtual COM Port Status In Routine.
+ * Input          : None.
+ * Output         : None.
+ * Return         : None.
+ *******************************************************************************/
 void penselUSB_statusIn(void)
 {
     ret_t ret;
@@ -250,9 +219,10 @@ void penselUSB_statusIn(void)
         uint8_t report_id = pInformation->USBwValues.bw.bb0;
 
         ret = hid_setReport(report_id, report_buffer, payload_len);
-        LOG_MSG_FMT(kLogLevelInfo, "Set Report: 0x%02X (len: %i) - Retval: %i", report_id, payload_len, ret);
+        LOG_MSG_FMT(kLogLevelInfo, "Set Report: 0x%02X (len: %i) - Retval: %i", report_id,
+                    payload_len, ret);
 
-        #define TMP_ARR_MSG_LEN  (256)
+#define TMP_ARR_MSG_LEN (256)
         char TmpArrMsg[TMP_ARR_MSG_LEN];
         int num_bytes = 0;
         int num_chars = sprintf(TmpArrMsg, "Payload: ");
@@ -272,20 +242,19 @@ void penselUSB_statusIn(void)
 }
 
 /*******************************************************************************
-* Function Name  : penselUSB_statusOut
-* Description    : Status OUT Routine.
-* Input          : None.
-* Output         : None.
-* Return         : None.
-*******************************************************************************/
+ * Function Name  : penselUSB_statusOut
+ * Description    : Status OUT Routine.
+ * Input          : None.
+ * Output         : None.
+ * Return         : None.
+ *******************************************************************************/
 void penselUSB_statusOut(void)
 {
     // TODO: what does this do?
     LOG_MSG(kLogLevelDebug, "Status OUT");
 }
 
-
-uint8_t * penselHID_setReport(uint16_t Length)
+uint8_t *penselHID_setReport(uint16_t Length)
 {
     if (Length == 0) {
         pInformation->Ctrl_Info.Usb_wLength = pInformation->USBwLengths.w;
@@ -299,11 +268,11 @@ uint8_t * penselHID_setReport(uint16_t Length)
     return report_buffer;
 }
 
-
-uint8_t * penselHID_getReport(uint16_t Length) {
+uint8_t *penselHID_getReport(uint16_t Length)
+{
     uint8_t report_id = pInformation->USBwValues.bw.bb0;
     report_buffer[0] = report_id;
-    uint8_t * payload = report_buffer + 1;
+    uint8_t *payload = report_buffer + 1;
     uint8_t payload_len = 0;
     ret_t ret;
 
@@ -318,12 +287,12 @@ uint8_t * penselHID_getReport(uint16_t Length) {
 }
 
 /*******************************************************************************
-* Function Name  : penselUSB_dataSetup
-* Description    : handle the data class specific requests
-* Input          : Request Nb.
-* Output         : None.
-* Return         : USB_UNSUPPORT or USB_SUCCESS.
-*******************************************************************************/
+ * Function Name  : penselUSB_dataSetup
+ * Description    : handle the data class specific requests
+ * Input          : Request Nb.
+ * Output         : None.
+ * Return         : USB_UNSUPPORT or USB_SUCCESS.
+ *******************************************************************************/
 RESULT penselUSB_dataSetup(uint8_t RequestNo)
 {
     // TODO: CDC-specific? Move to cdc.c?
@@ -344,7 +313,8 @@ RESULT penselUSB_dataSetup(uint8_t RequestNo)
     }
 
     // HID-specific requests
-    if ((RequestNo == GET_DESCRIPTOR) && (Type_Recipient == (STANDARD_REQUEST | INTERFACE_RECIPIENT)) ) {
+    if ((RequestNo == GET_DESCRIPTOR) &&
+        (Type_Recipient == (STANDARD_REQUEST | INTERFACE_RECIPIENT))) {
         if (pInformation->USBwValue1 == REPORT_DESCRIPTOR) {
             CopyRoutine = penselHID_GetReportDescriptor;
         } else if (pInformation->USBwValue1 == HID_DESCRIPTOR_TYPE) {
@@ -354,8 +324,8 @@ RESULT penselUSB_dataSetup(uint8_t RequestNo)
     } /* End of GET_DESCRIPTOR */
 
     /*** GET_PROTOCOL, GET_REPORT, SET_REPORT ***/
-    else if ( (Type_Recipient == (CLASS_REQUEST | INTERFACE_RECIPIENT)) ) {
-        switch( RequestNo ) {
+    else if ((Type_Recipient == (CLASS_REQUEST | INTERFACE_RECIPIENT))) {
+        switch (RequestNo) {
             case GET_PROTOCOL:
                 CopyRoutine = penselHID_GetProtocolValue;
                 break;
@@ -389,12 +359,12 @@ RESULT penselUSB_dataSetup(uint8_t RequestNo)
 }
 
 /*******************************************************************************
-* Function Name  : penselUSB_noDataSetup.
-* Description    : handle the no data class specific requests.
-* Input          : Request Nb.
-* Output         : None.
-* Return         : USB_UNSUPPORT or USB_SUCCESS.
-*******************************************************************************/
+ * Function Name  : penselUSB_noDataSetup.
+ * Description    : handle the no data class specific requests.
+ * Input          : Request Nb.
+ * Output         : None.
+ * Return         : USB_UNSUPPORT or USB_SUCCESS.
+ *******************************************************************************/
 RESULT penselUSB_noDataSetup(uint8_t RequestNo)
 {
     if (Type_Recipient == (CLASS_REQUEST | INTERFACE_RECIPIENT)) {
@@ -404,7 +374,7 @@ RESULT penselUSB_noDataSetup(uint8_t RequestNo)
         } else if (RequestNo == SET_CONTROL_LINE_STATE) {
             return USB_SUCCESS;
 
-        // HID specific stuff
+            // HID specific stuff
         } else if (RequestNo == SET_PROTOCOL) {
             return CustomHID_SetProtocol();
         }
@@ -414,12 +384,12 @@ RESULT penselUSB_noDataSetup(uint8_t RequestNo)
 }
 
 /*******************************************************************************
-* Function Name  : CustomHID_SetProtocol
-* Description    : Joystick Set Protocol request routine.
-* Input          : None.
-* Output         : None.
-* Return         : USB SUCCESS.
-*******************************************************************************/
+ * Function Name  : CustomHID_SetProtocol
+ * Description    : Joystick Set Protocol request routine.
+ * Input          : None.
+ * Output         : None.
+ * Return         : USB SUCCESS.
+ *******************************************************************************/
 RESULT CustomHID_SetProtocol(void)
 {
     uint8_t wValue0 = pInformation->USBwValue0;
@@ -428,56 +398,53 @@ RESULT CustomHID_SetProtocol(void)
 }
 
 /*******************************************************************************
-* Function Name  : CustomHID_GetProtocolValue
-* Description    : get the protocol value
-* Input          : Length.
-* Output         : None.
-* Return         : address of the protocol value.
-*******************************************************************************/
+ * Function Name  : CustomHID_GetProtocolValue
+ * Description    : get the protocol value
+ * Input          : Length.
+ * Output         : None.
+ * Return         : address of the protocol value.
+ *******************************************************************************/
 uint8_t *penselHID_GetProtocolValue(uint16_t Length)
 {
-  if (Length == 0)
-  {
-    pInformation->Ctrl_Info.Usb_wLength = 1;
-    return NULL;
-  }
-  else
-  {
-    return (uint8_t *)(&ProtocolValue);
-  }
+    if (Length == 0) {
+        pInformation->Ctrl_Info.Usb_wLength = 1;
+        return NULL;
+    } else {
+        return (uint8_t *)(&ProtocolValue);
+    }
 }
 
 /*******************************************************************************
-* Function Name  : penselUSB_getDeviceDescriptor.
-* Description    : Gets the device descriptor.
-* Input          : Length.
-* Output         : None.
-* Return         : The address of the device descriptor.
-*******************************************************************************/
+ * Function Name  : penselUSB_getDeviceDescriptor.
+ * Description    : Gets the device descriptor.
+ * Input          : Length.
+ * Output         : None.
+ * Return         : The address of the device descriptor.
+ *******************************************************************************/
 uint8_t *penselUSB_getDeviceDescriptor(uint16_t Length)
 {
     return Standard_GetDescriptorData(Length, &Device_Descriptor);
 }
 
 /*******************************************************************************
-* Function Name  : penselUSB_getConfigDescriptor.
-* Description    : get the configuration descriptor.
-* Input          : Length.
-* Output         : None.
-* Return         : The address of the configuration descriptor.
-*******************************************************************************/
+ * Function Name  : penselUSB_getConfigDescriptor.
+ * Description    : get the configuration descriptor.
+ * Input          : Length.
+ * Output         : None.
+ * Return         : The address of the configuration descriptor.
+ *******************************************************************************/
 uint8_t *penselUSB_getConfigDescriptor(uint16_t Length)
 {
     return Standard_GetDescriptorData(Length, &Config_Descriptor);
 }
 
 /*******************************************************************************
-* Function Name  : penselHID_GetReportDescriptor.
-* Description    : Gets the HID report descriptor.
-* Input          : Length
-* Output         : None.
-* Return         : The address of the configuration descriptor.
-*******************************************************************************/
+ * Function Name  : penselHID_GetReportDescriptor.
+ * Description    : Gets the HID report descriptor.
+ * Input          : Length
+ * Output         : None.
+ * Return         : The address of the configuration descriptor.
+ *******************************************************************************/
 uint8_t *penselHID_GetReportDescriptor(uint16_t Length)
 {
     return Standard_GetDescriptorData(Length, &HID_ReportDescriptor);
@@ -489,12 +456,12 @@ uint8_t *penselHID_GetHIDDescriptor(uint16_t Length)
 }
 
 /*******************************************************************************
-* Function Name  : penselUSB_getStringDescriptor
-* Description    : Gets the string descriptors according to the needed index
-* Input          : Length.
-* Output         : None.
-* Return         : The address of the string descriptors.
-*******************************************************************************/
+ * Function Name  : penselUSB_getStringDescriptor
+ * Description    : Gets the string descriptors according to the needed index
+ * Input          : Length.
+ * Output         : None.
+ * Return         : The address of the string descriptors.
+ *******************************************************************************/
 uint8_t *penselUSB_getStringDescriptor(uint16_t Length)
 {
     uint8_t wValue0 = pInformation->USBwValue0;
@@ -506,14 +473,14 @@ uint8_t *penselUSB_getStringDescriptor(uint16_t Length)
 }
 
 /*******************************************************************************
-* Function Name  : penselUSB_getInterfaceSetting.
-* Description    : test the interface and the alternate setting according to the
-*                  supported one.
-* Input1         : uint8_t: Interface : interface number.
-* Input2         : uint8_t: AlternateSetting : Alternate Setting number.
-* Output         : None.
-* Return         : The address of the string descriptors.
-*******************************************************************************/
+ * Function Name  : penselUSB_getInterfaceSetting.
+ * Description    : test the interface and the alternate setting according to the
+ *                  supported one.
+ * Input1         : uint8_t: Interface : interface number.
+ * Input2         : uint8_t: AlternateSetting : Alternate Setting number.
+ * Output         : None.
+ * Return         : The address of the string descriptors.
+ *******************************************************************************/
 RESULT penselUSB_getInterfaceSetting(uint8_t Interface, uint8_t AlternateSetting)
 {
     if (AlternateSetting > 0) {
@@ -525,62 +492,62 @@ RESULT penselUSB_getInterfaceSetting(uint8_t Interface, uint8_t AlternateSetting
 }
 
 /*******************************************************************************
-* Function Name  : penselUSB_getLineCoding.
-* Description    : send the linecoding structure to the PC host.
-* Input          : Length.
-* Output         : None.
-* Return         : Linecoding structure base address.
-*******************************************************************************/
+ * Function Name  : penselUSB_getLineCoding.
+ * Description    : send the linecoding structure to the PC host.
+ * Input          : Length.
+ * Output         : None.
+ * Return         : Linecoding structure base address.
+ *******************************************************************************/
 uint8_t *penselUSB_getLineCoding(uint16_t Length)
 {
     if (Length == 0) {
         pInformation->Ctrl_Info.Usb_wLength = sizeof(linecoding);
         return NULL;
     }
-    return(uint8_t *)&linecoding;
+    return (uint8_t *)&linecoding;
 }
 
 /*******************************************************************************
-* Function Name  : penselUSB_SetLineCoding.
-* Description    : Set the linecoding structure fields.
-* Input          : Length.
-* Output         : None.
-* Return         : Linecoding structure base address.
-*******************************************************************************/
+ * Function Name  : penselUSB_SetLineCoding.
+ * Description    : Set the linecoding structure fields.
+ * Input          : Length.
+ * Output         : None.
+ * Return         : Linecoding structure base address.
+ *******************************************************************************/
 uint8_t *penselUSB_SetLineCoding(uint16_t Length)
 {
     if (Length == 0) {
         pInformation->Ctrl_Info.Usb_wLength = sizeof(linecoding);
         return NULL;
     }
-    return(uint8_t *)&linecoding;
+    return (uint8_t *)&linecoding;
 }
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****
-* @attention
-*
-* <h2><center>&copy; COPYRIGHT(c) 2017 STMicroelectronics</center></h2>
-*
-* Redistribution and use in source and binary forms, with or without modification,
-* are permitted provided that the following conditions are met:
-*   1. Redistributions of source code must retain the above copyright notice,
-*      this list of conditions and the following disclaimer.
-*   2. Redistributions in binary form must reproduce the above copyright notice,
-*      this list of conditions and the following disclaimer in the documentation
-*      and/or other materials provided with the distribution.
-*   3. Neither the name of STMicroelectronics nor the names of its contributors
-*      may be used to endorse or promote products derived from this software
-*      without specific prior written permission.
-*
-* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-* DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-* FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-* DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-* CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-* OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-* OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*
-*******************************************************************************/
+ * @attention
+ *
+ * <h2><center>&copy; COPYRIGHT(c) 2017 STMicroelectronics</center></h2>
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *   1. Redistributions of source code must retain the above copyright notice,
+ *      this list of conditions and the following disclaimer.
+ *   2. Redistributions in binary form must reproduce the above copyright notice,
+ *      this list of conditions and the following disclaimer in the documentation
+ *      and/or other materials provided with the distribution.
+ *   3. Neither the name of STMicroelectronics nor the names of its contributors
+ *      may be used to endorse or promote products derived from this software
+ *      without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *******************************************************************************/

@@ -1,27 +1,23 @@
 /*
  *
  */
+#include "hid.h"
+#include "common.h"
+#include "modules/LSM9DS1/LSM9DS1.h"
+#include "modules/orientation/datatypes.h"
+#include "modules/utilities/logging.h"
+#include "peripherals/USB/usb_desc.h"
+#include "peripherals/stm32-usb/usb_lib.h"
 #include <string.h>
 
-#include "common.h"
-#include "peripherals/stm32-usb/usb_lib.h"
-#include "peripherals/USB/usb_desc.h"
-
-#include "modules/utilities/logging.h"
-#include "modules/orientation/datatypes.h"
-#include "modules/LSM9DS1/LSM9DS1.h"
-
-#include "hid.h"
-
-#define GEN_BUFF_SIZE             (0x40)
-#define CLEAR_STATS_MAGIC_NUMBER  (0xAA)
+#define GEN_BUFF_SIZE (0x40)
+#define CLEAR_STATS_MAGIC_NUMBER (0xAA)
 
 extern critical_errors_t gCriticalErrors;
 
 static uint8_t genBuff[GEN_BUFF_SIZE];
 
-
-ret_t hid_getReport(report_id_t report_id, uint8_t payload_ptr[], uint8_t * payload_len_ptr)
+ret_t hid_getReport(report_id_t report_id, uint8_t payload_ptr[], uint8_t *payload_len_ptr)
 {
     ret_t ret = RET_OK;
     accel_norm_t aPkt;
@@ -82,12 +78,12 @@ ret_t hid_getReport(report_id_t report_id, uint8_t payload_ptr[], uint8_t * payl
             break;
     }
 
-    LOG_MSG_FMT(kLogLevelInfo, "Get Report: 0x%02X (len: %i) ret: %i", report_id, *payload_len_ptr, ret);
+    LOG_MSG_FMT(kLogLevelInfo, "Get Report: 0x%02X (len: %i) ret: %i", report_id, *payload_len_ptr,
+                ret);
     return ret;
 }
 
-
-ret_t hid_setReport(report_id_t report_id, uint8_t * payload_ptr, uint8_t payload_len)
+ret_t hid_setReport(report_id_t report_id, uint8_t *payload_ptr, uint8_t payload_len)
 {
     ret_t ret = RET_OK;
 

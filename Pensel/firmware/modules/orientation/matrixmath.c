@@ -5,11 +5,10 @@
  * @date    28-May-2017
  * @brief   Module for doing matrix / vector math calculations.
  */
-#include <stdint.h>
-#include <stdio.h>
 #include "matrixmath.h"
 #include "common.h"
-
+#include <stdint.h>
+#include <stdio.h>
 
 /*! Calculates the matrix multiply of the two vectors given, in that order.
  *
@@ -21,13 +20,13 @@
  * @param m_result (matrix_1x3_t *): Pointer to the matrix we are to store the result in.
  * @return retval (ret_t): Success or failure reason of the multiply.
  */
-ret_t matrix_multiply(matrix_3x3_t m0, matrix_1x3_t m1, matrix_1x3_t * m_result)
+ret_t matrix_multiply(matrix_3x3_t m0, matrix_1x3_t m1, matrix_1x3_t *m_result)
 {
     // loop through the matrices and do the math!
     for (uint32_t y = 0; y < 3; y++) {
         float sum = 0;
         for (uint32_t x = 0; x < 3; x++) {
-            sum += m0.matrix[x][y] * m1.matrix[0][x];  // TODO: generalize for N dimensional?
+            sum += m0.matrix[x][y] * m1.matrix[0][x]; // TODO: generalize for N dimensional?
         }
         m_result->matrix[0][y] = sum;
     }
@@ -43,7 +42,7 @@ ret_t matrix_multiply(matrix_3x3_t m0, matrix_1x3_t m1, matrix_1x3_t * m_result)
  * @param m_result (matrix_1x3_t *): Pointer to the matrix we are to store the result in.
  * @return retval (ret_t): Success or failure reason of the cross product.
  */
-ret_t matrix_cross(matrix_1x3_t m0, matrix_1x3_t m1, matrix_1x3_t * m_result)
+ret_t matrix_cross(matrix_1x3_t m0, matrix_1x3_t m1, matrix_1x3_t *m_result)
 {
 
     // now, generate the matrix to multiply m1 by with m0 to perform the cross product

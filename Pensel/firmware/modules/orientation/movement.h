@@ -7,10 +7,8 @@
  */
 #pragma once
 
-#include <stdint.h>
-
 #include "quanternions.h"
-
+#include <stdint.h>
 
 // Lateral movement
 typedef struct {

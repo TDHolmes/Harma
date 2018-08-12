@@ -1,28 +1,24 @@
 /*!
  * @file    cal.c
  * @author  Tyler Holmes
- *
  * @date    20-May-2017
  * @brief   Calibration code and structures
  */
 
+#include "cal.h"
+#include "common.h"
+#include "default_cal.h"
+#include "peripherals/stm32f3/stm32f3xx_hal_flash.h"
+#include "peripherals/stm32f3/stm32f3xx_hal_flash_ex.h"
+#include "stm32f3xx.h"
 #include <stdint.h>
 #include <string.h>
 
-#include "stm32f3xx.h"
-#include "peripherals/stm32f3/stm32f3xx_hal_flash.h"
-#include "peripherals/stm32f3/stm32f3xx_hal_flash_ex.h"
-#include "common.h"
-
-#include "cal.h"
-#include "default_cal.h"
-
 // Private function definitions
-static uint8_t cal_calcChecksum(uint32_t length, uint8_t * data_ptr);
-static ret_t cal_writeToFlash(uint32_t * dataToWrite_ptr);
+static uint8_t cal_calcChecksum(uint32_t length, uint8_t *data_ptr);
+static ret_t cal_writeToFlash(uint32_t *dataToWrite_ptr);
 
 extern critical_errors_t gCriticalErrors;
-
 
 /*! Function to calculate the checksum of a block of memory. Simple twos complement addition
  *
@@ -30,11 +26,11 @@ extern critical_errors_t gCriticalErrors;
  * @param data_ptr (uint8_t *): Pointer to the data in memory.
  * @return checksum (uint8_t): The calculated checksum.
  */
-static uint8_t cal_calcChecksum(uint32_t length, uint8_t * data_ptr)
+static uint8_t cal_calcChecksum(uint32_t length, uint8_t *data_ptr)
 {
     uint8_t checksum = 0;
 
-    while(length > 0) {
+    while (length > 0) {
         checksum += *data_ptr;
         data_ptr++;
         length--;
@@ -50,8 +46,8 @@ ret_t cal_loadFromFlash(void)
 {
     ret_t retval = RET_OK;
     // Load calibration from flash into gCal
-    uint32_t * cal_ptr = (uint32_t *)&gCal;
-    uint32_t * address = (uint32_t *)PENSEL_CAL_START_ADDRESS;
+    uint32_t *cal_ptr = (uint32_t *)&gCal;
+    uint32_t *address = (uint32_t *)PENSEL_CAL_START_ADDRESS;
     while (address < (uint32_t *)PENSEL_CAL_END_ADDRESS) {
         *cal_ptr = *address;
         address += 4;
@@ -104,7 +100,7 @@ ret_t cal_checkValidity(void)
  *
  * @Note Does not check the values being written for validity.
  */
-static ret_t cal_writeToFlash(uint32_t * dataToWrite_ptr)
+static ret_t cal_writeToFlash(uint32_t *dataToWrite_ptr)
 {
     ret_t retval = RET_OK;
     FLASH_EraseInitTypeDef eraseInitStruct;
@@ -114,9 +110,9 @@ static ret_t cal_writeToFlash(uint32_t * dataToWrite_ptr)
     HAL_FLASH_Unlock();
 
     // configure the type of erasing we're going to do
-    eraseInitStruct.TypeErase   = FLASH_TYPEERASE_PAGES;
+    eraseInitStruct.TypeErase = FLASH_TYPEERASE_PAGES;
     eraseInitStruct.PageAddress = PENSEL_CAL_START_ADDRESS;
-    eraseInitStruct.NbPages     = 1;  // Calibration better be smaller than 2kB...
+    eraseInitStruct.NbPages = 1; // Calibration better be smaller than 2kB...
 
     if (HAL_FLASHEx_Erase(&eraseInitStruct, &pageError) != HAL_OK) {
         retval = RET_GEN_ERR;
@@ -140,12 +136,11 @@ static ret_t cal_writeToFlash(uint32_t * dataToWrite_ptr)
     return retval;
 }
 
-
 // ----------- Report functions -----------
 
 // Report 40
-ret_t rpt_cal_read(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len),
-                   uint8_t * out_p, uint8_t * out_len_ptr)
+ret_t rpt_cal_read(uint8_t *UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len), uint8_t *out_p,
+                   uint8_t *out_len_ptr)
 {
     *out_len_ptr = sizeof(pensel_cal_t);
     *(pensel_cal_t *)out_p = gCal;
@@ -153,7 +148,8 @@ ret_t rpt_cal_read(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len),
 }
 
 // Report 41
-ret_t rpt_cal_write(uint8_t * in_p, uint8_t in_len, uint8_t * UNUSED_PARAM(out_p), uint8_t * out_len_ptr)
+ret_t rpt_cal_write(uint8_t *in_p, uint8_t in_len, uint8_t *UNUSED_PARAM(out_p),
+                    uint8_t *out_len_ptr)
 {
     *out_len_ptr = 0;
     if (in_len != sizeof(pensel_cal_t)) {

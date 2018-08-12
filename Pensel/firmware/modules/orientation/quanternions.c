@@ -5,10 +5,9 @@
  * @date    28-May-2017
  * @brief   Module for doing quanternion-y things.
  */
-#include <stdint.h>
-#include <math.h>  // TODO: Don't use this library. Need single percision sine or LUT
 #include "quanternions.h"
-
+#include <math.h> // TODO: Don't use this library. Need single percision sine or LUT
+#include <stdint.h>
 
 quanternion_vect_t quanternion_create(cartesian_vect_t eigen_axis, float rotation_angle)
 {
@@ -23,7 +22,6 @@ quanternion_vect_t quanternion_create(cartesian_vect_t eigen_axis, float rotatio
     return new_vect;
 }
 
-
 // conversion methods
 cartesian_vect_t quanternion_toCartesian(quanternion_vect_t vector)
 {
@@ -31,7 +29,6 @@ cartesian_vect_t quanternion_toCartesian(quanternion_vect_t vector)
 
     return new_vect;
 }
-
 
 quanternion_vect_t quanternion_fromCartesian(cartesian_vect_t vector)
 {

@@ -5,7 +5,7 @@
  * @date    20-May-2017
  * @brief   Default calibration for when calibration is not present or is corrupt.
  */
- #pragma once
+#pragma once
 
 #include "cal.h"
 

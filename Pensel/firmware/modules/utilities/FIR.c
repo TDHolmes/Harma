@@ -5,11 +5,10 @@
  * @date    29-May-2017
  * @brief   Module for filtering arbitrary values given coefficients and a filter order.
  */
+#include "FIR.h"
+#include "common.h"
 #include <stdint.h>
 #include <stdlib.h>
-
-#include "common.h"
-#include "FIR.h"
 
 /*! Initializes the given FIR admin pointer to be used in FIR_run.
  *
@@ -19,7 +18,7 @@
  * @param coefficents_ptr (const float *): The coefficients to be used in this filter
  * @return retval (ret_t): Success or failure reason of initializing the FIR structure
  */
-ret_t FIR_init(FIR_admin_t * FIR_ptr, uint16_t FIR_len, const float * coefficents_ptr)
+ret_t FIR_init(FIR_admin_t *FIR_ptr, uint16_t FIR_len, const float *coefficents_ptr)
 {
     FIR_ptr->coefficents_ptr = coefficents_ptr;
     FIR_ptr->order = FIR_len;
@@ -41,7 +40,7 @@ ret_t FIR_init(FIR_admin_t * FIR_ptr, uint16_t FIR_len, const float * coefficent
  * @param new_val (float): The new value to be added to the filter pipeline
  * @return out_val (float): The resulting value from the filter
  */
-float FIR_run(FIR_admin_t * FIR_ptr, float new_val)
+float FIR_run(FIR_admin_t *FIR_ptr, float new_val)
 {
     float out_val = 0.0f;
 

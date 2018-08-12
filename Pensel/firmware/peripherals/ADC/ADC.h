@@ -9,9 +9,8 @@
 
 #pragma once
 
-#include <stdint.h>
 #include "common.h"
-
+#include <stdint.h>
 
 ret_t ADC_init(void);
 ret_t ADC_start_sampling(void);

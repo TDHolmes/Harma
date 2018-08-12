@@ -7,37 +7,30 @@
  *
  */
 
-#include <stdint.h>
-#include <stdbool.h>
-
-// User includes
+#include "hardware.h"
 #include "common.h"
-// #include "modules/LSM303DLHC/LSM303DLHC.h"
 #include "modules/LSM9DS1/LSM9DS1.h"
-
-// STM drivers
 #include "peripherals/stm32f3-configuration/stm32f3xx.h"
 #include "peripherals/stm32f3/stm32f3xx_hal.h"
 #include "peripherals/stm32f3/stm32f3xx_hal_def.h"
-#include "peripherals/stm32f3/stm32f3xx_hal_rcc.h"
 #include "peripherals/stm32f3/stm32f3xx_hal_flash.h"
 #include "peripherals/stm32f3/stm32f3xx_hal_gpio.h"
 #include "peripherals/stm32f3/stm32f3xx_hal_iwdg.h"
+#include "peripherals/stm32f3/stm32f3xx_hal_rcc.h"
 #include "peripherals/stm32f3/stm32f3xx_ll_bus.h"
-
-#include "hardware.h"
-
+#include <stdbool.h>
+#include <stdint.h>
 
 //! The amount of time, in ms, that must ellapse before changing button / switch state
 #define IO_DEBOUNCE_TIMEOUT (10)
 
-static GPIO_InitTypeDef  GPIO_InitStruct;
+static GPIO_InitTypeDef GPIO_InitStruct;
 
 #ifdef WATCHDOG_ENABLE
 
-    #define WDG_COUNT (161u)
-    IWDG_HandleTypeDef hiwdg;
-    void wdg_clearFlags(void);
+#define WDG_COUNT (161u)
+IWDG_HandleTypeDef hiwdg;
+void wdg_clearFlags(void);
 
 #endif
 
@@ -46,7 +39,6 @@ void button_ISR(uint16_t GPIO_Pin);
 // Private IRQ enablers / disablers
 static inline void mainbtn_irq_enable(void);
 static inline void mainbtn_irq_disable(void);
-
 
 //! Tracks a button's state and manages a button's hysteresis
 typedef struct {
@@ -61,26 +53,24 @@ typedef struct {
     volatile uint32_t changing_timestamp;
 } button_t;
 
-
 button_t mainbutton_admin; //!< button handler for the main button.
 
-uint8_t mainbutton_getval(void)    { return mainbutton_admin.state; }
-
+uint8_t mainbutton_getval(void) { return mainbutton_admin.state; }
 
 /**
-  * @brief  System Clock Configuration
-  *         The system Clock is configured as follow :
-  *            System Clock source            = PLL (HSI)
-  *            SYSCLK(Hz)                     = 64000000
-  *            HCLK(Hz)                       = 64000000
-  *            AHB Prescaler                  = 1
-  *            APB1 Prescaler                 = 2
-  *            APB2 Prescaler                 = 1
-  *            PLLMUL                         = RCC_PLL_MUL16 (16)
-  *            Flash Latency(WS)              = 2
-  * @param  None
-  * @retval None
-  */
+ * @brief  System Clock Configuration
+ *         The system Clock is configured as follow :
+ *            System Clock source            = PLL (HSI)
+ *            SYSCLK(Hz)                     = 64000000
+ *            HCLK(Hz)                       = 64000000
+ *            AHB Prescaler                  = 1
+ *            APB1 Prescaler                 = 2
+ *            APB2 Prescaler                 = 1
+ *            PLLMUL                         = RCC_PLL_MUL16 (16)
+ *            Flash Latency(WS)              = 2
+ * @param  None
+ * @retval None
+ */
 void SystemClock_Config(void)
 {
     RCC_OscInitTypeDef RCC_OscInitStruct;
@@ -100,24 +90,21 @@ void SystemClock_Config(void)
     RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
     RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
     retval = HAL_RCC_OscConfig(&RCC_OscInitStruct);
-    if (retval != HAL_OK)
-    {
-          fatal_error_handler(__FILE__, __LINE__, retval);
+    if (retval != HAL_OK) {
+        fatal_error_handler(__FILE__, __LINE__, retval);
     }
 
     /* Initializes the CPU, AHB and APB busses clocks */
     RCC_ClkInitStruct.ClockType =
-        RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK |
-        RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+        RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
     RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
     RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
     RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
     RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
     retval = HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2);
-    if (retval != HAL_OK)
-    {
-          fatal_error_handler(__FILE__, __LINE__, retval);
+    if (retval != HAL_OK) {
+        fatal_error_handler(__FILE__, __LINE__, retval);
     }
 
     PeriphClkInit.PeriphClockSelection =
@@ -126,23 +113,21 @@ void SystemClock_Config(void)
     PeriphClkInit.I2c1ClockSelection = RCC_I2C1CLKSOURCE_HSI;
     PeriphClkInit.USBClockSelection = RCC_USBCLKSOURCE_PLL_DIV1_5;
     retval = HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit);
-    if (retval != HAL_OK)
-    {
+    if (retval != HAL_OK) {
         fatal_error_handler(__FILE__, __LINE__, retval);
     }
 
-      /**Configure the Systick interrupt time
-      */
+    /**Configure the Systick interrupt time
+     */
     HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq() / 1000);
 
-      /**Configure the Systick
-      */
+    /**Configure the Systick
+     */
     HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
 
     /* SysTick_IRQn interrupt configuration */
     HAL_NVIC_SetPriority(SysTick_IRQn, SysTick_INT_PREEMPT_PRI, SysTick_INT_SUB_PRI);
 }
-
 
 void hw_setUSBpullup(uint8_t value)
 {
@@ -152,7 +137,6 @@ void hw_setUSBpullup(uint8_t value)
         HAL_GPIO_WritePin(USB_PORT, USB_DP_PULLUP, GPIO_PIN_RESET);
     }
 }
-
 
 /*! Configures all of the pins (& interrupt priority if applicable) in the project
  *  to what they need to be. (i.e. input, output, falling interrupt, etc)
@@ -165,30 +149,30 @@ void configure_pins(void)
     LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOB);
 
     // Push-Pull outputs for the LEDs and timing pin!
-    GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
-    GPIO_InitStruct.Pull  = GPIO_PULLUP;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull = GPIO_PULLUP;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-    GPIO_InitStruct.Pin   = (LED_0 | LED_1 | EXTRA_GPIO);
+    GPIO_InitStruct.Pin = (LED_0 | LED_1 | EXTRA_GPIO);
 
     HAL_GPIO_Init(LED_PORT, &GPIO_InitStruct);
 
     // Need to see button going low and high!
-    GPIO_InitStruct.Mode  = GPIO_MODE_IT_RISING_FALLING;
-    GPIO_InitStruct.Pin   = BUTTON_MAIN;
+    GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
+    GPIO_InitStruct.Pin = BUTTON_MAIN;
     HAL_GPIO_Init(BUTTON_PORT, &GPIO_InitStruct);
 
     // Push-Pull outputs for the LEDs and timing pin!
-    GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
-    GPIO_InitStruct.Pull  = GPIO_NOPULL;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-    GPIO_InitStruct.Pin   = USB_DP_PULLUP;
+    GPIO_InitStruct.Pin = USB_DP_PULLUP;
 
     HAL_GPIO_Init(USB_PORT, &GPIO_InitStruct);
 
     // Sensor input pins
     // TODO: re-enable for sensor
-    GPIO_InitStruct.Mode  = GPIO_MODE_IT_RISING;
-    GPIO_InitStruct.Pin   = (SENSOR_DRDY | SENSOR_INT1 | SENSOR_INT2);
+    GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+    GPIO_InitStruct.Pin = (SENSOR_DRDY | SENSOR_INT1 | SENSOR_INT2);
     HAL_GPIO_Init(SENSOR_PORT, &GPIO_InitStruct);
 
     // NOTE: I2C/UART pins are configured in stm32f3xx_hal_msp.c
@@ -205,27 +189,20 @@ void configure_pins(void)
     HAL_NVIC_SetPriority((IRQn_Type)(EXTI1_IRQn), 3, 0);     // Sensor INT1 pin
     HAL_NVIC_SetPriority((IRQn_Type)(EXTI2_TSC_IRQn), 4, 0); // Sensor INT1 pin
 
-    HAL_NVIC_SetPriority((IRQn_Type)(EXTI3_IRQn), 5, 0);     // Main button
+    HAL_NVIC_SetPriority((IRQn_Type)(EXTI3_IRQn), 5, 0); // Main button
     // NOTE: V2 hack has the aux button configured for USB Dp pullup
     // HAL_NVIC_SetPriority((IRQn_Type)(EXTI4_IRQn), 4, 1);     // Aux button
 
     // enable interrupts
-    HAL_NVIC_DisableIRQ((IRQn_Type)(EXTI4_IRQn));  // make sure Aux button IRQ is disabled
+    HAL_NVIC_DisableIRQ((IRQn_Type)(EXTI4_IRQn)); // make sure Aux button IRQ is disabled
     mainbtn_irq_enable();
 }
 
 /*! Enables the interrupt corrisponding to the main button pin. */
-static inline void mainbtn_irq_enable(void)
-{
-    HAL_NVIC_EnableIRQ((IRQn_Type)(EXTI9_5_IRQn));
-}
+static inline void mainbtn_irq_enable(void) { HAL_NVIC_EnableIRQ((IRQn_Type)(EXTI9_5_IRQn)); }
 
 /*! Disables the interrupt corrisponding to the main button pin. */
-static inline void mainbtn_irq_disable(void)
-{
-    HAL_NVIC_DisableIRQ((IRQn_Type)(EXTI9_5_IRQn));
-}
-
+static inline void mainbtn_irq_disable(void) { HAL_NVIC_DisableIRQ((IRQn_Type)(EXTI9_5_IRQn)); }
 
 /*! Gets called periodically and handles if we should update the either of the
  *  buttons state based on if it has gotten out of the debounce timeout.
@@ -244,8 +221,6 @@ void button_periodic_handler(uint32_t current_tick)
     }
     mainbtn_irq_enable();
 }
-
-
 
 /*! gets called if either button has triggered the HW falling / rising interrupt.
  *  We then update the button structs accordingly to indicate if we're changing states.
@@ -267,70 +242,69 @@ void button_ISR(uint16_t GPIO_Pin)
     }
 }
 
-
 /* independent watchdog code */
 #ifdef WATCHDOG_ENABLE
 
-    /*! Initializes the independent watchdog module to require a pet every 10 ms
-     *
-     * @return success or failure of initializing the watchdog module
-     */
-    ret_t wdg_init(void)
-    {
-        // the LSI counter used for wdg timer is @41KHz.
-        // shooting for a 1 second window. 1 / ((1 / 41 kHz) * 256) ~= 160.15 = 161
-        hiwdg.Instance = IWDG;
-        //! Select the prescaler of the IWDG. This parameter can be a value of @ref IWDG_Prescaler
-        hiwdg.Init.Prescaler = IWDG_PRESCALER_256;
-        /*! Specifies the IWDG down-counter reload value. This parameter must
-          be a number between Min_Data = 0 and Max_Data = 0x0FFFU */
-        hiwdg.Init.Reload = WDG_COUNT;
-        /*!< Specifies the window value to be compared to the down-counter.
-            This parameter must be a number between Min_Data = 0 and Max_Data = 0x0FFFU */
-        hiwdg.Init.Window = WDG_COUNT;
+/*! Initializes the independent watchdog module to require a pet every 10 ms
+ *
+ * @return success or failure of initializing the watchdog module
+ */
+ret_t wdg_init(void)
+{
+    // the LSI counter used for wdg timer is @41KHz.
+    // shooting for a 1 second window. 1 / ((1 / 41 kHz) * 256) ~= 160.15 = 161
+    hiwdg.Instance = IWDG;
+    //! Select the prescaler of the IWDG. This parameter can be a value of @ref IWDG_Prescaler
+    hiwdg.Init.Prescaler = IWDG_PRESCALER_256;
+    /*! Specifies the IWDG down-counter reload value. This parameter must
+      be a number between Min_Data = 0 and Max_Data = 0x0FFFU */
+    hiwdg.Init.Reload = WDG_COUNT;
+    /*!< Specifies the window value to be compared to the down-counter.
+        This parameter must be a number between Min_Data = 0 and Max_Data = 0x0FFFU */
+    hiwdg.Init.Window = WDG_COUNT;
 
-        if (HAL_IWDG_Init(&hiwdg) != HAL_OK) {
-            return RET_GEN_ERR;
-        }
-        __HAL_DBGMCU_FREEZE_IWDG();
+    if (HAL_IWDG_Init(&hiwdg) != HAL_OK) {
+        return RET_GEN_ERR;
+    }
+    __HAL_DBGMCU_FREEZE_IWDG();
+    return RET_OK;
+}
+
+/*! Resets the watchdog timer (pets it) so we don't reset
+ *
+ * @return success or failure of petting the watchdog
+ */
+ret_t wdg_pet(void)
+{
+    if (HAL_IWDG_Refresh(&hiwdg) == HAL_OK) {
         return RET_OK;
+    } else {
+        return RET_GEN_ERR;
     }
+}
 
-    /*! Resets the watchdog timer (pets it) so we don't reset
-     *
-     * @return success or failure of petting the watchdog
-     */
-    ret_t wdg_pet(void)
-    {
-        if (HAL_IWDG_Refresh(&hiwdg) == HAL_OK) {
-            return RET_OK;
-        } else {
-            return RET_GEN_ERR;
-        }
+/*! Checks if the watchdog was the reason for our reset
+ *
+ * @return true if watchdog was the reason for the reset
+ */
+bool wdg_isSet(void)
+{
+    if (__HAL_RCC_GET_FLAG(RCC_FLAG_IWDGRST) == RESET) {
+        wdg_clearFlags();
+        return false;
+    } else {
+        wdg_clearFlags();
+        return true;
     }
+}
 
-    /*! Checks if the watchdog was the reason for our reset
-     *
-     * @return true if watchdog was the reason for the reset
-     */
-    bool wdg_isSet(void)
-    {
-        if (__HAL_RCC_GET_FLAG(RCC_FLAG_IWDGRST) == RESET) {
-            wdg_clearFlags();
-            return false;
-        } else {
-            wdg_clearFlags();
-            return true;
-        }
-    }
-
-    /*! Private method to reset the reset flags on boot
-     */
-    void wdg_clearFlags(void)
-    {
-        // Clear reset flags
-        __HAL_RCC_CLEAR_RESET_FLAGS();
-    }
+/*! Private method to reset the reset flags on boot
+ */
+void wdg_clearFlags(void)
+{
+    // Clear reset flags
+    __HAL_RCC_CLEAR_RESET_FLAGS();
+}
 #endif
 
 /* USB init function */
@@ -354,7 +328,6 @@ void hw_USB_init(void)
         fatal_error_handler(__FILE__, __LINE__, (ret_t)ret);
     }
 }
-
 
 /*! Figure out which pin triggered the interrupt and call the corrisponding
  *  interrupt handler.
@@ -382,13 +355,11 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     }
 }
 
-
 void EXTI0_IRQHandler(void)
 {
     __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_0);
     LSM9DS1_AGINT1_ISR();
 }
-
 
 /*! Toggles the given LED.
  *
@@ -403,7 +374,6 @@ void LED_toggle(uint16_t LED)
     }
 }
 
-
 /*! Sets the given LED to the given value.
  *
  * @param[in] LED (uint16_t): Which LED to sdt.
@@ -414,10 +384,10 @@ void LED_set(uint16_t LED, uint8_t value)
     // LEDs are active low config...
     if (value == GPIO_PIN_RESET) {
         value = GPIO_PIN_SET;
-    } else if(value == GPIO_PIN_SET) {
+    } else if (value == GPIO_PIN_SET) {
         value = GPIO_PIN_RESET;
     } else {
-        return;  // invalid value!!
+        return; // invalid value!!
     }
 
     // Write the value to the LED...
@@ -431,21 +401,14 @@ void LED_set(uint16_t LED, uint8_t value)
 /*! Toggles the extra pin used for timing.
  *
  */
-void TimingPin_toggle(void)
-{
-    HAL_GPIO_TogglePin(LED_PORT, EXTRA_GPIO);
-}
+void TimingPin_toggle(void) { HAL_GPIO_TogglePin(LED_PORT, EXTRA_GPIO); }
 
 /*! Sets the extra pin used for timing to the given value.
  *
  * @param[in] value (uint8_t): what to set the LED to.
  */
-void TimingPin_set(uint8_t value)
-{
-    HAL_GPIO_WritePin(LED_PORT, EXTRA_GPIO, value);
-}
-
+void TimingPin_set(uint8_t value) { HAL_GPIO_WritePin(LED_PORT, EXTRA_GPIO, value); }
 
 // GPIO_PinState     HAL_GPIO_ReadPin(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin);
-// void              HAL_GPIO_WritePin(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin, GPIO_PinState PinState);
-// void              HAL_GPIO_TogglePin(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin);
+// void              HAL_GPIO_WritePin(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin, GPIO_PinState
+// PinState); void              HAL_GPIO_TogglePin(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin);

@@ -5,20 +5,19 @@
  * @date    28-April-2018
  * @brief   A rudamentary scheduler
  */
-#include <stdint.h>
-#include <stdbool.h>
 
-#include "common.h"
 #include "scheduler.h"
+#include "common.h"
+#include <stdbool.h>
+#include <stdint.h>
 
 // TODO remove - debug
 // #include "peripherals/UART/UART.h"
 
-
-ret_t scheduler_init(schedule_t * schedule)
+ret_t scheduler_init(schedule_t *schedule)
 {
     schedule->num_slots_used = 0;
-    for (uint8_t i=0; i < NUM_SLOTS; i++) {
+    for (uint8_t i = 0; i < NUM_SLOTS; i++) {
         schedule->callbacks[i] = NULL;
         schedule->callback_times_ms[i] = 0;
         schedule->callback_last_run_ms[i] = 0;
@@ -26,18 +25,15 @@ ret_t scheduler_init(schedule_t * schedule)
     return RET_OK;
 }
 
-
-ret_t scheduler_add(schedule_t * schedule,
-                    int32_t callback_time_ms,
-                    ret_t (*callback)(int32_t * callback_time_ms),
-                    uint8_t * schedule_id)
+ret_t scheduler_add(schedule_t *schedule, int32_t callback_time_ms,
+                    ret_t (*callback)(int32_t *callback_time_ms), uint8_t *schedule_id)
 {
     bool slot_found = false;
     if (schedule->num_slots_used >= NUM_SLOTS) {
         return RET_LEN_ERR;
     }
     // TODO: disable timer interrupt here
-    for (uint8_t i=0; i < NUM_SLOTS; i++) {
+    for (uint8_t i = 0; i < NUM_SLOTS; i++) {
         if (schedule->callbacks[i] == NULL) {
             schedule->callbacks[i] = callback;
             schedule->callback_times_ms[i] = callback_time_ms;
@@ -56,8 +52,7 @@ ret_t scheduler_add(schedule_t * schedule,
     }
 }
 
-
-ret_t scheduler_remove(schedule_t * schedule, uint8_t schedule_id_to_remove)
+ret_t scheduler_remove(schedule_t *schedule, uint8_t schedule_id_to_remove)
 {
     ret_t err = RET_OK;
 
@@ -75,18 +70,17 @@ ret_t scheduler_remove(schedule_t * schedule, uint8_t schedule_id_to_remove)
     return err;
 }
 
-
-int32_t scheduler_run(schedule_t * schedule, uint32_t current_time_ms)
+int32_t scheduler_run(schedule_t *schedule, uint32_t current_time_ms)
 {
     // uint8_t num_schedules_to_run = 0;
     // int16_t this_schedule[NUM_SLOTS];
     // TODO: smartly call the "most starved" callbacks first?
     int32_t new_callback_time = 0;
-    int32_t next_cb_time_ms = INT32_MAX;  // default value is max possible
+    int32_t next_cb_time_ms = INT32_MAX; // default value is max possible
     ret_t ret;
 
     // TODO: not sure if I need to disable timer interrupts here...
-    for (uint8_t i=0; i < NUM_SLOTS; i++) {
+    for (uint8_t i = 0; i < NUM_SLOTS; i++) {
         if (schedule->callbacks[i] != NULL) {
             // check if we need to run this guy
             // set it to the period, then subtract the amount of ms since last called

@@ -6,11 +6,10 @@
  * @brief   Simple circular buffer handler.
  *
  */
-#include <stdint.h>
 #include "queue.h"
+#include <stdint.h>
 
-
-void queue_init(volatile queue_t * queue_admin_ptr)
+void queue_init(volatile queue_t *queue_admin_ptr)
 {
     queue_admin_ptr->head_ind = 0;
     queue_admin_ptr->tail_ind = 0;
@@ -18,8 +17,7 @@ void queue_init(volatile queue_t * queue_admin_ptr)
     queue_admin_ptr->overwrite_count = 0;
 }
 
-
-void queue_increment_tail(volatile queue_t * queue_admin_ptr, const uint8_t queue_size)
+void queue_increment_tail(volatile queue_t *queue_admin_ptr, const uint8_t queue_size)
 {
     queue_admin_ptr->unread_items -= 1;
 
@@ -30,8 +28,7 @@ void queue_increment_tail(volatile queue_t * queue_admin_ptr, const uint8_t queu
     }
 }
 
-
-void queue_increment_head(volatile queue_t * queue_admin_ptr, const uint8_t queue_size)
+void queue_increment_head(volatile queue_t *queue_admin_ptr, const uint8_t queue_size)
 {
     if (queue_admin_ptr->head_ind < queue_size - 1) {
         queue_admin_ptr->head_ind += 1;
