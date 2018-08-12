@@ -1,7 +1,7 @@
 /*!
  * @file    hardware.h
  * @author  Tyler Holmes
- * @version 0.1.0
+ *
  * @date    20-May-2017
  * @brief   Hardware specific definitions and function calls.
  */
@@ -51,6 +51,36 @@
 #define BREV_PORT (GPIOB)
 #define BREV_0    (GPIO_PIN_4)
 #define BREV_1    (GPIO_PIN_5)
+
+//! ALL interrupt prioritizations! (in order)
+// 0 - systick must preempt other interrupts to keep acurate time
+#define SysTick_INT_PREEMPT_PRI   (0)
+#define SysTick_INT_SUB_PRI       (0)
+
+// 1 - USB stuff...
+#define USBTX_INT_PREMPT_PRI      (3)
+#define USBTX_INT_SUB_PRI         (0)
+#define USBRX_INT_PREMPT_PRI      (3)
+#define USBRX_INT_SUB_PRI         (1)
+
+// 2 - Communications...
+#define I2C_ER_INT_PREEMPT_PRI    (2)
+#define I2C_ER_INT_SUB_PRI        (0)
+#define I2C_EV_INT_PREEMPT_PRI    (2)
+#define I2C_EV_INT_SUB_PRI        (1)
+#define USART_INT_PREMPT_PRI      (2)
+#define USART_INT_SUB_PRI         (2)
+
+// 3 - External pin interrupts
+#define EXTI0_INT_PREEMPT_PRI     (3)
+#define EXTI0_INT_SUB_PRI         (0)
+#define EXTI1_INT_PREEMPT_PRI     (3)
+#define EXTI1_INT_SUB_PRI         (1)
+#define EXTI2_TSC_INT_PREEMPT_PRI (3)
+#define EXTI2_TSC_INT_SUB_PRI     (2)
+#define EXTI3_INT_PREEMPT_PRI     (3)
+#define EXTI3_INT_SUB_PRI         (4)
+
 
 // Public function definitions
 void SystemClock_Config(void);

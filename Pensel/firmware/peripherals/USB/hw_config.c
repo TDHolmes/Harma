@@ -12,6 +12,7 @@
 
 #include "peripherals/stm32f3/stm32f3xx_hal.h"
 #include "peripherals/stm32f3/stm32f3xx_hal_cortex.h"
+#include "peripherals/stm32f3/stm32f3xx_ll_utils.h"
 #include "peripherals/stm32f3-configuration/stm32f3xx_it.h"
 #include "peripherals/stm32-usb/usb_lib.h"
 
@@ -41,19 +42,9 @@ extern LINE_CODING linecoding;
 *******************************************************************************/
 void Get_SerialNum(void)
 {
-    uint32_t Device_Serial0, Device_Serial1, Device_Serial2;
-
-    // TODO: figure out where ID1/2/3 are defined?
-    Device_Serial0 = 0xdeadbeef;  // *(uint32_t*)ID1;
-    Device_Serial1 = 0xdeadbeef;  // *(uint32_t*)ID2;
-    Device_Serial2 = 0xdeadbeef;  // *(uint32_t*)ID3;
-
-    Device_Serial0 += Device_Serial2;
-
-    if (Device_Serial0 != 0) {
-        IntToUnicode(Device_Serial0, &harma_StringSerial[2] , 8);
-        IntToUnicode(Device_Serial1, &harma_StringSerial[18], 4);
-    }
+    IntToUnicode(LL_GetUID_Word0(), &pensel_StringSerial[2] , 8);
+    IntToUnicode(LL_GetUID_Word1(), &pensel_StringSerial[18], 8);
+    // IntToUnicode(LL_GetUID_Word2(), &pensel_StringSerial[18], 4);
 }
 
 /*******************************************************************************

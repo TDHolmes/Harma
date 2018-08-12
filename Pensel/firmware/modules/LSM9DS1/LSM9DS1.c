@@ -1,7 +1,7 @@
 /*!
  * @file    LSM9DS1.c
  * @author  Tyler Holmes
- * @version 0.1.0
+ *
  * @date    24-May-2018
  * @brief   Functions to interface with the accelerometer / magnetometer / gyroscope sensor LSM9DS1.
  *
@@ -10,8 +10,10 @@
 #include <stdbool.h>
 #include "common.h"
 
-#include "modules/utilities/queue.c"
+#include "modules/utilities/newqueue.h"
 #include "modules/utilities/scheduler.h"
+#include "modules/utilities/logging.h"
+
 #include "peripherals/hardware/hardware.h"
 #include "peripherals/I2C/I2C.h"
 #include "peripherals/stm32f3/stm32f3xx_hal.h"
@@ -126,22 +128,46 @@
 #define INT_THS_L         (0x32)
 #define INT_THS_H         (0x33)
 
+// Other important definitions
+#define NUM_ACCEL_PACKETS   (10)  //!< Number of accel packets we'll hold in our queue
+#define NUM_MAG_PACKETS     (10)  //!< Number of mag packets we'll hold in our queue
+#define NUM_GYRO_PACKETS    (10)  //!< Number of gyro packets we'll hold in our queue
+
 
 // --- important data / globals
-extern schedule_t main_schedule;  // TODO: don't like externs. Better way to do this?
-LSM9DS1_critical_errors_t CriticalErrors = {
-    .INT1_IRQs_missed = 0,
-    .INT2_IRQs_missed = 0,
-    .DRDY_IRQs_missed = 0,
-};
+extern schedule_t gMainSchedule;  // TODO: don't like externs. Better way to do this?
+
+typedef struct {
+    newqueue_t mag_queue;
+    newqueue_t gyro_queue;
+    newqueue_t accel_queue;
+    uint32_t mag_framenum;
+    uint32_t gyro_framenum;
+    uint32_t accel_framenum;
+    gyro_ODR_t gyro_ODR;
+    gyro_fullscale_t gyro_FS;
+    accel_ODR_t accel_ODR;
+    accel_fullscale_t accel_FS;
+    // mag_ODR_t mag_ODR;
+    // mag_fullscale_t mag_FS;
+    LSM9DS1_critical_errors_t errors;
+} LSM9DS1_admin_t;
+
+static LSM9DS1_admin_t gLSM9DS1Admin;
 
 // --- Private functions
 ret_t accelDataReadyHandler(int32_t *next_callback_ms);
 ret_t gyroDataReadyHandler(int32_t *next_callback_ms);
 ret_t magDataReadyHandler(int32_t *next_callback_ms);
 
+static void normalizeAccel(accel_raw_t * raw_pkt, accel_norm_t * norm_pkt_ptr);
+static void normalizeMag(mag_raw_t * raw_pkt, mag_norm_t * norm_pkt_ptr);
+
 void enableSensorInterrupts(void);
 void disableSensorInterrupts(void);
+
+
+#define CHECK_RET(__RETVAL__)  ( __RETVAL__ != RET_OK ? fatal_error_handler(__FILE__, __LINE__, __RETVAL__) : 0 )
 
 
 ret_t LSM9DS1_init(gyro_ODR_t gyro_ODR, gyro_fullscale_t gyro_FS,
@@ -151,30 +177,42 @@ ret_t LSM9DS1_init(gyro_ODR_t gyro_ODR, gyro_fullscale_t gyro_FS,
     ret_t ret = RET_OK;
     uint8_t tmp = 0;
 
+    // Initialize the admin struct
+    newqueue_init(&gLSM9DS1Admin.mag_queue, NUM_MAG_PACKETS, sizeof(mag_norm_t));
+    newqueue_init(&gLSM9DS1Admin.gyro_queue, NUM_GYRO_PACKETS, sizeof(gyro_norm_t));
+    newqueue_init(&gLSM9DS1Admin.accel_queue, NUM_ACCEL_PACKETS, sizeof(accel_norm_t));
+
+    gLSM9DS1Admin.errors.INT1_IRQs_missed = 0;
+    gLSM9DS1Admin.errors.INT2_IRQs_missed = 0;
+    gLSM9DS1Admin.errors.DRDY_IRQs_missed = 0;
+    gLSM9DS1Admin.mag_framenum = 0;
+    gLSM9DS1Admin.gyro_framenum = 0;
+    gLSM9DS1Admin.accel_framenum = 0;
+
     disableSensorInterrupts();
 
     // --- Make sure we can communicate with the chip
     // Check accel/gyro first
     ret = I2C_readData(ACCEL_GYRO_ADDRESS, WHO_AM_I, &tmp, 1);
-    if (ret != RET_OK) { return ret; }
+    CHECK_RET(ret);  // if (ret != RET_OK) { return ret; }
     if (tmp != WHO_AM_I_EXPECTED) {
         return RET_COM_ERR;
     }
 
     // Check mag too
     ret = I2C_readData(MAG_ADDRESS, WHO_AM_I_M, &tmp, 1);
-    if (ret != RET_OK) { return ret; }
+    CHECK_RET(ret);  // if (ret != RET_OK) { return ret; }
     if (tmp != WHO_AM_I_M_EXPECTED) {
         return RET_COM_ERR;
     }
 
     // Reboot
     ret = I2C_writeByte(ACCEL_GYRO_ADDRESS, CTRL_REG8, 0x01, true);
-    if (ret != RET_OK) { return ret; }
+    CHECK_RET(ret);  // if (ret != RET_OK) { return ret; }
 
     while (1) {
         ret = I2C_readData(ACCEL_GYRO_ADDRESS, STATUS_REG_XL, &tmp, 1);
-        if (ret != RET_OK) { return ret; }
+        CHECK_RET(ret);  // if (ret != RET_OK) { return ret; }
         if ((tmp & !STATUS_BOOT_NOT_FINISHED_MASK) == 0) {
             // We've booted!
             break;
@@ -182,30 +220,35 @@ ret_t LSM9DS1_init(gyro_ODR_t gyro_ODR, gyro_fullscale_t gyro_FS,
     }
 
     // --- Configure the device properly now
-    // Setup interrupts
-    ret = I2C_writeByte(ACCEL_GYRO_ADDRESS, INT1_CTRL, INT1_DRDY_G, true);
-    if (ret != RET_OK) { return ret; }
-    ret = I2C_writeByte(ACCEL_GYRO_ADDRESS, INT2_CTRL, INT2_DRDY_XL, true);
-    if (ret != RET_OK) { return ret; }
 
     // TODO: look into HPF enable - CTRL_REG2_G / CTRL_REG3_G
     // TODO: add bandwidth selection for anti-alias?
-    ret = I2C_writeByte(ACCEL_GYRO_ADDRESS, CTRL_REG6_XL,
-        (accel_ODR << ACCEL_ODR_SHIFT) | (accel_FS << ACCEL_FS_SHIFT), true);
+    ret = LSM9DS1_setAccel_ODR_FS(accel_ODR, accel_FS);
+    CHECK_RET(ret);  // if (ret != RET_OK) { return ret; }
 
     // Configure gyro ODR / FS
     // TODO: bandwidth selection?
-    ret = I2C_writeByte(ACCEL_GYRO_ADDRESS, CTRL_REG1_G,
-        (gyro_ODR << GYRO_ODR_SHIFT) | (gyro_FS << GYRO_FS_SHIFT), true);
-    if (ret != RET_OK) { return ret; }
+    ret = LSM9DS1_setGyro_ODR_FS(gyro_ODR, gyro_FS);
+    CHECK_RET(ret);  // if (ret != RET_OK) { return ret; }
 
     // Enable accel output
     ret = I2C_writeByte(ACCEL_GYRO_ADDRESS, CTRL_REG5_XL, 0b00111000, true);
-    if (ret != RET_OK) { return ret; }
+    CHECK_RET(ret);  // if (ret != RET_OK) { return ret; }
 
     // TODO: setup mag
     // ret = I2C_writeByte(MAG_ADDRESS, CTRL_REG3_M, 0b00000011, true);
     enableSensorInterrupts();
+
+    // Setup interrupts
+    ret = I2C_writeByte(ACCEL_GYRO_ADDRESS, INT1_CTRL, INT1_DRDY_G, true);
+    CHECK_RET(ret);  // if (ret != RET_OK) { return ret; }
+    ret = I2C_writeByte(ACCEL_GYRO_ADDRESS, INT2_CTRL, INT2_DRDY_XL, true);
+    CHECK_RET(ret);  // if (ret != RET_OK) { return ret; }
+
+    int32_t i;
+    accelDataReadyHandler(&i);
+    gyroDataReadyHandler(&i);
+
     return ret;
 }
 
@@ -226,6 +269,35 @@ void disableSensorInterrupts(void)
 }
 
 
+ret_t LSM9DS1_setAccel_ODR_FS(accel_ODR_t accel_ODR, accel_fullscale_t accel_FS)
+{
+    ret_t ret;
+    ret = I2C_writeByte(ACCEL_GYRO_ADDRESS, CTRL_REG6_XL,
+        (accel_ODR << ACCEL_ODR_SHIFT) | (accel_FS << ACCEL_FS_SHIFT), true);
+    if (ret == RET_OK) {
+        gLSM9DS1Admin.accel_ODR = accel_ODR;
+        gLSM9DS1Admin.accel_FS = accel_FS;
+    }
+    return ret;
+}
+
+
+ret_t LSM9DS1_setGyro_ODR_FS(gyro_ODR_t gyro_ODR, gyro_fullscale_t gyro_FS)
+{
+    ret_t ret;
+
+    ret = I2C_writeByte(ACCEL_GYRO_ADDRESS, CTRL_REG1_G,
+        (gyro_ODR << GYRO_ODR_SHIFT) | (gyro_FS << GYRO_FS_SHIFT), true);
+    if (ret == RET_OK) {
+        gLSM9DS1Admin.gyro_ODR = gyro_ODR;
+        gLSM9DS1Admin.gyro_FS = gyro_FS;
+    }
+
+    return ret;
+}
+
+
+
 ret_t LSM9DS1_readStatus(uint8_t * status_byte_ptr)
 {
     return I2C_readData(ACCEL_GYRO_ADDRESS, STATUS_REG_XL, status_byte_ptr, 1);
@@ -238,18 +310,30 @@ ret_t accelDataReadyHandler(int32_t *next_callback_ms)
 {
     ret_t ret = RET_OK;
     int16_t data[3];
+    accel_raw_t rawPkt;
+    accel_norm_t normPkt;
+
+    LOG_MSG(kLogLevelDebug, "DRH - Accel");
 
     // We don't need to be called again until next ISR event
     *next_callback_ms = SCHEDULER_FINISHED;
 
     // Read out the new data
-    UART_sendString("a");
     ret = I2C_readData(ACCEL_GYRO_ADDRESS, OUT_X_LOW_XL, (uint8_t *)data, 6);
-    if (ret != RET_OK) { return ret; }
+    CHECK_RET(ret);  // if (ret != RET_OK) { return ret; }
 
-    // Queue it up
+    // Build up a packet
+    rawPkt.header.timestamp = HAL_GetTick();
+    rawPkt.header.frame_num = gLSM9DS1Admin.accel_framenum;
+    gLSM9DS1Admin.accel_framenum += 1;
+    rawPkt.x = data[0];
+    rawPkt.y = data[1];
+    rawPkt.z = data[2];
 
-    // Check status register
+    // Normalize and queue it up
+    normalizeAccel(&rawPkt, &normPkt);
+    newqueue_push(&gLSM9DS1Admin.accel_queue, &normPkt, 1);
+
     return ret;
 }
 
@@ -261,13 +345,15 @@ ret_t gyroDataReadyHandler(int32_t *next_callback_ms)
     ret_t ret = RET_OK;
     int16_t data[3];
 
+    LOG_MSG(kLogLevelDebug, "DRH - Gyro");
+
     // We don't need to be called again until next ISR event
     *next_callback_ms = SCHEDULER_FINISHED;
 
     // Read out the new data
-    UART_sendString("g");
+    // UART_sendString("g");
     ret = I2C_readData(ACCEL_GYRO_ADDRESS, OUT_X_LOW_G, (uint8_t *)data, 6);
-    if (ret != RET_OK) { return ret; }
+    CHECK_RET(ret);  // if (ret != RET_OK) { return ret; }
 
     // Queue it up
 
@@ -284,19 +370,64 @@ ret_t magDataReadyHandler(int32_t *next_callback_ms)
 {
     ret_t ret = RET_OK;
     int16_t data[3];
+    mag_raw_t rawPkt;
+    mag_norm_t normPkt;
+
+    LOG_MSG(kLogLevelDebug, "DRH - Mag");
 
     // We don't need to be called again until next ISR event
     *next_callback_ms = SCHEDULER_FINISHED;
 
-    UART_sendString("m");
     // Read out the new data
     ret = I2C_readData(MAG_ADDRESS, OUT_X_L_M, (uint8_t *)data, 6);
-    if (ret != RET_OK) { return ret; }
+    CHECK_RET(ret);  // if (ret != RET_OK) { return ret; }
 
-    // Queue it up
+    // Build up a packet
+    rawPkt.header.timestamp = HAL_GetTick();
+    rawPkt.header.frame_num = gLSM9DS1Admin.mag_framenum;
+    gLSM9DS1Admin.mag_framenum += 1;
+    rawPkt.x = data[0];
+    rawPkt.y = data[1];
+    rawPkt.z = data[2];
 
-    // Check status register
+    // Normalize and queue it up
+    normalizeMag(&rawPkt, &normPkt);
+    newqueue_push(&gLSM9DS1Admin.mag_queue, &normPkt, 1);
     return ret;
+}
+
+
+// -- Higher level data manipulation Functions
+
+/*! Function for normalizing raw packets into packets normalized to 1g
+ */
+static void normalizeAccel(accel_raw_t * raw_pkt, accel_norm_t * norm_pkt_ptr)
+{
+    norm_pkt_ptr->header.frame_num = raw_pkt->header.frame_num;
+    norm_pkt_ptr->header.timestamp = raw_pkt->header.timestamp;
+    norm_pkt_ptr->x = (float)raw_pkt->x;
+    norm_pkt_ptr->y = (float)raw_pkt->y;
+    norm_pkt_ptr->z = (float)raw_pkt->z;
+
+    // TODO: Normalize the gain
+    // norm_pkt_ptr->x *= AccelGainOffsets[LSM303DLHC.accel_sensitivity];
+    // norm_pkt_ptr->y *= AccelGainOffsets[LSM303DLHC.accel_sensitivity];
+    // norm_pkt_ptr->z *= AccelGainOffsets[LSM303DLHC.accel_sensitivity];
+}
+
+
+static void normalizeMag(mag_raw_t * raw_pkt, mag_norm_t * norm_pkt_ptr)
+{
+    norm_pkt_ptr->header.frame_num = raw_pkt->header.frame_num;
+    norm_pkt_ptr->header.timestamp = raw_pkt->header.timestamp;
+    norm_pkt_ptr->x = (float)raw_pkt->x;
+    norm_pkt_ptr->y = (float)raw_pkt->y;
+    norm_pkt_ptr->z = (float)raw_pkt->z;
+
+    // TODO: Normalize the gain
+    // norm_pkt_ptr->x *= MagGainOffsets_XY[LSM303DLHC.mag_sensitivity - 1];
+    // norm_pkt_ptr->y *= MagGainOffsets_XY[LSM303DLHC.mag_sensitivity - 1];
+    // norm_pkt_ptr->z *= MagGainOffsets_Z[LSM303DLHC.mag_sensitivity - 1];
 }
 
 
@@ -307,10 +438,10 @@ void LSM9DS1_AGINT1_ISR(void)
     // queue up gyro DRDY handler for main to run
     ret_t ret = RET_OK;
     uint8_t sched_id;  // we don't need to know the schedule ID...
-    ret = scheduler_add(&main_schedule, 0, gyroDataReadyHandler, &sched_id);
+    ret = scheduler_add(&gMainSchedule, 0, gyroDataReadyHandler, &sched_id);
     if (ret != RET_OK) {
         // Critical error! we will miss INT1 ISR
-        CriticalErrors.INT1_IRQs_missed += 1;
+        gLSM9DS1Admin.errors.INT1_IRQs_missed += 1;
     }
 
     // TODO: do a quick read of status here if timing critical? or leave in the DRDY non-ISR context handlers?
@@ -322,10 +453,10 @@ void LSM9DS1_AGINT2_ISR(void)
     // queue up accel DRDY handler for main to run
     ret_t ret = RET_OK;
     uint8_t sched_id;  // we don't need to know the schedule ID...
-    ret = scheduler_add(&main_schedule, 0, accelDataReadyHandler, &sched_id);
+    ret = scheduler_add(&gMainSchedule, 0, accelDataReadyHandler, &sched_id);
     if (ret != RET_OK) {
         // Critical error! we will miss INT1 ISR
-        CriticalErrors.INT2_IRQs_missed += 1;
+        gLSM9DS1Admin.errors.INT2_IRQs_missed += 1;
     }
 }
 
@@ -335,9 +466,31 @@ void LSM9DS1_MDRDY_ISR(void)
     // queue up Mag DRDY handler for main to run
     ret_t ret = RET_OK;
     uint8_t sched_id;  // we don't need to know the schedule ID..
-    ret = scheduler_add(&main_schedule, 0, magDataReadyHandler, &sched_id);
+    ret = scheduler_add(&gMainSchedule, 0, magDataReadyHandler, &sched_id);
     if (ret != RET_OK) {
         // Critical error! we will miss INT1 ISR
-        CriticalErrors.DRDY_IRQs_missed += 1;
+        gLSM9DS1Admin.errors.DRDY_IRQs_missed += 1;
     }
+}
+
+
+// --- Accessor methods
+
+
+
+ret_t LSM9DS1_getAccelPacket(accel_norm_t * pkt_destination_ptr)
+{
+    return newqueue_pop(&gLSM9DS1Admin.accel_queue, pkt_destination_ptr, 1, eNoPeak);
+}
+
+
+ret_t LSM9DS1_getGyroPacket(gyro_norm_t * pkt_destination_ptr)
+{
+    return newqueue_pop(&gLSM9DS1Admin.gyro_queue, pkt_destination_ptr, 1, eNoPeak);
+}
+
+
+ret_t LSM9DS1_getMagPacket(mag_norm_t * pkt_destination_ptr)
+{
+    return newqueue_pop(&gLSM9DS1Admin.mag_queue, pkt_destination_ptr, 1, eNoPeak);
 }

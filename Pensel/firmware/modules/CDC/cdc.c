@@ -11,8 +11,8 @@
 
 
 /* Interval between sending IN packets in frame number (1 frame = 1ms) */
-#define CDC_SERIAL_IN_FRAME_INTERVAL  (5)
-#define RX_BUFF_SIZE (64)
+#define CDC_SERIAL_IN_FRAME_INTERVAL  (1)
+#define RX_BUFF_SIZE                  (0x40)
 
 
 typedef struct {
@@ -52,7 +52,7 @@ bool cdc_inTransferBusy(void)
 ret_t cdc_inTransfer_start(uint8_t *ptrBuffer, uint8_t sendLength)
 {
     // Check bounds
-    if(sendLength > HARMA_DATA_SIZE) {
+    if(sendLength > PENSEL_DATA_SIZE) {
         return RET_MAX_LEN_ERR;
     }
 

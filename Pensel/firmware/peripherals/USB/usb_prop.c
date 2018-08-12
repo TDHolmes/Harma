@@ -9,15 +9,25 @@
   *****************************************************************************/
 
 #include "peripherals/stm32-usb/usb_lib.h"
+#include "peripherals/stm32-usb/usb_def.h"
 #include "usb_conf.h"
 #include "usb_prop.h"
 #include "usb_desc.h"
 #include "usb_pwr.h"
 #include "hw_config.h"
 
-#include "peripherals/UART/UART.h"
+#include "modules/HID/hid.h"
+#include "modules/utilities/logging.h"
 
-uint8_t Request = 0;
+
+#define MAX_REPORT_LEN        (64)
+#define REPORT_DESCRIPTOR     (0x22)
+
+
+uint8_t Request = 0;     // TODO: figure out function
+uint32_t ProtocolValue;  // TODO: figure out function
+
+static uint8_t report_buffer[MAX_REPORT_LEN];
 
 LINE_CODING linecoding = {
     115200, /* baud rate*/
@@ -25,6 +35,7 @@ LINE_CODING linecoding = {
     0x00,   /* parity - none*/
     0x08    /* no. of bits 8*/
 };
+
 
 /* -------------------------------------------------------------------------- */
 /*  Structures initializations */
@@ -66,20 +77,34 @@ USER_STANDARD_REQUESTS User_Standard_Requests = {
 
 
 ONE_DESCRIPTOR Device_Descriptor = {
-    (uint8_t *)harma_DeviceDescriptor,
-    HARMA_SIZ_DEVICE_DESC
+    (uint8_t *)pensel_DeviceDescriptor,
+    PENSEL_SIZ_DEVICE_DESC
 };
 
 ONE_DESCRIPTOR Config_Descriptor = {
-    (uint8_t *)harma_ConfigDescriptor,
-    HARMA_SIZ_CONFIG_DESC
+    (uint8_t *)pensel_ConfigDescriptor,
+    PENSEL_SIZ_CONFIG_DESC
 };
 
+// HID specific ones
+
+ONE_DESCRIPTOR HID_ReportDescriptor =
+  {
+    (uint8_t *)penselHID_ReportDescriptor,
+    PENSEL_HID_SIZ_REPORT_DESC
+  };
+
+ONE_DESCRIPTOR penselHID_HIDDescriptor =
+  {
+    (uint8_t*)(pensel_ConfigDescriptor + PENSEL_CONFIG_DESC_HID_OFFSET),
+    PENSEL_CONFIG_DESC_HID_SIZE
+  };
+
 ONE_DESCRIPTOR String_Descriptor[4] = {
-    {(uint8_t *)harma_StringLangID, HARMA_SIZ_STRING_LANGID},
-    {(uint8_t *)harma_StringVendor, HARMA_SIZ_STRING_VENDOR},
-    {(uint8_t *)harma_StringProduct, HARMA_SIZ_STRING_PRODUCT},
-    {(uint8_t *)harma_StringSerial, HARMA_SIZ_STRING_SERIAL}
+    {(uint8_t *)pensel_StringLangID, PENSEL_SIZ_STRING_LANGID},
+    {(uint8_t *)pensel_StringVendor, PENSEL_SIZ_STRING_VENDOR},
+    {(uint8_t *)pensel_StringProduct, PENSEL_SIZ_STRING_PRODUCT},
+    {(uint8_t *)pensel_StringSerial, PENSEL_SIZ_STRING_SERIAL}
 };
 
 
@@ -92,7 +117,7 @@ ONE_DESCRIPTOR String_Descriptor[4] = {
 *******************************************************************************/
 void penselUSB_init(void)
 {
-    UART_sendString("VCP init\r\n");
+    LOG_MSG(kLogLevelDebug, "USB: init");
     /* Update the serial number string descriptor with the data from the uniqueID */
     Get_SerialNum();
 
@@ -116,12 +141,13 @@ void penselUSB_init(void)
 *******************************************************************************/
 void penselUSB_reset(void)
 {
-    UART_sendString("VCP reset\r\n");
+    LOG_MSG(kLogLevelDebug, "USB: reset");
     /* Set penselUSB DEVICE as not configured */
     pInformation->Current_Configuration = 0;
 
     /* Current Feature initialization */
-    pInformation->Current_Feature = harma_ConfigDescriptor[7];
+    // TODO: magic number
+    pInformation->Current_Feature = pensel_ConfigDescriptor[7];
 
     /* Set penselUSB DEVICE with the default Interface*/
     pInformation->Current_Interface = 0;
@@ -152,9 +178,16 @@ void penselUSB_reset(void)
     /* Initialize Endpoint 3 */
     SetEPType(ENDP3, EP_BULK);
     SetEPRxAddr(ENDP3, ENDP3_RXADDR);
-    SetEPRxCount(ENDP3, HARMA_DATA_SIZE);
+    SetEPRxCount(ENDP3, PENSEL_DATA_SIZE);
     SetEPRxStatus(ENDP3, EP_RX_VALID);
     SetEPTxStatus(ENDP3, EP_TX_DIS);
+
+    /* Initialize Endpoint 4 */
+    // SetEPType(ENDP4, EP_INTERRUPT);
+    // SetEPRxAddr(ENDP4, ENDP4_RXADDR);
+    // SetEPRxCount(ENDP4, PENSEL_DATA_SIZE);
+    // SetEPRxStatus(ENDP4, EP_RX_VALID);
+    // SetEPTxStatus(ENDP4, EP_TX_DIS);
 
     /* Set this device to response on default address */
     SetDeviceAddress(0);
@@ -171,7 +204,7 @@ void penselUSB_reset(void)
 *******************************************************************************/
 void penselUSB_SetConfiguration(void)
 {
-    UART_sendString("VCP set conf\r\n");
+    LOG_MSG(kLogLevelDebug, "USB: set conn");
     DEVICE_INFO *pInfo = &Device_Info;
 
     if (pInfo->Current_Configuration != 0) {
@@ -189,7 +222,7 @@ void penselUSB_SetConfiguration(void)
 *******************************************************************************/
 void penselUSB_SetDeviceAddress(void)
 {
-    UART_sendString("VCP set addr\r\n");
+    LOG_MSG(kLogLevelDebug, "USB: set addn");
     bDeviceState = ADDRESSED;
 }
 
@@ -202,21 +235,86 @@ void penselUSB_SetDeviceAddress(void)
 *******************************************************************************/
 void penselUSB_statusIn(void)
 {
+    ret_t ret;
     if (Request == SET_LINE_CODING) {
+        LOG_MSG(kLogLevelDebug, "Status IN - SET_LINE_CODING");
         Request = 0;
+    } else if (Request == GET_REPORT) {
+        LOG_MSG(kLogLevelDebug, "Status IN - GET_REPORT");
+        Request = 0;
+    } else if (Request == SET_REPORT) {
+        LOG_MSG(kLogLevelDebug, "Status IN - SET_REPORT");
+        Request = 0;
+
+        uint16_t payload_len = pInformation->USBwLengths.w;
+        uint8_t report_id = pInformation->USBwValues.bw.bb0;
+
+        ret = hid_setReport(report_id, report_buffer, payload_len);
+        LOG_MSG_FMT(kLogLevelInfo, "Set Report: 0x%02X (len: %i) - Retval: %i", report_id, payload_len, ret);
+
+        #define TMP_ARR_MSG_LEN  (256)
+        char TmpArrMsg[TMP_ARR_MSG_LEN];
+        int num_bytes = 0;
+        int num_chars = sprintf(TmpArrMsg, "Payload: ");
+        while (1) {
+            num_chars += sprintf(TmpArrMsg + num_chars, "%02X ", report_buffer[num_bytes]);
+            if (num_chars >= TMP_ARR_MSG_LEN) {
+                TmpArrMsg[TMP_ARR_MSG_LEN - 1] = 0;
+                break;
+            }
+            num_bytes += 1;
+            if (num_bytes >= payload_len) {
+                break;
+            }
+        }
+        LOG_MSG(kLogLevelDebug, TmpArrMsg);
     }
 }
 
 /*******************************************************************************
 * Function Name  : penselUSB_statusOut
-* Description    : Virtual COM Port Status OUT Routine.
+* Description    : Status OUT Routine.
 * Input          : None.
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
 void penselUSB_statusOut(void)
 {
-    // TODO: add something here..?
+    // TODO: what does this do?
+    LOG_MSG(kLogLevelDebug, "Status OUT");
+}
+
+
+uint8_t * penselHID_setReport(uint16_t Length)
+{
+    if (Length == 0) {
+        pInformation->Ctrl_Info.Usb_wLength = pInformation->USBwLengths.w;
+        return NULL;
+    }
+
+    if (Length > MAX_REPORT_LEN) {
+        // TODO: error?
+        return NULL;
+    }
+    return report_buffer;
+}
+
+
+uint8_t * penselHID_getReport(uint16_t Length) {
+    uint8_t report_id = pInformation->USBwValues.bw.bb0;
+    report_buffer[0] = report_id;
+    uint8_t * payload = report_buffer + 1;
+    uint8_t payload_len = 0;
+    ret_t ret;
+
+    if (Length > MAX_REPORT_LEN) {
+        // TODO: error?
+        return NULL;
+    }
+
+    ret = hid_getReport(report_id, payload, &payload_len);
+    pInformation->Ctrl_Info.Usb_wLength = payload_len + 1;
+    return report_buffer;
 }
 
 /*******************************************************************************
@@ -233,6 +331,7 @@ RESULT penselUSB_dataSetup(uint8_t RequestNo)
 
     CopyRoutine = NULL;
 
+    // CDC-specific requests
     if (RequestNo == GET_LINE_CODING) {
         if (Type_Recipient == (CLASS_REQUEST | INTERFACE_RECIPIENT)) {
             CopyRoutine = penselUSB_getLineCoding;
@@ -244,12 +343,47 @@ RESULT penselUSB_dataSetup(uint8_t RequestNo)
         Request = SET_LINE_CODING;
     }
 
+    // HID-specific requests
+    if ((RequestNo == GET_DESCRIPTOR) && (Type_Recipient == (STANDARD_REQUEST | INTERFACE_RECIPIENT)) ) {
+        if (pInformation->USBwValue1 == REPORT_DESCRIPTOR) {
+            CopyRoutine = penselHID_GetReportDescriptor;
+        } else if (pInformation->USBwValue1 == HID_DESCRIPTOR_TYPE) {
+            CopyRoutine = penselHID_GetHIDDescriptor;
+        }
+
+    } /* End of GET_DESCRIPTOR */
+
+    /*** GET_PROTOCOL, GET_REPORT, SET_REPORT ***/
+    else if ( (Type_Recipient == (CLASS_REQUEST | INTERFACE_RECIPIENT)) ) {
+        switch( RequestNo ) {
+            case GET_PROTOCOL:
+                CopyRoutine = penselHID_GetProtocolValue;
+                break;
+
+            case SET_REPORT:
+                CopyRoutine = penselHID_setReport;
+                Request = SET_REPORT;
+                break;
+
+            case GET_REPORT:
+
+                CopyRoutine = penselHID_getReport;
+                Request = GET_REPORT;
+                break;
+
+            default:
+                // TODO: error detection?
+                break;
+        }
+    }
+
     if (CopyRoutine == NULL) {
         return USB_UNSUPPORT;
     }
 
     pInformation->Ctrl_Info.CopyData = CopyRoutine;
     pInformation->Ctrl_Info.Usb_wOffset = 0;
+    LOG_MSG(kLogLevelDebug, "Copy Routine call here. Zero len");
     (*CopyRoutine)(0);
     return USB_SUCCESS;
 }
@@ -264,15 +398,53 @@ RESULT penselUSB_dataSetup(uint8_t RequestNo)
 RESULT penselUSB_noDataSetup(uint8_t RequestNo)
 {
     if (Type_Recipient == (CLASS_REQUEST | INTERFACE_RECIPIENT)) {
-        // TODO: CDC specific? move?
+        // CDC specific stuff
         if (RequestNo == SET_COMM_FEATURE) {
             return USB_SUCCESS;
         } else if (RequestNo == SET_CONTROL_LINE_STATE) {
             return USB_SUCCESS;
+
+        // HID specific stuff
+        } else if (RequestNo == SET_PROTOCOL) {
+            return CustomHID_SetProtocol();
         }
     }
 
     return USB_UNSUPPORT;
+}
+
+/*******************************************************************************
+* Function Name  : CustomHID_SetProtocol
+* Description    : Joystick Set Protocol request routine.
+* Input          : None.
+* Output         : None.
+* Return         : USB SUCCESS.
+*******************************************************************************/
+RESULT CustomHID_SetProtocol(void)
+{
+    uint8_t wValue0 = pInformation->USBwValue0;
+    ProtocolValue = wValue0;
+    return USB_SUCCESS;
+}
+
+/*******************************************************************************
+* Function Name  : CustomHID_GetProtocolValue
+* Description    : get the protocol value
+* Input          : Length.
+* Output         : None.
+* Return         : address of the protocol value.
+*******************************************************************************/
+uint8_t *penselHID_GetProtocolValue(uint16_t Length)
+{
+  if (Length == 0)
+  {
+    pInformation->Ctrl_Info.Usb_wLength = 1;
+    return NULL;
+  }
+  else
+  {
+    return (uint8_t *)(&ProtocolValue);
+  }
 }
 
 /*******************************************************************************
@@ -297,6 +469,23 @@ uint8_t *penselUSB_getDeviceDescriptor(uint16_t Length)
 uint8_t *penselUSB_getConfigDescriptor(uint16_t Length)
 {
     return Standard_GetDescriptorData(Length, &Config_Descriptor);
+}
+
+/*******************************************************************************
+* Function Name  : penselHID_GetReportDescriptor.
+* Description    : Gets the HID report descriptor.
+* Input          : Length
+* Output         : None.
+* Return         : The address of the configuration descriptor.
+*******************************************************************************/
+uint8_t *penselHID_GetReportDescriptor(uint16_t Length)
+{
+    return Standard_GetDescriptorData(Length, &HID_ReportDescriptor);
+}
+
+uint8_t *penselHID_GetHIDDescriptor(uint16_t Length)
+{
+    return Standard_GetDescriptorData(Length, &penselHID_HIDDescriptor);
 }
 
 /*******************************************************************************

@@ -51,25 +51,31 @@
 #define USB_INTERFACE_DESC_TYPE       (0x04)
 #define USB_ENDPOINT_DESC_TYPE        (0x05)
 
-#define HARMA_DATA_SIZE               (64)
-#define HARMA_INT_SIZE                (8)
+#define PENSEL_DATA_SIZE               (64)
+#define PENSEL_INT_SIZE                (8)
 
-#define HARMA_SIZ_DEVICE_DESC         (18)
-#define HARMA_SIZ_CONFIG_DESC         (107)
-#define HARMA_SIZ_STRING_LANGID       (4)
-#define HARMA_SIZ_STRING_VENDOR       (38)
-#define HARMA_SIZ_STRING_PRODUCT      (46)
-#define HARMA_SIZ_STRING_SERIAL       (26)
+#define PENSEL_SIZ_DEVICE_DESC         (18)
+#define PENSEL_SIZ_CONFIG_DESC         (115)
+#define PENSEL_CONFIG_DESC_HID_OFFSET  (83)
+#define PENSEL_CONFIG_DESC_HID_SIZE    (PENSEL_SIZ_CONFIG_DESC - PENSEL_CONFIG_DESC_HID_OFFSET)
+#define PENSEL_SIZ_STRING_LANGID       (4)
+#define PENSEL_SIZ_STRING_VENDOR       (38)
+#define PENSEL_SIZ_STRING_PRODUCT      (14)
+#define PENSEL_SIZ_STRING_SERIAL       (2 + 32)  // 2 Descriptor bytes + String size
 
+#define HID_DESCRIPTOR_TYPE           (0x21)
+#define PENSEL_HID_SIZ_REPORT_DESC    (143)
 #define STANDARD_ENDPOINT_DESC_SIZE   (0x09)
 
 /* Exported functions ------------------------------------------------------- */
-extern const uint8_t harma_DeviceDescriptor[HARMA_SIZ_DEVICE_DESC];
-extern const uint8_t harma_ConfigDescriptor[HARMA_SIZ_CONFIG_DESC];
+extern const uint8_t pensel_DeviceDescriptor[PENSEL_SIZ_DEVICE_DESC];
+extern const uint8_t pensel_ConfigDescriptor[PENSEL_SIZ_CONFIG_DESC];
 
-extern const uint8_t harma_StringLangID[HARMA_SIZ_STRING_LANGID];
-extern const uint8_t harma_StringVendor[HARMA_SIZ_STRING_VENDOR];
-extern const uint8_t harma_StringProduct[HARMA_SIZ_STRING_PRODUCT];
-extern uint8_t harma_StringSerial[HARMA_SIZ_STRING_SERIAL];
+extern const uint8_t penselHID_ReportDescriptor[PENSEL_HID_SIZ_REPORT_DESC];
+
+extern const uint8_t pensel_StringLangID[PENSEL_SIZ_STRING_LANGID];
+extern const uint8_t pensel_StringVendor[PENSEL_SIZ_STRING_VENDOR];
+extern const uint8_t pensel_StringProduct[PENSEL_SIZ_STRING_PRODUCT];
+extern uint8_t pensel_StringSerial[PENSEL_SIZ_STRING_SERIAL];
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

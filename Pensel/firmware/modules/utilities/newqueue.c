@@ -1,7 +1,7 @@
 /*!
  * @file    newqueue.c
  * @author  Tyler Holmes
- * @version 0.1.0
+ *
  * @date    20-May-2017
  * @brief   General purpose circular buffer handler that uses malloc.
  *

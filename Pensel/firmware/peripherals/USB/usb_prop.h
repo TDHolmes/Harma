@@ -44,13 +44,22 @@
 
 /* Includes ------------------------------------------------------------------*/
 /* Exported types ------------------------------------------------------------*/
-typedef struct
-{
-  uint32_t bitrate;
-  uint8_t format;
-  uint8_t paritytype;
-  uint8_t datatype;
-}LINE_CODING;
+typedef struct {
+    uint32_t bitrate;
+    uint8_t format;
+    uint8_t paritytype;
+    uint8_t datatype;
+} LINE_CODING;
+
+typedef enum {
+    GET_REPORT = 1,
+    GET_IDLE,
+    GET_PROTOCOL,
+
+    SET_REPORT = 9,
+    SET_IDLE,
+    SET_PROTOCOL
+} HID_REQUESTS;
 
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
@@ -86,10 +95,18 @@ void penselUSB_statusOut (void);
 RESULT penselUSB_dataSetup(uint8_t);
 RESULT penselUSB_noDataSetup(uint8_t);
 RESULT penselUSB_getInterfaceSetting(uint8_t Interface, uint8_t AlternateSetting);
-uint8_t *penselUSB_getDeviceDescriptor(uint16_t );
-uint8_t *penselUSB_getConfigDescriptor(uint16_t);
-uint8_t *penselUSB_getStringDescriptor(uint16_t);
+uint8_t *penselUSB_getDeviceDescriptor(uint16_t x);
+uint8_t *penselUSB_getConfigDescriptor(uint16_t z);
+uint8_t *penselUSB_getStringDescriptor(uint16_t x);
 
+// HID stuff
+uint8_t *penselHID_GetReportDescriptor(uint16_t Length);
+uint8_t *penselHID_GetHIDDescriptor(uint16_t Length);
+uint8_t *penselHID_GetProtocolValue(uint16_t Length);
+RESULT CustomHID_SetProtocol(void);
+uint8_t penselHID_setReportExecute(uint8_t report_id, uint8_t * payload_ptr, uint16_t payload_len);
+
+// CDC stuff
 uint8_t *penselUSB_getLineCoding(uint16_t Length);
 uint8_t *penselUSB_SetLineCoding(uint16_t Length);
 

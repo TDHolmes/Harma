@@ -58,19 +58,30 @@
 /* --------------   Buffer Description Table  -----------------*/
 /*-------------------------------------------------------------*/
 /* buffer table base address */
-/* buffer table base address */
 #define BTABLE_ADDRESS      (0x00)
+#define USB_SRAM_SIZE       (0x400)
 
 /* EP0  */
 /* rx/tx buffer base address */
-#define ENDP0_RXADDR        (0x40)
-#define ENDP0_TXADDR        (0x80)
+#define ENDP0_RXADDR        (0x40)   // TODO: why is this 0x40 and not 0? It breaks HID devices if it's 0
+#define ENDP0_RXSIZE        (0x40)
+#define ENDP0_TXADDR        (ENDP0_RXADDR + ENDP0_RXSIZE)
+#define ENDP0_TXSIZE        (0x40)
 
 /* EP1  */
 /* tx buffer base address */
-#define ENDP1_TXADDR        (0xC0)
-#define ENDP2_TXADDR        (0x100)
-#define ENDP3_RXADDR        (0x110)
+#define ENDP1_TXADDR        (ENDP0_TXADDR + ENDP0_TXSIZE)  // 0xC0
+#define ENDP1_TXSIZE        (0x40)
+
+#define ENDP2_TXADDR        (ENDP1_TXADDR + ENDP1_TXSIZE)
+#define ENDP2_TXSIZE        (0x10)
+
+#define ENDP3_RXADDR        (ENDP2_TXADDR + ENDP2_TXSIZE)
+#define ENDP3_RXSIZE        (0x10)
+
+#if ENDP3_RXADDR + ENDP3_RXSIZE > USB_SRAM_SIZE
+    #error "Not enough bytes in USB SRAM!"
+#endif
 
 
 /*-------------------------------------------------------------*/
@@ -91,9 +102,10 @@
 /*#define SOF_CALLBACK*/
 /*#define ESOF_CALLBACK*/
 /* CTR service routines */
+
 /* associated to defined endpoints */
 /*#define  EP1_IN_Callback   NOP_Process*/
-#define  EP2_IN_Callback   NOP_Process  // TODO: switch these to error handlers
+// #define  EP2_IN_Callback   NOP_Process  // TODO: switch these to error handlers
 #define  EP3_IN_Callback   NOP_Process
 #define  EP4_IN_Callback   NOP_Process
 #define  EP5_IN_Callback   NOP_Process

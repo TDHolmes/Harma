@@ -1,7 +1,7 @@
 /*!
  * @file    queue.h
  * @author  Tyler Holmes
- * @version 0.1.0
+ *
  * @date    20-May-2017
  * @brief   Simple circular buffer handler.
  */

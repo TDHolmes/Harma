@@ -1,7 +1,7 @@
 /*!
  * @file    I2C.c
  * @author  Tyler Holmes
- * @version 0.1.0
+ *
  * @date    20-May-2017
  * @brief   Wrapper functions around the stm32f3xx HAL I2C functions.
  *
@@ -152,7 +152,7 @@ bool I2C_isBusy(void)
          state == HAL_I2C_STATE_TIMEOUT ||
          state == HAL_I2C_STATE_ERROR ||
          state == HAL_I2C_STATE_RESET) {
-        // major error!
+        // major error! (TODO: is reset state that bad?)
         fatal_error_handler(__FILE__, __LINE__, state);
     }
     return (state != HAL_I2C_STATE_READY);

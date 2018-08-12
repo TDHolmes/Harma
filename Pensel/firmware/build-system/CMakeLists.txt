@@ -219,6 +219,7 @@ list(APPEND pensel_usb_files
 	"${ProjDirPath}/peripherals/USB/usb_pwr.c"
 
 	"${ProjDirPath}/modules/CDC/cdc.c"
+	"${ProjDirPath}/modules/HID/hid.c"
 )
 
 

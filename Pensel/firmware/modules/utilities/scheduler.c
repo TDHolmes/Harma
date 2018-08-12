@@ -1,7 +1,7 @@
 /*!
  * @file    scheduler.c
  * @author  Tyler Holmes
- * @version 0.1.0
+ *
  * @date    28-April-2018
  * @brief   A rudamentary scheduler
  */

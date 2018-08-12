@@ -1,7 +1,7 @@
 /*!
  * @file    main.c
  * @author  Tyler Holmes
- * @version 0.1.0
+ *
  * @date    20-May-2017
  * @brief   Main project logic.
  */
@@ -18,9 +18,8 @@
 #include "peripherals/UART/UART.h"
 
 // Algs and utilities
-// #include "modules/orientation/orientation.h"
-#include "modules/calibration/cal.h"
 #include "modules/utilities/scheduler.h"
+#include "modules/utilities/logging.h"
 #include "modules/LSM9DS1/LSM9DS1.h"
 
 // STM Drivers
@@ -37,12 +36,18 @@
 
 #include "modules/CDC/cdc.h"
 
+//! Level of log messages we will print out to the user
+#define LOGGING_LEVEL   (kLogLevelInfo)
+
+
 //! HAL millisecond tick
 extern __IO uint32_t uwTick;
 // Global variables to influence state
 
+//! The critical errors for the entire system
 critical_errors_t gCriticalErrors;
-schedule_t main_schedule;
+//! The scheduler for all tasks to be run in the main context
+schedule_t gMainSchedule;
 
 // Local functions
 ret_t heartbeat(int32_t * new_callback_time_ms);
@@ -129,7 +134,6 @@ ret_t print(char * string)
  */
 int main(void)
 {
-    ret_t retval;
     uint8_t i = 0;
     int32_t time_until_next_cb_ms;
     gyro_ODR_t gyro_ODR = kGyroODR_14_9_Hz;
@@ -143,42 +147,44 @@ int main(void)
     configure_pins();
     clear_critical_errors();
 
-    // Initialize UART
-    check_retval_fatal(__FILE__, __LINE__, UART_init(115200) );
+    // Initialize UART and logging
+    check_retval_fatal(__FILE__, __LINE__, UART_init(460800) );
+    UART_sendString("\n");  // Get rid of annoying crap
+    log_init(LOGGING_LEVEL, UART_sendString, HAL_GetTick);
+    LOG_MSG(kLogLevelInfo, "Log module initialized");
 
-    #ifdef WATCHDOG_ENABLE
-        if ( wdg_isSet() ) {
-            // set a report variable in critical errors
-            gCriticalErrors.wdg_reset = 1;
-            #ifdef WATCHDOG_CAPTURE
-                wdg_captureAlert();
-            #endif
-        }
-        // Initialize the watchdog
-        check_retval_fatal(__FILE__, __LINE__, wdg_init() );
-        gPetWdg = true;
-    #endif
+#ifdef WATCHDOG_ENABLE
+    if ( wdg_isSet() ) {
+        // set a report variable in critical errors
+        gCriticalErrors.wdg_reset = 1;
+        #ifdef WATCHDOG_CAPTURE
+            wdg_captureAlert();
+        #endif
+    }
+    // Initialize the watchdog
+    check_retval_fatal(__FILE__, __LINE__, wdg_init() );
+    gPetWdg = true;
+#endif
 
     // peripheral configuration
-    retval = I2C_init();
-    check_retval_fatal(__FILE__, __LINE__, retval);
+    check_retval_fatal(__FILE__, __LINE__, I2C_init() );
 
     LED_set(LED_0, 0);
     LED_set(LED_1, 0);
 
     hw_USB_init();
     USB_init();
-    retval = LSM9DS1_init(gyro_ODR, gyro_FS, accel_ODR, accel_FS);
-    check_retval_fatal(__FILE__, __LINE__, retval);
+    check_retval_fatal(__FILE__, __LINE__,
+        LSM9DS1_init(gyro_ODR, gyro_FS, accel_ODR, accel_FS) );
 
     // initalize the scheduler and add some periodic tasks
-    scheduler_init(&main_schedule);
-    scheduler_add(&main_schedule, 0, heartbeat, &i);
-    scheduler_add(&main_schedule, 0, workloop_flash, &i);
-    scheduler_add(&main_schedule, 0, button_handler, &i);
+    scheduler_init(&gMainSchedule);
+    scheduler_add(&gMainSchedule, 0, heartbeat, &i);
+    scheduler_add(&gMainSchedule, 0, workloop_flash, &i);
+    scheduler_add(&gMainSchedule, 0, button_handler, &i);
 
     #ifdef WATCHDOG_ENABLE
-        scheduler_add(&main_schedule, 0, watchdog_pet, &i);
+        scheduler_add(&gMainSchedule, 0, watchdog_pet, &i);
     #endif
 
 
@@ -186,7 +192,7 @@ int main(void)
     uint32_t sleep_until = 0;
     while (true) {
         sleep_until = HAL_GetTick();  // grab start of loop time
-        time_until_next_cb_ms = scheduler_run(&main_schedule, sleep_until);
+        time_until_next_cb_ms = scheduler_run(&gMainSchedule, sleep_until);
         sleep_until += time_until_next_cb_ms;
 
         if (time_until_next_cb_ms > 0) {
@@ -210,27 +216,15 @@ ret_t heartbeat(int32_t * new_callback_time_ms)
 
     uint8_t status;
     if ( LSM9DS1_readStatus(&status) == RET_OK ) {
-        char str_buf[64];
-        sprintf(str_buf, "LSM status: %i\r\n", status);
-        print(str_buf);
-
-        int32_t tmp;
-        if ( status & 0x01) {
-            while ( cdc_inTransferBusy() );
-            print("Acc data avail\r\n");
-            accelDataReadyHandler(&tmp);
-        }
-        if ( status & 0x02) {
-            while ( cdc_inTransferBusy() );
-            print("gyr data avail\r\n");
-            gyroDataReadyHandler(&tmp);
-        }
+        LOG_MSG_FMT(kLogLevelInfo, "LSM status: %i", status);
+    } else {
+        LOG_MSG(kLogLevelWarning, "LSM status read FAILED");
     }
 
     if (tick % 2 == 0) {
-        print("\tTick\r\n");
+        LOG_MSG(kLogLevelDebug, "\tTick");
     } else if (tick % 2 == 1) {
-        print("\tTock\r\n");
+        LOG_MSG(kLogLevelDebug, "\tTock");
     }
     tick += 1;
     return RET_OK;
@@ -239,13 +233,12 @@ ret_t heartbeat(int32_t * new_callback_time_ms)
 
 ret_t workloop_flash(int32_t * new_callback_time_ms)
 {
-    static uint32_t i = 0;
+    static uint16_t i = 0;
     *new_callback_time_ms = 0;
 
     // toggle LED every 10,000 itterations over the workloop
-    if (i++ >= 10000) {
+    if (i++ == 0) {
         LED_toggle(LED_1);
-        i = 0;
     }
     return RET_OK;
 }
@@ -253,7 +246,7 @@ ret_t workloop_flash(int32_t * new_callback_time_ms)
 
 ret_t button_handler(int32_t * new_callback_time_ms)
 {
-    UART_sendString("b");
+    // UART_sendString("b");
     *new_callback_time_ms = 10;
     button_periodic_handler( HAL_GetTick() );
     return RET_OK;
@@ -270,19 +263,16 @@ ret_t button_handler(int32_t * new_callback_time_ms)
 void fatal_error_handler(char file[], uint32_t line, int8_t err_code)
 {
     // FREAK OUT
+    char errMsg[64];
     #ifdef DEBUG
         uint32_t timer_count, i = 0;
         LED_set(LED_0, 0);
         LED_set(LED_1, 1);
+        sprintf(errMsg, "Err: %i", err_code);
 
         // Can't rely on HAL tick as we maybe in the ISR context...
         while (1) {
-            UART_sendString(file);
-            UART_sendString(", Line:");
-            UART_sendint((int64_t)line);
-            UART_sendString(", Err:");
-            UART_sendint((int64_t)err_code);
-            UART_sendString("\r\n");
+            log_logMessage(kLogLevelError, file, "?", line, errMsg);
 
             for (i = 0; i < 25; i++) {
                 while (timer_count < 100000) {
@@ -301,7 +291,7 @@ void fatal_error_handler(char file[], uint32_t line, int8_t err_code)
         }
     #else
         // TODO: Reset everything
-        // TODO: Log failure
+        log_logMessage(kLogLevelError, file, "?", line, errMsg);
         // for now, just let the watchdog happen
         while (1);
     #endif

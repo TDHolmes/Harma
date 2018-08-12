@@ -49,6 +49,8 @@
 #include "peripherals/stm32f3/stm32f3xx_hal_pcd.h"
 #include "peripherals/stm32f3/stm32f3xx_hal_pcd_ex.h"
 
+#include "peripherals/hardware/hardware.h"
+
 // I2C definitions!!!
 #define I2Cx                            I2C1
 #define RCC_PERIPHCLK_I2Cx              RCC_PERIPHCLK_I2C1
@@ -153,9 +155,9 @@ void HAL_I2C_MspInit(I2C_HandleTypeDef *hi2c)
 
         /*##-4- Configure the NVIC for I2C ########################################*/
         /* NVIC for I2Cx */
-        HAL_NVIC_SetPriority(I2Cx_ER_IRQn, 0, 0);  // Highest Preempt Priority, highest Sub Priority
+        HAL_NVIC_SetPriority(I2Cx_ER_IRQn, I2C_ER_INT_PREEMPT_PRI, I2C_ER_INT_SUB_PRI);  // Highest Preempt Priority, highest Sub Priority
         HAL_NVIC_EnableIRQ(I2Cx_ER_IRQn);
-        HAL_NVIC_SetPriority(I2Cx_EV_IRQn, 0, 1);  // Highest Preempt Priority, 2nd highest Sub Priority
+        HAL_NVIC_SetPriority(I2Cx_EV_IRQn, I2C_EV_INT_PREEMPT_PRI, I2C_EV_INT_SUB_PRI);  // Highest Preempt Priority, 2nd highest Sub Priority
         HAL_NVIC_EnableIRQ(I2Cx_EV_IRQn);
     } else {
         fatal_error_handler(__FILE__, __LINE__, -1);
@@ -234,7 +236,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart)
 
         /*##-3- Configure the NVIC for UART ########################################*/
         /* NVIC for USART */
-        HAL_NVIC_SetPriority(USARTx_IRQn, 1, 0);  // 2nd Highest Preempt Priority, 3rd highest Sub Priority
+        HAL_NVIC_SetPriority(USARTx_IRQn, USART_INT_PREMPT_PRI, USART_INT_SUB_PRI);  // 2nd Highest Preempt Priority, 3rd highest Sub Priority
         HAL_NVIC_EnableIRQ(USARTx_IRQn);
     } else {
         fatal_error_handler(__FILE__, __LINE__, -1);
@@ -277,9 +279,9 @@ void HAL_PCD_MspInit(PCD_HandleTypeDef* hpcd)
         /* Peripheral clock enable */
         __HAL_RCC_USB_CLK_ENABLE();
         /* USB interrupt Init */
-        HAL_NVIC_SetPriority(USB_HP_CAN_TX_IRQn, 0, 0);
+        HAL_NVIC_SetPriority(USB_HP_CAN_TX_IRQn, USBTX_INT_PREMPT_PRI, USBTX_INT_SUB_PRI);
         HAL_NVIC_EnableIRQ(USB_HP_CAN_TX_IRQn);
-        HAL_NVIC_SetPriority(USB_LP_CAN_RX0_IRQn, 0, 0);
+        HAL_NVIC_SetPriority(USB_LP_CAN_RX0_IRQn, USBRX_INT_PREMPT_PRI, USBRX_INT_SUB_PRI);
         HAL_NVIC_EnableIRQ(USB_LP_CAN_RX0_IRQn);
     } else {
         fatal_error_handler(__FILE__, __LINE__, -1);

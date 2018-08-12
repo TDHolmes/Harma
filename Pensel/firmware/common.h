@@ -1,7 +1,7 @@
 /*!
  * @file    common.h
  * @author  Tyler Holmes
- * @version 0.1.0
+ *
  * @date    20-May-2017
  * @brief   A common set of return codes and functions all files have access to.
  *

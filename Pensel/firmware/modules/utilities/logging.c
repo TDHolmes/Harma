@@ -66,6 +66,9 @@ int populateLogLevel(log_level_t level, char buffer_ptr[])
 }
 
 
+/*! Log a log message at the given level and location in the code.
+ *
+ */
 ret_t log_logMessage(log_level_t level, const char filename[], const char funcname[],
                      uint32_t linenum, const char msg_ptr[])
 {
@@ -83,7 +86,7 @@ ret_t log_logMessage(log_level_t level, const char filename[], const char funcna
     finalLogBytes = snprintf(
         gMessageBuffer + logLevelBytes,
         sizeof(gMessageBuffer) - logLevelBytes,
-        "%s, line %u (%s): %s\n",
+        "%s:%u (in %s): %s\n",
         filename, linenum, funcname, msg_ptr);
 
     if (finalLogBytes <= 0 || finalLogBytes + logLevelBytes >= (int)sizeof(gMessageBuffer)) {

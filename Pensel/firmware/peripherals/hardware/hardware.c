@@ -1,7 +1,7 @@
 /*!
  * @file    hardware.c
  * @author  Tyler Holmes
- * @version 0.1.0
+ *
  * @date    20-May-2017
  * @brief   Hardware specific definitions and function calls.
  *
@@ -140,7 +140,7 @@ void SystemClock_Config(void)
     HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
 
     /* SysTick_IRQn interrupt configuration */
-    HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(SysTick_IRQn, SysTick_INT_PREEMPT_PRI, SysTick_INT_SUB_PRI);
 }
 
 

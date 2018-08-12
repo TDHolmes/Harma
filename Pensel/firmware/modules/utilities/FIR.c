@@ -1,7 +1,7 @@
 /*!
  * @file    FIR.c
  * @author  Tyler Holmes
- * @version 0.1.0
+ *
  * @date    29-May-2017
  * @brief   Module for filtering arbitrary values given coefficients and a filter order.
  */

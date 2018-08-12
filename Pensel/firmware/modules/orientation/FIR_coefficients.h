@@ -1,7 +1,7 @@
 /*!
  * @file    FIR_coefficients.h
  * @author  Tyler Holmes
- * @version 0.1.0
+ *
  * @date    20-May-2017
  * @brief   FIR coefficients to be used by application code.
  */

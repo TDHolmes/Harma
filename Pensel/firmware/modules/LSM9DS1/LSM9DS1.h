@@ -1,7 +1,10 @@
-
-#include "common.h"
-
+/*!
+ *
+ */
 #pragma once
+
+#include "modules/orientation/datatypes.h"
+#include "common.h"
 
 
 #define ACCEL_GYRO_ADDRESS (0b11010110)  // 0xD6 (no R/W bit)
@@ -75,14 +78,22 @@ typedef struct __attribute__((packed)) {
 
 // --- Public functions
 
+ret_t LSM9DS1_init(
+    gyro_ODR_t gyro_ODR, gyro_fullscale_t gyro_FS,
+    accel_ODR_t accel_ODR, accel_fullscale_t accel_FS);
 ret_t LSM9DS1_readStatus(uint8_t * status_byte_ptr);
-ret_t LSM9DS1_init(gyro_ODR_t gyro_ODR, gyro_fullscale_t gyro_FS,
-                   accel_ODR_t accel_ODR, accel_fullscale_t accel_FS);
+
+// Configuration methods...
+ret_t LSM9DS1_setAccel_ODR_FS(accel_ODR_t accel_ODR, accel_fullscale_t accel_FS);
+ret_t LSM9DS1_setGyro_ODR_FS(gyro_ODR_t gyro_ODR, gyro_fullscale_t gyro_FS);
+
+// ISR handlers
+
 void LSM9DS1_AGINT1_ISR(void);
 void LSM9DS1_AGINT2_ISR(void);
 void LSM9DS1_MDRDY_ISR(void);
 
-
-ret_t accelDataReadyHandler(int32_t *next_callback_ms);
-ret_t gyroDataReadyHandler(int32_t *next_callback_ms);
-ret_t magDataReadyHandler(int32_t *next_callback_ms);
+// Accessors of new data
+ret_t LSM9DS1_getAccelPacket(accel_norm_t * pkt_destination_ptr);
+ret_t LSM9DS1_getGyroPacket(gyro_norm_t * pkt_destination_ptr);
+ret_t LSM9DS1_getMagPacket(mag_norm_t * pkt_destination_ptr);
