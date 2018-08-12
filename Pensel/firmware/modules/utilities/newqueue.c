@@ -1,28 +1,26 @@
 /*!
  * @file    newqueue.c
  * @author  Tyler Holmes
- * @version 0.1.0
+ *
  * @date    20-May-2017
  * @brief   General purpose circular buffer handler that uses malloc.
  *
  */
+#include "newqueue.h"
+#include "common.h"
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <stdbool.h>
-#include "common.h"
-#include "newqueue.h"
-
 
 // Some private functions for use by push/pop functions
-void priv_increment_tail(volatile newqueue_t * queue_ptr);
-void priv_decrement_tail(volatile newqueue_t * queue_ptr);
-void priv_increment_head(volatile newqueue_t * queue_ptr);
-
+void priv_increment_tail(volatile newqueue_t *queue_ptr);
+void priv_decrement_tail(volatile newqueue_t *queue_ptr);
+void priv_increment_head(volatile newqueue_t *queue_ptr);
 
 /*!
  *
  */
-ret_t newqueue_init(volatile newqueue_t * newqueue, uint32_t num_elements, uint32_t item_size)
+ret_t newqueue_init(volatile newqueue_t *newqueue, uint32_t num_elements, uint32_t item_size)
 {
     uint32_t size = (num_elements * item_size);
     newqueue->head_ind = 0;
@@ -42,18 +40,17 @@ ret_t newqueue_init(volatile newqueue_t * newqueue, uint32_t num_elements, uint3
 /*!
  *
  */
-ret_t newqueue_deinit(volatile newqueue_t * newqueue)
+ret_t newqueue_deinit(volatile newqueue_t *newqueue)
 {
     free(newqueue->buff_ptr);
 
     return RET_OK;
 }
 
-
 /*!
  *
  */
-ret_t newqueue_pop(volatile newqueue_t * queue, void * data_ptr, uint32_t num_items, peak_t peak)
+ret_t newqueue_pop(volatile newqueue_t *queue, void *data_ptr, uint32_t num_items, peak_t peak)
 {
     // "memcpy" the data to `data_ptr` while incrementing the tail
     uint32_t original_tail = queue->tail_ind;
@@ -74,11 +71,10 @@ ret_t newqueue_pop(volatile newqueue_t * queue, void * data_ptr, uint32_t num_it
     return RET_OK;
 }
 
-
 /*!
  *
  */
-ret_t newqueue_push(volatile newqueue_t * queue, void * data_ptr, uint32_t num_items)
+ret_t newqueue_push(volatile newqueue_t *queue, void *data_ptr, uint32_t num_items)
 {
     // Cast the data as bytes and push it on byte by byte
     // while incrementing the head
@@ -94,11 +90,10 @@ ret_t newqueue_push(volatile newqueue_t * queue, void * data_ptr, uint32_t num_i
     return RET_OK;
 }
 
-
 /*!
  *
  */
-void priv_increment_tail(volatile newqueue_t * queue_ptr)
+void priv_increment_tail(volatile newqueue_t *queue_ptr)
 {
     if (queue_ptr->tail_ind < queue_ptr->buffer_size - 1) {
         queue_ptr->tail_ind += 1;
@@ -107,11 +102,10 @@ void priv_increment_tail(volatile newqueue_t * queue_ptr)
     }
 }
 
-
 /*!
  *
  */
-void priv_decrement_tail(volatile newqueue_t * queue_ptr)
+void priv_decrement_tail(volatile newqueue_t *queue_ptr)
 {
     if (queue_ptr->tail_ind > 0) {
         queue_ptr->tail_ind -= 1;
@@ -120,11 +114,10 @@ void priv_decrement_tail(volatile newqueue_t * queue_ptr)
     }
 }
 
-
 /*!
  *
  */
-void priv_increment_head(volatile newqueue_t * queue_ptr)
+void priv_increment_head(volatile newqueue_t *queue_ptr)
 {
     if (queue_ptr->head_ind < queue_ptr->buffer_size - 1) {
         queue_ptr->head_ind += 1;
@@ -133,7 +126,7 @@ void priv_increment_head(volatile newqueue_t * queue_ptr)
     }
 
     // check if we're overwriting data...
-    if ( !(queue_ptr->unread_items < queue_ptr->buffer_size) ) {
+    if (!(queue_ptr->unread_items < queue_ptr->buffer_size)) {
         // Oh no! we don't have any space. packet gets dropped :'(
         queue_ptr->overwrite_count += 1;
         // move tail ahead too since we've overwritten data

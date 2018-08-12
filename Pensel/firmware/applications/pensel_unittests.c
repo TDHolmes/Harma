@@ -1,31 +1,30 @@
 /*!
  * @file    main.c
  * @author  Tyler Holmes
- * @version 0.1.0
+ *
  * @date    20-May-2017
  * @brief   Main project logic.
  */
 
+#include "common.h"
 #include <stdint.h>
 #include <string.h>
-#include "common.h"
 
 // Sensors
-#include "peripherals/hardware/hardware.h"   // HW support and button / switch functions
+#include "peripherals/hardware/hardware.h" // HW support and button / switch functions
 
 // Communications and such
 #include "peripherals/I2C/I2C.h"
 #include "peripherals/UART/UART.h"
 
 // Algssss
-#include "modules/orientation/orientation.h"
 #include "modules/calibration/cal.h"
+#include "modules/orientation/orientation.h"
 
 // STM Drivers
-#include "peripherals/stm32f3/stm32f3xx_hal_def.h"
-#include "peripherals/stm32f3/stm32f3xx_hal.h"
 #include "peripherals/stm32f3-configuration/stm32f3xx_hal_conf.h"
-
+#include "peripherals/stm32f3/stm32f3xx_hal.h"
+#include "peripherals/stm32f3/stm32f3xx_hal_def.h"
 
 //! HAL millisecond tick
 extern __IO uint32_t uwTick;
@@ -33,19 +32,19 @@ extern __IO uint32_t uwTick;
 
 critical_errors_t gCriticalErrors;
 
-
-static inline void check_retval_fatal(char * filename, uint32_t lineno, ret_t retval) {
+static inline void check_retval_fatal(char *filename, uint32_t lineno, ret_t retval)
+{
     if (retval != RET_OK) {
         fatal_error_handler(filename, lineno, (int8_t)retval);
     }
 }
 
-void clear_critical_errors(void) {
-    #ifdef WATCHDOG_ENABLE
-        gCriticalErrors.wdg_reset = 0;
-    #endif
+void clear_critical_errors(void)
+{
+#ifdef WATCHDOG_ENABLE
+    gCriticalErrors.wdg_reset = 0;
+#endif
 }
-
 
 /*! Main function code. Does the following:
  *      1. Initializes all sub-modules
@@ -80,7 +79,6 @@ int main(void)
     } /* while (true) */
 } /* main() */
 
-
 /*! millisecond ISR that increments the global time as well as calls some functions
  *  that need to be periodically serviced. We do a few things:
  *
@@ -107,7 +105,6 @@ void HAL_IncTick(void)
     }
 }
 
-
 /*! Error handler that is called when fatal exceptions are found.
  *
  * @param file (char *): File in which the error comes from. Use the __FILE__ macro.
@@ -117,38 +114,36 @@ void HAL_IncTick(void)
  */
 void fatal_error_handler(char file[], uint32_t line, int8_t err_code)
 {
-    // FREAK OUT
-    #ifdef DEBUG
-        uint32_t timer_count, i = 0;
-        LED_set(LED_0, 0);
-        LED_set(LED_1, 1);
+// FREAK OUT
+#ifdef DEBUG
+    uint32_t timer_count, i = 0;
+    LED_set(LED_0, 0);
+    LED_set(LED_1, 1);
 
-        // Can't rely on HAL tick as we maybe in the ISR context...
-        while (1) {
-            UART_sendString(file);
-            UART_sendint((int64_t)line);
-            UART_sendint((int64_t)err_code);
-            UART_sendString("\r\n");
+    // Can't rely on HAL tick as we maybe in the ISR context...
+    while (1) {
+        UART_sendString(file);
+        UART_sendint((int64_t)line);
+        UART_sendint((int64_t)err_code);
+        UART_sendString("\r\n");
 
-            for (i = 0; i < 25; i++) {
-                while (timer_count < 100000) {
-                    timer_count++;
-                }
-                timer_count = 0;
+        for (i = 0; i < 25; i++) {
+            while (timer_count < 100000) {
+                timer_count++;
             }
-            LED_toggle(LED_0);
-            LED_toggle(LED_1);
+            timer_count = 0;
         }
-    #else
-        // TODO: Reset everything
-        // TODO: Log failure
-        // for now, just let the watchdog happen
-        while (1);
-    #endif
+        LED_toggle(LED_0);
+        LED_toggle(LED_1);
+    }
+#else
+    // TODO: Reset everything
+    // TODO: Log failure
+    // for now, just let the watchdog happen
+    while (1)
+        ;
+#endif
 }
 
 // HAL uses this function. Call our error function.
-void assert_failed(uint8_t* file, uint32_t line)
-{
-    fatal_error_handler((char *)file, line, -1);
-}
+void assert_failed(uint8_t *file, uint32_t line) { fatal_error_handler((char *)file, line, -1); }

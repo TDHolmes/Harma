@@ -1,7 +1,7 @@
 /*!
  * @file    orientation.h
  * @author  Tyler Holmes
- * @version 0.1.0
+ *
  * @date    28-May-2017
  * @brief   Module for calculating Pensel's orientation in space.
  *
@@ -9,11 +9,10 @@
  */
 #pragma once
 
-#include <stdint.h>
 #include "common.h"
 #include "modules/LSM303DLHC/LSM303DLHC.h"
 #include "quanternions.h"
-
+#include <stdint.h>
 
 ret_t orient_init(void);
 void orient_calcPenselOrientation(void);
@@ -24,9 +23,9 @@ cartesian_vect_t orient_getMagOrientation(void);
 cartesian_vect_t orient_getAccelOrientation(void);
 
 // Reports for getting the orientations
-ret_t rpt_orient_getPenselOrientation(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len),
-                                      uint8_t * out_p, uint8_t * out_len_ptr);
-ret_t rpt_orient_getMagOrientation(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len),
-                                   uint8_t * out_p, uint8_t * out_len_ptr);
-ret_t rpt_orient_getAccelOrientation(uint8_t * UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len),
-                                     uint8_t * out_p, uint8_t * out_len_ptr);
+ret_t rpt_orient_getPenselOrientation(uint8_t *UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len),
+                                      uint8_t *out_p, uint8_t *out_len_ptr);
+ret_t rpt_orient_getMagOrientation(uint8_t *UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len),
+                                   uint8_t *out_p, uint8_t *out_len_ptr);
+ret_t rpt_orient_getAccelOrientation(uint8_t *UNUSED_PARAM(in_p), uint8_t UNUSED_PARAM(in_len),
+                                     uint8_t *out_p, uint8_t *out_len_ptr);

@@ -28,7 +28,7 @@ SET(TOOLCHAIN_DIR "" CACHE STRING "Directory to use for ARM GCC")
 
 # clang doesn't support link time optimizations with existing ARM GCC tools...
 if (COMPILER_TYPE MATCHES GCC)
-	SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -flto")
+	SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -flto")  # link time optimization
 ELSE()
 	SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -fshort-enums")
 	# SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -flto=thin") #  -fuse-ld=gold
@@ -49,7 +49,7 @@ SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -fno-builtin")
 SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -std=gnu99")
 SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -DUSE_HAL_DRIVER")
 SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -DUSE_FULL_ASSERT")
-SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -DWATCHDOG_ENABLE")  # Flag to enable/disable use of the watchdog
+# SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -DWATCHDOG_ENABLE")  # Flag to enable/disable use of the watchdog
 SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -DSTM32F302x8")
 SET(CMAKE_GENERAL_FLAGS "${CMAKE_GENERAL_FLAGS} -DGIT_TAG_SHORT=${GIT_TAG_SHORT}")
 
@@ -129,6 +129,8 @@ list(APPEND STM32_HAL_sources
 	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_cortex.c"
 	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_flash.c"
 	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_flash_ex.c"
+	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_pcd.c"
+	"${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_pcd_ex.c"
 
 		# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_msp_template.c"
 		# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_can.c"
@@ -150,11 +152,9 @@ list(APPEND STM32_HAL_sources
 		# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_hrtim.c"
 		# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_crc_ex.c"
 		# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_dac_ex.c"
-		# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_pcd.c"
 		# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_comp.c"
 		# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_sram.c"
 		# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_tim_ex.c"
-		# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_pcd_ex.c"
 		# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_opamp.c"
 		# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_sdadc.c"
 		# "${ProjDirPath}/peripherals/stm32f3/stm32f3xx_hal_rtc.c"
@@ -210,44 +210,39 @@ list(APPEND stm32_usb_lib
 	"${ProjDirPath}/peripherals/stm32-usb/usb_core.c"
 )
 
-add_executable(pensel_v1.elf
-	# user code
+list(APPEND pensel_usb_files
+	"${ProjDirPath}/peripherals/USB/hw_config.c"
+	"${ProjDirPath}/peripherals/USB/usb_desc.c"
+	"${ProjDirPath}/peripherals/USB/usb_endp.c"
+	"${ProjDirPath}/peripherals/USB/usb_istr.c"
+	"${ProjDirPath}/peripherals/USB/usb_prop.c"
+	"${ProjDirPath}/peripherals/USB/usb_pwr.c"
 
-	"${ProjDirPath}/applications/pensel_v1.c"
-
-	"${ProjDirPath}/infrastructure/UART-reports/reports.c"
-
-	"${ProjDirPath}/modules/LSM303DLHC/LSM303DLHC.c"
-	"${ProjDirPath}/modules/orientation/movement.c"
-	"${ProjDirPath}/modules/orientation/quanternions.c"
-	"${ProjDirPath}/modules/orientation/orientation.c"
-	"${ProjDirPath}/modules/orientation/matrixmath.c"
-	"${ProjDirPath}/modules/calibration/cal.c"
-	"${ProjDirPath}/modules/utilities/FIR.c"
-	"${ProjDirPath}/modules/utilities/queue.c"
-	"${ProjDirPath}/modules/utilities/newqueue.c"
-
-	"${common_peripherals}"
-	"${STM32_HAL_sources}"
-
+	"${ProjDirPath}/modules/CDC/cdc.c"
+	"${ProjDirPath}/modules/HID/hid.c"
 )
+
 
 add_executable(pensel_v2.elf
 
 	"${ProjDirPath}/applications/pensel_v2.c"
 
-	"${ProjDirPath}/modules/orientation/movement.c"
-	"${ProjDirPath}/modules/orientation/quanternions.c"
-	"${ProjDirPath}/modules/orientation/orientation.c"
-	"${ProjDirPath}/modules/orientation/matrixmath.c"
-	"${ProjDirPath}/modules/calibration/cal.c"
-	"${ProjDirPath}/modules/utilities/FIR.c"
+	# "${ProjDirPath}/modules/orientation/movement.c"
+	# "${ProjDirPath}/modules/orientation/quanternions.c"
+	# "${ProjDirPath}/modules/orientation/orientation.c"
+	# "${ProjDirPath}/modules/orientation/matrixmath.c"
+	# "${ProjDirPath}/modules/calibration/cal.c"
+	# "${ProjDirPath}/modules/utilities/FIR.c"
+	"${ProjDirPath}/modules/LSM9DS1/LSM9DS1.c"
 	"${ProjDirPath}/modules/utilities/queue.c"
 	"${ProjDirPath}/modules/utilities/newqueue.c"
+	"${ProjDirPath}/modules/utilities/scheduler.c"
+	"${ProjDirPath}/modules/utilities/logging.c"
 
 	"${common_peripherals}"
 	"${STM32_HAL_sources}"
-	# "${stm32_usb_lib}"
+	"${stm32_usb_lib}"
+	"${pensel_usb_files}"
 )
 
 add_executable(pensel_unittests.elf
@@ -263,26 +258,12 @@ add_executable(pensel_unittests.elf
 )
 
 # ----- target specific defines
-target_compile_definitions(pensel_v1.elf PUBLIC PENSEL_V1)
 target_compile_definitions(pensel_v2.elf PUBLIC PENSEL_V2)
 target_compile_definitions(pensel_unittests.elf PUBLIC PENSEL_UNITTESTS)
 
 
 # ---------------------- RESOLVING CIRCULAR DEPENDENCIES --------------------- #
 # http://stackoverflow.com/questions/5651869/gcc-what-are-the-start-group-and-end-group-command-line-options
-
-TARGET_LINK_LIBRARIES(pensel_v1.elf -Wl,--start-group)
-
-target_link_libraries(pensel_v1.elf debug m)
-target_link_libraries(pensel_v1.elf debug c)
-target_link_libraries(pensel_v1.elf debug gcc)
-target_link_libraries(pensel_v1.elf debug nosys)
-target_link_libraries(pensel_v1.elf optimized m)
-target_link_libraries(pensel_v1.elf optimized c)
-target_link_libraries(pensel_v1.elf optimized gcc)
-target_link_libraries(pensel_v1.elf optimized nosys)
-
-TARGET_LINK_LIBRARIES(pensel_v1.elf -Wl,--end-group)
 
 # ---- V2
 

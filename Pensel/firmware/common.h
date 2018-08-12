@@ -1,7 +1,7 @@
 /*!
  * @file    common.h
  * @author  Tyler Holmes
- * @version 0.1.0
+ *
  * @date    20-May-2017
  * @brief   A common set of return codes and functions all files have access to.
  *
@@ -35,11 +35,29 @@
 #define FMAG_STREAM_REPORT_ID (0x04)
 
 #if !defined(max)
-    #define max(v1, v2) (v1 >= v2 ? v1 : v2)
+    inline int max(int const p1, int const p2) {
+        if (p1 > p2) {
+            return p1;
+        } else {
+            return p2;
+        }
+    }
+    // #define max(v1, v2) (v1 >= v2 ? v1 : v2)
 #endif
 
 #if !defined(min)
-    #define min(v1, v2) (v1 < v2 ? v1 : v2)
+    inline int min(int const p1, int const p2) {
+        if (p1 < p2) {
+            return p1;
+        } else {
+            return p2;
+        }
+    }
+    // #define min(v1, v2) (v1 < v2 ? v1 : v2)
+#endif
+
+#if !defined(NULL)
+    #define NULL ((void *) 0)
 #endif
 
 
