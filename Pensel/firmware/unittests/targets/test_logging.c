@@ -10,7 +10,7 @@
 uint32_t current_time_ms;       //!< The time we pretend it is
 bool write_func_called;         //!< we set this to True if logging calls our write function
 
-/*! the string we check against. Populate this with the correct 
+/*! the string we check against. Populate this with the correct
  *    string before running a given log test */
 char expected_message[MAX_MSG_LEN];
 char actual_message[MAX_MSG_LEN];
@@ -38,7 +38,7 @@ uint32_t get_curtime_ms(void) {
 void configure_logging(log_level_t logLevel) {
     ret_t ret;
     // clear previous time/string/flags
-    clear_flags(); 
+    clear_flags();
     current_time_ms = 0;
     memset(expected_message, 0, sizeof(expected_message));
 
@@ -47,7 +47,7 @@ void configure_logging(log_level_t logLevel) {
     TEST_ASSERT_EQUAL(RET_OK, ret);
 }
 
-void test_basicError(void) 
+void test_basicError(void)
 {
     char filename[] = "testFilename";
     char funcname[] = "testFuncname";
@@ -56,7 +56,7 @@ void test_basicError(void)
 
     configure_logging(kLogLevelError);
 
-    sprintf(expected_message, "00000000ms - ERROR  %s:%u (in %s): %s\n", filename, linenum, funcname, message);
+    sprintf(expected_message, "00000000ms - ERROR \t%s:%u (in %s): %s\n", filename, linenum, funcname, message);
     log_logMessage(kLogLevelError, filename, funcname, linenum, message);
     TEST_ASSERT_EQUAL_STRING(expected_message, actual_message);
     TEST_ASSERT_TRUE( write_func_was_called() );
@@ -71,7 +71,7 @@ void test_basicWarning(void)
 
     configure_logging(kLogLevelWarning);
 
-    sprintf(expected_message, "00000000ms - WARNING  %s:%u (in %s): %s\n", filename, linenum,
+    sprintf(expected_message, "00000000ms - WARNING \t%s:%u (in %s): %s\n", filename, linenum,
             funcname, message);
     log_logMessage(kLogLevelWarning, filename, funcname, linenum, message);
     TEST_ASSERT_EQUAL_STRING(expected_message, actual_message);
@@ -87,7 +87,7 @@ void test_basicInfo(void)
 
     configure_logging(kLogLevelInfo);
 
-    sprintf(expected_message, "00000000ms - INFO  %s:%u (in %s): %s\n", filename, linenum,
+    sprintf(expected_message, "00000000ms - INFO \t%s:%u (in %s): %s\n", filename, linenum,
             funcname, message);
     log_logMessage(kLogLevelInfo, filename, funcname, linenum, message);
     TEST_ASSERT_EQUAL_STRING(expected_message, actual_message);
@@ -103,7 +103,7 @@ void test_basicDebug(void)
 
     configure_logging(kLogLevelDebug);
 
-    sprintf(expected_message, "00000000ms - DEBUG  %s:%u (in %s): %s\n", filename, linenum, funcname,
+    sprintf(expected_message, "00000000ms - DEBUG \t%s:%u (in %s): %s\n", filename, linenum, funcname,
             message);
     log_logMessage(kLogLevelDebug, filename, funcname, linenum, message);
     TEST_ASSERT_EQUAL_STRING(expected_message, actual_message);

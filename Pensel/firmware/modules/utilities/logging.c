@@ -50,7 +50,7 @@ ret_t log_logMessage(log_level_t level, const char filename[], const char funcna
         return RET_NOMEM_ERR;
     }
     finalLogBytes = snprintf(gMessageBuffer + logLevelBytes, sizeof(gMessageBuffer) - logLevelBytes,
-                             "%s:%u (in %s): %s\n", filename, linenum, funcname, msg_ptr);
+                             "%s:%lu (in %s): %s\n", filename, linenum, funcname, msg_ptr);
 
     if (finalLogBytes <= 0 || finalLogBytes + logLevelBytes >= (int)sizeof(gMessageBuffer)) {
         return RET_NOMEM_ERR;
@@ -91,5 +91,5 @@ int populateLogLevel(log_level_t level, char buffer_ptr[])
             break;
     }
 
-    return sprintf(buffer_ptr, "%08ums - %s ", curTime_ms, logLevelMsg);
+    return sprintf(buffer_ptr, "%08lums - %s\t", curTime_ms, logLevelMsg);
 }

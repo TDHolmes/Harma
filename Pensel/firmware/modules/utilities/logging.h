@@ -14,7 +14,7 @@ typedef enum {
     kLogLevelDebug    //!< Debug level (verbose debugging information)
 } log_level_t;
 
-#define LOG_MSG(__LVL__, __MSG__) log_logMessage(__LVL__, __BASE_FILE__, __func__, __LINE__, __MSG__)
+#define LOG_MSG(__LVL__, __MSG__) log_logMessage(__LVL__, __FILENAME__, __func__, __LINE__, __MSG__)
 
 #define LOG_MSG_FMT(__LVL__, __MSG__, ...)                                \
     char __log_msg_fmt_buff[LOGGING_MAX_MSG_LEN];                         \

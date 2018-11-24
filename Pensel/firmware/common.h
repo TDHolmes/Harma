@@ -18,11 +18,20 @@
     #define UNUSED_PARAM(x) UNUSED_ ## x
 #endif
 
+// Defined by compiler: GIT_TAG_SHORT  (value of `git rev-parse --short HEAD`)
+#ifndef GIT_TAG_SHORT
+    #define GIT_TAG_SHORT ("test123")
+#endif
+
+// Defined by the build system. A shortened version of __FILE__
+#ifndef __FILENAME__
+    #define __FILENAME__  (__FILE__)
+#endif
+
 
 #define PENSEL_VERSION_MAJOR (0)
 #define PENSEL_VERSION_MINOR (6)
 #define PENSEL_VERSION_GITTAG (GIT_TAG_SHORT)
-// Defined by compiler: GIT_TAG_SHORT  (value of `git rev-parse --short HEAD`)
 
 
 // TODO: Remove these from the common header?
