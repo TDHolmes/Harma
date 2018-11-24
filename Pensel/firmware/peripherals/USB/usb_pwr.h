@@ -7,6 +7,7 @@
  */
 #pragma once
 
+#include <stdbool.h>
 #include "peripherals/stm32-usb/usb_core.h"
 #include "peripherals/stm32f3/stm32f3xx_hal_cortex.h"
 
