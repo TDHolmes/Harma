@@ -31,12 +31,18 @@
 #include "peripherals/USB/hw_config.h"
 #include "peripherals/USB/usb_desc.h"
 #include "peripherals/USB/usb_pwr.h"
+#include "peripherals/USB/usb_prop.h"
 #include "peripherals/stm32-usb/usb_lib.h"
 
 #include "modules/CDC/cdc.h"
 
 //! Level of log messages we will print out to the user
-#define LOGGING_LEVEL (kLogLevelInfo)
+#if DEBUG
+    // TODO: switch back to debug level!
+    #define LOGGING_LEVEL (kLogLevelDebug)
+#else
+    #define LOGGING_LEVEL (kLogLevelInfo)
+#endif
 
 //! HAL millisecond tick
 extern __IO uint32_t uwTick;
@@ -128,7 +134,7 @@ ret_t print(char *string)
  */
 int main(void)
 {
-    uint8_t i = 0;
+    schedule_id_t id;
     int32_t time_until_next_cb_ms;
     gyro_ODR_t gyro_ODR = kGyroODR_14_9_Hz;
     accel_ODR_t accel_ODR = kAccelODR_10_Hz;
@@ -140,6 +146,10 @@ int main(void)
     SystemClock_Config();
     configure_pins();
     clear_critical_errors();
+
+    // initalize the scheduler. Some of the below functions defer work to the main
+    //   scheduler.
+    scheduler_init(&gMainSchedule);
 
     // Initialize UART and logging
     check_retval_fatal(__FILE__, __LINE__, UART_init(460800));
@@ -168,16 +178,16 @@ int main(void)
 
     hw_USB_init();
     USB_init();
-    check_retval_fatal(__FILE__, __LINE__, LSM9DS1_init(gyro_ODR, gyro_FS, accel_ODR, accel_FS));
+    penselUSB_init();
+    check_retval_fatal(__FILE__,  __LINE__, LSM9DS1_init(gyro_ODR, gyro_FS, accel_ODR, accel_FS));
 
-    // initalize the scheduler and add some periodic tasks
-    scheduler_init(&gMainSchedule);
-    scheduler_add(&gMainSchedule, 0, heartbeat, &i);
-    scheduler_add(&gMainSchedule, 0, workloop_flash, &i);
-    scheduler_add(&gMainSchedule, 0, button_handler, &i);
+    // add some periodic tasks. We don't care about their unique ID.
+    scheduler_add(&gMainSchedule, 0, heartbeat, &id);
+    scheduler_add(&gMainSchedule, 0, workloop_flash, &id);
+    scheduler_add(&gMainSchedule, 0, button_handler, &id);
 
 #ifdef WATCHDOG_ENABLE
-    scheduler_add(&gMainSchedule, 0, watchdog_pet, &i);
+    scheduler_add(&gMainSchedule, 0, watchdog_pet, &id);
 #endif
 
     // --- Main scheduler super loop!
@@ -200,12 +210,13 @@ int main(void)
 
 ret_t heartbeat(int32_t *new_callback_time_ms)
 {
+    uint8_t status;
     static uint8_t tick = 0;
+
     *new_callback_time_ms = 1000;
     LED_toggle(LED_0);
     TimingPin_toggle();
 
-    uint8_t status;
     if (LSM9DS1_readStatus(&status) == RET_OK) {
         LOG_MSG_FMT(kLogLevelInfo, "LSM status: %i", status);
     } else {
@@ -213,9 +224,9 @@ ret_t heartbeat(int32_t *new_callback_time_ms)
     }
 
     if (tick % 2 == 0) {
-        LOG_MSG(kLogLevelDebug, "\tTick");
+        LOG_MSG(kLogLevelInfo, "\tTick");
     } else if (tick % 2 == 1) {
-        LOG_MSG(kLogLevelDebug, "\tTock");
+        LOG_MSG(kLogLevelInfo, "\tTock");
     }
     tick += 1;
     return RET_OK;
@@ -233,6 +244,7 @@ ret_t workloop_flash(int32_t *new_callback_time_ms)
     return RET_OK;
 }
 
+// TODO: probably just change the periodic handler to this style?
 ret_t button_handler(int32_t *new_callback_time_ms)
 {
     // UART_sendString("b");

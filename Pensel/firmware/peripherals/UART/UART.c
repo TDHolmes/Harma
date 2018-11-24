@@ -28,6 +28,9 @@ extern schedule_t gMainSchedule;
 // HAL UART handler declaration
 UART_HandleTypeDef HAL_UART_handle;
 
+//! The schedule ID of our main-context callback to flush queued tx data
+static schedule_id_t tx_queued_data_sched_id;
+
 //! UART structure to track RX / TX buffers
 typedef struct {
     // define buffers to be used by the STM drivers
@@ -49,6 +52,8 @@ UART_admin_t UART_admin;
  */
 ret_t UART_init(uint32_t baudrate)
 {
+    tx_queued_data_sched_id = 0;
+
     // configure the UART module we are using.
     HAL_UART_handle.Instance = USART1;
     HAL_UART_handle.Init.BaudRate = baudrate;
@@ -349,20 +354,24 @@ ret_t transmitMoreData(int32_t *next_callback_ms)
     HAL_StatusTypeDef hal_retval;
 
     if (UART_TXisReady()) {
-        // This doesn't run continually
-        *next_callback_ms = SCHEDULER_FINISHED;
 
         if (UART_admin.tx_buffer_admin.unread_items <= UART_TX_BUFFER_SIZE) {
+            // We will be able to catch up on this transmission.
+            *next_callback_ms = SCHEDULER_FINISHED;
             num_bytes = UART_admin.tx_buffer_admin.unread_items;
+
+            if (num_bytes == 0) {
+                // Nothing to transmit!
+                return RET_OK;
+            }
         } else {
+            // we need more callbacks to finish transmission. Back off a bit though
+            //    on the scheduler.
+            *next_callback_ms = 1;
             num_bytes = UART_TX_BUFFER_SIZE;
         }
 
-        if (num_bytes == 0) {
-            *next_callback_ms = SCHEDULER_FINISHED;
-            return RET_OK;
-        }
-
+        // Prepare to transmit
         UART_admin.tx_being_modified = true;
         gCriticalErrors.UART_dequeuedBytes += num_bytes;
         newqueue_pop(&UART_admin.tx_buffer_admin, UART_admin.tx_buffer, num_bytes, eNoPeak);
@@ -372,8 +381,8 @@ ret_t transmitMoreData(int32_t *next_callback_ms)
             fatal_error_handler(__FILE__, __LINE__, hal_retval);
         }
     } else {
-        // We need to try again
-        *next_callback_ms = 1;
+        // We need to try again!
+        *next_callback_ms = 0;
     }
 
     // TODO: switch from fatal error handler to returning error?
@@ -402,16 +411,23 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *HAL_UART_handle_ptr)
  */
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *UNUSED_PARAM(HAL_UART_handle_ptr))
 {
-    if (UART_admin.tx_buffer_admin.unread_items != 0) {
+    int32_t i;
+
+    // If we have more data to transmit and we don't already have our transmitMoreData callback
+    //    already queued up, do so!
+    if (UART_admin.tx_buffer_admin.unread_items != 0 &&
+            scheduler_IDInSchedule(&gMainSchedule, tx_queued_data_sched_id) == false) {
         if (UART_admin.tx_being_modified) {
             // Main context is modifying TX-y things. Queue up main context!
-            uint8_t sch_id;
             // As soon as possible in the main context, service UART!
-            scheduler_add(&gMainSchedule, 0, transmitMoreData, &sch_id);
+            scheduler_add(&gMainSchedule, 0, transmitMoreData, &tx_queued_data_sched_id);
         } else {
             // Main context is doing other things. Queue up the next transmission now!
-            int32_t i;
             transmitMoreData(&i);
+            if (i != SCHEDULER_FINISHED) {
+                // there's more to do! request main context to service us too.
+                scheduler_add(&gMainSchedule, 1, transmitMoreData, &tx_queued_data_sched_id);
+            }
         }
     }
 }

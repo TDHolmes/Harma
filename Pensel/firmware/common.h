@@ -24,6 +24,8 @@
 #define PENSEL_VERSION_GITTAG (GIT_TAG_SHORT)
 // Defined by compiler: GIT_TAG_SHORT  (value of `git rev-parse --short HEAD`)
 
+
+// TODO: Remove these from the common header?
 #define LSM303DLHC_ENABLE_RACCEL_STREAM (0x01)
 #define LSM303DLHC_ENABLE_RMAG_STREAM (0x02)
 #define LSM303DLHC_ENABLE_FACCEL_STREAM (0x04)
