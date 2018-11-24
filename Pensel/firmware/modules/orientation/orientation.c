@@ -9,6 +9,7 @@
  * This is done by using orientations provided by Accel's gravity vector and Mag's north vector.
  */
 #include "FIR_coefficients.h"
+#include "datatypes.h"
 #include "modules/utilities/FIR.h"
 #include "quanternions.h"
 #include <stdint.h>
@@ -31,39 +32,25 @@ ret_t orient_init(void)
 {
     ret_t retval;
     // Initialize all 3 vectors for accel gravitation filtering
-    retval =
-        FIR_init(&orient.FIR_accelGrav[X_IND], FIR_ACCEL_GRAVITY_ORDER, accel_coefficients_LPF);
-    if (retval != RET_OK) {
-        return retval;
-    }
+    retval = FIR_init(&orient.FIR_accelGrav[X_IND], FIR_ACCEL_GRAVITY_ORDER, accel_coefficients_LPF);
+    if (retval != RET_OK) { return retval; }
 
-    retval =
-        FIR_init(&orient.FIR_accelGrav[Y_IND], FIR_ACCEL_GRAVITY_ORDER, accel_coefficients_LPF);
-    if (retval != RET_OK) {
-        return retval;
-    }
+    retval = FIR_init(&orient.FIR_accelGrav[Y_IND], FIR_ACCEL_GRAVITY_ORDER, accel_coefficients_LPF);
+    if (retval != RET_OK) { return retval; }
 
-    retval =
-        FIR_init(&orient.FIR_accelGrav[Z_IND], FIR_ACCEL_GRAVITY_ORDER, accel_coefficients_LPF);
-    if (retval != RET_OK) {
-        return retval;
-    }
+    retval = FIR_init(&orient.FIR_accelGrav[Z_IND], FIR_ACCEL_GRAVITY_ORDER, accel_coefficients_LPF);
+    if (retval != RET_OK) { return retval; }
+
 
     // Initialize all 3 vectors for mag north filtering
     retval = FIR_init(&orient.FIR_magNorth[X_IND], FIR_MAG_NORTH_ORDER, mag_coefficients_LPF);
-    if (retval != RET_OK) {
-        return retval;
-    }
+    if (retval != RET_OK) { return retval; }
 
     retval = FIR_init(&orient.FIR_magNorth[Y_IND], FIR_MAG_NORTH_ORDER, mag_coefficients_LPF);
-    if (retval != RET_OK) {
-        return retval;
-    }
+    if (retval != RET_OK) { return retval; }
 
     retval = FIR_init(&orient.FIR_magNorth[Z_IND], FIR_MAG_NORTH_ORDER, mag_coefficients_LPF);
-    if (retval != RET_OK) {
-        return retval;
-    }
+    if (retval != RET_OK) { return retval; }
 
     return RET_OK;
 }

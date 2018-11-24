@@ -49,6 +49,11 @@ ret_t newqueue_deinit(volatile newqueue_t *newqueue)
 
 /*!
  *
+ * TODO: You can pop more items than are on the queue... probably should prevent that and
+ *    return an error!
+ * 
+ * NOTE: This function is only "thread safe" if you're popping off less items than are being
+ *   pushed on. 
  */
 ret_t newqueue_pop(volatile newqueue_t *queue, void *data_ptr, uint32_t num_items, peak_t peak)
 {
@@ -85,12 +90,17 @@ ret_t newqueue_push(volatile newqueue_t *queue, void *data_ptr, uint32_t num_ite
             priv_increment_head(queue);
             i += 1;
         }
+        // BUG: This read-modify-write could be in the interrupt context while the pop
+        //   read-modify-write of this is happening in main thread context. Potential
+        //   loss of an item!!
         queue->unread_items += 1;
     }
     return RET_OK;
 }
 
 /*!
+ * @brief   increments where the tail is pointing. Note this is based on the
+ *          byte level, not item size level! buffer_size is also byte level.
  *
  */
 void priv_increment_tail(volatile newqueue_t *queue_ptr)
@@ -103,7 +113,8 @@ void priv_increment_tail(volatile newqueue_t *queue_ptr)
 }
 
 /*!
- *
+ * @brief   decrements where the tail is pointing. Note this is based on the
+ *          byte level, not item size level! buffer_size is also byte level.
  */
 void priv_decrement_tail(volatile newqueue_t *queue_ptr)
 {
