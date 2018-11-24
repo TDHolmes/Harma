@@ -1,6 +1,6 @@
 #include "unity.h"
 #include <stdio.h>
-#include "matrixmath.h"
+#include "modules/orientation/matrixmath.h"
 
 
 void test_unitVectorCross(void) {

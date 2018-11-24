@@ -1,0 +1,114 @@
+#!/usr/bin/env python3
+"""
+
+"""
+import os
+import shlex
+import subprocess
+from typing import Tuple, List, Optional
+
+
+THIS_FOLDERPATH = os.path.dirname(os.path.abspath(__file__))
+
+
+def run_cmd(cmd_string: str) -> Tuple[str, str, int]:
+    ret = subprocess.run(shlex.split(cmd_string))
+    return ret.stdout, ret.stderr, ret.returncode
+
+
+def configure_cmake(defines: Optional[List]=None) -> int:
+    """
+    Runs the cmake configuration
+    """
+    print("=== Configuring cmake ===")
+    current_directory = os.path.curdir
+    cmake_path = os.path.join(THIS_FOLDERPATH, "targets")
+    if defines:
+        defines_str = " ".join(["-D{}".format(item) for item in defines])
+    else:
+        defines_str = ""
+    os.chdir(cmake_path)
+    out, err, ret = run_cmd(f"cmake -v {defines_str} {cmake_path}")
+    os.chdir(current_directory)
+    return ret
+
+
+def build() -> int:
+    """
+    Builds the targets
+    """
+    current_directory = os.path.curdir
+    os.chdir(os.path.join(THIS_FOLDERPATH, "targets"))
+    out, err, ret = run_cmd("make")
+    os.chdir(current_directory)
+
+    return ret
+
+
+def clean():
+    files_and_folders_to_rm = [
+        "CMakeFiles",
+        "Makefile",
+        "cmake_install.cmake",
+        "CMakeCache.txt",
+        "build"
+    ]
+    for item in files_and_folders_to_rm:
+        run_cmd(f"rm -rf {THIS_FOLDERPATH}/targets/{item}")
+
+
+def run_tests(path_to_tests: str, testnames: List[str]) -> int:
+    retval = 0
+    print("=== Running tests ===")
+    for test in testnames:
+        print(f"--- Test: {test}")
+        test_cmd = os.path.join(path_to_tests, test)
+        out, err, ret = run_cmd(test_cmd)
+        if ret != 0:
+            print(f"TEST FAILED - {ret}")
+        else:
+            print(f"TEST PASSED")
+        print()
+        retval += ret
+    
+    return retval
+
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser("unit tests yay!")
+    parser.add_argument("--targets", nargs="+", default=[])
+    parser.add_argument("--verbose", action="store_true", default=False)
+    parser.add_argument("--clean", action="store_true", default=False)
+    args = parser.parse_args()
+
+    if args.clean or args.verbose:
+        clean()
+        if args.targets == []:
+            raise SystemExit(0)
+        defines = []
+        if args.verbose:
+            defines.append("VERBOSE_OUTPUT=1")
+        else:
+            defines.append("VERBOSE_OUTPUT=0")
+        configure_cmake(defines)
+
+    build()
+    path_to_tests = os.path.join(THIS_FOLDERPATH, "targets/build/")
+    tests = os.listdir(path_to_tests)
+
+    if "all" in args.targets:
+        print("Running all tests!")
+        tests_to_run = tests
+    else:
+        tests_to_run = []
+        for item in args.targets:
+            if item in tests:
+                tests_to_run.append(item)
+            else:
+                print(f"Ignoring unknown test: {item}")
+
+    print(f"tests to run: {tests_to_run}")
+    ret = run_tests(path_to_tests, tests_to_run)
+    raise SystemExit(ret)

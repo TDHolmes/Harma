@@ -1,6 +1,6 @@
 #include "unity.h"
 #include <stdio.h>
-#include "newqueue.h"
+#include "modules/utilities/newqueue.h"
 
 #define QUEUE_SIZE (20)
 #define LARGE_NUMBER (999999)

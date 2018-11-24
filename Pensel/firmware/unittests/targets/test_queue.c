@@ -1,6 +1,6 @@
 #include "unity.h"
 #include <stdio.h>
-#include "../firmware/include/queue.h"
+#include "modules/utilities/queue.h"
 
 #define QUEUE_SIZE (20)
 

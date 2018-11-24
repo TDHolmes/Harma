@@ -1,7 +1,8 @@
 #include "unity.h"
 #include <stdio.h>
-#include "../firmware/include/FIR.h"
-#include "../firmware/include/FIR_coefficients.h"
+#include "modules/utilities/FIR.h"
+// TODO: make my own seperate coefficients for testing?
+#include "modules/orientation/FIR_coefficients.h"
 
 #define QUEUE_SIZE (20)
 
