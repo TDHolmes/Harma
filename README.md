@@ -56,4 +56,4 @@ Further Pensel documentation can be found [here][Pensel Link].
 This section has not been thought through yet. I am currently only focusing on the Pensel sub-component.
 
 
-[Pensel Link]: http://www.holmesengineering.com/Harma/Pensel "Pensel Sub-Project Page"
+[Pensel Link]: https://www.holmesengineering.com/Harma/Pensel "Pensel Sub-Project Page"
